@@ -128,9 +128,62 @@ class Group extends stdClass {
 	protected function get_toolbar(){
 		return '';
 	}
+
+	/**
+	 * @param string $room_id
+	 *
+	 * @return void
+	 */
+	protected function set_matrix_channel_id(string $room_id){
+		update_post_meta($this->ID,'pl_group_matrix_room_id');
+	}
+
+	protected function get_matrix_channel_id(){
+		return $this->get('pl_group_matrix_room_id');
+	}
+	protected function get_joined_member_matrixId($user_login) {
+
+		$token = get_option( 'matrix_bot_token' );
+
+		$request = new HttpRequest();
+		$request->setUrl( 'https://' . $this->matrix_server_home . '/_matrix/client/v3/user_directory/search' );
+		$request->setMethod( HTTP_METH_POST );
+
+		$request->setHeaders( [
+			'Content-Type'  => 'application/json',
+			'Authorization' => 'Bearer ' . $token
+		] );
+
+		$request->setBody('{
+		        "limit": 1,
+		        "search_term": "'.$user_login.':"
+			}');
+
+		try {
+			$response = $request->send();
+
+			$respond = $response->getBody();
+
+			if($respond && isset($respond->results)){
+				$matrix_user = $respond->results[0];
+				if(isset($matrix_user->user_id)){
+					return $matrix_user->user_id;
+				}
+
+			}
+
+		} catch (HttpException $ex) {
+			echo $ex;
+		}
+
+		return false;
+
+
+	}
+
 	protected function create_matrix_channel(){
 
-		$token = "syt_cnBpLXdhbGwtYm90_meZpGbTJUOxoVTQEkEYL_1LWFkV";
+		$token = get_option('matrix_bot_token');
 
 		$request = new HttpRequest();
 		$request->setUrl('https://'.$this->matrix_server_home.'/_matrix/client/v3/user_directory/search');
@@ -141,42 +194,27 @@ class Group extends stdClass {
 			'Authorization' => 'Bearer '.$token
 		]);
 
-		/**
-		 * Member, die bereits in der Matrix sind ermitteln
-		 */
-
-		$matrix_user_ids=[];
-
-		foreach ( $this->get_members()  as  $member ){
-
-			$request->setBody('{
-		        "limit": 1,
-		        "search_term": "'.$member->login_name.':"
-			}');
-
-			try {
-				$response = $request->send();
-
-				$respond = $response->getBody();
-
-				if($respond && isset($respond->results)){
-					$matrix_user = $respond->results[0];
-					$matrix_user_ids[]=$matrix_user->user_id;
-				}
-
-			} catch (HttpException $ex) {
-				echo $ex;
-			}
-		}
 
 		/**
 		 * Channel erstellen
 		 */
 		$toolbar = $this->get_toolbar();
 
-		$request->setBody('{"name":"'.$this->title.'","visibility":"private","preset":"public_chat","room_alias_name":"'.$this->slug.'","topic":"'.$toolbar.'","initial_state":[]}');
 
+		$reponse = $request->setBody('{"name":"'.$this->title.'","visibility":"private","preset":"public_chat","room_alias_name":"'.$this->slug.'","topic":"'.$toolbar.'","initial_state":[]}');
+
+		/**
+		 * $response->getBody()
+		 * //output
+		 *		{
+		 *          "room_id": "!SDWXfNPQFYBplBTQfM:rpi-virtuell.de",
+		 *          "room_alias": "#78969:rpi-virtuell.de"
+		 *       }
+		 */
+
+		$this->set_matrix_channel_id($room_id);
 		$this->set_status('founded');
+
 
 
 		/**
