@@ -1,0 +1,87 @@
+/*Kommentar Überschrift ausblenden*/
+
+.single-wall #reply-title,.single-wall .ct-comments-title,.single-wall .comment-form-cookies-consent{
+    display:none;
+}
+#comments{
+    margin-top: 0;
+    border: none;
+}
+.single-wall article > .ct-comments{
+    padding-top: 20px;
+}
+.single-wall .ct-comment-inner{
+    padding-top: 20px;
+}
+
+/*user profile sortcode user_pinned_posts */
+.wp-ulike-pro-items-container.user_pinned_posts article{
+    margin-bottom: 20px;
+    padding: 20px;
+    background-color: white;
+}
+
+.wp-ulike-pro-items-container.user_pinned_posts .entry-title {
+    font-size: 1.5em;
+    margin-bottom: 0;
+}
+.wp-ulike-pro-items-container.user_pinned_posts .entry-excerpt p{
+    font-size: 1em;
+    margin: 0;
+
+}
+.wp-ulike-pro-items-container .boundless-image{
+    display: none;
+}
+.wp-ulike-pro-items-container.user_pinned_posts .entry-meta {
+    margin: 0;
+    font-size: .8em;
+}
+
+/*interessierte liker in einer Post*/
+.gruppe-header{
+    margin-top: 50px;
+}
+.gruppe{
+    border: 1px solid #bbbbbb;
+    border-radius: 5px;
+}
+.gruppe .wp_ulike_btn.wp_ulike_put_image::after{
+    width: 30px;
+    height: 30px;
+}
+.gruppe .wpulike-heart .wp_ulike_general_class {
+    box-shadow: 1px 1px 9px 1px #bdbdbd;
+    border-radius: 50%;
+    padding: 21px 10px;
+}
+.gruppe .wp_ulike_likers_wrapper {
+    flex: auto;
+    margin: -7px 5px;
+}
+.gruppe-footer{
+    margin-top: 20px;
+    display: flex;
+    justify-content: right;
+}
+
+article.entry-card.type-wall .plg-wrapper{
+    display: grid;
+    grid-template-columns: 3fr 1fr;
+}
+.hot-comments {
+    text-align: right;
+    color: orangered;
+}
+.plg-wrapper .hot-comments i::before{
+    font-size: 130%;
+}
+.plg-wrapper .hot-comments i::after{
+    font-style: normal;
+    color: black;
+    font-size: 19px;
+    display: block;
+    width: 25px;
+    float: right;
+    margin-top: -6px;
+}
