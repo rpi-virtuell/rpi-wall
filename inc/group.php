@@ -112,7 +112,9 @@ class Group extends stdClass {
 
 	public function get_likers(){}
 	public function get_likers_amount(){}
-	public function get_likers_Ids(){}
+	public function get_likers_Ids(){
+		return wp_ulike_get_likers_list_per_post('ulike','likers_list',$this->ID,1999);
+	}
 
 	/**
 	 * @return string comma separated matrix user_ids
