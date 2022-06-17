@@ -258,3 +258,4 @@ class RpiWall{
 	}
 }
 new RpiWall();
+new MemberInstaller();
