@@ -1,8 +1,8 @@
 <?php
 
-namespace rpi\matrix;
+namespace rpi\Wall\Matrix;
 
-Class helper {
+Class Helper {
 	/**
 	 * @param $login  WP_User::user_login
 	 *

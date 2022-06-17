@@ -2,7 +2,7 @@
 
 namespace rpi\Wall;
 
-use rpi\matrix;
+use rpi\Wall\Matrix\Helper;
 
 class Group extends stdClass {
 
@@ -12,10 +12,6 @@ class Group extends stdClass {
 	public WP_Post $post;
 	public $is_group = false;
 	public $group_status = null;
-	public $likes_total= 0;
-	public $comments_count = 0;
-	public $last_coment;
-	public $comments_likes = 0;
 	public $pending_days;
 	public $matrix_server_home = 'matrix.rpi-virtuell.de';
 	public $matrix_server_base = 'rpi-virtuell.de';
@@ -34,18 +30,16 @@ class Group extends stdClass {
 	 * @return Group
 	 */
 
-	public function __construct($post){
+	public function __construct($post_id){
 
-		$this->post = get_post($post,ARRAY_A);
-		$this->ID = $post->ID;
+		$this->post = get_post($post_id,ARRAY_A);
+		$this->ID = $post_id;
 		$this->group_status = $this->get('pl_group_status');
 		$this->is_group = $this->exits();
 		$this->slug = 'dibes_plg_'.$this->ID;
-		$this->title = 'PLG '.substr(preg_replace('/[^\w\s-]/i','',$post->post_title),0,40);
-		$this->url = get_permalink($post->ID);
+		$this->title = 'PLG '.substr(preg_replace('/[^\w\s-]/i','',$this->post->post_title),0,40);
 		$this->channel_url = "https://{$this->matrix_server_home}/#/room/#{$this->slug}:rpi-virtuell.de";
 		$this->pending_days = get_option('rpi_wall_pl_group_pending_days',7);
-
 
 	}
 
@@ -107,10 +101,9 @@ class Group extends stdClass {
 	 * @return void
 	 */
 	public function reset_status(){
-		foreach ($this->get_memberIds() as $user_id){
-			delete_post_meta($this->ID, 'rpi_wall_member_id', $user_id);
-			delete_user_meta($user_id, 'rpi_wall_group_id', $this->ID);
-		};
+
+		$this->remove_members();
+
 		$this->set_status(null);
 	}
 
@@ -189,6 +182,48 @@ class Group extends stdClass {
 		return wp_ulike_get_likers_list_per_post('ulike','likers_list',$this->ID,100);
 	}
 
+	/**
+	 * @return array WP_User[]
+	 */
+	public function all_get_comments_liker() {
+
+		$likers = get_users( ['include',$this->get_comment_liker_Ids()] );
+		return $likers;
+	}
+	/**
+	 * @return array $user_id[]
+	 */
+	public function all_get_comments_likerIds(){
+
+		$comments = get_comments(['post_id'=>$this->id]);
+
+		$likers = [];
+		foreach($comments as $comment){
+			$ids =$this->get_comment_liker_Ids($comment->comment_ID);
+			foreach ($ids as $user_id){
+				$likers[]=$user_id ;
+			}
+		}
+		return array_unique($likers);
+
+	}
+	/**
+	 * @return array $user_id[]
+	 */
+	public function get_comment_liker_Ids($comment_id){
+		return wp_ulike_get_likers_list_per_post('ulike_comments','likers_list',$comment_id,100);
+	}
+
+	/**
+	 * @return array $user_id[]
+	 */
+	public function get_comment_likescount(){
+		$likes =0;
+		foreach (get_comments([ 'post_id' => $this->ID]) as $comment){
+			$likes += intval(wp_ulike_get_comment_likes($comment->comment_ID));
+		}
+		return $likes;
+	}
 
 	/**
 	 * @return string comma separated matrix user_ids
@@ -208,34 +243,87 @@ class Group extends stdClass {
 	}
 
 	/**
-	 * @return void
+	 * @return array member[]
 	 *
 	 */
 	public function get_members(){
-
-
-	}
-	public function get_member($user_id){}
-	public function get_members_amount(){}
-	public function get_memberIds(){
-		$return =get_post_meta('rpi_wall_member_id');
+		$members = [];
+		foreach ( $this->get_memberIds() as $member_id ){
+			$members[] = new member($member_id);
+		}
+		return $members;
 	}
 
 	/**
-	 * @return WP_User[]
+	 * @param \WP_User $user_id
+	 *
+	 * @return member
 	 */
-	public function remove_members(){}
-	public function get_watcher(){}
-	public function get_watcher_amount(){}
-	public function get_watcherIds(){}
+	public function get_member($user_id){
+		return new member($user_id);
+	}
 
-	public function send_message(){}
-	public function create_message(){}
+	/**
+	 * @return int
+	 */
+	public function get_members_amount(){
+		return count($this->get_memberIds());
+	}
 
+	/**
+	 * @return array
+	 */
+	public function get_memberIds(){
+		return (array) get_post_meta('rpi_wall_member_id');
+	}
+
+	/**
+	 * Remove UserIds from Wall Post Meta (Group) und PostIds from User Meta
+	 * @return void
+	 */
+	protected function remove_members(){
+		foreach ($this->get_memberIds() as $user_id){
+			delete_post_meta($this->ID, 'rpi_wall_member_id', $user_id);
+			delete_user_meta($user_id, 'rpi_wall_group_id', $this->ID);
+		};
+	}
+
+	/**
+	 * @return array $user_id[]
+	 */
+	public function get_watcherIds(){
+		return get_post_meta($this->ID, 'rpi_wall_watcher_id');
+	}
+
+	/**
+	 * @return array WP_User[]
+	 */
+	public function get_watcher(){
+		return get_users(['include'=>$this->get_watcherIds()]);
+	}
+
+	/**
+	 * @return int
+	 */
+	public function get_watcher_amount(){
+		return count($this->get_watcherIds());
+	}
+
+	/**
+	 * get metakey value
+	 *
+	 * @param $key
+	 * @return mixed
+	 */
 	protected function get($key){
 		return get_post_meta($this->ID,$key, true);
 	}
 
+	/**
+	 * @return string <embed>widgetcontent</embed>
+	 *
+	 * Todo
+	 */
 	protected function get_toolbar(){
 		return '';
 	}
@@ -252,92 +340,21 @@ class Group extends stdClass {
 		return $this->get('pl_group_matrix_room_id');
 	}
 	protected function get_joined_member_matrixId($user_login) {
-
-
-
-		$token = get_option( 'matrix_bot_token' );
-
-		$request = new HttpRequest();
-		$request->setUrl( 'https://' . $this->matrix_server_home . '/_matrix/client/v3/user_directory/search' );
-		$request->setMethod( HTTP_METH_POST );
-
-		$request->setHeaders( [
-			'Content-Type'  => 'application/json',
-			'Authorization' => 'Bearer ' . $token
-		] );
-
-		$request->setBody('{
-		        "limit": 1,
-		        "search_term": "'.$user_login.':"
-			}');
-
-		try {
-			$response = $request->send();
-
-			$respond = $response->getBody();
-
-			if($respond && isset($respond->results)){
-				$matrix_user = $respond->results[0];
-				if(isset($matrix_user->user_id)){
-					return $matrix_user->user_id;
-				}
-
-			}
-
-		} catch (HttpException $ex) {
-			echo $ex;
-		}
-
-		return false;
-
-
+		return Matrix\Helper::getUser($user_login);
 	}
 
 	protected function create_matrix_channel(){
+		Matrix\Helper::create_room($this);
+	}
 
-		$token = get_option('matrix_bot_token');
-
-		$request = new HttpRequest();
-		$request->setUrl('https://'.$this->matrix_server_home.'/_matrix/client/v3/user_directory/search');
-		$request->setMethod(HTTP_METH_POST);
-
-		$request->setHeaders([
-			'Content-Type' => 'application/json',
-			'Authorization' => 'Bearer '.$token
-		]);
-
-
-		/**
-		 * Channel erstellen
-		 */
-		$toolbar = $this->get_toolbar();
-
-
-		$response = $request->setBody('{"name":"'.$this->title.'","visibility":"private","preset":"public_chat","room_alias_name":"'.$this->slug.'","topic":"'.$toolbar.'","initial_state":[]}');
-
-		/**
-		 * Todo
-		 * $response->getBody()
-		 * //output
-		 *		{
-		 *          "room_id": "!SDWXfNPQFYBplBTQfM:rpi-virtuell.de",
-		 *          "room_alias": "#78969:rpi-virtuell.de"
-		 *       }
-		 */
-
-		$this->set_matrix_channel_id($room_id);
-		$this->set_status('founded');
-
-
-
-		/**
-		 * Action Hook for
-		 * Message to orga channel
-		 * E-Mails to likers
-		 */
-		do_action('rpi_wall_pl_group_after_channel_created', $this);
+	public function send_message(){
 
 	}
+	public function create_message(){
+
+	}
+
+
 }
 
 
