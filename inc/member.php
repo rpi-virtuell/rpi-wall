@@ -2,7 +2,16 @@
 namespace \rpiWall;
 class member {
 
-	public function join_group($post_id){}
+	public function join_group($groupId){
+
+		add_post_meta($groupId, 'rpi_wall_member_id', $this->ID);
+
+	}
+	public function leave_group($groupId){
+
+		delete_post_meta($groupId, 'rpi_wall_member_id', $this->ID);
+
+	}
 	public function watch_group($post_id){}
 	public function get_groups(){}
 	public function get_group($post_id){}

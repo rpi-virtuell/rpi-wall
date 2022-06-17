@@ -124,10 +124,7 @@ class Group extends stdClass {
 	 *
 	 */
 	public function get_members(){
-		/*
-		add_post_meta('$groupId', 'rpi_wall_member_id', $user_id);
-		delete_post_meta('$groupId', 'rpi_wall_member_id', $user_id);
-		*/
+
 
 	}
 	public function get_member($user_id){}
