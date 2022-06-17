@@ -1,4 +1,5 @@
 <?php
+namespace \rpiWall;
 
 class Group extends stdClass {
 
@@ -16,6 +17,13 @@ class Group extends stdClass {
 	public $matrix_server_home = 'matrix.rpi-virtuell.de';
 	public $matrix_server_base = 'rpi-virtuell.de';
 
+
+	/**
+	 * Todo
+	 * stati: pending, acreated
+	 * erstellen des channels nach der mindestzahl von PLG
+	 * nach pending phase Channel schließen
+	 */
 
 	/**
 	 * @param int|WP_Post|null $post
@@ -60,14 +68,17 @@ class Group extends stdClass {
 			delete_post_meta($this->ID,'pl_group_status');
 		}else{
 			update_post_meta($this->ID,'pl_group_status',$status);
+			if($status == 'pending')
+				$this->set_status_time();
 		}
-		$this->set_status_time();
+
 	}
 	public function set_status_time(){
 		update_post_meta($this->ID,'pl_group_status_timestamp',time());
 	}
 
 	public function reset_status(){
+		//ToDo remove existing group_member
 		$this->set_status(null);
 	}
 
@@ -98,14 +109,15 @@ class Group extends stdClass {
 	}
 
 	public function get_matrix_link(){}
-	public function get_lickers(){}
-	public function get_lickers_amount(){}
-	public function get_lickers_Ids(){}
+
+	public function get_likers(){}
+	public function get_likers_amount(){}
+	public function get_likers_Ids(){}
 
 	/**
 	 * @return string comma separated matrix user_ids
 	 */
-	public function get_lickers_matrix_ids(){}
+	public function get_members_matrix_ids(){}
 	public function get_members(){}
 	public function get_members_amount(){}
 	public function get_memberIds(){}
@@ -204,6 +216,7 @@ class Group extends stdClass {
 		$reponse = $request->setBody('{"name":"'.$this->title.'","visibility":"private","preset":"public_chat","room_alias_name":"'.$this->slug.'","topic":"'.$toolbar.'","initial_state":[]}');
 
 		/**
+		 * Todo
 		 * $response->getBody()
 		 * //output
 		 *		{
