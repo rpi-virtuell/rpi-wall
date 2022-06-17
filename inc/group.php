@@ -108,18 +108,69 @@ class Group extends stdClass {
 
 	}
 
-	public function get_matrix_link(){}
-
-	public function get_likers(){}
-	public function get_likers_amount(){}
-	public function get_likers_Ids(){
-		return wp_ulike_get_likers_list_per_post('ulike','likers_list',$this->ID,1999);
+	/**
+	 * @param string $context email|html|matrix
+	 *
+	 * @return string
+	 */
+	public function get_matrix_link(string $context = 'html'){
+		switch ($context){
+			case 'html':
+				return '<a href="'.$this->channel_url.'">#'.$this->slug.':rpi-virtuell.de</a>';
+				break;
+			case 'matrix':
+				return "#{$this->slug}:rpi-virtuell.de";
+				break;
+			case 'email':
+				return $this->channel_url;
+				break;
+		}
 	}
+
+	/**
+	 * @return array WP_User[]
+	 */
+	public function get_likers(){
+
+		return get_users(array(
+			"include"=>wp_ulike_get_likers_list_per_post('ulike','likers_list',$this->ID,100)
+		));
+	}
+
+	/**
+	 * @return int
+	 */
+	public function get_likers_amount(){
+
+		return count((array) wp_ulike_get_likers_list_per_post('ulike','likers_list',$this->ID,100));
+
+	}
+
+	/**
+	 * @return array user Ids
+	 */
+	public function get_likers_Ids(){
+
+		return wp_ulike_get_likers_list_per_post('ulike','likers_list',$this->ID,100);
+	}
+
 
 	/**
 	 * @return string comma separated matrix user_ids
 	 */
-	public function get_members_matrix_ids(){}
+	public function get_members_matrix_ids(){
+		$ids =$this->get_members_matrix_ids();
+		$return =[];
+		foreach ($ids as $id){
+			if($matrixId = get_user_meta($id,'matrixId',true)){
+				$return[] = $matrixId;
+			}else{
+				$return[] = '@'.get_user_by('ID',$id)->user_login.':'.$this->matrix_server_base .'(?)';
+
+			}
+
+		}
+	}
 
 	/**
 	 * @return void

@@ -9,6 +9,13 @@ Author URI: https://github.com/johappel
 License: A "Slug" license name e.g. GPL2
 */
 
+require_once ("inc/group.php");
+require_once ("inc/member.php");
+require_once ("inc/matrix-helper.php");
+require_once ("inc/message.php");
+require_once ("member-installer.php");
+
+
 class RpiWall{
 
 	/**
@@ -36,6 +43,7 @@ class RpiWall{
 	 * wp_ulike_get_best_likers_info
 	 * wp_ulike_is_user_liked
 	 */
+
 
 
 	protected $max_stars_per_comment = 5;
