@@ -118,9 +118,23 @@ class Group extends stdClass {
 	 * @return string comma separated matrix user_ids
 	 */
 	public function get_members_matrix_ids(){}
-	public function get_members(){}
+
+	/**
+	 * @return void
+	 *
+	 */
+	public function get_members(){
+		/*
+		add_post_meta('$groupId', 'rpi_wall_member_id', $user_id);
+		delete_post_meta('$groupId', 'rpi_wall_member_id', $user_id);
+		*/
+
+	}
+	public function get_member($user_id){}
 	public function get_members_amount(){}
-	public function get_memberIds(){}
+	public function get_memberIds(){
+		$return =get_post_meta('rpi_wall_member_id');
+	}
 
 	/**
 	 * @return WP_User[]
