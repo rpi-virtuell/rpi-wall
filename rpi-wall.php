@@ -94,7 +94,7 @@ class RpiWall{
 			$likes = 0;
 
 			foreach (get_comments([ 'post_id' => get_the_ID()]) as $comment){
-				$likes += wp_ulike_get_comment_likes($comment->comment_ID);
+				$likes += intval(wp_ulike_get_comment_likes($comment->comment_ID));
 			}
 			$max_likes = $this->max_stars_per_comment;
 			if($likes>0){
