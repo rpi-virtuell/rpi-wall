@@ -1,4 +1,5 @@
 <?php
+namespace rpi\Wall;
 
 class MemberInstaller
 {

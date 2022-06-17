@@ -15,6 +15,7 @@ require_once ("inc/matrix-helper.php");
 require_once ("inc/message.php");
 require_once ("member-installer.php");
 
+use rpi\Wall;
 
 class RpiWall{
 
@@ -265,5 +266,6 @@ class RpiWall{
 
 	}
 }
+
 new RpiWall();
 new MemberInstaller();

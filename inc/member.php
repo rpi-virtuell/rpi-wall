@@ -1,5 +1,5 @@
 <?php
-namespace \rpiWall;
+namespace rpi\Wall;
 class member {
 
 	public function join_group($groupId){

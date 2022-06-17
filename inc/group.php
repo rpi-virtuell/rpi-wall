@@ -1,5 +1,8 @@
 <?php
-namespace \rpiWall;
+
+namespace rpi\Wall;
+
+use rpi\matrix;
 
 class Group extends stdClass {
 
@@ -46,24 +49,40 @@ class Group extends stdClass {
 
 	}
 
+	/**
+	 * @return string
+	 */
 	public function get_status(){
 		return $this->get('pl_group_status');
 	}
 
+	/**
+	 * @return bool
+	 */
 	public function exists() {
 		return !empty($this->get_status());
 	}
 
+	/**
+	 * @return bool
+	 */
 	public function is_pending(){
 		return $this->get_status() === 'pending';
 	}
 
+	/**
+	 * @return bool
+	 */
 	public function is_founded(){
 		return $this->get_status() === 'founded';
 	}
 
-
-	public function set_status($status){
+	/**
+	 * @param string $status pending|founded
+	 *
+	 * @return void
+	 */
+	public function set_status(string $status){
 		if(null === $status){
 			delete_post_meta($this->ID,'pl_group_status');
 		}else{
@@ -73,15 +92,31 @@ class Group extends stdClass {
 		}
 
 	}
-	public function set_status_time(){
+
+	/**
+	 * @return void
+	 */
+	protected function set_status_time(){
 		update_post_meta($this->ID,'pl_group_status_timestamp',time());
 	}
 
+	/**
+	 * remove members and status
+	 * if pending time out and noch enouph user du found a PLG
+	 *
+	 * @return void
+	 */
 	public function reset_status(){
-		//ToDo remove existing group_member
+		foreach ($this->get_memberIds() as $user_id){
+			delete_post_meta($this->ID, 'rpi_wall_member_id', $user_id);
+			delete_user_meta($user_id, 'rpi_wall_group_id', $this->ID);
+		};
 		$this->set_status(null);
 	}
 
+	/**
+	 * @return Date
+	 */
 	public function get_status_date(){
 
 		return  date('d.n.Y',$this->get('pl_group_status_timestamp')) ;
@@ -207,10 +242,9 @@ class Group extends stdClass {
 
 	/**
 	 * @param string $room_id
-	 *
 	 * @return void
 	 */
-	protected function set_matrix_channel_id(string $room_id){
+	protected function set_room_id(string $room_id){
 		update_post_meta($this->ID,'pl_group_matrix_room_id');
 	}
 
@@ -218,6 +252,8 @@ class Group extends stdClass {
 		return $this->get('pl_group_matrix_room_id');
 	}
 	protected function get_joined_member_matrixId($user_login) {
+
+
 
 		$token = get_option( 'matrix_bot_token' );
 
@@ -277,7 +313,7 @@ class Group extends stdClass {
 		$toolbar = $this->get_toolbar();
 
 
-		$reponse = $request->setBody('{"name":"'.$this->title.'","visibility":"private","preset":"public_chat","room_alias_name":"'.$this->slug.'","topic":"'.$toolbar.'","initial_state":[]}');
+		$response = $request->setBody('{"name":"'.$this->title.'","visibility":"private","preset":"public_chat","room_alias_name":"'.$this->slug.'","topic":"'.$toolbar.'","initial_state":[]}');
 
 		/**
 		 * Todo
