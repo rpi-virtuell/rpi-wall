@@ -43,7 +43,7 @@ class Member extends stdClass
     }
 
 
-    public
+    protected
     function join_group($groupId)
     {
         if (add_post_meta($groupId, 'rpi_wall_member_id', $this->ID)
@@ -61,8 +61,11 @@ class Member extends stdClass
     {
 
         if (delete_post_meta($groupId, 'rpi_wall_member_id', $this->ID)
-            && delete_post_meta($this->ID, 'rpi_wall_group_id', $groupId)) {
+            && delete_user_meta($this->ID, 'rpi_wall_group_id', $groupId)) {
+
+			do_action('rpi_wall_member_left_group',$this, $groupId);
             return true;
+
         } else {
             return false;
         }
@@ -78,13 +81,13 @@ class Member extends stdClass
     public
     function get_groups()
     {
-        return get_post_meta($this->ID, 'rpi_wall_group_id');
+        return get_user_meta($this->id, 'rpi_wall_group_id');
     }
 
     public
     function is_in_group($group_id): bool
     {
-        $groups = get_post_meta($this->ID, 'rpi_wall_group_id');
+        $groups = get_user_meta($group_id, 'rpi_wall_group_id');
         return in_array($group_id, $groups);
     }
 
@@ -96,12 +99,22 @@ class Member extends stdClass
     public
     function get_messages()
     {
+		return get_posts([
+			'post_type' => 'message',
+			'mumberposts'=> -1,
+			'meta_query'=>[
+				'key' => 'recipient',
+				'value' => $this->ID,
+				'compare' => '=',
+				'type' => 'NUMERIC'
+			]
+		]);
     }
 
     public
     function current_user_is_member()
     {
-        if (get_current_user() === $this->name) {
+        if (get_current_user_id() === $this->ID) {
             return true;
         } else {
             return false;
@@ -113,5 +126,32 @@ class Member extends stdClass
     {
         return user_can($this->ID, $capability);
     }
+
+	public	function validate_and_join($joinhash){
+
+		$groups  = get_user_meta($this->ID, 'rpi_wall_plg_join_hashes');
+
+		foreach ( $groups as $group_id=>$hash ) {
+			if($hash == $joinhash){
+				$this->join_group($group_id);
+				do_action('rpi_wall_member_joined_group',$this, $group_id);
+			}
+		}
+		return false;
+	}
+
+	public	function get_join_hash($group_id)
+	{
+
+		$groups  = get_user_meta($this->ID, 'rpi_wall_plg_join_hashes');
+
+		if(!isset($groups[$group_id])){
+			$hash = wp_hash($this->name,'nonce');
+			$groups[$group_id] = $hash;
+			update_user_meta($this->ID, 'rpi_wall_group_hash', $groups);
+		}
+		return $groups[$group_id];
+
+	}
 
 }
