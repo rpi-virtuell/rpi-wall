@@ -12,9 +12,13 @@ class Member extends stdClass
     public $post;  //CPT member WP_Post
     public $user;
 
-    public function __construct($user_id)
+    public function __construct($user_id = 0)
     {
-	    $this->user = get_userdata($user_id);
+	    if($user_id === 0){
+		    $user_id = get_current_user_id();
+	    }
+
+		$this->user = get_userdata($user_id);
 
 		if(is_a($this->user,'WP_User')){
 
