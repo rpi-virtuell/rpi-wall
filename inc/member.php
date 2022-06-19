@@ -35,6 +35,10 @@ class Member extends stdClass
 
         $this->url = wp_ulike_pro_get_user_profile_permalink($user_id);
 
+
+		add_action('init',[$this,'init_check_action']);
+
+
     }
 
     public function get_member_profile_permalink()
@@ -127,6 +131,32 @@ class Member extends stdClass
         return user_can($this->ID, $capability);
     }
 
+
+	/**
+	 * init action
+	 *
+	 * @return bool|void
+	 */
+	public function init_check_action(){
+
+		if(isset($_REQUEST['action']) && isset($_REQUEST['hash']) && isset($_REQUEST['member'])){
+
+			if( 'plgjoin' == $_REQUEST['action']){
+
+				$member = new Member(intval($_REQUEST['member']));
+				$member->validate_and_join($_REQUEST['hash']);
+				return true;
+
+			}
+			return false;
+		}
+	}
+
+	/**
+	 * @param $joinhash
+	 *
+	 * @return bool
+	 */
 	public	function validate_and_join($joinhash){
 
 		$groups  = get_user_meta($this->ID, 'rpi_wall_plg_join_hashes');
@@ -135,11 +165,17 @@ class Member extends stdClass
 			if($hash == $joinhash){
 				$this->join_group($group_id);
 				do_action('rpi_wall_member_joined_group',$this, $group_id);
+				return true;
 			}
 		}
 		return false;
 	}
 
+	/**
+	 * @param $group_id  Group
+	 *
+	 * @return string hash
+	 */
 	public	function get_join_hash($group_id)
 	{
 
@@ -154,4 +190,17 @@ class Member extends stdClass
 
 	}
 
+
+	/**
+	 * @param $group_id Group
+	 *
+	 * @return string html link
+	 */
+
+	public function get_joinlink($group_id){
+
+		$hash = $this->get_join_hash($group_id);
+		return '<a href="'.get_home_url().'?action=plgjoin&hash='.$hash.'&member='.$this->ID.'">Gruppe beitreten</p>';
+
+	}
 }
