@@ -10,6 +10,9 @@ class Message {
 	protected $body;
 	protected Member $member;
 	protected $recipient_ids;
+	//protected $recipient_groups=['orga','watch','group'];
+
+
 
 	protected $templates = [
 
@@ -18,7 +21,7 @@ class Message {
 			[
 				'subject'=>'Gründungsprozess für %grouptitle% gestartet',
 				'body'=>'Für den Pinwandeintrag "%posttitle%" (%postlink%) hat  %actorname% (%actorlink%) die Gründung einer PLG gestartet.  '.
-				        'Klicke folgenden Link um der PLG beizutreten %s.'
+				        'Klicke folgenden Link um der PLG beizutreten: %joinlink%.'
 			],
 		'group_founded'=>
 			[
@@ -41,7 +44,7 @@ class Message {
 
 
 			],
-		'watch_min_likers'=>
+		'watch_minimum_likers_met'=>
 			[
 				'subject'=>'PLG Gründung möglich: %posttitle%"',
 				'body'=>'Zu dem Beitrag "%posttitle%" (%postlink%) haben sich genügend Interessierte für eine PLG gefunden.'.
@@ -61,7 +64,7 @@ class Message {
 				        'Es haben sie sich %likeramount% Mitglieder dafür interessiert.'
 
 			],
-		'orga_min_likers'=>
+		'orga_minimum_likers_met'=>
 			[
 				'subject'=>'Minimum an Interessierten erreicht: %posttitle%',
 				'body'=>'Zu dem Beitrag "%posttitle%" (%postlink%) haben sich das eingestellte Minimum an Interessierten gefunden. '.
@@ -82,20 +85,69 @@ class Message {
 			],
 
 	];
+	protected $events=['create','pending','founded','liked','minimum_likers_met','comment','reset'];
+
 
 	/**
 	 * @param Group $group
-	 * @param $template_key
+	 * @param $event
 	 * @param $user_ids
 	 * @param $actor_id    //des handelnden Users: Group creater, Comment creater ...
 	 */
-	public function __construct(Group $group, $template_key='watch_pending', $user_ids = array(),$actor_id=0) {
-		if($actor_id === 0){
-			$actor_id = get_current_user_id();
-		}
+	public function __construct(Group $group, $event='pending', $to = ['orga','watch','group'] ,$actor_id=0) {
+
 		$this->actor = new Member($actor_id);
-		$this->prepare_message($template_key);
-		$this->recipient_ids = $user_ids;
+
+		foreach ($to as $reciever){
+			$template_key = $reciever.'_'.$event;
+			if($actor_id === 0){
+				$actor_id = get_current_user_id();
+			}
+			$this->prepare_message($template_key,$actor_id);
+			if('group'== $reciever){
+				if('pending' == $event || 'create' == $event|| 'minimum_likers_met' == $event){
+					$user_ids = $group->get_likers() ;
+				}
+				if('founded' == $event || 'comment' == $event|| 'liked' == $event){
+					$user_ids = $group->get_likers() ;
+				}
+
+			}
+			if('watch'== $reciever ){
+				$user_ids = $group->get_watcher() ;
+			}
+			if('orga'== $reciever ){
+				$user_ids = $group->get_orga_ids() ;
+			}
+
+			if($msg = $this->prepare_message($template_key)){
+				if($msg!==false){
+					if('group_pending' == $template_key ){
+						//user einzeln anschreiben
+						foreach ($user_ids as $user_id){
+							$m = new Member($user_id);
+							$link = $m->get_joinlink($group->ID);
+							str_replace('%joinlink%',$link,$msg);
+							$this->send($msg,$user_id);
+						}
+					}else{
+						$this->send($msg,$user_ids);
+					}
+
+				}
+			}
+
+		}
+
+
+	}
+
+	/**
+	 * ToDo set in Optin page
+	 * @return int[]
+	 */
+	static public function get_orga_ids(){
+		return [2,3];
 	}
 
 	/**
@@ -103,9 +155,9 @@ class Message {
 	 *
 	 * @param string $template_key
 	 *
-	 * @return array
+	 * @return object
 	 */
-	protected function prepare_message($template_key, $actor_id){
+	protected function prepare_message($template_key){
 
 		switch($template_key){
 			case 'group_min_likers':
@@ -125,6 +177,11 @@ class Message {
 
 		}
 
+		if(!isset($this->templates[$template_key])){
+
+			return false;
+		}
+
 		$search_array = [
 			'%grouptitle%',
 			'%posttitle%',
@@ -134,6 +191,7 @@ class Message {
 			'%memberamount%',
 			'%channellink%',
 			'%likeramount%',
+
 		];
 		$replace_array =[
 			$this->group->title,
@@ -143,14 +201,13 @@ class Message {
 			$this->actor->get_member_profile_permalink(),
 			$this->group->get_members_amount(),
 			$this->group->get_matrix_link(),
-			$this->group->get_likers_amount()
+			$this->group->get_likers_amount(),
 		];
 
 		$body = str_replace($search_array,$replace_array,$this->get_template($template_key['body']));
 		$subject = str_replace($search_array,$replace_array,$this->get_template($template_key['subject']));
 
-		$this->subject = $subject;
-		$this->body = $body;
+		return (object) ['body'=>'$body','subject'=>'$subject'];
 
 	}
 
@@ -180,29 +237,37 @@ class Message {
 
 	}
 
-	public function send(){
+	public function send($msg,$recipient_ids){
 
-		$to = [];
+		if(is_array($recipient_ids) && count($recipient_ids)>0){
 
-		//Todo E-Mailsadressen der Orgaleute müssen in der Optionspage eingegeben werden
-		$orga = ['happel@comenius','reintanz@comenius'];
+			$to = [];
+
+			//Todo E-Mailsadressen der Orgaleute müssen in der Optionspage eingegeben werden
+			$orga = ['happel@comenius','reintanz@comenius'];
 
 
 
-		foreach ($this->recipient_ids as $user_id){
-			$user = get_userdata($user_id);
-			$to[] = $user->user_email;
+			foreach ($recipient_ids as $user_id){
+				$user = get_userdata($user_id);
+				$to[] = $user->user_email;
+			}
+
+			$headers = 'From: Dibes Netzwerk <happel@comeniuse.de>' . "\r\n";
+			$headers .= 'BCC: '. implode(",", $to) . "\r\n";
+
+			wp_mail( 'technik@rpi-virtuell.de', $msg->subject, $msg->body, $headers);
+
+			//Todo Id des Matrix Orga Raums in der Optionpage speichern
+			$room_id = false;
+			if($room_id)
+				Matrix\Helper::send($msg->subject, $msg->body, $room_id);
+
+		}elseif(is_string($recipient_ids)){
+			//user einzeln anschreiben
+			$user = get_userdata($recipient_ids);
+			wp_mail( $user->user_email, $msg->subject, $msg->body);
 		}
-
-		$headers = 'From: Dibes Netzwerk <happel@comeniuse.de>' . "\r\n";
-		$headers .= 'BCC: '. implode(",", $to) . "\r\n";
-
-		wp_mail( $orga, $this->subject, $this->body, $headers);
-
-
-		//Todo Id des Matrix Orga Raums in der Optionpage speichern
-		$room_id = '';
-		Matrix\Helper::send($this->subject, $this->body, $room_id);
 
 
 	}
