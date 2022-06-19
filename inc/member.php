@@ -2,23 +2,34 @@
 
 namespace rpi\Wall;
 
-class member extends stdClass
+
+class Member extends stdClass
 {
 
-    public $ID;
+	public $ID;
     public $name;
     public string $url;
-    public WP_Post $post;
+    public $post;  //CPT member WP_Post
+    public $user;
 
-    public function __construct($post)
+    public function __construct($user_id)
     {
+	    $this->user = get_userdata($user_id);
 
+		if(is_a($this->user,'WP_User')){
 
-        $this->post = get_post($post, ARRAY_A);
-        $this->ID = $post->ID;
-        $this->name = $post->post_title;
-        $this->url = get_permalink($post->ID);
+			$this->post = get_posts(array(
+				'post_status' => 'any',
+				'post_type' => 'Member',
+				'author' => $user_id
+			));
 
+			$this->ID = $user_id;
+			$this->name = $this->user->display_name;
+
+		}
+
+        $this->url = wp_ulike_pro_get_user_profile_permalink($user_id);
 
     }
 

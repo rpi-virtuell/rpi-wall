@@ -243,13 +243,13 @@ class Group extends stdClass {
 	}
 
 	/**
-	 * @return array member[]
+	 * @return array Member[]
 	 *
 	 */
 	public function get_members(){
 		$members = [];
 		foreach ( $this->get_memberIds() as $member_id ){
-			$members[] = new member($member_id);
+			$members[] = new Member($member_id);
 		}
 		return $members;
 	}
@@ -257,10 +257,10 @@ class Group extends stdClass {
 	/**
 	 * @param \WP_User $user_id
 	 *
-	 * @return member
+	 * @return Member
 	 */
 	public function get_member($user_id){
-		return new member($user_id);
+		return new Member($user_id);
 	}
 
 	/**

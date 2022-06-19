@@ -43,7 +43,7 @@ class MemberInstaller
             "map_meta_cap" => true,
             "hierarchical" => false,
             "can_export" => false,
-            "rewrite" => ["slug" => "member", "with_front" => true],
+            "rewrite" => ["slug" => "Member", "with_front" => true],
             "query_var" => true,
             "menu_icon" => "dashicons-admin-users",
             "supports" => [
@@ -54,7 +54,7 @@ class MemberInstaller
             "show_in_graphql" => false,
         ];
 
-        register_post_type("member", $args);
+        register_post_type("Member", $args);
 
         /**
          * Post Type: Gruppe.
@@ -171,7 +171,7 @@ class MemberInstaller
             "sort" => true,
             "show_in_graphql" => false,
         ];
-        register_taxonomy("badge", ["member"], $args);
+        register_taxonomy("badge", ["Member"], $args);
 
         /**
          * Taxonomy: Tags.
@@ -204,7 +204,7 @@ class MemberInstaller
             "sort" => false,
             "show_in_graphql" => false,
         ];
-        register_taxonomy("rpi_tag", ["member"], $args);
+        register_taxonomy("rpi_tag", ["Member"], $args);
 
         /**
          * Taxonomy: schooltype.
@@ -237,7 +237,7 @@ class MemberInstaller
             "sort" => false,
             "show_in_graphql" => false,
         ];
-        register_taxonomy("schooltype", ["member"], $args);
+        register_taxonomy("schooltype", ["Member"], $args);
 
         /**
          * Taxonomy: profession.
@@ -270,7 +270,7 @@ class MemberInstaller
             "sort" => false,
             "show_in_graphql" => false,
         ];
-        register_taxonomy("profession", ["member"], $args);
+        register_taxonomy("profession", ["Member"], $args);
     }
 
     public function sync_user_member_relation($user_login, $user)
@@ -278,7 +278,7 @@ class MemberInstaller
         if (is_a($user, 'WP_User')) {
             $member = get_posts(array(
                 'post_status' => 'any',
-                'post_type' => 'member',
+                'post_type' => 'Member',
                 'author' => $user->ID
             ));
             if (is_array($member) && !empty(reset($member))) {
@@ -289,7 +289,7 @@ class MemberInstaller
                     'post_title' => $user->display_name,
                     'post_status' => 'publish',
                     'post_author' => $user->ID,
-                    'post_type' => 'member'
+                    'post_type' => 'Member'
                 ));
             }
         }
@@ -301,7 +301,7 @@ class MemberInstaller
 
         if (isset($atts['content']) && is_a($wp_ulike_pro_current_user, 'WP_User')) {
             echo '<ul>';
-            $member = get_page_by_title($wp_ulike_pro_current_user->display_name, 'OBJECT', 'member');
+            $member = get_page_by_title($wp_ulike_pro_current_user->display_name, 'OBJECT', 'Member');
             if (post_type_exists($atts['content'])) {
                 //TODO: Gruppen Link einfügen (Link auf Pinns mit gruppen)
             } elseif (taxonomy_exists($atts['content'])) {

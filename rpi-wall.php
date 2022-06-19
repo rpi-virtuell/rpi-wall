@@ -10,7 +10,7 @@ License: A "Slug" license name e.g. GPL2
 */
 
 require_once ("inc/group.php");
-require_once ("inc/member.php");
+require_once( "inc/Member.php" );
 require_once ("inc/matrix-helper.php");
 require_once ("inc/message.php");
 require_once ("member-installer.php");

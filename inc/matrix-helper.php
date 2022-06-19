@@ -91,4 +91,15 @@ Class Helper {
 		 */
 		do_action('rpi_wall_pl_group_after_channel_created', $group);
 	}
+
+	/**
+	 * @param string $subject
+	 * @param string $body
+	 * @param string $to_room  Matrix room_id
+	 *
+	 * @return void
+	 */
+	static function send($subject, $body, $to_room ){
+
+	}
 }
