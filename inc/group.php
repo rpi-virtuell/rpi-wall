@@ -41,6 +41,8 @@ class Group extends stdClass {
 		$this->channel_url = "https://{$this->matrix_server_home}/#/room/#{$this->slug}:rpi-virtuell.de";
 		$this->pending_days = get_option('rpi_wall_pl_group_pending_days',7);
 
+		$this->start_PLG_link = $this->get_starlink();
+
 	}
 
 	/**
@@ -343,17 +345,74 @@ class Group extends stdClass {
 		return Matrix\Helper::getUser($user_login);
 	}
 
-	protected function create_matrix_channel(){
+	public function init_check_action(){
+		if(isset($_REQUEST['action']) && isset($_REQUEST['hash']) && isset($_REQUEST['group']) ){
+			if( 'plgstart' == $_REQUEST['action']  && 'start' == $this->check_hash($_REQUEST['hash'])){
+				$group = new Group($_REQUEST['group']);
+				$group->create_room();
+			}
+
+		}
+	}
+
+
+
+	protected function create_room(){
+
 		Matrix\Helper::create_room($this);
+		/**
+		 * Message to orga channel
+		 * E-Mails to likers
+		 */
+
+		do_action('rpi_wall_pl_group_after_channel_created', $this);
+
+
 	}
 
-	public function send_message(){
 
-	}
-	public function create_message(){
-
+	public function get_starlink(){
+		return '<a href="'.get_home_url().'?action=plgstart&hash='.$this->get_hash('start').'&group='.$this->ID.'">Gruppe gründen</p>';
 	}
 
+	public function get_current_users_joinlink(){
+		$member = new Member(get_current_user_id());
+		$hash = $member->get_join_hash($this->ID);
+		return '<a href="'.get_home_url().'?action=plgjoin&hash='.$hash.'&member='.$member->ID.'">Gruppe beitreten</p>';
+	}
+
+	/**
+	 * @param string $type start|join
+	 *
+	 * @return array|string|string[]
+	 */
+	protected function get_hash($type='start'){
+
+		$hash = str_replace(md5($this->slug.'_start_founding_plg'),'-','');
+
+		if($type === 'join'){
+			$hash = str_replace(md5($this->slug.'_join_plg'),'-','');
+		}
+		return $hash;
+
+	}
+
+	/**
+	 * @param $hash
+	 *
+	 * @return false|string   start|join
+	 */
+	protected function check_hash($hash){
+
+		if($hash == str_replace(md5($this->slug.'_start_founding_plg'),'-','')){
+			return 'start';
+		}
+
+		if($hash == str_replace(md5($this->slug.'_join_plg'),'-','')){
+			return 'join';
+		}
+		return false;
+	}
 
 }
 

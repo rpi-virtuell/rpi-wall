@@ -13,6 +13,7 @@ class Message {
 
 	protected $templates = [
 
+
 		'group_pending'=>
 			[
 				'subject'=>'Gründungsprozess für %grouptitle% gestartet',
@@ -40,6 +41,12 @@ class Message {
 
 
 			],
+		'watch_min_likers'=>
+			[
+				'subject'=>'PLG Gründung möglich: %posttitle%"',
+				'body'=>'Zu dem Beitrag "%posttitle%" (%postlink%) haben sich genügend Interessierte für eine PLG gefunden.'.
+				        'Wenn du an einer PLG interessiert bist, klicke unter dem Beitrag auf "Gruppe gründen und starte den Gründungsprozess."'
+			],
 		'watch_comment'=>
 			[
 				'subject'=>'Dein Beitrag  %posttitle% an der Pinnwand wurde kommentiert:',
@@ -53,6 +60,12 @@ class Message {
 				'body'=>'Für den Pinwandeintrag "%posttitle%" (%postlink%)  hat  %actorname% (%actorlink%) die Gründung einer PLG gestartet. '.
 				        'Es haben sie sich %likeramount% Mitglieder dafür interessiert.'
 
+			],
+		'orga_min_likers'=>
+			[
+				'subject'=>'Minimum an Interessierten erreicht: %posttitle%',
+				'body'=>'Zu dem Beitrag "%posttitle%" (%postlink%) haben sich das eingestellte Minimum an Interessierten gefunden. '.
+				        'Es kann jetzt ein PLG Gründungsprozess gestartet werden. '
 			],
 		'orga_founded'=>
 			[
@@ -95,6 +108,9 @@ class Message {
 	protected function prepare_message($template_key, $actor_id){
 
 		switch($template_key){
+			case 'group_min_likers':
+				$template_key = 'watch_min_likers';
+				break;
 			case 'orga_comment':
 			case 'group_comment':
 				$template_key = 'watch_comment';
@@ -154,11 +170,13 @@ class Message {
 			'post_status' => 'publish',
 			'post_author' => $this->actor->ID,
 			'post_type' => 'Message',
-			'post_content' => $this->body,
-			'meta_input' => array(
-				'message_recipients' => $this->recipient_ids,
-			)
+			'post_content' => $this->body
+
 		));
+		foreach ($this->recipient_ids as $user_id){
+			add_post_meta( $message_id, "message_recipient", $user_id );
+		}
+
 
 	}
 

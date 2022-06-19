@@ -83,13 +83,6 @@ Class Helper {
 		$group->set_status('founded');
 
 
-
-		/**
-		 * Action Hook for
-		 * Message to orga channel
-		 * E-Mails to likers
-		 */
-		do_action('rpi_wall_pl_group_after_channel_created', $group);
 	}
 
 	/**
