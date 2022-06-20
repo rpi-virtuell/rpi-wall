@@ -43,6 +43,9 @@ class Group extends stdClass {
 
 		$this->start_PLG_link = $this->get_starlink();
 
+		add_action('init',['Group','init_cronjob']);
+		add_action('init',['Group','init_check_action']);
+
 	}
 
 	/**
@@ -62,6 +65,12 @@ class Group extends stdClass {
 	/**
 	 * @return bool
 	 */
+	public function is_ready(){
+		return $this->get_status() === 'ready';
+	}
+	/**
+	 * @return bool
+	 */
 	public function is_pending(){
 		return $this->get_status() === 'pending';
 	}
@@ -74,7 +83,13 @@ class Group extends stdClass {
 	}
 
 	/**
-	 * @param string $status pending|founded
+	 * @return bool
+	 */
+	public function is_closed(){
+		return $this->get_status() === 'closed';
+	}
+	/**
+	 * @param string $status ready|pending|founded|closed or null
 	 *
 	 * @return void
 	 */
@@ -105,6 +120,8 @@ class Group extends stdClass {
 	public function reset_status(){
 
 		$this->remove_members();
+
+		delete_post_meta($this->ID,'pl_group_status_timestamp');
 
 		$this->set_status(null);
 	}
@@ -172,7 +189,7 @@ class Group extends stdClass {
 	 */
 	public function get_likers_amount(){
 
-		return count((array) wp_ulike_get_likers_list_per_post('ulike','likers_list',$this->ID,100));
+		return get_post_meta($this->ID, 'like_amount',true);
 
 	}
 
@@ -345,7 +362,7 @@ class Group extends stdClass {
 		return Matrix\Helper::getUser($user_login);
 	}
 
-	public function init_check_action(){
+	static function init_check_action(){
 		if(isset($_REQUEST['action']) && isset($_REQUEST['hash']) && isset($_REQUEST['group']) ){
 			if( 'plgstart' == $_REQUEST['action']  && 'start' == $this->check_hash($_REQUEST['hash'])){
 				$group = new Group($_REQUEST['group']);
@@ -355,20 +372,103 @@ class Group extends stdClass {
 		}
 	}
 
+	static function init_cronjob(){
 
+		// check alle Gruppen, die keinen status, aber likers haben
+		// wenn minimum likers erreicht: Gründungsphase zu starten
+
+		$args =[
+			'post_type' => 'wall',
+			'mumberposts'=> -1,
+			'meta_query'=>[
+				'relation' => 'AND',
+				[
+					'key' => 'like_amount',
+					'value' => get_option('pl_group_min_required_members', 3),
+					'compare' => '>=',
+					'type' => 'NUMERIC'
+				],
+				[
+					'key' => 'pl_group_status',
+					'compare' => 'NOT EXISTS'
+				]
+			]
+		];
+
+		$posts = get_posts($args);
+		foreach ($posts as $post){
+			$group = new Group($post->ID);
+			$group->set_status('ready');
+			new Message($group,'ready',['orga','group']);
+			do_action('rpi_wall_pl_group_ready', $group);
+		}
+
+
+		// check alle Gruppen, die den status pending haben und die pending time abgelaufen ist
+		// wenn genug Mitglieder gejoined: create matrix room
+		// wenn nicht genug Mitglieder : reset
+		$daySeconds = 86400;
+		$pending_add =  $daySeconds * get_option('rpi_wall_pl_group_pending_days',7);
+
+		$args =[
+			'post_type' => 'wall',
+			'mumberposts'=> -1,
+			'meta_query'=>[
+				'relation' => 'AND',
+				[
+					'key' => 'pl_group_status',
+					'value' => 'pending',
+					'compare' => '='
+				],
+				[
+					'key' => 'pl_group_status_timestamp',
+					'value' => time()-$pending_add,
+					'compare' => '>=',
+					'type' => 'NUMERIC'
+				]
+			]
+		];
+
+		$posts = get_posts($args);
+		foreach ($posts as $post) {
+			$group = new Group( $post->ID );
+			if($group->get_members_amount()< get_option('pl_group_min_required_members', 3)){
+
+				$group->reset_status();
+				new Message($group, 'reset');
+				do_action('rpi_wall_pl_group_reset', $group);
+
+			}else{
+
+				$group->create_room();
+				$group->set_status('founded');
+				new Message($group, 'founded');
+
+				do_action('rpi_wall_pl_group_founded', $group);
+			}
+
+		}
+
+	}
+
+	protected function start_pending(){
+
+		$this->set_status('pending');
+		new Message($this,'pending');
+		do_action('rpi_wall_pl_group_pending', $this);
+
+	}
 
 	protected function create_room(){
 
-		Matrix\Helper::create_room($this);
+		$room_id = Matrix\Helper::create_room($this);
 		/**
 		 * Message to orga channel
 		 * E-Mails to likers
 		 */
-
-		do_action('rpi_wall_pl_group_after_channel_created', $this);
-
-
+		do_action('rpi_wall_pl_group_room_created', $room_id);
 	}
+
 
 
 	public function get_starlink(){
