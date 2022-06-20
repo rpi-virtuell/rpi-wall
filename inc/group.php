@@ -107,6 +107,7 @@ class Group extends \stdClass {
 		];
 
 		$posts = get_posts($args);
+
 		foreach ($posts as $post) {
 			$group = new Group( $post->ID );
 			if($group->get_members_amount()< get_option('pl_group_min_required_members', 3)){
@@ -187,7 +188,7 @@ class Group extends \stdClass {
 	 * @return void
 	 */
 	public function set_status(string $status){
-		if(null === $status){
+		if(empty($status)){
 			delete_post_meta($this->ID,'pl_group_status');
 		}else{
 			update_post_meta($this->ID,'pl_group_status',$status);
@@ -216,7 +217,7 @@ class Group extends \stdClass {
 
 		delete_post_meta($this->ID,'pl_group_status_timestamp');
 
-		$this->set_status(null);
+		$this->set_status('');
 	}
 
 	/**
@@ -381,6 +382,9 @@ class Group extends \stdClass {
 	 * @return int
 	 */
 	public function get_members_amount(){
+		if(!$this->get_memberIds()){
+			return 0;
+		}
 		return count($this->get_memberIds());
 	}
 
@@ -388,7 +392,9 @@ class Group extends \stdClass {
 	 * @return array
 	 */
 	public function get_memberIds(){
-		return (array) get_post_meta('rpi_wall_member_id');
+
+		return (array) get_post_meta($this->ID,'rpi_wall_member_id');
+
 	}
 
 	/**
@@ -479,16 +485,32 @@ class Group extends \stdClass {
 
 
 	public function get_starlink($label = 'Gruppe gründen'){
-		return '<a class="button" href="'.get_home_url().'?action=plgstart&hash='.$this->get_hash('start').'&group='.$this->ID.'">'.$label.'</p>';
+		return '<a class="button" href="'.get_home_url().'?action=plgstart&hash='.$this->get_hash('start').'&group='.$this->ID.'">'.$label.'</a>';
 	}
+
+
 
 	public function get_current_users_joinlink($label = 'Gruppe beitreten'){
 		$member = new Member(get_current_user_id());
-		$hash = $member->get_join_hash($this->ID);
-		return '<a class="button" href="'.get_home_url().'?action=plgjoin&hash='.$hash.'&member='.$member->ID.'">'.$label.'</p>';
+
+		if(!$this->has_member($member)){
+			$hash = $member->get_join_hash($this->ID);
+			return '<a class="button" href="'.get_home_url().'?action=plgjoin&hash='.$hash.'&new_group_member='.$member->ID.'">'.$label.'</a>';
+		}
+
+		return 'Du bist Mitglied';
 	}
 
-	/**
+	public function has_member($member){
+		if(is_a($member, 'rpi\Wall\Member')){
+			$user_id = $member->ID;
+		}else{
+			$user_id = $member;
+		}
+		return in_array($user_id, $this->get_memberIds());
+	}
+
+		/**
 	 * @param string $type start|join
 	 *
 	 * @return array|string|string[]
@@ -529,21 +551,25 @@ class Group extends \stdClass {
 
 		switch ($this->get_status()){
 			case'ready':
-				$notice   = get_option('rpi_wall_ready_notice','Du kannst die Gründungsphase jetzt starten. Alle interessierten werden dann angeschrieben und haben eine Woche Zeit, der PLG beizutreten.');
+				$headline = get_option('rpi_wall_not_founded_header','Professionellen Lerngruppe (PLG)');
+				$notice   = get_option('rpi_wall_ready_notice','Mit Klick auf "Gruppe Gründen" werden alle interessierten angeschrieben und haben eine Woche Zeit, der PLG beizutreten.');
 				$button   = $this->get_starlink();
-				$stats    = $this->get_likers_amount() .' Interessierte';
+				$stats    = $this->get_likers_amount() .' Interessierte.';
 				break;
 			case'pending':
-				$headline = get_option('rpi_wall_not_founded_header','Interessiert an einer Professionellen Lerngruppe (PLG) zu diesem Kontext?');
-				$notice   = get_option('rpi_wall_pending_notice','Die Gruppe befindet sich in der Gründungsphase. Möchtest du dabei sein?');
+				$headline = get_option('rpi_wall_not_founded_header','Wir suchen noch Leute für eine Professionellen Lerngruppe (PLG) zu diesem Kontext');
+				if(!$this->has_member(get_current_user_id())){
+					$notice   = get_option('rpi_wall_pending_notice','Die Gruppe befindet sich in der Gründungsphase. Möchtest du dabei sein?');
+				}
+
 				$button   = $this->get_current_users_joinlink();
-				$stats    = $this->get_members_amount() . ' / ' . $this->get_likers_amount() .' bereits angemeldet';
+				$stats    = $this->get_members_amount() . ' von ' . $this->get_likers_amount() .' der Interessierten haben sich bereits angemeldet.';
 				break;
 			case'founded':
 				$headline = get_option('rpi_wall_founded_header','Professionelle Lerngruppe (PLG) zu diesem Kontext');
 				$notice   = get_option('rpi_wall_founded_header','Zu diesem Pinwandeintrag hat sich eine PLG gegründet.');
 				$button   = $this->get_current_users_joinlink('Beitritt anfragen');
-				$stats    = $this->get_members_amount() .' Mitglieder';
+				$stats    = $this->get_members_amount() .' Mitglieder.';
 				break;
 			case'closed':
 				$headline = get_option('rpi_wall_founded_header','Professionelle Lerngruppe (PLG) zu diesem Kontext');
@@ -552,12 +578,14 @@ class Group extends \stdClass {
 				break;
 			default:
 				$headline = get_option('rpi_wall_not_founded_header','Interessiert an einer Professionellen Lerngruppe (PLG) zu diesem Kontext?');
-				$notice =  get_option('rpi_wall_not_founded_notice','Wenn du dich mit Klick auf das + Intresse zeigst, in Kontext dieses Beitrags eine PLG zu gründen, wirst du automatisch benachrichtigt, sobald sich genügend Interessenten gefunden haben.');
-				$stats      = $this->get_likers_amount() . ' / ' . $this->group_member_min .' Interessierte für PLG';
+				$notice =  get_option('rpi_wall_not_founded_notice','Wenn du zu den Interessierten gehörst, wirst du automatisch benachrichtigt, sobald sich genügend Interessenten gefunden haben.');
+				$stats      = $this->get_likers_amount() . ' von mindestens ' . $this->group_member_min .' sind interessiert';
 
 		}
 
+
 		echo '<div class="gruppe">';
+		echo '<div class="gruppe-wrapper">';
 
 		echo '<div class="gruppe-header">'.$headline.'</div>';
 
@@ -565,16 +593,22 @@ class Group extends \stdClass {
 		echo do_shortcode('[wp_ulike  style="wpulike-heart"]');
 		echo '</div>';
 
-		if($button){
-			echo '<div class="gruppe-button">'.$button.'</div>';
-		}
-		echo '<div class="gruppe-footer"><span class="notice">'.$notice.'</span> <span class="notice stats">'.$stats.'</span></div>';
+		echo '<div class="gruppe-footer">';
+			echo '<div class="notice">'.$notice.' '.$stats.'</div>';
 
+			if($button){
+				echo '<div class="gruppe-button">'.$button.'</div>';
+			}
+		echo '</div>'; //end footer
+
+		echo '</div>'; //end wrapper
 		echo '</div>'; //end gruppe
 	}
 
 	public function display_member(){
-
+		foreach ($this->get_memberIds() as $user_id){
+			echo get_avatar($user_id,48);
+		}
 	}
 
 	public function display_short_info(){

@@ -70,6 +70,8 @@ class RpiWall{
 		add_action('init',['rpi\Wall\Group','init_cronjob']);
 		//incomming
 		add_action('init',['rpi\Wall\Group','init_handle_requests']);
+
+		add_action('init',['rpi\Wall\Member','init_handle_request']);
 	}
 
 	/**

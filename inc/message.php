@@ -4,7 +4,7 @@ namespace rpi\Wall;
 
 class Message {
 
-	protected Group $group;
+	protected $group;
 	protected $template;
 	protected $subject;
 	protected $body;
@@ -95,6 +95,7 @@ class Message {
 	 * @param int $actor_id  handelnder User z.B. Kommentarschreiber
 	 */
 	public function __construct(Group $group, $event='pending', $to = ['orga','watch','group'] ,$actor_id=0) {
+		$this->group = $group;
 
 		$this->templates=get_option('rpi_wall_options_templates', $this->templates);
 
