@@ -9,7 +9,6 @@ class MemberInstaller
         add_action('init', array($this, 'register_post_types'));
         add_action('init', array($this, 'register_taxonomies'));
         add_action('wp_login', array($this, 'sync_user_member_relation'), 10, 2);
-        add_shortcode('rpi-userprofile', array($this, 'get_user_profile_tags'));
     }
 
     public function register_post_types()
@@ -292,29 +291,6 @@ class MemberInstaller
                     'post_type' => 'Member'
                 ));
             }
-        }
-    }
-
-    public function get_user_profile_tags($atts)
-    {
-        global $wp_ulike_pro_current_user;
-
-
-        if (isset($atts['content']) && is_a($wp_ulike_pro_current_user, 'WP_User')) {
-            echo '<ul>';
-            $member = get_page_by_title($wp_ulike_pro_current_user->display_name, 'OBJECT', 'Member');
-            if (post_type_exists($atts['content'])) {
-                //TODO: Gruppen Link einfügen (Link auf Pinns mit gruppen)
-            } elseif (taxonomy_exists($atts['content'])) {
-                $terms = wp_get_post_terms($member->ID, $atts['content']);
-                foreach ($terms as $term) {
-                    if (is_a($term, 'WP_Term')) {
-                        echo '<a href="' . site_url() . '/' . $atts['content'] . '/' . $term->slug . '">' . $term->name . '</a>';
-                        echo '<br>';
-                    }
-                }
-            }
-            echo '</ul>';
         }
     }
 
