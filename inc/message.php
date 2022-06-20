@@ -90,11 +90,13 @@ class Message {
 
 	/**
 	 * @param Group $group
-	 * @param $event
-	 * @param $user_ids
-	 * @param $actor_id    //des handelnden Users: Group creater, Comment creater ...
+	 * @param string $event ['create','pending','founded','liked','minimum_likers_met','comment','reset']
+	 * @param array $to :   ['orga','watch','group'] welche Zielgruppe soll benachrichtigt werden
+	 * @param int $actor_id  handelnder User z.B. Kommentarschreiber
 	 */
 	public function __construct(Group $group, $event='pending', $to = ['orga','watch','group'] ,$actor_id=0) {
+
+		$this->templates=get_option('rpi_wall_options_templates', $this->templates);
 
 		$this->actor = new Member($actor_id);
 
@@ -128,9 +130,11 @@ class Message {
 							$m = new Member($user_id);
 							$link = $m->get_joinlink($group->ID);
 							str_replace('%joinlink%',$link,$msg);
+							$this->create($msg,[$user_id]);
 							$this->send($msg,$user_id);
 						}
 					}else{
+						$this->create($msg,$user_ids);
 						$this->send($msg,$user_ids);
 					}
 
@@ -147,7 +151,7 @@ class Message {
 	 * @return int[]
 	 */
 	static public function get_orga_ids(){
-		return [2,3];
+		return get_option('rpi_wall_orga_team_ids',[2,3]);
 	}
 
 	/**
@@ -220,20 +224,33 @@ class Message {
 	 *
 	 * @return void
 	 */
-	protected function create(){
+	protected function create($msg,$recipient_ids){
 
 		$message_id = wp_insert_post(array(
-			'post_title' => $this->subject,
+			'post_title' => $msg->subject,
 			'post_status' => 'publish',
 			'post_author' => $this->actor->ID,
 			'post_type' => 'Message',
-			'post_content' => $this->body
+			'post_content' => $msg->body
 
 		));
-		foreach ($this->recipient_ids as $user_id){
+		foreach ($recipient_ids as $user_id){
 			add_post_meta( $message_id, "message_recipient", $user_id );
 		}
+	}
 
+	static function get_messages($member_id){
+
+		return get_posts([
+			'post_type'=>'massage',
+			'numberposts'=> -1,
+			'meta_query'=>[
+				'key' => 'message_recipient',
+				'value' => $member_id,
+				'compare' => '=',
+				'type' => 'NUMERIC'
+			]
+		]);
 
 	}
 
@@ -243,11 +260,6 @@ class Message {
 
 			$to = [];
 
-			//Todo E-Mailsadressen der Orgaleute müssen in der Optionspage eingegeben werden
-			$orga = ['happel@comenius','reintanz@comenius'];
-
-
-
 			foreach ($recipient_ids as $user_id){
 				$user = get_userdata($user_id);
 				$to[] = $user->user_email;
@@ -256,9 +268,9 @@ class Message {
 			$headers = 'From: Dibes Netzwerk <happel@comeniuse.de>' . "\r\n";
 			$headers .= 'BCC: '. implode(",", $to) . "\r\n";
 
-			wp_mail( 'technik@rpi-virtuell.de', $msg->subject, $msg->body, $headers);
+			wp_mail( get_option('rpi_wall_email_dummy','technik@rpi-virtuell.de'), $msg->subject, $msg->body, $headers);
 
-			//Todo Id des Matrix Orga Raums in der Optionpage speichern
+
 			$room_id = false;
 			if($room_id)
 				Matrix\Helper::send($msg->subject, $msg->body, $room_id);

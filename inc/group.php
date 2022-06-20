@@ -382,7 +382,7 @@ class Group extends stdClass {
 
 		$args =[
 			'post_type' => 'wall',
-			'mumberposts'=> -1,
+			'numberposts'=> -1,
 			'meta_query'=>[
 				'relation' => 'AND',
 				[
