@@ -9,7 +9,7 @@ Author URI: https://github.com/johappel
 License: A "Slug" license name e.g. GPL2
 */
 
-require_once ("member-installer.php");
+require_once("rpi-wall-installer.php");
 require_once ("shortcodes.php");
 require_once( "inc/member.php" );
 require_once ("inc/group.php");
@@ -125,4 +125,4 @@ class RpiWall{
 }
 
 new RpiWall();
-new Wall\MemberInstaller();
+new Wall\RPIWallInstaller();
