@@ -579,11 +579,12 @@ class Group extends \stdClass {
 
 	public function display_short_info(){
 
-		$min_required = get_option('pl_group_min_required_members', 3);
+		$min_required   = get_option('pl_group_min_required_members', 3);
+		$max_likes      = get_option('rpi_wall_max_stars_per_comment', 3);
 
 		switch ($status = $this->get_status()){
 			case'ready':
-				$notice   = get_option('rpi_wall_ready_card_notice','PLG Gründung möglich.');
+				$notice   = get_option('rpi_wall_ready_card_notice','PLG gründen: ');
 				$stats    = $this->get_likers_amount() .' Interessierte';
 				break;
 			case'pending':
@@ -591,8 +592,8 @@ class Group extends \stdClass {
 				$stats    = $this->get_members_amount() . ' / ' . $this->get_likers_amount() .' beigetreten';
 				break;
 			case'founded':
-				$notice   = $this->display_member();
-				$stats    = $this->get_members_amount() .' Mitglieder';
+				$notice   = '';
+				$stats    = $this->display_member();
 
 				break;
 			case'closed':
@@ -604,7 +605,7 @@ class Group extends \stdClass {
 		}
 
 
-		$max_likes = get_option('rpi_wall_max_stars_per_comment', 5);
+
 
 		$likes =0;
 		foreach (get_comments([ 'post_id' => $this->ID]) as $comment){
