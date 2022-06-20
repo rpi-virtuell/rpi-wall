@@ -43,8 +43,10 @@ class Group extends stdClass {
 
 		$this->start_PLG_link = $this->get_starlink();
 
-		add_action('init',['Group','init_cronjob']);
-		add_action('init',['Group','init_check_action']);
+
+		add_action('init',['rpi\Wall\Group','init_cronjob']);
+		//incomming
+		add_action('init',['rpi\Wall\Group','init_handle_requests']);
 
 	}
 
@@ -362,7 +364,7 @@ class Group extends stdClass {
 		return Matrix\Helper::getUser($user_login);
 	}
 
-	static function init_check_action(){
+	static function init_handle_requests(){
 		if(isset($_REQUEST['action']) && isset($_REQUEST['hash']) && isset($_REQUEST['group']) ){
 			if( 'plgstart' == $_REQUEST['action']  && 'start' == $this->check_hash($_REQUEST['hash'])){
 				$group = new Group($_REQUEST['group']);
