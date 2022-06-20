@@ -64,6 +64,12 @@ class RpiWall{
 
 
 		add_filter( 'wp_ulike_ajax_respond', [$this, 'wp_ulike_ajax_respond'], 20, 4 );
+
+
+
+		add_action('init',['rpi\Wall\Group','init_cronjob']);
+		//incomming
+		add_action('init',['rpi\Wall\Group','init_handle_requests']);
 	}
 
 	/**
