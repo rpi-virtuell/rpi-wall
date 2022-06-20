@@ -9,11 +9,12 @@ Author URI: https://github.com/johappel
 License: A "Slug" license name e.g. GPL2
 */
 
+require_once ("member-installer.php");
+require_once( "inc/member.php" );
 require_once ("inc/group.php");
-require_once( "inc/Member.php" );
 require_once ("inc/matrix-helper.php");
 require_once ("inc/message.php");
-require_once ("member-installer.php");
+
 
 use rpi\Wall;
 
@@ -268,4 +269,4 @@ class RpiWall{
 }
 
 new RpiWall();
-new MemberInstaller();
+new rpi\Wall\MemberInstaller();

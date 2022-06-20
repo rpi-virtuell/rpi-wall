@@ -3,7 +3,7 @@
 namespace rpi\Wall;
 
 
-class Member extends stdClass
+class Member extends \stdClass
 {
 
 	public $ID;
@@ -22,11 +22,12 @@ class Member extends stdClass
 
 		if(is_a($this->user,'WP_User')){
 
-			$this->post = get_posts(array(
+			$posts = get_posts(array(
 				'post_status' => 'any',
 				'post_type' => 'Member',
 				'author' => $user_id
 			));
+			$this->post = reset($posts);
 
 			$this->ID = $user_id;
 			$this->name = $this->user->display_name;

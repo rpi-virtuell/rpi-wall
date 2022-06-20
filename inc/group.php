@@ -4,7 +4,7 @@ namespace rpi\Wall;
 
 use rpi\Wall\Matrix\Helper;
 
-class Group extends stdClass {
+class Group extends \stdClass {
 
 	public $ID;
 	public $slug;
