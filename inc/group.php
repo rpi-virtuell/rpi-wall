@@ -366,9 +366,10 @@ class Group extends stdClass {
 
 	static function init_handle_requests(){
 		if(isset($_REQUEST['action']) && isset($_REQUEST['hash']) && isset($_REQUEST['group']) ){
-			if( 'plgstart' == $_REQUEST['action']  && 'start' == $this->check_hash($_REQUEST['hash'])){
-				$group = new Group($_REQUEST['group']);
-				$group->create_room();
+			$group = new Group($_REQUEST['group']);
+			if( 'plgstart' == $_REQUEST['action']  && 'start' == $group->check_hash($_REQUEST['hash'])){
+
+				$group->start_pending();
 			}
 
 		}
