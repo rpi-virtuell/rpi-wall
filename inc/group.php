@@ -9,8 +9,7 @@ class Group extends \stdClass {
 	public $ID;
 	public $slug;
 	public String $url;
-	public WP_Post $post;
-	public $is_group = false;
+	public $post;
 	public $group_status = null;
 	public $pending_days;
 	public $matrix_server_home = 'matrix.rpi-virtuell.de';
@@ -35,7 +34,6 @@ class Group extends \stdClass {
 		$this->post = get_post($post_id,ARRAY_A);
 		$this->ID = $post_id;
 		$this->group_status = $this->get('pl_group_status');
-		$this->is_group = $this->exits();
 		$this->slug = 'dibes_plg_'.$this->ID;
 		$this->title = 'PLG '.substr(preg_replace('/[^\w\s-]/i','',$this->post->post_title),0,40);
 		$this->channel_url = "https://{$this->matrix_server_home}/#/room/#{$this->slug}:rpi-virtuell.de";
@@ -474,14 +472,14 @@ class Group extends \stdClass {
 
 
 
-	public function get_starlink(){
-		return '<a href="'.get_home_url().'?action=plgstart&hash='.$this->get_hash('start').'&group='.$this->ID.'">Gruppe gründen</p>';
+	public function get_starlink($label = 'Gruppe gründen'){
+		return '<a class="button" href="'.get_home_url().'?action=plgstart&hash='.$this->get_hash('start').'&group='.$this->ID.'">'.$label.'</p>';
 	}
 
-	public function get_current_users_joinlink(){
+	public function get_current_users_joinlink($label = 'Gruppe beitreten'){
 		$member = new Member(get_current_user_id());
 		$hash = $member->get_join_hash($this->ID);
-		return '<a href="'.get_home_url().'?action=plgjoin&hash='.$hash.'&member='.$member->ID.'">Gruppe beitreten</p>';
+		return '<a class="button" href="'.get_home_url().'?action=plgjoin&hash='.$hash.'&member='.$member->ID.'">'.$label.'</p>';
 	}
 
 	/**
@@ -517,6 +515,111 @@ class Group extends \stdClass {
 		return false;
 	}
 
+
+	//outputs
+	public function display(){
+
+
+
+		switch ($this->get_status()){
+			case'ready':
+				$notice   = get_option('rpi_wall_ready_notice','Du kannst die Gründungsphase jetzt starten. Alle interessierten werden dann angeschrieben und haben eine Woche Zeit, der PLG beizutreten.');
+				$button   = $this->get_starlink();
+				break;
+			case'pending':
+				$headline = get_option('rpi_wall_not_founded_header','Interessiert an einer Professionellen Lerngruppe (PLG) zu diesem Kontext?');
+				$notice   = get_option('rpi_wall_pending_notice','Die Gruppe befindet sich in der Gründungsphase. Möchtest du dabei sein?');
+				$button   = $this->get_current_users_joinlink();
+				break;
+			case'founded':
+				$headline = get_option('rpi_wall_founded_header','Professionelle Lerngruppe (PLG) zu diesem Kontext');
+				$notice   = get_option('rpi_wall_founded_header','Zu diesem Pinwandeintrag hat sich eine PLG gegründet.');
+				$button   = $this->get_current_users_joinlink('Beitritt anfragen');
+				break;
+			case'closed':
+				$headline = get_option('rpi_wall_founded_header','Professionelle Lerngruppe (PLG) zu diesem Kontext');
+				$notice = get_option('rpi_wall_founded_header','Zu diesem Pinwandeintrag hat sich eine PLG gegründet.');
+				break;
+			default:
+				$headline = get_option('rpi_wall_not_founded_header','Interessiert an einer Professionellen Lerngruppe (PLG) zu diesem Kontext?');
+				$notice =  get_option('rpi_wall_not_founded_notice','Wenn du dich mit Klick auf das + Intresse zeigst, in Kontext dieses Beitrags eine PLG zu gründen, wirst du automatisch benachrichtigt, sobald sich genügend Interessenten gefunden haben.');
+
+		}
+
+		echo '<div class="gruppe">';
+
+		echo '<div class="gruppe-header">'.$headline.'</div>';
+
+		echo '<div class="gruppe-liker">';
+		echo do_shortcode('[wp_ulike  style="wpulike-heart"]');
+		echo '</div>';
+
+		if($button){
+			echo '<div class="gruppe-button">'.$button.'</div>';
+		}
+		echo '<div class="gruppe-footer"><span class="notice">'.$notice.'</span></div>';
+
+		echo '</div>'; //end gruppe
+	}
+
+	public function display_short_info(){
+
+		return;
+
+		echo '<div class="plg-wrapper">';
+		//ToDo gruppe ermitteln
+		$group_status =get_post_meta(get_the_ID(),'status_pl_group', true);
+		if($group_status){
+			if($group_status == 'founded'){
+				echo '<div class="plg plg-exists">Eine PLG wurde gegründet</div>';
+			}elseif($group_status == 'pending'){
+				echo '<div class="plg plg-exists">Gründungsprozess gestartet</div>';
+			}
+
+
+		}else{
+			$likers = wp_ulike_get_likers_list_per_post('ulike','likers_list',get_the_ID(),10);
+			$counted = count($likers);
+
+			if($counted==0) return;
+
+			if($counted >= $this->group_member_min){
+				echo '<div class="plg plg-ready">'.$counted.' Interessierte: <a href="'.get_the_permalink().'">PLG gründen</a>?</div>';
+
+			}else{
+				echo '<div class="plg">';
+				echo sprintf("An PLG interessiert: <b>%s</b>", $counted .'/'.$this->group_member_min);
+				echo '</div>';
+			}
+		}
+		$likes = 0;
+
+		foreach (get_comments([ 'post_id' => get_the_ID()]) as $comment){
+			$likes += intval(wp_ulike_get_comment_likes($comment->comment_ID));
+		}
+		$max_likes = $this->max_stars_per_comment;
+		if($likes>0){
+			$z = $likes;
+			if($likes > $max_likes) {
+				$z = $max_likes;
+				$addlikes = $likes - $max_likes;
+
+				echo '<style>#more-likes-'.get_the_ID().'::after{ content: "+' . $addlikes . '";}</style>';
+			}
+
+			echo '<div class="hot-comments">';
+			for($i=0;$i<$z; $i++){
+				echo '<i id="more-likes-'.get_the_ID().'" class="wp_ulike_star_icon ulp-icon-star"></i>';
+
+			}
+
+
+			echo '</div>';
+		}
+		echo '</div>';
+
+
+	}
 }
 
 

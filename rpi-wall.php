@@ -57,70 +57,10 @@ class RpiWall{
 
 
 		add_action( 'wp_enqueue_scripts', [$this,'custom_style_and_scripts'] );
-		add_action( 'init', [$this,'test'] );
 
+		add_action( 'blocksy:comments:after', [$this,'display_likers_container'] );
 
-		add_action( 'wp_ulike_before_template', [$this,'display_group_header']);
-		add_action( 'wp_ulike_after_template', [$this,'display_group_footer']);
-
-		add_action( 'blocksy:comments:after', function (){
-			echo do_shortcode('[wp_ulike  style="wpulike-heart"]');
-		} );
-
-		add_action( 'blocksy:loop:card:end', function (){
-			echo '<div class="plg-wrapper">';
-			//ToDo gruppe ermitteln
-			$group_status =get_post_meta(get_the_ID(),'status_pl_group', true);
-			if($group_status){
-				if($group_status == 'founded'){
-					echo '<div class="plg plg-exists">Eine PLG wurde gegründet</div>';
-				}elseif($group_status == 'pending'){
-					echo '<div class="plg plg-exists">Gründungsprozess gestartet</div>';
-				}
-
-
-			}else{
-				$likers = wp_ulike_get_likers_list_per_post('ulike','likers_list',get_the_ID(),10);
-				$counted = count($likers);
-
-				if($counted==0) return;
-
-				if($counted >= $this->group_member_min){
-					echo '<div class="plg plg-ready">'.$counted.' Interessierte: <a href="'.get_the_permalink().'">PLG gründen</a>?</div>';
-
-				}else{
-					echo '<div class="plg">';
-					echo sprintf("An PLG interessiert: <b>%s</b>", $counted .'/'.$this->group_member_min);
-					echo '</div>';
-				}
-			}
-			$likes = 0;
-
-			foreach (get_comments([ 'post_id' => get_the_ID()]) as $comment){
-				$likes += intval(wp_ulike_get_comment_likes($comment->comment_ID));
-			}
-			$max_likes = $this->max_stars_per_comment;
-			if($likes>0){
-				$z = $likes;
-				if($likes > $max_likes) {
-					$z = $max_likes;
-					$addlikes = $likes - $max_likes;
-
-					echo '<style>#more-likes-'.get_the_ID().'::after{ content: "+' . $addlikes . '";}</style>';
-				}
-
-				echo '<div class="hot-comments">';
-				for($i=0;$i<$z; $i++){
-					echo '<i id="more-likes-'.get_the_ID().'" class="wp_ulike_star_icon ulp-icon-star"></i>';
-
-				}
-
-
-				echo '</div>';
-			}
-			echo '</div>';
-
-		} );
+		add_action( 'blocksy:loop:card:end',[$this,'display_cards_group_info']) ;
 
 
 		add_filter( 'wp_ulike_ajax_respond', [$this, 'wp_ulike_ajax_respond'], 20, 4 );
@@ -146,51 +86,23 @@ class RpiWall{
 
 
 
-
-	public function test(){
-
-		//var_dump('<pre>',wp_ulike_get_popular_items_ids(["user_id"=>get_current_user_id(),"rel_type"=>"wall"]));die();
-		//var_dump('<pre>',wp_ulike_get_popular_items_ids(["rel_type"=>"wall"]));die();
-		//var_dump('<pre>',wp_ulike_get_likers_list_per_post('ulike','likers_list',55,1999));die();
-	}
-
 	/**
 	 * blocksy:loop:card:end action
 	 * @return void
 	 */
-	public function display_group(){
 
+
+	function display_cards_group_info(){
+
+		$group = new rpi\Wall\Group(get_the_ID());
+		$group->display_short_info();
 	}
 
-	/**
-	 * wp_ulike_before_template action
-	 *
-	 * @param $wp_ulike_template
-	 *
-	 * @return void
-	 */
-	public function display_group_header($wp_ulike_template){
-		if($wp_ulike_template['slug']=='post'){
-			echo '<div class="gruppe-header">Interesse, hierzu eine PLG zu gründen?</div><div class="gruppe">';
-		}
+	function display_likers_container(){
+		$group = new rpi\Wall\Group(get_the_ID());
+		$group->display();
 	}
 
-	/**
-	 * wp_ulike_after_template action
-	 *
-	 * @param $wp_ulike_template
-	 *
-	 * @return void
-	 */
-	public function display_group_footer($wp_ulike_template){
-
-		if($wp_ulike_template['slug']=='post') {
-			echo '</div>';
-			if($wp_ulike_template['total_likes']>=$this->group_member_min && $this->has_group()){
-				echo '<div class="gruppe-footer"><button class="button">PLG jetzt gründen</button></div>';
-			}
-		}
-	}
 
 	public function get_group_status(){
 
@@ -213,4 +125,4 @@ class RpiWall{
 }
 
 new RpiWall();
-new rpi\Wall\MemberInstaller();
+new Wall\MemberInstaller();
