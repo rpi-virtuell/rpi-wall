@@ -5,6 +5,7 @@ class Shortcodes{
 	public function __construct() {
 
 		add_shortcode( 'user_pinned_posts', [$this,'wp_ulike_pro_get_current_user_pinned_posts'] );
+        add_shortcode('rpi-userprofile', array($this, 'get_user_profile_tags'));
 
 	}
 
@@ -69,5 +70,28 @@ class Shortcodes{
 		}
 		echo '</div>';
 	}
+
+    public function get_user_profile_tags($atts)
+    {
+        global $wp_ulike_pro_current_user;
+
+
+        if (isset($atts['content']) && is_a($wp_ulike_pro_current_user, 'WP_User')) {
+            echo '<ul>';
+            $member = get_page_by_title($wp_ulike_pro_current_user->display_name, 'OBJECT', 'Member');
+            if (post_type_exists($atts['content'])) {
+                //TODO: Gruppen Link einfügen (Link auf Pinns mit gruppen)
+            } elseif (taxonomy_exists($atts['content'])) {
+                $terms = wp_get_post_terms($member->ID, $atts['content']);
+                foreach ($terms as $term) {
+                    if (is_a($term, 'WP_Term')) {
+                        echo '<a href="' . site_url() . '/' . $atts['content'] . '/' . $term->slug . '">' . $term->name . '</a>';
+                        echo '<br>';
+                    }
+                }
+            }
+            echo '</ul>';
+        }
+    }
 
 }
