@@ -59,7 +59,7 @@ class RPIWallInstaller
         register_post_type("Member", $args);
 
         /**
-         * Post Type: Gruppe.
+         * Post Type: Nachricht.
          */
 
         $labels = [
@@ -297,6 +297,48 @@ class RPIWallInstaller
                         ),
                         'placement' => 'top',
                         'endpoint' => 0,
+                    ),
+                    array(
+                        'key' => 'field_pl_group_min_required_members',
+                        'label' => 'Niedrigste Menge an Mitgliedern',
+                        'name' => 'pl_group_min_required_members',
+                        'type' => 'number',
+                        'instructions' => '',
+                        'required' => 0,
+                        'conditional_logic' => 0,
+                        'wrapper' => array(
+                            'width' => '',
+                            'class' => '',
+                            'id' => '',
+                        ),
+                        'default_value' => '',
+                        'placeholder' => '',
+                        'prepend' => '',
+                        'append' => '',
+                        'min' => '',
+                        'max' => '',
+                        'step' => '',
+                    ),
+                    array(
+                        'key' => 'field_rpi_wall_pl_group_pending_days',
+                        'label' => 'Zeitlimit für die Erstellung einer Gruppe',
+                        'name' => 'rpi_wall_pl_group_pending_days',
+                        'type' => 'number',
+                        'instructions' => '',
+                        'required' => 0,
+                        'conditional_logic' => 0,
+                        'wrapper' => array(
+                            'width' => '',
+                            'class' => '',
+                            'id' => '',
+                        ),
+                        'default_value' => '',
+                        'placeholder' => '',
+                        'prepend' => '',
+                        'append' => '',
+                        'min' => '',
+                        'max' => '',
+                        'step' => '',
                     ),
                     array(
                         'key' => 'field_rpi_message_templates',
@@ -634,7 +676,7 @@ class RPIWallInstaller
                         array(
                             'param' => 'options_page',
                             'operator' => '==',
-                            'value' => 'test',
+                            'value' => 'rpi_wall_email_templates',
                         ),
                     ),
                 ),

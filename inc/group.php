@@ -37,7 +37,7 @@ class Group extends \stdClass {
 		$this->slug = 'dibes_plg_'.$this->ID;
 		$this->title = 'PLG '.substr(preg_replace('/[^\w\s-]/i','',$this->post->post_title),0,40);
 		$this->channel_url = "https://{$this->matrix_server_home}/#/room/#{$this->slug}:rpi-virtuell.de";
-		$this->pending_days = get_option('rpi_wall_pl_group_pending_days',7);
+		$this->pending_days = get_option('options_rpi_wall_pl_group_pending_days',7);
 
 		$this->start_PLG_link = $this->get_starlink();
 
@@ -58,7 +58,7 @@ class Group extends \stdClass {
 				'relation' => 'AND',
 				[
 					'key' => 'like_amount',
-					'value' => get_option('pl_group_min_required_members', 3),
+					'value' => get_option('options_pl_group_min_required_members', 3),
 					'compare' => '>=',
 					'type' => 'NUMERIC'
 				],
@@ -86,7 +86,7 @@ class Group extends \stdClass {
 		// wenn genug Mitglieder gejoined: create matrix room
 		// wenn nicht genug Mitglieder : reset
 		$daySeconds = 86400;
-		$pending_add =  $daySeconds * get_option('rpi_wall_pl_group_pending_days',7);
+		$pending_add =  $daySeconds * get_option('options_rpi_wall_pl_group_pending_days',7);
 
 		$args =[
 			'post_type' => 'wall',
@@ -113,7 +113,7 @@ class Group extends \stdClass {
 
 		foreach ($posts as $post) {
 			$group = new Group( $post->ID );
-			if($group->get_members_amount()< get_option('pl_group_min_required_members', 3)){
+			if($group->get_members_amount()< get_option('options_pl_group_min_required_members', 3)){
 
 				$group->reset_status();
 				new Message($group, 'reset');
@@ -541,34 +541,34 @@ class Group extends \stdClass {
 
 		switch ($this->get_status()){
 			case'ready':
-				$headline = get_option('rpi_wall_not_founded_header','Professionellen Lerngruppe (PLG)');
-				$notice   = get_option('rpi_wall_ready_notice','Mit Klick auf "Gruppe Gründen" werden alle interessierten angeschrieben und haben eine Woche Zeit, der PLG beizutreten.');
+				$headline = get_option('options_rpi_wall_not_founded_header','Professionellen Lerngruppe (PLG)');
+				$notice   = get_option('options_rpi_wall_ready_notice','Mit Klick auf "Gruppe Gründen" werden alle interessierten angeschrieben und haben eine Woche Zeit, der PLG beizutreten.');
 				$button   = $this->get_starlink();
 				$stats    = $this->get_likers_amount() .' Interessierte.';
 				break;
 			case'pending':
-				$headline = get_option('rpi_wall_not_founded_header','Wir suchen noch Leute für eine Professionellen Lerngruppe (PLG) zu diesem Kontext');
+				$headline = get_option('options_rpi_wall_not_founded_header','Wir suchen noch Leute für eine Professionellen Lerngruppe (PLG) zu diesem Kontext');
 				if(!$this->has_member(get_current_user_id())){
-					$notice   = get_option('rpi_wall_pending_notice','Die Gruppe befindet sich in der Gründungsphase. Möchtest du dabei sein?');
+					$notice   = get_option('options_rpi_wall_pending_notice','Die Gruppe befindet sich in der Gründungsphase. Möchtest du dabei sein?');
 				}
 
 				$button   = $this->get_current_users_joinlink();
 				$stats    = $this->get_members_amount() . ' von ' . $this->get_likers_amount() .' der Interessierten haben sich bereits angemeldet.';
 				break;
 			case'founded':
-				$headline = get_option('rpi_wall_founded_header','Professionelle Lerngruppe (PLG) zu diesem Kontext');
-				$notice   = get_option('rpi_wall_founded_header','Zu diesem Pinwandeintrag hat sich eine PLG gegründet.');
+				$headline = get_option('options_rpi_wall_founded_header','Professionelle Lerngruppe (PLG) zu diesem Kontext');
+				$notice   = get_option('options_rpi_wall_founded_header','Zu diesem Pinwandeintrag hat sich eine PLG gegründet.');
 				$button   = $this->get_current_users_joinlink('Beitritt anfragen');
 				$stats    = $this->get_members_amount() .' Mitglieder.';
 				break;
 			case'closed':
-				$headline = get_option('rpi_wall_founded_header','Professionelle Lerngruppe (PLG) zu diesem Kontext');
-				$notice = get_option('rpi_wall_founded_header','');
+				$headline = get_option('options_rpi_wall_founded_header','Professionelle Lerngruppe (PLG) zu diesem Kontext');
+				$notice = get_option('options_rpi_wall_founded_header','');
 				$stats  = 'Gruppe geschlossen';
 				break;
 			default:
-				$headline = get_option('rpi_wall_not_founded_header','Interessiert an einer Professionellen Lerngruppe (PLG) zu diesem Kontext?');
-				$notice =  get_option('rpi_wall_not_founded_notice','Wenn du zu den Interessierten gehörst, wirst du automatisch benachrichtigt, sobald sich genügend Interessenten gefunden haben.');
+				$headline = get_option('options_rpi_wall_not_founded_header','Interessiert an einer Professionellen Lerngruppe (PLG) zu diesem Kontext?');
+				$notice =  get_option('options_rpi_wall_not_founded_notice','Wenn du zu den Interessierten gehörst, wirst du automatisch benachrichtigt, sobald sich genügend Interessenten gefunden haben.');
 				$stats      = $this->get_likers_amount() . ' von mindestens ' . $this->group_member_min .' sind interessiert';
 
 		}
@@ -603,16 +603,16 @@ class Group extends \stdClass {
 
 	public function display_short_info(){
 
-		$min_required   = get_option('pl_group_min_required_members', 3);
-		$max_likes      = get_option('rpi_wall_max_stars_per_comment', 3);
+		$min_required   = get_option('options_pl_group_min_required_members', 3);
+		$max_likes      = get_option('options_rpi_wall_max_stars_per_comment', 3);
 
 		switch ($status = $this->get_status()){
 			case'ready':
-				$notice   = get_option('rpi_wall_ready_card_notice','PLG gründen: ');
+				$notice   = get_option('options_rpi_wall_ready_card_notice','PLG gründen: ');
 				$stats    = $this->get_likers_amount() .' Interessierte';
 				break;
 			case'pending':
-				$notice   = get_option('rpi_wall_ready_card_notice','Beitrittsphase zu einer PLG läuft.');
+				$notice   = get_option('options_rpi_wall_ready_card_notice','Beitrittsphase zu einer PLG läuft.');
 				$stats    = $this->get_members_amount() . ' / ' . $this->get_likers_amount() .' beigetreten';
 				break;
 			case'founded':
@@ -621,7 +621,7 @@ class Group extends \stdClass {
 
 				break;
 			case'closed':
-				$notice   = get_option('rpi_wall_ready_card_notice','PLG beendet');
+				$notice   = get_option('options_rpi_wall_ready_card_notice','PLG beendet');
 				break;
 			default:
 				$notice     =  '';

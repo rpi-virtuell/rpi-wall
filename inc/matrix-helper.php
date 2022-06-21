@@ -10,9 +10,9 @@ Class Helper {
 	 */
 	static function getUser($login){
 
-		$token = get_option( 'matrix_bot_token' );
-		$homeserver = get_option( 'matrix_server_home' );
-		$domain = get_option( 'matrix_server_base' );
+		$token = get_option( 'options_matrix_bot_token' );
+		$homeserver = get_option( 'options_matrix_server_home' );
+		$domain = get_option( 'options_matrix_server_base' );
 
 		$request = new HttpRequest();
 		$request->setUrl( 'https://' . $homeserver . '/_matrix/client/v3/user_directory/search' );
@@ -50,9 +50,9 @@ Class Helper {
 
 	static function create_room($group){
 
-		$token = get_option( 'matrix_bot_token' );
-		$homeserver = get_option( 'matrix_server_home' );
-		$domain = get_option( 'matrix_server_base' );
+		$token = get_option( 'options_matrix_bot_token' );
+		$homeserver = get_option( 'options_matrix_server_home' );
+		$domain = get_option( 'options_matrix_server_base' );
 
 
 		$request = new HttpRequest();

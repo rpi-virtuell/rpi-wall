@@ -102,7 +102,7 @@ class Message {
 	public function __construct(Group $group, $event='pending', $to = ['orga','watch','group'] ,$actor_id=0) {
 		$this->group = $group;
 
-		$this->templates=get_option('rpi_wall_options_templates', $this->templates);
+		$this->templates=get_option('options_rpi_wall_options_templates', $this->templates);
 
 		$this->actor = new Member($actor_id);
 
@@ -157,7 +157,7 @@ class Message {
 	 * @return int[]
 	 */
 	static public function get_orga_ids(){
-		return get_option('rpi_wall_orga_team_ids',[2,3]);
+		return get_option('options_rpi_wall_orga_team_ids',[2,3]);
 	}
 
 	/**
@@ -274,7 +274,7 @@ class Message {
 			$headers = 'From: Dibes Netzwerk <happel@comeniuse.de>' . "\r\n";
 			$headers .= 'BCC: '. implode(",", $to) . "\r\n";
 
-			wp_mail( get_option('rpi_wall_email_dummy','technik@rpi-virtuell.de'), $msg->subject, $msg->body, $headers);
+			wp_mail( get_option('options_rpi_wall_email_dummy','technik@rpi-virtuell.de'), $msg->subject, $msg->body, $headers);
 
 
 			$room_id = false;
