@@ -231,7 +231,7 @@ class Message {
 			'post_title' => $msg->subject,
 			'post_status' => 'publish',
 			'post_author' => $this->actor->ID,
-			'post_type' => 'Message',
+			'post_type' => 'message',
 			'post_content' => $msg->body
 
 		));

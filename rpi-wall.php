@@ -126,12 +126,10 @@ class RpiWall{
 		wp_enqueue_style( 'rpi-wall-style', plugin_dir_url(__FILE__).'assets/css/custom-style.css' );
 		wp_enqueue_script( 'rpi-wall-scripts', plugin_dir_url(__FILE__).'assets/js/custom-scripts.js', array(), '1.0.0', true );
 
-
 	}
 
 
 }
-
 new RpiWall();
 new Wall\RPIWallInstaller();
 new Wall\Shortcodes();
