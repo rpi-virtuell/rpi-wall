@@ -49,8 +49,6 @@ class Group extends \stdClass
     static function init_cronjob()
     {
 
-        //var_dump('init_cronjob');die();
-
         // check alle Gruppen, die keinen status, aber likers haben
         // wenn minimum likers erreicht: Gründungsphase zu starten
 
@@ -102,14 +100,17 @@ class Group extends \stdClass
                 [
                     'key' => 'pl_group_status_timestamp',
                     'value' => time() - $pending_add,
-                    'compare' => '<=',
+                    'compare' => '<',
                     'type' => 'NUMERIC'
                 ]
             ]
         ];
 
+
+
         $posts = get_posts($args);
         foreach ($posts as $post) {
+
             $group = new Group($post->ID);
             if ($group->get_members_amount() < get_option('options_pl_group_min_required_members', 3)) {
                 $group->reset_status();
@@ -124,7 +125,6 @@ class Group extends \stdClass
             }
 
         }
-
 
     }
 
@@ -418,9 +418,11 @@ class Group extends \stdClass
      */
     public function get_memberIds()
     {
-
-        return (array)get_post_meta($this->ID, 'rpi_wall_member_id');
-
+	    $members = get_post_meta($this->ID, 'rpi_wall_member_id');
+		if($members){
+			return $members;
+		}
+		return [];
     }
 
     /**
@@ -546,7 +548,7 @@ class Group extends \stdClass
         } else {
             $user_id = $member;
         }
-        return in_array($user_id, $this->get_memberIds());
+		return in_array($user_id, $this->get_memberIds());
     }
 
     /**

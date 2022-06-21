@@ -49,12 +49,16 @@ class Member extends \stdClass
     function join_group($groupId)
     {
 
-        if ($this->is_in_group($groupId)) {
+	    if ($this->is_in_group($groupId)) {
             return false;
         }
 
+
+
         add_post_meta($groupId, 'rpi_wall_member_id', $this->ID);
         add_user_meta($this->ID, 'rpi_wall_group_id', $groupId);
+
+
 
 
     }
@@ -91,8 +95,7 @@ class Member extends \stdClass
     function is_in_group($group_id): bool
     {
         $groups = (array)get_user_meta($this->ID, 'rpi_wall_group_id');
-
-        return in_array($group_id, $groups);
+		return in_array($group_id, $groups);
     }
 
     public
@@ -187,9 +190,10 @@ class Member extends \stdClass
     public function get_join_hash($group_id)
     {
 
+
         $groups = unserialize(get_user_meta($this->ID, 'rpi_wall_group_hash', true));
 
-        $hash = wp_hash($this->name, 'nonce');
+        $hash = wp_hash($this->name.$group_id, 'nonce');
 
         $groups[$group_id] = $hash;
 

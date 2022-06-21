@@ -11,12 +11,12 @@ class Helper
      */
     static function getUser($login)
     {
-
+	    return;
         $token = get_option('options_matrix_bot_token');
         $homeserver = get_option('options_matrix_server_home');
         $domain = get_option('options_matrix_server_base');
 
-        $request = new HttpRequest();
+        $request = new \HttpRequest();
         $request->setUrl('https://' . $homeserver . '/_matrix/client/v3/user_directory/search');
         $request->setMethod(HTTP_METH_POST);
 
@@ -52,13 +52,13 @@ class Helper
 
     static function create_room($group)
     {
-
+		return;
         $token = get_option('options_matrix_bot_token');
         $homeserver = get_option('options_matrix_server_home');
         $domain = get_option('options_matrix_server_base');
 
 
-        $request = new HttpRequest();
+        $request = new \HttpRequest();
         $request->setUrl('https://' . $homeserver . '/_matrix/client/v3/user_directory/search');
         $request->setMethod(HTTP_METH_POST);
 
