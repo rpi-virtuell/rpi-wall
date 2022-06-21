@@ -134,3 +134,4 @@ class RpiWall{
 
 new RpiWall();
 new Wall\RPIWallInstaller();
+new Wall\Shortcodes();
