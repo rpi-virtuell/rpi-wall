@@ -70,6 +70,7 @@ class Group extends \stdClass {
 		];
 
 		$posts = get_posts($args);
+		var_dump('no status',count($posts) );
 
 
 
@@ -106,6 +107,8 @@ class Group extends \stdClass {
 			]
 		];
 
+		//var_dump('pending',count($posts) );
+
 		$posts = get_posts($args);
 
 		foreach ($posts as $post) {
@@ -127,12 +130,14 @@ class Group extends \stdClass {
 
 		}
 
+
+
 	}
 
 	static function init_handle_requests(){
-		if(isset($_REQUEST['action']) && isset($_REQUEST['hash']) && isset($_REQUEST['group']) ){
-			$group = new Group($_REQUEST['group']);
-			if( 'plgstart' == $_REQUEST['action']  && 'start' == $group->check_hash($_REQUEST['hash'])){
+		if(isset($_REQUEST['action']) && isset($_REQUEST['hash']) && isset($_REQUEST['new_plg_group']) ){
+			$group = new Group($_REQUEST['new_plg_group']);
+			if( 'plgstart' == $_REQUEST['action']  && $_REQUEST['hash'] == $group->get_hash('start')){
 
 				$group->start_pending();
 			}
@@ -485,7 +490,8 @@ class Group extends \stdClass {
 
 
 	public function get_starlink($label = 'Gruppe gründen'){
-		return '<a class="button" href="'.get_home_url().'?action=plgstart&hash='.$this->get_hash('start').'&group='.$this->ID.'">'.$label.'</a>';
+
+		return '<a class="button" href="'.get_home_url().'?action=plgstart&hash='.$this->get_hash('start').'&new_plg_group='.$this->ID.'">'.$label.'</a>';
 	}
 
 
@@ -517,31 +523,15 @@ class Group extends \stdClass {
 	 */
 	protected function get_hash($type='start'){
 
-		$hash = str_replace(md5($this->slug.'_start_founding_plg'),'-','');
+		$hash = md5($this->slug.'_start_founding_plg');
 
 		if($type === 'join'){
-			$hash = str_replace(md5($this->slug.'_join_plg'),'-','');
+			$hash = md5($this->slug.'_join_plg');
 		}
 		return $hash;
 
 	}
 
-	/**
-	 * @param $hash
-	 *
-	 * @return false|string   start|join
-	 */
-	protected function check_hash($hash){
-
-		if($hash == str_replace(md5($this->slug.'_start_founding_plg'),'-','')){
-			return 'start';
-		}
-
-		if($hash == str_replace(md5($this->slug.'_join_plg'),'-','')){
-			return 'join';
-		}
-		return false;
-	}
 
 
 	//outputs

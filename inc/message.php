@@ -88,6 +88,11 @@ class Message {
 	protected $events=['create','pending','founded','liked','minimum_likers_met','comment','reset'];
 
 
+	public function get_template(string $slug, string $part){
+
+		return  $this->templates[$slug][$part];
+	}
+
 	/**
 	 * @param Group $group
 	 * @param string $event ['create','pending','founded','liked','minimum_likers_met','comment','reset']
@@ -117,10 +122,10 @@ class Message {
 
 			}
 			if('watch'== $reciever ){
-				$user_ids = $group->get_watcher() ;
+				$user_ids = $group->get_watcher();
 			}
 			if('orga'== $reciever ){
-				$user_ids = $group->get_orga_ids() ;
+				$user_ids = $this->get_orga_ids();
 			}
 
 			if($msg = $this->prepare_message($template_key)){
@@ -130,7 +135,7 @@ class Message {
 						foreach ($user_ids as $user_id){
 							$m = new Member($user_id);
 							$link = $m->get_joinlink($group->ID);
-							str_replace('%joinlink%',$link,$msg);
+							$msg->body = str_replace('%joinlink%',$link,$msg->body);
 							$this->create($msg,[$user_id]);
 							$this->send($msg,$user_id);
 						}
@@ -209,10 +214,10 @@ class Message {
 			$this->group->get_likers_amount(),
 		];
 
-		$body = str_replace($search_array,$replace_array,$this->get_template($template_key['body']));
-		$subject = str_replace($search_array,$replace_array,$this->get_template($template_key['subject']));
+		$body = str_replace($search_array,$replace_array,$this->get_template($template_key,'body'));
+		$subject = str_replace($search_array,$replace_array,$this->get_template($template_key,'subject'));
 
-		return (object) ['body'=>'$body','subject'=>'$subject'];
+		return (object) ['body'=>$body,'subject'=>$subject];
 
 	}
 
