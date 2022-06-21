@@ -4,7 +4,7 @@ namespace rpi\Wall;
 class Shortcodes{
 	public function __construct() {
 
-		add_shortcode( 'user_pinned_posts', [$this,'wp_ulike_pro_get_current_user_pinned_posts'] );
+		add_shortcode( 'user_pinned_posts', [$this,'get_users_pinwall_posts'] );
         add_shortcode('rpi-userprofile', array($this, 'get_user_profile_tags'));
 
 	}
