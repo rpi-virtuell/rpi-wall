@@ -70,7 +70,6 @@ class Group extends \stdClass {
 		];
 
 		$posts = get_posts($args);
-		var_dump('no status',count($posts) );
 
 
 
@@ -101,30 +100,24 @@ class Group extends \stdClass {
 				[
 					'key' => 'pl_group_status_timestamp',
 					'value' => time()-$pending_add,
-					'compare' => '>=',
+					'compare' => '<=',
 					'type' => 'NUMERIC'
 				]
 			]
 		];
 
-		//var_dump('pending',count($posts) );
-
 		$posts = get_posts($args);
-
 		foreach ($posts as $post) {
 			$group = new Group( $post->ID );
 			if($group->get_members_amount()< get_option('options_pl_group_min_required_members', 3)){
-
 				$group->reset_status();
 				new Message($group, 'reset');
 				do_action('rpi_wall_pl_group_reset', $group);
 
 			}else{
-
 				$group->create_room();
 				$group->set_status('founded');
 				new Message($group, 'founded');
-
 				do_action('rpi_wall_pl_group_founded', $group);
 			}
 
@@ -387,9 +380,9 @@ class Group extends \stdClass {
 	 * @return int
 	 */
 	public function get_members_amount(){
-		if(!$this->get_memberIds()){
-			return 0;
-		}
+//		if(!$this->get_memberIds()){
+//			return 0;
+//		}
 		return count($this->get_memberIds());
 	}
 
@@ -470,7 +463,6 @@ class Group extends \stdClass {
 
 
 	protected function start_pending(){
-
 		$this->set_status('pending');
 		new Message($this,'pending');
 		do_action('rpi_wall_pl_group_pending', $this);
