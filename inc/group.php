@@ -594,7 +594,7 @@ class Group extends \stdClass
 
         switch ($this->get_status()) {
             case'ready':
-                $headline = get_option('options_rpi_wall_not_founded_header', 'Professionellen Lerngruppe (PLG)');
+                $headline = get_option('options_rpi_wall_ready_header', 'Professionellen Lerngruppe (PLG)');
                 $notice = get_option('options_rpi_wall_ready_notice', 'Mit Klick auf "Gruppe Gründen" werden alle interessierten angeschrieben und haben eine Woche Zeit, der PLG beizutreten.');
                 $button = $this->get_starlink();
                 $stats = $this->get_likers_amount() . ' Interessierte.';
@@ -615,7 +615,7 @@ class Group extends \stdClass
                 $stats = $this->get_members_amount() . ' Mitglieder.';
                 break;
             case'closed':
-                $headline = get_option('options_rpi_wall_founded_header', 'Professionelle Lerngruppe (PLG) zu diesem Kontext');
+                $headline = get_option('options_rpi_wall_closed_header', 'Professionelle Lerngruppe (PLG) zu diesem Kontext');
                 $notice = get_option('options_rpi_wall_closed_notice', '');
                 $stats = 'Gruppe geschlossen';
                 break;
