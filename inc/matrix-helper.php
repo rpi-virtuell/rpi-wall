@@ -2,6 +2,9 @@
 
 namespace rpi\Wall\Matrix;
 
+use rpi\Wall\Group;
+use http\Client;
+
 class Helper
 {
     /**
@@ -50,41 +53,54 @@ class Helper
     }
 
 
-    static function create_room($group)
+    static function create_room(Group $group)
     {
-		return;
-        $token = get_option('options_matrix_bot_token');
-        $homeserver = get_option('options_matrix_server_home');
-        $domain = get_option('options_matrix_server_base');
+
+	    $token = get_option('options_matrix_bot_token');
+	    $homeserver = get_option('options_matrix_server_home');
+	    $domain = get_option('options_matrix_server_base');
+
+	    $toolbar = $group->get_toolbar();
+
+	    $curl = curl_init();
+
+	    curl_setopt_array($curl, [
+		    CURLOPT_URL => "https://$homeserver/_matrix/client/v3/createRoom",
+		    CURLOPT_RETURNTRANSFER => true,
+		    CURLOPT_ENCODING => "",
+		    CURLOPT_MAXREDIRS => 10,
+		    CURLOPT_TIMEOUT => 30,
+		    CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+		    CURLOPT_CUSTOMREQUEST => "POST",
+		    CURLOPT_POSTFIELDS => '{"name":"' . $group->title . '","visibility":"private","preset":"public_chat","room_alias_name":"' . $group->slug . '","topic":"' . $toolbar . '","initial_state":[]}',
+		    CURLOPT_HTTPHEADER => [
+			    "Authorization: Bearer $token",
+			    "Content-Type: application/json"
+		    ],
+	    ]);
 
 
-        $request = new \HttpRequest();
-        $request->setUrl('https://' . $homeserver . '/_matrix/client/v3/user_directory/search');
-        $request->setMethod(HTTP_METH_POST);
+	    $response = curl_exec($curl);
+	    $err = curl_error($curl);
 
-        $request->setHeaders([
-            'Content-Type' => 'application/json',
-            'Authorization' => 'Bearer ' . $token
-        ]);
+	    curl_close($curl);
 
+	    if ($err) {
+		    wp_die("cURL Error #:" . $err);
+	    }
 
-        /**
-         * Channel erstellen
-         */
-        $toolbar = $group->get_toolbar();
+	    $room = json_decode($response);
 
+	    if(isset($room->errcode)){
+			file_put_contents( ABSPATH.'/matris-error.log', date('Y-m-d H:i:s').': '. $room->error. "\n", FILE_APPEND);
+	    }
 
-        $response = $request->setBody('{"name":"' . $group->title . '","visibility":"private","preset":"public_chat","room_alias_name":"' . $group->slug . '","topic":"' . $toolbar . '","initial_state":[]}');
-
-        $room = json_decode($response->getBody());
-        $room->room_id;
-        $room->room_alias;
-
-
-        $group->set_matrix_channel_id($room->room_id);
-        $group->set_room_id($room->room_id);
-        $group->set_status('founded');
-
+	    if($room && isset($room->room_id)){
+		    $group->set_matrix_channel($room->room_alias);
+		    $group->set_matrix_room_id($room->room_id);
+		    $group->set_status('founded');
+	    }
+	    return $room->room_id;
 
     }
 

@@ -11,6 +11,7 @@ class Group extends \stdClass
     public $slug;
     public string $url;
     public $post;
+    public $title;
     public $group_status = null;
     public $pending_days;
     public $matrix_server_home = 'matrix.rpi-virtuell.de';
@@ -33,11 +34,14 @@ class Group extends \stdClass
     public function __construct($post_id)
     {
 
-        $this->post = get_post($post_id, ARRAY_A);
+	    $this->post = get_post($post_id);
+
+	    $matrixTitle = substr(preg_replace('/[^a-zA-ZüäößÜÄÖ -]*/i', '', $this->post->post_title), 0, 40);
+
         $this->ID = $post_id;
         $this->group_status = $this->get('pl_group_status');
         $this->slug = 'dibes_plg_' . $this->ID;
-        $this->title = 'PLG ' . substr(preg_replace('/[^\w\s-]/i', '', $this->post->post_title), 0, 40);
+        $this->title = 'PLG ' . $matrixTitle;
         $this->channel_url = "https://{$this->matrix_server_home}/#/room/#{$this->slug}:rpi-virtuell.de";
         $this->pending_days = get_option('options_rpi_wall_pl_group_pending_days', 7);
 
@@ -477,23 +481,19 @@ class Group extends \stdClass
      *
      * Todo
      */
-    protected function get_toolbar()
+    public function get_toolbar()
     {
         return '';
     }
 
-    /**
-     * @param string $room_id
-     * @return void
-     */
-    protected function set_room_id(string $room_id)
-    {
-        update_post_meta($this->ID, 'pl_group_matrix_room_id');
-    }
 
     protected function get_matrix_channel_id()
     {
-        return $this->get('pl_group_matrix_room_id');
+        return $this->get('rpi_wall_group_room_id');
+    }
+	protected function get_matrix_channel()
+    {
+        return $this->get('rpi_wall_group_channel');
     }
 
     protected function get_joined_member_matrixId($user_login)
@@ -514,6 +514,8 @@ class Group extends \stdClass
     {
 
         $room_id = Matrix\Helper::create_room($this);
+
+
         /**
          * Message to orga channel
          * E-Mails to likers
@@ -521,6 +523,22 @@ class Group extends \stdClass
         do_action('rpi_wall_pl_group_room_created', $room_id);
     }
 
+	/**
+	 * @param string $room_alias
+	 * @return void
+	 */
+
+	public function set_matrix_channel($room_alias){
+		update_post_meta($this->ID, 'rpi_wall_group_channel',$room_alias);
+	}
+	/**
+	 * @param string $room_id
+	 * @return void
+	 */
+
+	public function set_matrix_room_id($room_id){
+		update_post_meta($this->ID, 'rpi_wall_group_room_id',$room_id);
+	}
 
     public function get_starlink($label = 'Gruppe gründen')
     {
@@ -582,7 +600,7 @@ class Group extends \stdClass
                 $stats = $this->get_likers_amount() . ' Interessierte.';
                 break;
             case'pending':
-                $headline = get_option('options_rpi_wall_not_founded_header', 'Wir suchen noch Leute für eine Professionellen Lerngruppe (PLG) zu diesem Kontext');
+                $headline = get_option('options_rpi_wall_pending_header', 'Wir suchen noch Leute für eine Professionellen Lerngruppe (PLG) zu diesem Kontext');
                 if (!$this->has_member(get_current_user_id())) {
                     $notice = get_option('options_rpi_wall_pending_notice', 'Die Gruppe befindet sich in der Gründungsphase. Möchtest du dabei sein?');
                 }
@@ -592,13 +610,13 @@ class Group extends \stdClass
                 break;
             case'founded':
                 $headline = get_option('options_rpi_wall_founded_header', 'Professionelle Lerngruppe (PLG) zu diesem Kontext');
-                $notice = get_option('options_rpi_wall_founded_header', 'Zu diesem Pinwandeintrag hat sich eine PLG gegründet.');
+                $notice = get_option('options_rpi_wall_founded_notice', 'Zu diesem Pinwandeintrag hat sich eine PLG gegründet.');
                 $button = $this->get_current_users_joinlink('Beitritt anfragen');
                 $stats = $this->get_members_amount() . ' Mitglieder.';
                 break;
             case'closed':
                 $headline = get_option('options_rpi_wall_founded_header', 'Professionelle Lerngruppe (PLG) zu diesem Kontext');
-                $notice = get_option('options_rpi_wall_founded_header', '');
+                $notice = get_option('options_rpi_wall_closed_notice', '');
                 $stats = 'Gruppe geschlossen';
                 break;
             default:
@@ -649,16 +667,16 @@ class Group extends \stdClass
                 $stats = $this->get_likers_amount() . ' Interessierte';
                 break;
             case'pending':
-                $notice = get_option('options_rpi_wall_ready_card_notice', 'Beitrittsphase zu einer PLG läuft.');
+                $notice = get_option('options_rpi_wall_pending_card_notice', 'Beitrittsphase zu einer PLG läuft.');
                 $stats = $this->get_members_amount() . ' / ' . $this->get_likers_amount() . ' beigetreten';
                 break;
             case'founded':
-                $notice = '';
+                $notice = get_option('options_rpi_wall_founded_card_notice', '');
                 $stats = $this->display_member();
 
                 break;
             case'closed':
-                $notice = get_option('options_rpi_wall_ready_card_notice', 'PLG beendet');
+                $notice = get_option('options_rpi_wall_closed_card_notice', 'PLG beendet');
                 break;
             default:
                 $notice = '';

@@ -71,6 +71,11 @@ class RpiWall
         add_action('init', ['rpi\Wall\Group', 'init_handle_requests']);
 
         add_action('init', ['rpi\Wall\Member', 'init_handle_request']);
+        add_action('init', function (){
+		if(!is_admin())
+			rpi\Wall\Matrix\Helper::create_room(new Wall\Group(75));
+
+        });
     }
 
     /**
