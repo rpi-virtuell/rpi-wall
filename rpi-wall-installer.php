@@ -676,7 +676,7 @@ class RPIWallInstaller
                         array(
                             'param' => 'options_page',
                             'operator' => '==',
-                            'value' => 'rpi_wall_email_templates',
+                            'value' => 'rpi_wall_settings',
                         ),
                     ),
                 ),
@@ -704,9 +704,9 @@ class RPIWallInstaller
         if (function_exists('acf_add_options_page')):
 
             acf_add_options_page(array(
-                'page_title' => 'RPI Wall Email Vorlagen',
-                'menu_slug' => 'rpi_wall_email_templates',
-                'menu_title' => 'RPI Wall Email Vorlagen',
+                'page_title' => 'RPI Wall Einstellungen',
+                'menu_slug' => 'rpi_wall_settings',
+                'menu_title' => 'RPI Wall Einstellungen',
                 'capability' => 'edit_posts',
                 'position' => '',
                 'parent_slug' => 'options-general.php',
