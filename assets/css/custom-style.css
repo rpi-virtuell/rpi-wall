@@ -40,11 +40,13 @@
 
 /*interessierte liker in einer Post*/
 .gruppe-header{
-    margin-top: 50px;
+    margin-top: 5px;
+    font-weight: bold;
+    margin-bottom: 20px;
 }
 .gruppe{
-    border: 1px solid #bbbbbb;
-    border-radius: 5px;
+    border-top: 1px solid #bbbbbb;
+    /*border-radius: 5px;*/
 }
 .gruppe .wp_ulike_btn.wp_ulike_put_image::after{
     width: 30px;
@@ -61,8 +63,29 @@
 }
 .gruppe-footer{
     margin-top: 20px;
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+}
+.gruppe-footer .notice{
+    justify-self: start;
+    display: inline-grid;
+}
+.gruppe-button{
+    justify-self: end;
+    display: inline-grid;
+}
+
+.rpi-wall.group-members{
+    list-style: none;
     display: flex;
-    justify-content: right;
+    margin: 0;
+    padding: 0;
+}
+.rpi-wall .group-member{
+    margin-left: -10px;
+}
+.rpi-wall .group-member img{
+    border-radius: 50%;
 }
 
 article.entry-card.type-wall .plg-wrapper{
@@ -72,6 +95,11 @@ article.entry-card.type-wall .plg-wrapper{
 .hot-comments {
     text-align: right;
     color: orangered;
+    position: relative;
+}
+.addlikes{
+    position: absolute;
+    top: -3px;
 }
 .plg-wrapper .hot-comments i::before{
     font-size: 130%;

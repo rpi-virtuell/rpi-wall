@@ -89,7 +89,7 @@ class Group extends \stdClass
         // wenn genug Mitglieder gejoined: create matrix room
         // wenn nicht genug Mitglieder : reset
         $daySeconds = 86400;
-        $pending_add = $daySeconds * get_option('options_rpi_wall_pl_group_pending_days', 7);
+        $pending_add = $daySeconds * intval(get_option('options_rpi_wall_pl_group_pending_days', 7));
 
         $args = [
             'post_type' => 'wall',
@@ -632,9 +632,15 @@ class Group extends \stdClass
 
         echo '<div class="gruppe-header">' . $headline . '</div>';
 
-        echo '<div class="gruppe-liker">';
-        echo do_shortcode('[wp_ulike  style="wpulike-heart"]');
-        echo '</div>';
+		if(!in_array($this->get_status(),['founded', 'closed'] )){
+			echo '<div class="gruppe-liker">';
+			echo do_shortcode('[wp_ulike  style="wpulike-heart"]');
+			echo '</div>';
+		}else{
+			echo '<div class="gruppe-liker">';
+			echo $this->display_member(96);
+			echo '</div>';
+		}
 
         echo '<div class="gruppe-footer">';
         echo '<div class="notice">' . $notice . ' ' . $stats . '</div>';
@@ -648,11 +654,20 @@ class Group extends \stdClass
         echo '</div>'; //end gruppe
     }
 
-    public function display_member()
+    public function display_member($size = 48)
     {
-        foreach ($this->get_memberIds() as $user_id) {
-            echo get_avatar($user_id, 48);
-        }
+	    $ids = $this->get_memberIds();
+		if(count($ids)>0){
+			$out = '<ul class="rpi-wall group-members">';
+			foreach ($this->get_memberIds() as $user_id) {
+				$user = get_userdata($user_id);
+				$out .= '<li class="group-member" title="'.$user->display_name.'">';
+				$out .= get_avatar($user_id, $size);
+				$out .= '</li>';
+			}
+			$out .= '</ul>';
+		};
+		return $out;
     }
 
     public function display_short_info()
@@ -671,8 +686,9 @@ class Group extends \stdClass
                 $stats = $this->get_members_amount() . ' / ' . $this->get_likers_amount() . ' beigetreten';
                 break;
             case'founded':
-                $notice = get_option('options_rpi_wall_founded_card_notice', '');
-                $stats = $this->display_member();
+                $notice = get_option('options_rpi_wall_founded_card_notice');
+                $notice = $this->display_member();
+                $stats = $this->get_members_amount() .' Mitglieder';
 
                 break;
             case'closed':
@@ -684,20 +700,20 @@ class Group extends \stdClass
         }
 
 
-        $likes = 0;
-        foreach (get_comments(['post_id' => $this->ID]) as $comment) {
-            $likes += intval(wp_ulike_get_comment_likes($comment->comment_ID));
-        }
-        if ($likes > 0) {
-            $n = $likes;
-            if ($likes > $max_likes) {
-                $n = $max_likes;
-                $addlikes = $likes - $max_likes;
-                echo '<style>#more-likes-' . get_the_ID() . '::after{ content: "+' . $addlikes . '";}</style>';
-            }
-        }
+	    $likes = 0;
+	    foreach (get_comments(['post_id' => $this->ID]) as $comment) {
+		    $likes += intval(wp_ulike_get_comment_likes($comment->comment_ID));
+	    }
+	    if ($likes > 0) {
+		    $n = $likes;
+		    if ($likes > $max_likes) {
+			    $n = $max_likes;
+			    $addlikes = $likes - $max_likes;
+			    $style = '<style>#more-likes-' . get_the_ID() . '::after{ content: "+' . $addlikes . '";}</style>';
+		    }
+	    }
 
-        echo '<div class="card_plg_info">';
+	    echo '<div class="card_plg_info">';
         echo '<div class="plg-wrapper">';
         echo '<div class="plg plg-' . $status . '">
 						<a href="' . get_the_permalink() . '">' . $notice . '</a>
@@ -708,9 +724,11 @@ class Group extends \stdClass
             echo '<i id="more-likes-' . get_the_ID() . '" class="wp_ulike_star_icon ulp-icon-star"></i>';
 
         }
+		if($addlikes) echo "<i class='addlikes'>+$addlikes</i>";
+	    echo '</div>';
         echo '</div>';
         echo '</div>';
-        echo '</div>';
+
 
 
     }
