@@ -2,6 +2,8 @@
 
 namespace rpi\Wall;
 
+use  rpi\Wall\Message;
+
 class RPIWallInstaller
 {
 
@@ -340,9 +342,10 @@ class RPIWallInstaller
                         'max' => '',
                         'step' => '',
                     ),
+
                     array(
-                        'key' => 'field_rpi_message_templates',
-                        'label' => 'Nachricht Vorlagen',
+                        'key' => 'field_rpi_wall_message_template_settings',
+                        'label' => 'Nachrichten',
                         'name' => '',
                         'type' => 'tab',
                         'instructions' => '',
@@ -356,6 +359,7 @@ class RPIWallInstaller
                         'placement' => 'top',
                         'endpoint' => 0,
                     ),
+
                     array(
                         'key' => 'field_rpi_moderation_email',
                         'label' => 'Email der Moderation',
@@ -398,31 +402,11 @@ class RPIWallInstaller
                         ),
                     ),
                     array(
-                        'key' => 'field_rpi_email_template',
-                        'label' => 'Email - Vorlage',
-                        'name' => 'email_template',
-                        'type' => 'repeater',
-                        'instructions' => '',
-                        'required' => 0,
-                        'conditional_logic' => 0,
-                        'wrapper' => array(
-                            'width' => '',
-                            'class' => '',
-                            'id' => '',
-                        ),
-                        'acfe_repeater_stylised_button' => 0,
-                        'collapsed' => '',
-                        'min' => 0,
-                        'max' => 0,
-                        'layout' => 'table',
-                        'button_label' => '',
-                        'sub_fields' => array(
-                            array(
-                                'key' => 'field_rpi_email_template_subject',
-                                'label' => 'Betreff',
-                                'name' => 'subject',
-                                'type' => 'text',
-                                'instructions' => 'Mögliche Variablen
+                        'key' => 'field_rpi_message_templates',
+                        'label' => '',
+                        'name' => 'rpi_message_templates',
+                        'type' => 'group',
+                        'instructions' => 'Mögliche Variablen
                                     %grouptitle%
                                     %posttitle%
                                     %postlink%
@@ -431,42 +415,19 @@ class RPIWallInstaller
                                     %memberamount%
                                     %channellink%
                                     %likeramount%',
-                                'required' => 0,
-                                'conditional_logic' => 0,
-                                'wrapper' => array(
-                                    'width' => '',
-                                    'class' => '',
-                                    'id' => '',
-                                ),
-                                'frontend_admin_display_mode' => 'edit',
-                                'readonly' => 0,
-                                'default_value' => '',
-                                'placeholder' => '',
-                                'prepend' => '',
-                                'append' => '',
-                                'maxlength' => '',
-                            ),
-                            array(
-                                'key' => 'field_rpi_email_template_content',
-                                'label' => 'Inhalt',
-                                'name' => 'body',
-                                'type' => 'textarea',
-                                'instructions' => '',
-                                'required' => 0,
-                                'conditional_logic' => 0,
-                                'wrapper' => array(
-                                    'width' => '',
-                                    'class' => '',
-                                    'id' => '',
-                                ),
-                                'default_value' => '',
-                                'placeholder' => '',
-                                'maxlength' => '',
-                                'rows' => '',
-                                'new_lines' => '',
-                                'acfe_textarea_code' => 0,
-                            ),
+                        'required' => 0,
+                        'conditional_logic' => 0,
+                        'wrapper' => array(
+                            'width' => '',
+                            'class' => '',
+                            'id' => '',
                         ),
+                        'frontend_admin_display_mode' => 'edit',
+                        'only_front' => 0,
+                        'layout' => 'block',
+                        'acfe_seamless_style' => 0,
+                        'acfe_group_modal' => 0,
+                        'sub_fields' =>   $this->prepare_field_type_template_arrays(),
                     ),
                     array(
                         'key' => 'field_rpi_matrix_settings',
@@ -697,6 +658,81 @@ class RPIWallInstaller
             ));
 
         endif;
+    }
+
+    private function prepare_field_type_template_arrays(): array
+    {
+        $result = [];
+        foreach (Message::$templates as $key => $template) {
+            if (isset($template['subject'], $template['body'])) {
+                $result[] = array(
+                    'key' => 'field_rpi_message_' . $key . '_template',
+                    'label' => 'Rpi Nachrichten ' . $key . ' Vorlage',
+                    'name' => 'rpi_message_' . $key . '_template',
+                    'type' => 'group',
+                    'instructions' => '',
+                    'required' => 0,
+                    'conditional_logic' => 0,
+                    'wrapper' => array(
+                        'width' => '',
+                        'class' => '',
+                        'id' => '',
+                    ),
+                    'frontend_admin_display_mode' => 'edit',
+                    'only_front' => 0,
+                    'layout' => 'block',
+                    'acfe_seamless_style' => 0,
+                    'acfe_group_modal' => 0,
+                    'sub_fields' => array(
+                        array(
+                            'key' => 'field_rpi_message_' . $key . '_template_subject',
+                            'label' => 'Betreff',
+                            'name' => 'field_rpi_message_' . $key . '_template_subject',
+                            'type' => 'text',
+                            'instructions' => '',
+                            'required' => 0,
+                            'conditional_logic' => 0,
+                            'wrapper' => array(
+                                'width' => '',
+                                'class' => '',
+                                'id' => '',
+                            ),
+                            'frontend_admin_display_mode' => 'edit',
+                            'only_front' => 0,
+                            'readonly' => 0,
+                            'default_value' => $template['subject'],
+                            'placeholder' => '',
+                            'prepend' => '',
+                            'append' => '',
+                            'maxlength' => '',
+                        ),
+                        array(
+                            'key' => 'field_rpi_message_' . $key . '_template_body',
+                            'label' => 'Inhalt',
+                            'name' => 'field_rpi_message_' . $key . '_template_body',
+                            'type' => 'textarea',
+                            'instructions' => '',
+                            'required' => 0,
+                            'conditional_logic' => 0,
+                            'wrapper' => array(
+                                'width' => '',
+                                'class' => '',
+                                'id' => '',
+                            ),
+                            'frontend_admin_display_mode' => 'edit',
+                            'only_front' => 0,
+                            'readonly' => 0,
+                            'default_value' => $template['body'],
+                            'placeholder' => '',
+                            'prepend' => '',
+                            'append' => '',
+                            'maxlength' => '',
+                        ),
+                    ),
+                );
+            }
+        }
+        return $result;
     }
 
     public function register_options_pages()

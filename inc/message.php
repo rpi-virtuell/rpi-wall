@@ -15,7 +15,7 @@ class Message
     //protected $recipient_groups=['orga','watch','group'];
 
 
-    protected $templates = [
+    static $templates = [
 
 
         'group_pending' =>
@@ -92,7 +92,7 @@ class Message
     public function get_template(string $slug, string $part)
     {
 
-        return $this->templates[$slug][$part];
+        return get_option('option_rpi_message_' . $slug . '_template_' . $part, Message::$templates[$slug][$part]);
     }
 
     /**
@@ -105,7 +105,7 @@ class Message
     {
         $this->group = $group;
 
-        $this->templates = get_option('options_rpi_wall_options_templates', $this->templates);
+        $this->templates = Message::$templates;
 
         $this->actor = new Member($actor_id);
 
