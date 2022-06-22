@@ -123,6 +123,7 @@ article.entry-card.type-wall .plg-wrapper{
 .rpi-wall-buttons{
     display: grid;
     justify-content: right;
+    margin-bottom: 20px;
 }
 .modal-button.render-form {
     background-color: darkorange!important;
@@ -131,3 +132,4 @@ article.entry-card.type-wall .plg-wrapper{
     font-weight: bold;
     border-radius: 5px;
 }
+
