@@ -73,10 +73,17 @@ class RpiWall
         add_action('init', ['rpi\Wall\Member', 'init_handle_request']);
 
 
-        add_action('init', function (){
+        add_action('blocksy:loop:before', function (){
+			echo '<div class="rpi-wall-buttons">';
+			echo do_shortcode('[frontend_admin form="28"]');
+			echo '</div>';
+        });
+
+		add_action('init', function (){
 			//if(!is_admin())
 				//	rpi\Wall\Matrix\Helper::create_room(new Wall\Group(75));
         });
+
     }
 
     /**

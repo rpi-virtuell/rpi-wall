@@ -7,6 +7,10 @@
     margin-top: 0;
     border: none;
 }
+#comments .logged-in-as{
+    display: none;
+}
+
 .single-wall article > .ct-comments{
     padding-top: 20px;
 }
@@ -36,6 +40,9 @@
 .wp-ulike-pro-items-container.user_pinned_posts .entry-meta {
     margin: 0;
     font-size: .8em;
+}
+.wp-ulike-pro-profile-custom-info {
+    display: flex;
 }
 
 /*interessierte liker in einer Post*/
@@ -112,4 +119,15 @@ article.entry-card.type-wall .plg-wrapper{
     width: 25px;
     float: right;
     margin-top: -6px;
+}
+.rpi-wall-buttons{
+    display: grid;
+    justify-content: right;
+}
+.modal-button.render-form {
+    background-color: darkorange!important;
+    padding: 10px 30px!important;;
+    color: #fff!important;
+    font-weight: bold;
+    border-radius: 5px;
 }
