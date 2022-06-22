@@ -19,13 +19,6 @@ class Group extends \stdClass
 
 
     /**
-     * Todo
-     * stati: pending, acreated
-     * erstellen des channels nach der mindestzahl von PLG
-     * nach pending phase Channel schließen
-     */
-
-    /**
      * @param int|WP_Post|null $post
      *
      * @return Group
@@ -50,7 +43,13 @@ class Group extends \stdClass
 
     }
 
+	/**
+	 * action init
+	 *
+	 * überprüft den Gruppenstatus der Pinwandbeiträge
+	 */
     static function init_cronjob()
+
     {
 
         // check alle Gruppen, die keinen status, aber likers haben
@@ -132,9 +131,14 @@ class Group extends \stdClass
 
     }
 
+	/**
+	 * reagiert auf url url request
+	 */
     static function init_handle_requests()
     {
-        if (isset($_REQUEST['action']) && isset($_REQUEST['hash']) && isset($_REQUEST['new_plg_group'])) {
+
+		//member möchte einer Gruppe beitreten
+        if (!is_admin() && isset($_REQUEST['action']) && isset($_REQUEST['hash']) && isset($_REQUEST['new_plg_group'])) {
             $group = new Group($_REQUEST['new_plg_group']);
             if ('plgstart' == $_REQUEST['action'] && $_REQUEST['hash'] == $group->get_hash('start')) {
 
@@ -592,7 +596,7 @@ class Group extends \stdClass
     {
 
 
-        switch ($this->get_status()) {
+        switch ($status = $this->get_status()) {
             case'ready':
                 $headline = get_option('options_rpi_wall_ready_header', 'Professionellen Lerngruppe (PLG)');
                 $notice = get_option('options_rpi_wall_ready_notice', 'Mit Klick auf "Gruppe Gründen" werden alle interessierten angeschrieben und haben eine Woche Zeit, der PLG beizutreten.');
@@ -627,7 +631,7 @@ class Group extends \stdClass
         }
 
 
-        echo '<div class="gruppe">';
+        echo '<div class="gruppe '.strval($status).'">';
         echo '<div class="gruppe-wrapper">';
 
         echo '<div class="gruppe-header">' . $headline . '</div>';
@@ -713,7 +717,7 @@ class Group extends \stdClass
 		    }
 	    }
 
-	    echo '<div class="card_plg_info">';
+	    echo '<div class="card_plg_info '.strval($status).'">';
         echo '<div class="plg-wrapper">';
         echo '<div class="plg plg-' . $status . '">
 						<a href="' . get_the_permalink() . '">' . $notice . '</a>
@@ -728,8 +732,6 @@ class Group extends \stdClass
 	    echo '</div>';
         echo '</div>';
         echo '</div>';
-
-
 
     }
 }

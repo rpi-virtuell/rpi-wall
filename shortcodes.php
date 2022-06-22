@@ -6,6 +6,9 @@ class Shortcodes{
 
 		add_shortcode( 'user_pinned_posts', [$this,'get_users_pinwall_posts'] );
         add_shortcode('rpi-userprofile', array($this, 'get_user_profile_tags'));
+        add_shortcode('my_messages', array($this, 'get_user_messages'));
+        add_shortcode('my_groups', array($this, 'get_user_groups'));
+        add_shortcode('my_likes', array($this, 'get_user_likes'));
 
 	}
 
@@ -29,7 +32,7 @@ class Shortcodes{
 			$attributes['post_type'] = explode(',', $attributes['post_type']);
 		}
 
-		$currentUser = is_user_logged_in() ? get_current_user_id() : wp_ulike_generate_user_id( wp_ulike_get_user_ip() );
+		$currentUser = wp_ulike_pro_get_current_user();
 		$getPosts    = NULL;
 
 		if( empty( $attributes['past_days'] ) ){
@@ -92,6 +95,126 @@ class Shortcodes{
             }
             echo '</ul>';
         }
+    }
+
+	public function get_user_messages($atts){
+
+		$user = wp_ulike_pro_get_current_user();
+
+		//var_dump($user->ID);
+
+		$args = [
+			'post_type' => 'message',
+			'numberposts' => -1,
+			'meta_query' => [
+				'relation' => 'AND',
+				[
+					'key' => 'message_recipient',
+					'value' => $user->ID,
+					'compare' => '>=',
+					'type' => 'NUMERIC'
+				],
+				[
+					'key' => 'message_read',
+					'compare' => 'NOT EXISTS'
+				]
+			]
+		];
+		$messages = get_posts($args);
+
+		ob_start();
+		foreach ( $messages as $message ):
+			setup_postdata( $message );
+			?>
+				<div class="message">
+					<details class="message-content">
+						<summary class="entry-title">
+							<?php echo date('d.n.Y',strtotime($message->post_date));?>: <?php echo $message->post_title;?>
+						</summary>
+						<?php echo $message->post_content;?>
+					</details>
+				</div>
+			<?php
+		endforeach;
+		wp_reset_postdata();
+		return ob_get_clean();
+	}
+
+
+	public function get_user_groups($atts){
+
+		$user = wp_ulike_pro_get_current_user();
+
+		//var_dump($user->ID);
+
+		$args = [
+			'post_type' => 'wall',
+			'numberposts' => -1,
+			'meta_query' => [
+				[
+					'key' => 'rpi_wall_member_id',
+					'value' => $user->ID,
+					'compare' => '>=',
+					'type' => 'NUMERIC'
+				]
+			]
+		];
+		$groups = get_posts($args);
+        if(!$groups){
+            return 'Noch keine Mitgliedschaft in professionellen Lerngruppen';
+        }
+
+		ob_start();
+		foreach ( $groups as $group ):
+			setup_postdata( $group );
+            $plg  = new Group($group->ID);
+			?>
+			<div class="mygroup">
+                <div class="mygroup-wrapper">
+                    <div class="entry-title"><h3><?php echo $plg->title;?></h3></div>
+                    <div class="content">
+                        <?php echo wp_trim_words(get_the_content(),50,'...');?>
+                    </div>
+                    <div><?php echo $plg->get_members_amount();?> Mitglied(er) <?php echo $plg->get_status()==='pending'?', Status: Gründungsphase':'';?></div>
+                    <div>
+                        <a href="<?php the_permalink()?>">Pinwandeintrag</a>
+                        <?php if('pending' !== $plg->get_status()):
+                            ?>| Matrix Raum: <?php echo $plg->get_matrix_link();?>
+                        <?php endif;?>
+                    </div>
+			    </div>
+			</div>
+		<?php
+		endforeach;
+		wp_reset_postdata();
+		return ob_get_clean();
+	}
+
+    public function get_user_likes($atts){
+
+	    $args   = shortcode_atts( array(
+		    "type"           => 'post',
+		    "rel_type"       => 'wall',
+		    "user_id"        => '',
+		    "anonymize_user" => false,
+		    "status"         => 'like',
+		    "is_popular"     => true,
+		    "period"         => 'all',
+		    "style"          => 'default',
+		    "has_pagination" => false,
+		    "limit"          => 50,
+		    "empty_text"     => 'Bisher für keine Gruppe Interesse'
+	    ), $atts );
+
+	    // Set global var
+
+	    global $wp_ulike_query_args;
+	    $wp_ulike_query_args =  $args;
+
+	    $user = wp_ulike_pro_get_current_user();
+
+	    // Load template
+	    return wp_ulike_pro_get_public_template( 'content', $user->ID );
     }
 
 }
