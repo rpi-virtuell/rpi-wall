@@ -949,6 +949,7 @@ class RPIWallInstaller
 
     public function sync_taxonomy_of_member_with_pin(int $post_ID, WP_Post $post, bool $update = false)
     {
+        $new_tags = [];
         $group = new Group($post_ID);
         $group_tags = wp_get_post_terms($post_ID, 'wall-tag');
         $members = $group->get_memberIds();
@@ -957,11 +958,12 @@ class RPIWallInstaller
             foreach ($group_tags as $group_tag) {
                 if (is_a($group_tag, 'WP_Term')) {
                     if (!in_array($group_tag, $member_tags)) {
-
-                        wp_set_post_terms($member, $group_tag->slug, 'wall-tag');
+                        $new_tags[] = $group_tag->slug;
                     }
                 }
             }
+           $new_tags = array_merge(array_column($member_tags, 'slug'), $new_tags) ;
+            wp_set_post_terms($member, $new_tags, 'wall-tag');
         }
 
     }
