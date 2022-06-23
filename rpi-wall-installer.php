@@ -2,7 +2,8 @@
 
 namespace rpi\Wall;
 
-use  rpi\Wall\Message;
+use  rpi\Wall;
+use WP_Post;
 
 class RPIWallInstaller
 {
@@ -14,10 +15,55 @@ class RPIWallInstaller
         add_action('init', array($this, 'register_custom_fields'));
         add_action('init', array($this, 'register_options_pages'));
         add_action('wp_login', array($this, 'sync_user_member_relation'), 10, 2);
+        add_action('save_post_wall', array($this, 'sync_taxonomy_of_member_with_pin'), 10, 3);
+//        add_action('before_delete_post', array($this, 'sync_taxonomy_of_member_with_pin'), 10, 3);
     }
 
     public function register_post_types()
     {
+        /**
+         * Post Type: Pin.
+         */
+
+        $labels = [
+            "name" => __("Pins", "blocksy"),
+            "singular_name" => __("Pin", "blocksy"),
+        ];
+
+        $args = [
+            "label" => __("Pin", "blocksy"),
+            "labels" => $labels,
+            "description" => "",
+            "public" => true,
+            "publicly_queryable" => true,
+            "show_ui" => true,
+            "show_in_rest" => true,
+            "rest_base" => "",
+            "rest_controller_class" => "WP_REST_Posts_Controller",
+            "rest_namespace" => "wp/v2",
+            "has_archive" => true,
+            "show_in_menu" => true,
+            "show_in_nav_menus" => true,
+            "delete_with_user" => true,
+            "exclude_from_search" => false,
+            'capability_type' => 'post',
+            "map_meta_cap" => true,
+            "hierarchical" => false,
+            "can_export" => false,
+            "rewrite" => ["slug" => "wall", "with_front" => true],
+            "query_var" => true,
+            "menu_icon" => "dashicons-pressthis",
+            "supports" => [
+                'title',
+                "editor",
+            ],
+            'taxonomies' => ['wall-tag', "wall-cat"],
+            "show_in_graphql" => false,
+        ];
+
+        register_post_type("wall", $args);
+
+
         /**
          * Post Type: Mitglied.
          */
@@ -47,18 +93,18 @@ class RPIWallInstaller
             "map_meta_cap" => true,
             "hierarchical" => false,
             "can_export" => false,
-            "rewrite" => ["slug" => "Member", "with_front" => true],
+            "rewrite" => ["slug" => "member", "with_front" => true],
             "query_var" => true,
             "menu_icon" => "dashicons-admin-users",
             "supports" => [
                 'title',
                 "editor",
             ],
-            'taxonomies' => [],
+            'taxonomies' => ['wall-tag', "badge", 'schooltype', 'profession'],
             "show_in_graphql" => false,
         ];
 
-        register_post_type("Member", $args);
+        register_post_type("member", $args);
 
         /**
          * Post Type: Nachricht.
@@ -99,49 +145,77 @@ class RPIWallInstaller
 
         register_post_type("message", $args);
 
-
-        /**
-         * Post Type: Gruppe.
-         */
-
-        $labels = [
-            "name" => __("Gruppen", "blocksy"),
-            "singular_name" => __("Gruppe", "blocksy"),
-        ];
-
-        $args = [
-            "label" => __("Gruppen", "blocksy"),
-            "labels" => $labels,
-            "description" => "",
-            "public" => true,
-            "publicly_queryable" => true,
-            "show_ui" => true,
-            "show_in_rest" => true,
-            "rest_base" => "",
-            "rest_controller_class" => "WP_REST_Posts_Controller",
-            "rest_namespace" => "wp/v2",
-            "has_archive" => true,
-            "show_in_menu" => true,
-            "show_in_nav_menus" => true,
-            "delete_with_user" => false,
-            "exclude_from_search" => false,
-            "capability_type" => "post",
-            "map_meta_cap" => true,
-            "hierarchical" => false,
-            "can_export" => false,
-            "rewrite" => ["slug" => "group", "with_front" => true],
-            "query_var" => true,
-            "supports" => ["title", "editor"],
-            "menu_icon" => "dashicons-groups",
-            "taxonomies" => ["channel"],
-            "show_in_graphql" => false,
-        ];
-
-        register_post_type("group", $args);
     }
 
     function register_taxonomies()
     {
+
+        /**
+         * Taxonomy: Tags.
+         */
+
+        $labels = [
+            "name" => __("Tags", "blocksy"),
+            "singular_name" => __("Tag", "blocksy"),
+        ];
+
+
+        $args = [
+            "label" => __("Tags", "blocksy"),
+            "labels" => $labels,
+            "public" => true,
+            "publicly_queryable" => true,
+            "hierarchical" => false,
+            "show_ui" => true,
+            "show_in_menu" => true,
+            "show_in_nav_menus" => true,
+            "query_var" => true,
+            "rewrite" => ['slug' => 'wall-tag', 'with_front' => true,],
+            "show_admin_column" => true,
+            "show_in_rest" => true,
+            "show_tagcloud" => false,
+            "rest_base" => "wall-tag",
+            "rest_controller_class" => "WP_REST_Terms_Controller",
+            "rest_namespace" => "wp/v2",
+            "show_in_quick_edit" => false,
+            "sort" => false,
+            "show_in_graphql" => false,
+        ];
+        register_taxonomy("wall-tag", ["wall", "member"], $args);
+
+        /**
+         * Taxonomy: Kategorien.
+         */
+
+        $labels = [
+            "name" => __("Kategorien", "blocksy"),
+            "singular_name" => __("Kategorie", "blocksy"),
+        ];
+
+
+        $args = [
+            "label" => __("Kategorien", "blocksy"),
+            "labels" => $labels,
+            "public" => true,
+            "publicly_queryable" => true,
+            "hierarchical" => false,
+            "show_ui" => true,
+            "show_in_menu" => true,
+            "show_in_nav_menus" => true,
+            "query_var" => true,
+            "rewrite" => ['slug' => 'wall-cat', 'with_front' => true, 'hierarchical' => true,],
+            "show_admin_column" => false,
+            "show_in_rest" => true,
+            "show_tagcloud" => false,
+            "rest_base" => "wall-cat",
+            "rest_controller_class" => "WP_REST_Terms_Controller",
+            "rest_namespace" => "wp/v2",
+            "show_in_quick_edit" => false,
+            "sort" => false,
+            "show_in_graphql" => false,
+        ];
+        register_taxonomy("wall-cat", ["wall"], $args);
+
 
         /**
          * Taxonomy: Badges.
@@ -158,56 +232,23 @@ class RPIWallInstaller
             "labels" => $labels,
             "public" => true,
             "publicly_queryable" => true,
-            "hierarchical" => true,
+            "hierarchical" => false,
             "show_ui" => true,
             "show_in_menu" => true,
             "show_in_nav_menus" => true,
             "query_var" => true,
-            "rewrite" => ['slug' => 'badge', 'with_front' => true,],
-            "show_admin_column" => true,
+            "rewrite" => ['slug' => 'badge', 'with_front' => true, 'hierarchical' => true,],
+            "show_admin_column" => false,
             "show_in_rest" => true,
             "show_tagcloud" => false,
             "rest_base" => "badge",
             "rest_controller_class" => "WP_REST_Terms_Controller",
             "rest_namespace" => "wp/v2",
-            "show_in_quick_edit" => true,
-            "sort" => true,
-            "show_in_graphql" => false,
-        ];
-        register_taxonomy("badge", ["Member"], $args);
-
-        /**
-         * Taxonomy: Tags.
-         */
-
-        $labels = [
-            "name" => __("Tags", "blocksy"),
-            "singular_name" => __("Tag", "blocksy"),
-        ];
-
-
-        $args = [
-            "label" => __("Tag", "blocksy"),
-            "labels" => $labels,
-            "public" => true,
-            "publicly_queryable" => true,
-            "hierarchical" => true,
-            "show_ui" => true,
-            "show_in_menu" => true,
-            "show_in_nav_menus" => true,
-            "query_var" => true,
-            "rewrite" => ['slug' => 'rpi_tag', 'with_front' => true, 'hierarchical' => true,],
-            "show_admin_column" => true,
-            "show_in_rest" => true,
-            "show_tagcloud" => false,
-            "rest_base" => "rpi_tag",
-            "rest_controller_class" => "WP_REST_Terms_Controller",
-            "rest_namespace" => "wp/v2",
-            "show_in_quick_edit" => true,
+            "show_in_quick_edit" => false,
             "sort" => false,
             "show_in_graphql" => false,
         ];
-        register_taxonomy("rpi_tag", ["Member"], $args);
+        register_taxonomy("badge", ["member"], $args);
 
         /**
          * Taxonomy: schooltype.
@@ -224,23 +265,23 @@ class RPIWallInstaller
             "labels" => $labels,
             "public" => true,
             "publicly_queryable" => true,
-            "hierarchical" => true,
+            "hierarchical" => false,
             "show_ui" => true,
             "show_in_menu" => true,
             "show_in_nav_menus" => true,
             "query_var" => true,
             "rewrite" => ['slug' => 'schooltype', 'with_front' => true, 'hierarchical' => true,],
-            "show_admin_column" => true,
+            "show_admin_column" => false,
             "show_in_rest" => true,
             "show_tagcloud" => false,
             "rest_base" => "schooltype",
             "rest_controller_class" => "WP_REST_Terms_Controller",
             "rest_namespace" => "wp/v2",
-            "show_in_quick_edit" => true,
+            "show_in_quick_edit" => false,
             "sort" => false,
             "show_in_graphql" => false,
         ];
-        register_taxonomy("schooltype", ["Member"], $args);
+        register_taxonomy("schooltype", ["member"], $args);
 
         /**
          * Taxonomy: profession.
@@ -257,23 +298,23 @@ class RPIWallInstaller
             "labels" => $labels,
             "public" => true,
             "publicly_queryable" => true,
-            "hierarchical" => true,
+            "hierarchical" => false,
             "show_ui" => true,
             "show_in_menu" => true,
             "show_in_nav_menus" => true,
             "query_var" => true,
             "rewrite" => ['slug' => 'profession', 'with_front' => true, 'hierarchical' => true,],
-            "show_admin_column" => true,
+            "show_admin_column" => false,
             "show_in_rest" => true,
             "show_tagcloud" => false,
             "rest_base" => "profession",
             "rest_controller_class" => "WP_REST_Terms_Controller",
             "rest_namespace" => "wp/v2",
-            "show_in_quick_edit" => true,
+            "show_in_quick_edit" => false,
             "sort" => false,
             "show_in_graphql" => false,
         ];
-        register_taxonomy("profession", ["Member"], $args);
+        register_taxonomy("profession", ["member"], $args);
     }
 
     function register_custom_fields()
@@ -529,7 +570,7 @@ class RPIWallInstaller
                         'label' => '',
                         'name' => 'rpi_label_group',
                         'type' => 'group',
-                        'instructions' => 'Diese Labels werden angezeigt in der Detail Ansicht eines Pins und ändert sich mit den unterschiedlichen Stadien des Pins',
+                        'instructions' => 'Diese Labels werden angezeigt in der Detail Ansicht eines Pins und ändern sich mit den unterschiedlichen Stadien des Pins',
                         'required' => 0,
                         'conditional_logic' => 0,
                         'wrapper' => array(
@@ -546,7 +587,7 @@ class RPIWallInstaller
                             array(
                                 array(
                                     'key' => 'field_rpi_wall_ready_header',
-                                    'label' => 'RPI Gruppen erstellung möglich Header',
+                                    'label' => 'RPI Gruppen Erstellung möglich Header',
                                     'name' => 'rpi_wall_ready_header',
                                     'type' => 'text',
                                     'instructions' => '',
@@ -567,7 +608,7 @@ class RPIWallInstaller
                                 ),
                                 array(
                                     'key' => 'field_rpi_wall_ready_notice',
-                                    'label' => 'RPI Gruppen erstellung möglich Notice',
+                                    'label' => 'RPI Gruppen Erstellung möglich Notice',
                                     'name' => 'rpi_wall_ready_notice',
                                     'type' => 'text',
                                     'instructions' => '',
@@ -754,8 +795,7 @@ class RPIWallInstaller
                                     'append' => '',
                                     'maxlength' => '150',
                                 ),
-                            )
-                    ,
+                            ),
                     ),
 
                 ),
@@ -890,7 +930,7 @@ class RPIWallInstaller
         if (is_a($user, 'WP_User')) {
             $member = get_posts(array(
                 'post_status' => 'any',
-                'post_type' => 'Member',
+                'post_type' => 'member',
                 'author' => $user->ID
             ));
             if (is_array($member) && !empty(reset($member))) {
@@ -901,10 +941,32 @@ class RPIWallInstaller
                     'post_title' => $user->display_name,
                     'post_status' => 'publish',
                     'post_author' => $user->ID,
-                    'post_type' => 'Member'
+                    'post_type' => 'member'
                 ));
             }
         }
     }
+
+    public function sync_taxonomy_of_member_with_pin(int $post_ID, WP_Post $post, bool $update = false)
+    {
+        $new_tags = [];
+        $group = new Group($post_ID);
+        $group_tags = wp_get_post_terms($post_ID, 'wall-tag');
+        $members = $group->get_memberIds();
+        foreach ($members as $member) {
+            $member_tags = wp_get_post_terms($member, 'wall-tag');
+            foreach ($group_tags as $group_tag) {
+                if (is_a($group_tag, 'WP_Term')) {
+                    if (!in_array($group_tag, $member_tags)) {
+                        $new_tags[] = $group_tag->slug;
+                    }
+                }
+            }
+           $new_tags = array_merge(array_column($member_tags, 'slug'), $new_tags) ;
+            wp_set_post_terms($member, $new_tags, 'wall-tag');
+        }
+
+    }
+
 
 }
