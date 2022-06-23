@@ -360,7 +360,7 @@ class Group extends \stdClass
     /**
      * @return array $user_id[]
      */
-    public function get_comment_likescount()
+    public function get_comment_likes_amount()
     {
         $likes = 0;
         foreach (get_comments(['post_id' => $this->ID]) as $comment) {

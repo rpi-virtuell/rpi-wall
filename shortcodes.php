@@ -64,7 +64,9 @@ class Shortcodes{
 		echo '<div class="wp-ulike-pro-items-container user_pinned_posts">';
 		if( ! empty( $getPosts ) ){
 			foreach ( $getPosts as $post ) :
-				setup_postdata( $post );
+
+
+
 				blocksy_render_archive_card();
 
 			endforeach;
@@ -189,32 +191,141 @@ class Shortcodes{
 		wp_reset_postdata();
 		return ob_get_clean();
 	}
-
     public function get_user_likes($atts){
 
-	    $args   = shortcode_atts( array(
-		    "type"           => 'post',
-		    "rel_type"       => 'wall',
-		    "user_id"        => '',
-		    "anonymize_user" => false,
-		    "status"         => 'like',
-		    "is_popular"     => true,
-		    "period"         => 'all',
-		    "style"          => 'default',
-		    "has_pagination" => false,
-		    "limit"          => 50,
-		    "empty_text"     => 'Bisher für keine Gruppe Interesse'
-	    ), $atts );
+        ob_start();
+        $user = wp_ulike_pro_get_current_user();
 
-	    // Set global var
+        $args = self::get_query_args(['user_id'=>$user->ID],true);
+	    $query = new \WP_Query($args);
+        if($query->have_posts()) {
+	        while ( $query->have_posts() ) {
+		        self::display_post( $query->the_post()  );
 
-	    global $wp_ulike_query_args;
-	    $wp_ulike_query_args =  $args;
+	        }
+        }
+        wp_reset_query();
 
-	    $user = wp_ulike_pro_get_current_user();
 
-	    // Load template
-	    return wp_ulike_pro_get_public_template( 'content', $user->ID );
+
+        return ob_get_clean();
+    }
+
+    static function get_query_args($args,$not_self = false){
+
+	    $not_in = [];
+        if($not_self && $args['user_id']){
+            $pins = get_posts(['post_type'=>'wall', 'author'=>$args['user_id']]);
+	        foreach ($pins as $pin) {
+		        $not_in[] = $pin->ID;
+	        }
+        }
+
+        $defaults = array(
+		    "type"       => 'post',
+		    "rel_type"   => 'wall',
+		    "is_popular" => true,
+		    "status"     => 'like',
+		    "user_id"    =>  '',
+		    "order"      => 'DESC',
+		    "period"     => 'all',
+		    "offset"     => 1,
+		    "limit"      => 10
+	    );
+	    $parsed_args = wp_parse_args( $args, $defaults );
+	    $item_info   = wp_ulike_get_popular_items_info( $parsed_args );
+	    $ids_stack   = array();
+	    if( ! empty( $item_info ) ){
+		    foreach ($item_info as $key => $info) {
+                if(!in_array($info->item_ID,$not_in)){
+                    $ids_stack[] = $info->item_ID;
+                }
+		    }
+	    }
+        $args =[
+            'post__in'=>$ids_stack,
+            'post_type'=>$parsed_args['rel_type']
+        ];
+
+        return $args;
+
+    }
+
+	static function get_comments($args){
+
+		$defaults = array(
+			"type"       => 'comment',
+			"rel_type"   => 'wall',
+			"is_popular" => true,
+			"status"     => 'like',
+			"user_id"    =>  '',
+			"order"      => 'DESC',
+			"period"     => 'all',
+			"offset"     => 1,
+			"limit"      => 10
+		);
+		$parsed_args = wp_parse_args( $args, $defaults );
+		$item_info   = wp_ulike_get_popular_items_info( $parsed_args );
+		$ids_stack   = array();
+		if( ! empty( $item_info ) ){
+			foreach ($item_info as $key => $info) {
+				$ids_stack[] = $info->item_ID;
+			}
+		}
+		return get_comments(['comment__in'=>$ids_stack]);
+	}
+
+	static function display_user($user_id){
+        $user  = get_userdata($user_id);
+        ?>
+        <div class="user-grid">
+            <div class="user-avatar"><?php echo get_avatar($user_id);?></div>
+            <div class="user-name"><a href="<?php echo wp_ulike_pro_get_user_profile_permalink($user_id) ?>"><?php echo $user->display_name;?></a></div>
+        </div>
+        <?php
+	}
+	static function display_likers(Group $group){
+        if($group->get_members_amount()>0){
+            foreach ($group->get_likers_Ids() as $user_id){
+                self::display_user($user_id);
+            }
+        }
+	}
+	static function display_members(Group $group){
+		if($group->get_members_amount()>0){
+			foreach ($group->get_memberIds() as $user_id){
+				self::display_user($user_id);
+			}
+		}
+	}
+
+	static function display_post($post){
+        global $post;
+
+        $plg = new Group($post->ID);
+	    $plg->get_comment_likes_amount();
+        ?>
+        <div class="group-post">
+            <div class="group-post-wrapper">
+                <div class="entry-meta"><?php echo $post->post_author;?></div>
+                <div class="entry-title"><h3><?php echo $post->post_title;?></h3></div>
+                <div class="content">
+				    <?php echo wp_trim_words($post->post_content,50,'...');?>
+                </div>
+                <div><?php echo $plg->get_status()==='pending'?', Status: Gründungsphase':'';?></div>
+                <div>
+                    <div class="user-members"  style="display: flex"><?php self::display_members($plg);?><div class="user-text"><?php echo $plg->get_members_amount();?> Mitglied(er)</div></div>
+                    <div class="user-likers" style="display: flex"><?php self::display_likers($plg);?></div><div class="user-text"><?php echo $plg->get_likers_amount();?> sind interssiert</div></div>
+                </div>
+                <div>
+                    <a href="<?php the_permalink()?>">Pinwandeintrag</a>
+				    <?php if(is_user_logged_in() && 'pending' !== $plg->get_status()  && $plg->has_member(get_current_user_id())):
+					    ?>| Matrix Raum: <?php echo $plg->get_matrix_link();?>
+				    <?php endif;?>
+                </div>
+            </div>
+        </div>
+        <?php
     }
 
 }
