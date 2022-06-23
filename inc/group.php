@@ -320,6 +320,24 @@ class Group extends \stdClass
         return wp_ulike_get_likers_list_per_post('ulike', 'likers_list', $this->ID, 100);
     }
 
+	public function get_liker_and_member_Ids()
+	{
+
+		$likers =  wp_ulike_get_likers_list_per_post('ulike', 'likers_list', $this->ID, 100);
+		$members = $this->get_memberIds();
+		$rest_likers = [];
+		foreach($likers as $liker){
+			if(!in_array($liker, $members)){
+				$rest_likers[]= $liker;
+			}
+		}
+
+		return (object)[
+			'likers' => $rest_likers,
+			'members' => $members
+		];
+
+	}
     /**
      * @return array WP_User[]
      */

@@ -2,6 +2,18 @@
 namespace rpi\Wall;
 
 class Shortcodes{
+
+static $user_icon       = '<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M12 6c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2m0 10c2.7 0 5.8 1.29 6 2H6c.23-.72 3.31-2 6-2m0-12C9.79 4 8 5.79 8 8s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm0 10c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>';
+static $date_icon       = '<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zm0-12H5V6h14v2zm-7 5h5v5h-5z"/></svg>';
+static $group_icon      = '<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000"><g><rect fill="none" height="24" width="24"/></g><g><g><path d="M6.32,13.01c0.96,0.02,1.85,0.5,2.45,1.34C9.5,15.38,10.71,16,12,16c1.29,0,2.5-0.62,3.23-1.66 c0.6-0.84,1.49-1.32,2.45-1.34C16.96,11.78,14.08,11,12,11C9.93,11,7.04,11.78,6.32,13.01z"/><path d="M4,13L4,13c1.66,0,3-1.34,3-3c0-1.66-1.34-3-3-3s-3,1.34-3,3C1,11.66,2.34,13,4,13z"/><path d="M20,13L20,13c1.66,0,3-1.34,3-3c0-1.66-1.34-3-3-3s-3,1.34-3,3C17,11.66,18.34,13,20,13z"/><path d="M12,10c1.66,0,3-1.34,3-3c0-1.66-1.34-3-3-3S9,5.34,9,7C9,8.66,10.34,10,12,10z"/><path d="M21,14h-3.27c-0.77,0-1.35,0.45-1.68,0.92C16.01,14.98,14.69,17,12,17c-1.43,0-3.03-0.64-4.05-2.08 C7.56,14.37,6.95,14,6.27,14H3c-1.1,0-2,0.9-2,2v4h7v-2.26c1.15,0.8,2.54,1.26,4,1.26s2.85-0.46,4-1.26V20h7v-4 C23,14.9,22.1,14,21,14z"/></g></g></svg>';
+static $tag_icon        = '<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M21.41 11.58l-9-9C12.05 2.22 11.55 2 11 2H4c-1.1 0-2 .9-2 2v7c0 .55.22 1.05.59 1.42l9 9c.36.36.86.58 1.41.58s1.05-.22 1.41-.59l7-7c.37-.36.59-.86.59-1.41s-.23-1.06-.59-1.42zM13 20.01L4 11V4h7v-.01l9 9-7 7.02z"/><circle cx="6.5" cy="6.5" r="1.5"/></svg>';
+static $tag2_icon       = '<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M17.63 5.84C17.27 5.33 16.67 5 16 5L5 5.01C3.9 5.01 3 5.9 3 7v10c0 1.1.9 1.99 2 1.99L16 19c.67 0 1.27-.33 1.63-.84L22 12l-4.37-6.16zM16 17H5V7h11l3.55 5L16 17z"/></svg>';
+static $taxonomy_icon   = '<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5v-3h3.56c.69 1.19 1.97 2 3.45 2s2.75-.81 3.45-2H19v3zm0-5h-4.99c0 1.1-.9 2-2 2s-2-.9-2-2H5V5h14v9z"/></svg>';
+static $folder_icon     = '<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M9.17 6l2 2H20v10H4V6h5.17M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/></svg>';
+static $like_icon       = '<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000"><g><rect fill="none" height="24" width="24"/><rect fill="none" height="24" width="24"/></g><g><g><polygon points="22,9 22,7 20,7 20,9 18,9 18,11 20,11 20,13 22,13 22,11 24,11 24,9"/><path d="M8,12c2.21,0,4-1.79,4-4s-1.79-4-4-4S4,5.79,4,8S5.79,12,8,12z M8,6c1.1,0,2,0.9,2,2s-0.9,2-2,2S6,9.1,6,8S6.9,6,8,6z"/><path d="M8,13c-2.67,0-8,1.34-8,4v3h16v-3C16,14.34,10.67,13,8,13z M14,18H2v-0.99C2.2,16.29,5.3,15,8,15s5.8,1.29,6,2V18z"/><path d="M12.51,4.05C13.43,5.11,14,6.49,14,8s-0.57,2.89-1.49,3.95C14.47,11.7,16,10.04,16,8S14.47,4.3,12.51,4.05z"/><path d="M16.53,13.83C17.42,14.66,18,15.7,18,17v3h2v-3C20,15.55,18.41,14.49,16.53,13.83z"/></g></g></svg>';
+static $watch_icon      = '<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M12 6c3.79 0 7.17 2.13 8.82 5.5C19.17 14.87 15.79 17 12 17s-7.17-2.13-8.82-5.5C4.83 8.13 8.21 6 12 6m0-2C7 4 2.73 7.11 1 11.5 2.73 15.89 7 19 12 19s9.27-3.11 11-7.5C21.27 7.11 17 4 12 4zm0 5c1.38 0 2.5 1.12 2.5 2.5S13.38 14 12 14s-2.5-1.12-2.5-2.5S10.62 9 12 9m0-2c-2.48 0-4.5 2.02-4.5 4.5S9.52 16 12 16s4.5-2.02 4.5-4.5S14.48 7 12 7z"/></svg>';
+static $mail_icon       = '<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M22 6c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6zm-2 0l-8 5-8-5h16zm0 12H4V8l8 5 8-5v10z"/></svg>';
+
 	public function __construct() {
 
 		add_shortcode( 'user_pinned_posts', [$this,'get_users_pinwall_posts'] );
@@ -194,19 +206,27 @@ class Shortcodes{
     public function get_user_likes($atts){
 
         ob_start();
+
+        echo '<div class="group-posts">';
+
         $user = wp_ulike_pro_get_current_user();
 
-        $args = self::get_query_args(['user_id'=>$user->ID],true);
-	    $query = new \WP_Query($args);
+        $args = self::get_query_args([
+            'user_id'=>$user->ID,
+            //'not_group_status'=>['founded','closed'],
+            'not_member'=>true,
+            //'not_author'=>true
+        ]);
+
+        $query = new \WP_Query($args);
         if($query->have_posts()) {
 	        while ( $query->have_posts() ) {
 		        self::display_post( $query->the_post()  );
-
 	        }
         }
         wp_reset_query();
 
-
+        echo '</div>';
 
         return ob_get_clean();
     }
@@ -214,12 +234,6 @@ class Shortcodes{
     static function get_query_args($args,$not_self = false){
 
 	    $not_in = [];
-        if($not_self && $args['user_id']){
-            $pins = get_posts(['post_type'=>'wall', 'author'=>$args['user_id']]);
-	        foreach ($pins as $pin) {
-		        $not_in[] = $pin->ID;
-	        }
-        }
 
         $defaults = array(
 		    "type"       => 'post',
@@ -230,9 +244,16 @@ class Shortcodes{
 		    "order"      => 'DESC',
 		    "period"     => 'all',
 		    "offset"     => 1,
-		    "limit"      => 10
+		    "limit"      => 10,
+		    'group_status'=>'',
+		    'not_group_status'=>'',
+            'not_member'=>false,
+            'not_author'=>false
 	    );
 	    $parsed_args = wp_parse_args( $args, $defaults );
+
+
+
 	    $item_info   = wp_ulike_get_popular_items_info( $parsed_args );
 	    $ids_stack   = array();
 	    if( ! empty( $item_info ) ){
@@ -242,12 +263,67 @@ class Shortcodes{
                 }
 		    }
 	    }
-        $args =[
+
+
+
+	    $args =[
             'post__in'=>$ids_stack,
             'post_type'=>$parsed_args['rel_type']
         ];
 
-        return $args;
+	    if($parsed_args['not_author'] && $parsed_args['user_id']){
+		    $args['author__not_in']=$parsed_args['user_id'];
+	    }
+        $meta = [];
+	    if(!empty($parsed_args['group_status'])){
+		    $meta[]=[
+				    'key' => 'pl_group_status',
+				    'value' => $parsed_args['group_status'],
+				    'compare' => 'IN'
+			    ];
+	    }
+	    if(empty($parsed_args['not_group_status'])){
+		    $meta[]=[
+			    'key' => 'pl_group_status',
+			    'value' => $parsed_args['not_group_status'],
+			    'compare' => 'NOT IN'
+		    ];
+	    }
+
+
+        if(count($meta)>0){
+	        $args['meta_query']= [
+		        'relation' => 'AND',
+		        $meta
+                ]
+            ;
+        }
+
+
+	    if(!empty($parsed_args['not_member'])){
+            $m = get_posts([
+                'post_type'=>'wall',
+                'meta_query'=>[
+	                'key' => 'rpi_wall_member_id',
+	                'value' => [$parsed_args['user_id']],
+	                'compare' => 'NOT IN'
+
+                ]
+            ]);
+
+            foreach ($m as $s){
+	            $not_in[]=$s->ID;
+            }
+		    $in = [];
+            foreach ($args['post__in'] as $i){
+                if(!in_array($i,$not_in)){
+	                $in[] = $i;
+                }
+            }
+		    $args['post__in'] = $in;
+	    }
+        //var_dump('<pre>',$args);die();
+	    return $args;
 
     }
 
@@ -275,21 +351,42 @@ class Shortcodes{
 		return get_comments(['comment__in'=>$ids_stack]);
 	}
 
-	static function display_user($user_id){
+	static function display_user($user_id, $size){
         $user  = get_userdata($user_id);
         ?>
         <div class="user-grid">
-            <div class="user-avatar"><?php echo get_avatar($user_id);?></div>
+            <div class="user-avatar"><?php echo get_avatar($user_id, $size);?></div>
             <div class="user-name"><a href="<?php echo wp_ulike_pro_get_user_profile_permalink($user_id) ?>"><?php echo $user->display_name;?></a></div>
         </div>
         <?php
 	}
-	static function display_likers(Group $group){
-        if($group->get_members_amount()>0){
-            foreach ($group->get_likers_Ids() as $user_id){
-                self::display_user($user_id);
-            }
-        }
+    static function display_user_name($user_id){
+        $user  = get_userdata($user_id);
+        ?>
+        <span class="user-name"><a href="<?php echo wp_ulike_pro_get_user_profile_permalink($user_id) ?>"><?php echo $user->display_name;?></a></span>
+        <?php
+	}
+	static function display_assignd_user(Group $group, $size=24){
+        $u = $group->get_liker_and_member_Ids();
+        ?>
+        <div class="user-assignd">
+            <div class="user-members">
+                <?php
+                foreach ($u->members as $user_id){
+	                self::display_user($user_id,$size);
+                }
+                ?>
+            </div>
+            <div class="user-likers">
+                <?php
+                foreach ($u->likers as $user_id){
+                    self::display_user($user_id,$size);
+                }
+                ?>
+            </div>
+            <div><?php echo $group->get_status()==='pending'?', Status: Gründungsphase':'';?></div>
+        </div>
+        <?php
 	}
 	static function display_members(Group $group){
 		if($group->get_members_amount()>0){
@@ -304,25 +401,24 @@ class Shortcodes{
 
         $plg = new Group($post->ID);
 	    $plg->get_comment_likes_amount();
+
         ?>
         <div class="group-post">
             <div class="group-post-wrapper">
-                <div class="entry-meta"><?php echo $post->post_author;?></div>
                 <div class="entry-title"><h3><?php echo $post->post_title;?></h3></div>
+                <div class="entry-meta"><?php echo self::$user_icon;?> <?php echo self::display_user_name( $post->post_author );?> <?php echo self::$date_icon;?><?php echo date('d.m.Y',strtotime($post->post_date));?></div>
                 <div class="content">
 				    <?php echo wp_trim_words($post->post_content,50,'...');?>
                 </div>
-                <div><?php echo $plg->get_status()==='pending'?', Status: Gründungsphase':'';?></div>
-                <div>
-                    <div class="user-members"  style="display: flex"><?php self::display_members($plg);?><div class="user-text"><?php echo $plg->get_members_amount();?> Mitglied(er)</div></div>
-                    <div class="user-likers" style="display: flex"><?php self::display_likers($plg);?></div><div class="user-text"><?php echo $plg->get_likers_amount();?> sind interssiert</div></div>
-                </div>
+                <div class="ghost"></div>
                 <div>
                     <a href="<?php the_permalink()?>">Pinwandeintrag</a>
 				    <?php if(is_user_logged_in() && 'pending' !== $plg->get_status()  && $plg->has_member(get_current_user_id())):
 					    ?>| Matrix Raum: <?php echo $plg->get_matrix_link();?>
 				    <?php endif;?>
                 </div>
+	            <?php self::display_assignd_user($plg,24);?>
+
             </div>
         </div>
         <?php
