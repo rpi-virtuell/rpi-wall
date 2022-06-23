@@ -3,7 +3,7 @@
 namespace rpi\Wall;
 
 
-class Member extends \stdClass
+class member extends \stdClass
 {
 
     public $ID;
@@ -24,7 +24,7 @@ class Member extends \stdClass
 
             $posts = get_posts(array(
                 'post_status' => 'any',
-                'post_type' => 'Member',
+                'post_type' => 'member',
                 'author' => $user_id
             ));
             $this->post = reset($posts);
@@ -149,7 +149,7 @@ class Member extends \stdClass
 
             if ('plgjoin' == $_REQUEST['action']) {
 
-                $member = new Member(intval($_REQUEST['new_group_member']));
+                $member = new member(intval($_REQUEST['new_group_member']));
                 $member->validate_and_join($_REQUEST['hash']);
 
                 wp_redirect($member->get_member_profile_permalink());

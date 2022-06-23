@@ -388,14 +388,14 @@ class Group extends \stdClass
     }
 
     /**
-     * @return array Member[]
+     * @return array member[]
      *
      */
     public function get_members()
     {
         $members = [];
         foreach ($this->get_memberIds() as $member_id) {
-            $members[] = new Member($member_id);
+            $members[] = new member($member_id);
         }
         return $members;
     }
@@ -403,11 +403,11 @@ class Group extends \stdClass
     /**
      * @param \WP_User $user_id
      *
-     * @return Member
+     * @return member
      */
     public function get_member($user_id)
     {
-        return new Member($user_id);
+        return new member($user_id);
     }
 
     /**
@@ -553,7 +553,7 @@ class Group extends \stdClass
 
     public function get_current_users_joinlink($label = 'Gruppe beitreten')
     {
-        $member = new Member(get_current_user_id());
+        $member = new member(get_current_user_id());
 
         if (!$this->has_member($member)) {
             $hash = $member->get_join_hash($this->ID);
@@ -565,7 +565,7 @@ class Group extends \stdClass
 
     public function has_member($member)
     {
-        if (is_a($member, 'rpi\Wall\Member')) {
+        if (is_a($member, 'rpi\Wall\member')) {
             $user_id = $member->ID;
         } else {
             $user_id = $member;

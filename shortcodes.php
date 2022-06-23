@@ -83,7 +83,7 @@ class Shortcodes{
 
         if (isset($atts['content']) && is_a($wp_ulike_pro_current_user, 'WP_User')) {
             echo '<ul>';
-            $member = get_page_by_title($wp_ulike_pro_current_user->display_name, 'OBJECT', 'Member');
+            $member = get_page_by_title($wp_ulike_pro_current_user->display_name, 'OBJECT', 'member');
             if (post_type_exists($atts['content'])) {
                 //TODO: Gruppen Link einfügen (Link auf Pinns mit gruppen)
             } elseif (taxonomy_exists($atts['content'])) {
