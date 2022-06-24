@@ -56,6 +56,7 @@ class RPIWallInstaller
             "supports" => [
                 'title',
                 "editor",
+                "comments",
             ],
             'taxonomies' => ['wall-tag', "wall-cat"],
             "show_in_graphql" => false,
