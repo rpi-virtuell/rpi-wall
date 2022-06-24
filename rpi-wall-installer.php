@@ -986,12 +986,10 @@ class RPIWallInstaller
                 foreach ($member_groups as $member_group) {
                     if ($group->ID === $member_group) {
                         continue;
-                    } else{
+                    } else {
                         $group_tags = wp_get_post_terms($member_group, 'wall-tag');
-                        foreach ($group_tags as $group_tag)
-                        {
-                            if (is_a($group_tag,'WP_Term') && !in_array($group_tag->slug, $member_tags))
-                            {
+                        foreach ($group_tags as $group_tag) {
+                            if (is_a($group_tag, 'WP_Term') && !in_array($group_tag->slug, $member_tags)) {
                                 $member_tags[] = $group_tag->slug;
                             }
                         }
