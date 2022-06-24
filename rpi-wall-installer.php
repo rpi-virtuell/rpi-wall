@@ -16,7 +16,7 @@ class RPIWallInstaller
         add_action('init', array($this, 'register_options_pages'));
         add_action('wp_login', array($this, 'sync_user_member_relation'), 10, 2);
         add_action('save_post_wall', array($this, 'sync_taxonomy_of_member_with_pin'), 10, 3);
-//        add_action('before_delete_post', array($this, 'sync_taxonomy_of_member_with_pin'), 10, 3);
+        add_action('before_delete_post', array($this, 'delete_member_taxonomy_on_pin_deletion'), 10, 2);
     }
 
     public function register_post_types()
@@ -948,6 +948,12 @@ class RPIWallInstaller
         }
     }
 
+    /**
+     * @param int $post_ID
+     * @param WP_Post $post
+     * @param bool $update
+     * @return void
+     */
     public function sync_taxonomy_of_member_with_pin(int $post_ID, WP_Post $post, bool $update = false)
     {
         $new_tags = [];
@@ -963,10 +969,36 @@ class RPIWallInstaller
                     }
                 }
             }
-           $new_tags = array_merge(array_column($member_tags, 'slug'), $new_tags) ;
+            $new_tags = array_merge(array_column($member_tags, 'slug'), $new_tags);
             wp_set_post_terms($member, $new_tags, 'wall-tag');
         }
 
+    }
+
+    public function delete_member_taxonomy_on_pin_deletion(int $postid, WP_Post $post)
+    {
+        if ($post->post_type === 'pin') {
+            $group = new Group($postid);
+            $members = $group->get_memberIds();
+            foreach ($members as $member) {
+                $member = new member($member);
+                $member_tags = [];
+                $member_groups = $member->get_groups();
+                foreach ($member_groups as $member_group) {
+                    if ($group->ID === $member_group) {
+                        continue;
+                    } else {
+                        $group_tags = wp_get_post_terms($member_group, 'wall-tag');
+                        foreach ($group_tags as $group_tag) {
+                            if (is_a($group_tag, 'WP_Term') && !in_array($group_tag->slug, $member_tags)) {
+                                $member_tags[] = $group_tag->slug;
+                            }
+                        }
+                    }
+                }
+                wp_set_post_terms($member, $member_tags, 'wall-tag');
+            }
+        }
     }
 
 
