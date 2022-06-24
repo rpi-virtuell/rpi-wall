@@ -85,8 +85,7 @@ class member extends \stdClass
 
     }
 
-    public
-    function get_groups()
+    public function get_group_Ids()
     {
         return get_user_meta($this->id, 'rpi_wall_group_id');
     }

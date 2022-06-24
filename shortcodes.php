@@ -115,11 +115,12 @@ static $mail_icon       = '<svg xmlns="http://www.w3.org/2000/svg" height="24px"
 
 		$user = wp_ulike_pro_get_current_user();
 
-		//var_dump($user->ID);
+		$paged = ( get_query_var( 'paged' ) ) ? absint( get_query_var( 'paged' ) ) : 1;
 
 		$args = [
 			'post_type' => 'message',
-			'numberposts' => -1,
+			'posts_per_page' => 10,
+			'paged' => $paged,
 			'meta_query' => [
 				'relation' => 'AND',
 				[
@@ -134,22 +135,30 @@ static $mail_icon       = '<svg xmlns="http://www.w3.org/2000/svg" height="24px"
 				]
 			]
 		];
-		$messages = get_posts($args);
+        $wp_query = new \WP_Query($args);
+		$messages = $wp_query->get_posts();
 
 		ob_start();
-		foreach ( $messages as $message ):
-			setup_postdata( $message );
-			?>
+		foreach ( $messages as $post ):
+			setup_postdata( $post );
+            ?>
 				<div class="message">
 					<details class="message-content">
 						<summary class="entry-title">
-							<?php echo date('d.n.Y',strtotime($message->post_date));?>: <?php echo $message->post_title;?>
+							<?php echo date('d.n.Y',strtotime($post->post_date));?>: <?php echo $post->post_title;?>
 						</summary>
-						<?php echo $message->post_content;?>
+						<?php echo $post->post_content;?>
 					</details>
 				</div>
 			<?php
 		endforeach;
+
+		echo '<hr>';
+		echo paginate_links( array(
+			'format' => '?paged=%#%',
+			'current' => max( 1, get_query_var('paged') ),
+			'total' => $wp_query->max_num_pages
+		) );
 		wp_reset_postdata();
 		return ob_get_clean();
 	}
@@ -306,7 +315,7 @@ static $mail_icon       = '<svg xmlns="http://www.w3.org/2000/svg" height="24px"
                 'meta_query'=>[
 	                'key' => 'rpi_wall_member_id',
 	                'value' => [$parsed_args['user_id']],
-	                'compare' => 'NOT IN'
+	                'compare' => 'IN'
 
                 ]
             ]);
@@ -322,7 +331,7 @@ static $mail_icon       = '<svg xmlns="http://www.w3.org/2000/svg" height="24px"
             }
 		    $args['post__in'] = $in;
 	    }
-        //var_dump('<pre>',$args);die();
+        // var_dump('<pre>',$args);die();
 	    return $args;
 
     }
