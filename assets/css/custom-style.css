@@ -43,6 +43,7 @@
 }
 .wp-ulike-pro-profile-custom-info {
     display: flex;
+    flex-direction: column;
 }
 
 /*interessierte liker in einer Post*/

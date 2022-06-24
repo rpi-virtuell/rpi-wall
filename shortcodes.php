@@ -94,7 +94,6 @@ static $mail_icon       = '<svg xmlns="http://www.w3.org/2000/svg" height="24px"
 
 
         if (isset($atts['content']) && is_a($wp_ulike_pro_current_user, 'WP_User')) {
-            echo '<ul>';
             $member = get_page_by_title($wp_ulike_pro_current_user->display_name, 'OBJECT', 'member');
             if (post_type_exists($atts['content'])) {
                 //TODO: Gruppen Link einfügen (Link auf Pinns mit gruppen)
@@ -107,7 +106,6 @@ static $mail_icon       = '<svg xmlns="http://www.w3.org/2000/svg" height="24px"
                     }
                 }
             }
-            echo '</ul>';
         }
     }
 
