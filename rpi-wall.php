@@ -78,11 +78,13 @@ class RpiWall
 			echo do_shortcode('[frontend_admin form="28"]');
 			echo '</div>';
         });
-
 		add_action('init', function (){
-			//if(!is_admin())
-				//	rpi\Wall\Matrix\Helper::create_room(new Wall\Group(75));
+
+
+
+
         });
+
 
     }
 

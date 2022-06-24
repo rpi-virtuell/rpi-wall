@@ -44,43 +44,137 @@ class member extends \stdClass
         return wp_ulike_pro_get_user_profile_permalink($this->ID);
     }
 
+	public function get_liked_group_Ids(){
+		$groups = wp_ulike_get_meta_data( $this->ID, 'user', 'post_status', true );
+		$likes =[];
+		foreach ($groups as $group_id=>$status){
+			if($status == 'like'){
+				$likes[]=$group_id;
+			}
+		}
+		return $likes;
+	}
+	public function is_liked_group($groupId){
+		return in_array($groupId, $this->get_liked_group_Ids());
+	}
 
-    protected
-    function join_group($groupId)
+	public function like_group($groupId){
+
+		if(!is_liked_group($groupId)){
+			$this->toggle_like_group($groupId);
+		}
+	}
+	public function un_like_group($groupId){
+
+		if(is_liked_group($groupId)){
+			$this->toggle_like_group($groupId);
+		}
+	}
+
+	protected function toggle_like_group($groupId){
+		$process  = new \wp_ulike_cta_process( array(
+			'item_id'       =>  $groupId,
+			'item_type'     =>  'post',
+			'item_template' =>  "wpulike-heart",
+			'user_id'       =>  $this->ID
+		) );
+		//toggle like/unlike
+		$process->update();
+	}
+
+	public function is_in_group_or_likes_group($groupId){
+		return in_array($groupId,get_assigned_group_Ids());
+	}
+
+	public function get_assigned_group_Ids(){
+		return array_merge($this->get_group_Ids(),$this->get_liked_group_Ids());
+	}
+
+	public function get_query_all_groups($args = array()){
+
+		$args = wp_parse_args($args,
+		[
+			'post_type' => 'wall',
+			'post__in' => $this->get_assigned_group_Ids()
+		]);
+
+		$query = new \WP_Query($args);
+		return $query;
+
+	}
+
+	public function get_query_pending_groups($stati = array ('pending')){
+		$query = new \WP_Query([
+			'post_type' => 'wall',
+			'post__in' => $this->get_assigned_group_Ids(),
+			'meta_query'=>[
+				'key' => 'pl_group_status',
+				'value' => $stati,
+				'compare' => 'IN'
+			]
+		]);
+		return $query;
+	}
+	public function get_my_posts_query($args = array()){
+		$args = wp_parse_args($args,[
+			'post_type' => 'wall',
+			'post_author'=>$this->ID
+		]);
+		$query = new \WP_Query($args);
+		return $query;
+	}
+	public function get_my_comments_query($args = array()){
+
+		$props = wp_parse_args($args,[
+			'author__in'=>[$this->ID]
+		]);
+
+		$comments_query = new \WP_Comment_Query( $props );
+		$comments = $comments_query->comments;
+		foreach ($comments as $key=>$comment){
+			$comments[$key]->post = get_post($comment->comment_post_ID);
+		}
+		return $comments;
+	}
+
+	/**
+	 * helper function Mitglieder einer Gruppe sollen nicht zugleich liker sein
+	 * @return void
+	 */
+	public function clean_likes(){
+
+		foreach ($this->get_group_Ids() as $group_id){
+			if($this->is_liked_group($group_id)){
+				$this->un_like_group($group_id);
+			}
+		}
+	}
+
+
+
+    protected function join_group($groupId)
     {
-
 	    if ($this->is_in_group($groupId)) {
             return false;
         }
 
-
-
         add_post_meta($groupId, 'rpi_wall_member_id', $this->ID);
         add_user_meta($this->ID, 'rpi_wall_group_id', $groupId);
 
-
-
-
+		$this->un_like_group($groupId);
     }
 
-    public
-    function leave_group($groupId)
+    public function leave_group($groupId)
     {
-
-        if (delete_post_meta($groupId, 'rpi_wall_member_id', $this->ID)
-            && delete_user_meta($this->ID, 'rpi_wall_group_id', $groupId)) {
-
-            do_action('rpi_wall_member_left_group', $this, $groupId);
-            return true;
-
-        } else {
-            return false;
-        }
+        delete_post_meta($groupId, 'rpi_wall_member_id', $this->ID);
+		delete_user_meta($this->ID, 'rpi_wall_group_id', $groupId);
+	    do_action('rpi_wall_member_left_group', $this, $groupId);
+        return true;
 
     }
 
-    public
-    function watch_group($groupid)
+
+    public function watch_group($groupid)
     {
 
     }
@@ -216,4 +310,12 @@ class member extends \stdClass
         return '<a href="' . get_home_url() . '?action=plgjoin&hash=' . $hash . '&member=' . $this->ID . '">Gruppe beitreten</p>';
 
     }
+
+	public function display_gravtar($size = 96){
+		echo get_avatar($this->ID,$size);
+	}
+	public function display($size = 15){
+		Shortcodes::display_user($this->ID,$size);
+	}
+
 }

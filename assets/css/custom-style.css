@@ -162,7 +162,7 @@ article.entry-card.type-wall .plg-wrapper{
     display: grid;
 
 }
-.group-post .user-grid{
+.user-grid{
     display: grid;
     grid-column-gap: 10px;
     grid-template-columns: 30px 250px auto;
@@ -191,4 +191,21 @@ article.entry-card.type-wall .plg-wrapper{
         grid-template-columns: repeat(1, 1fr);
     }
 }
+.member-coment{
+    box-shadow:1px 1px 3px 0px #888;
+    margin-bottom: 20px;
+    padding: 20px;
 
+}
+.member-coment .entry-content{
+    margin-left: 40px;
+    margin-bottom: 10px;
+}
+
+.member-coment .entry-post-permalink{
+    display: grid;
+    grid-template-columns: auto 1fr;
+    justify-content: left;
+    column-gap: 20px;
+
+}
