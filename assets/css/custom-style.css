@@ -215,3 +215,46 @@ article.entry-card.type-wall .plg-wrapper{
     column-gap: 20px;
 
 }
+.like-group-box{
+    display: grid;
+    column-gap: 4px;
+    grid-template-columns: auto 1fr;
+}
+.rpi-wall-group-likers{
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+.like-btn-wrapper {
+    border: 1px solid #ccc;
+    border-radius: 50%;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    max-height: 85px;
+    padding: 20px 7px;
+    box-shadow: 1px 2px 9px 1px #ccc;
+}
+.like-btn-wrapper .rpi-wall-like-button{
+    max-height: 36px;
+    height: auto;
+    background: transparent;
+}
+.like-btn-wrapper .rpi-wall-like-button svg{
+    min-width: 36px;
+    height: auto;
+    margin-left: 10px;
+    border: 2px solid #fff;
+}
+.like-group-box .rpi-wall-counter {
+    padding: 0 10px;
+    font-size: 23px;
+    text-align: right;
+}
+.group-member img {
+    border-radius: 50%;
+    border: 2px solid #fff;
+}
+.group-member {
+    margin-right: -20px;
+}

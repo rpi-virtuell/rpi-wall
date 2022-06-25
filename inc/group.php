@@ -61,6 +61,10 @@ class Group extends \stdClass
 
     {
 
+        //TODO: calc likers_amount
+        //
+        //
+        //
         // check alle Gruppen, die keinen status, aber likers haben
         // wenn minimum likers erreicht: Gründungsphase zu starten
 
@@ -682,8 +686,8 @@ class Group extends \stdClass
 
 		if(!in_array($this->get_status(),['founded', 'closed'] )){
 			echo '<div class="gruppe-liker">';
-			echo $this->display_liker(96);
-			echo do_shortcode('[wp_ulike  style="wpulike-heart"]');
+			echo $this->display_liker(96, true);
+			//echo do_shortcode('[wp_ulike  style="wpulike-heart"]');
 			echo '</div>';
 		}else{
 			echo '<div class="gruppe-liker">';
@@ -718,19 +722,12 @@ class Group extends \stdClass
 		};
 		return $out;
     }
-	public function display_liker($size = 48)
+	public function display_liker($size = 96, $box = false)
     {
-		ob_start()
-		?>
-		<div class="wp_ulike_general_class wp_ulike_is_already_liked">
-			<button class="rpi-wall-like-button" id="like-group-<?php the_ID();?>" type="button">[#]</button>
-			<span class="count-box wp_ulike_counter_up" data-ulike-counter-value="+2">+2</span>
-		</div>
-		<?php
-	    $button = ob_get_clean();
+
+
 	    $ids = $this->get_likers_Ids();
-			$out = '<ul class="rpi-wall group-members">' .$button;
-	        if(count($ids)>0){
+			if(count($ids)>0){
 			foreach ($ids as $user_id) {
 				$user = get_userdata($user_id);
 				$out .= '<li class="group-member liker" title="'.$user->display_name.'">';
@@ -738,10 +735,35 @@ class Group extends \stdClass
 				$out .= '</li>';
 			}
 		};
-	    $out .= '</ul>';
-		return $out;
+	    $out .= '';
+
+        if($box){
+	        ob_start()
+	        ?>
+            <div id="like-group-<?php the_ID();?>" class="like-group-box">
+                <?php $this->display_liker_button() ?>
+                <ul class="rpi-wall-group-likers">
+			        <?php echo $out;?>
+                </ul></div>
+	        <?php
+	        $out = ob_get_clean();
+        }
+
+        return $out;
     }
 
+
+
+    public function display_liker_button(){
+        if(is_user_logged_in()): ?>
+        <div class="like-btn-wrapper">
+            <button class="rpi-wall-like-button" id="btn-like-group-<?php the_ID();?>">
+			    <?php echo Shortcodes::$group_add_icon;?>
+            </button>
+            <span class="rpi-wall-counter"><?php echo $this->get_likers_amount();?></span>
+        </div>
+	    <?php endif;
+    }
     public function display_short_info()
     {
 

@@ -72,9 +72,8 @@ class RpiWall
 
         add_action('init', ['rpi\Wall\member', 'init_handle_request']);
 
-	    add_action('wp_ajax_rpi_wall_toggle_like',['rpi\Wall\member','ajax_toggle_group_like'] );
-	    add_action('wp_ajax_nopriv_rpi_wall_toggle_like',['rpi\Wall\member','ajax_toggle_group_like'] );
-
+	    add_action('wp_ajax_rpi_wall_toggle_like',[$this,'ajax_toggle_group_like'] );
+	    add_action('wp_ajax_nopriv_rpi_wall_toggle_like',[$this,'ajax_toggle_group_like'] );
 
 
         add_action('blocksy:loop:before', function (){
@@ -86,8 +85,35 @@ class RpiWall
 
 
     }
+	public function ajax_toggle_group_like(){
 
-    /**
+
+		$response = ['success'=>false];
+		if(isset($_POST['group_id'])){
+			$group = new Wall\Group($_POST['group_id']);
+			if($group){
+				$member = new Wall\member();
+				$member->toggle_like_group($group->ID);
+
+				$response = [
+					'success'=>true,
+					'is_liker' => $member->is_liked_group($group->ID),
+					'amount' => $group->get_likers_amount(),
+					'likers' => $group->display_liker()
+				];
+
+			}
+
+		}
+		echo json_encode($response);
+		die();
+
+
+	}
+
+
+
+	/**
      *
      * @param array $respond
      * @param integer $post_ID
@@ -142,8 +168,9 @@ class RpiWall
     public function custom_style_and_scripts()
     {
         wp_enqueue_style('rpi-wall-style', plugin_dir_url(__FILE__) . 'assets/css/custom-style.css');
-        wp_enqueue_script('rpi-wall-scripts', plugin_dir_url(__FILE__) . 'assets/js/custom-scripts.js', array(), '1.0.0', true);
-	    wp_localize_script( 'rpi-wall-scripts', 'epi_wall',   array( 'ajax_url' => admin_url( 'admin-ajax.php' )));
+        wp_enqueue_script('rpi-wall-script', plugin_dir_url(__FILE__) . 'assets/js/custom-scripts.js', array('jquery'));
+	    wp_localize_script( 'rpi-wall-script', 'wall', array( 'ajaxurl' => admin_url( 'admin-ajax.php' )));
+
     }
 
 

@@ -27,9 +27,11 @@ class member extends \stdClass
 	    }else{
 		    if ($user === 0) {
 			    $this->ID = get_current_user_id();
+		    }else{
+			    $this->ID = $user;
 		    }
-		    $this->ID = $user;
-		    $this->user = get_userdata($user);
+
+		    $this->user = get_userdata($this->ID);
 
 		    if(!$this->user){
 				return new \WP_Error('404','User not found');
@@ -84,27 +86,24 @@ class member extends \stdClass
 		}
 	}
 
-	static function ajax_toggle_group_like(){
-
-		if(isset($_POST['group_id'])){
-			$member = new member();
-			$member->toggle_like_group(intval($_POST['group_id']));
-		}
-
-	}
 
 	public function toggle_like_group($groupId)
 	{
-		if ($this->is_liked_group($groupId)) {
-			delete_post_meta($groupId, 'rpi_wall_liker_id', $this->ID);
-			delete_user_meta($this->ID, 'rpi_wall_liked_group_id', $groupId);
-		}else{
-			add_post_meta($groupId, 'rpi_wall_liker_id', $this->ID);
-			add_user_meta($this->ID, 'rpi_wall_liked_group_id', $groupId);
+		if($this->ID > 0){
+			if (!$this->is_liked_group($groupId)) {
+				add_post_meta($groupId, 'rpi_wall_liker_id', $this->ID);
+				add_user_meta($this->ID, 'rpi_wall_liked_group_id', $groupId);
+				$action = 'like';
+			}else{
+				delete_post_meta($groupId, 'rpi_wall_liker_id', $this->ID);
+				delete_user_meta($this->ID, 'rpi_wall_liked_group_id', $groupId);
+				$action = 'unlike';
+			}
+			do_action('rpi_wall_member_joined_group',$this->ID, $groupId, $action);
 		}
 
 
-		//$this->un_like_group($groupId);
+
 	}
 	public function _toggle_like_group($groupId){
 
@@ -191,14 +190,15 @@ class member extends \stdClass
 
     protected function join_group($groupId)
     {
-	    if ($this->is_in_group($groupId)) {
+	    if ($this->is_in_group($groupId) || $this->ID < 1 ){
             return false;
         }
-
         add_post_meta($groupId, 'rpi_wall_member_id', $this->ID);
         add_user_meta($this->ID, 'rpi_wall_group_id', $groupId);
 
 		$this->un_like_group($groupId);
+
+		do_action('rpi_wall_member_joined_group',$this->ID, $groupId);
     }
 
     public function leave_group($groupId)
@@ -306,7 +306,6 @@ class member extends \stdClass
 
             if ($hash === $joinhash) {
                 $this->join_group($group_id);
-                do_action('rpi_wall_member_joined_group', $this, $group_id);
                 return;
             }
         }

@@ -2,15 +2,26 @@ jQuery(document).ready($=>{
 
     $('.rpi-wall-like-button').each((i,btn)=>{
         const id = btn.id.replace(/[^\d]*/,'');
-
+        console.log(id);
         $(btn).on('click',e=>{
             $.post(
-                rpi_wall.ajaxurl, {
+                wall.ajaxurl,
+                {
                     'action': 'rpi_wall_toggle_like',
                     'group_id': id
                 },
                 function (response) {
-                    console.log(response);
+                    const data = JSON.parse(response);
+                    console.log(data.is_liker);
+                    if(data.is_liker){
+                        jQuery('#like-group-'+id+' .rpi-wall-like-button').html(wallIcons.group_sub);
+                    }else{
+                        jQuery('#like-group-'+id+' .rpi-wall-like-button').html(wallIcons.group_add);
+
+                    }
+
+                    jQuery('#like-group-'+id+' .rpi-wall-counter').html(data.amount);
+                    jQuery('#like-group-'+id+' .rpi-wall-group-likers').html(data.likers);
                 }
             )
         });
