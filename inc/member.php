@@ -12,29 +12,43 @@ class member extends \stdClass
     public $post;  //CPT member WP_Post
     public $user;
 
-    public function __construct($user_id = 0)
+	/**
+	 * @param WP_User|int $user
+	 */
+    public function __construct($user = 0)
     {
-        if ($user_id === 0) {
-            $user_id = get_current_user_id();
-        }
 
-        $this->user = get_userdata($user_id);
 
-        if (is_a($this->user, 'WP_User')) {
+	    if(is_a($user, 'WP_User')){
+		    $this->user = $user;
+		    $this->ID = $user->ID;
 
-            $posts = get_posts(array(
-                'post_status' => 'any',
-                'post_type' => 'member',
-                'author' => $user_id
-            ));
-            $this->post = reset($posts);
 
-            $this->ID = $user_id;
-            $this->name = $this->user->display_name;
+	    }else{
+		    if ($user === 0) {
+			    $this->ID = get_current_user_id();
+		    }
+		    $this->ID = $user;
+		    $this->user = get_userdata($user);
 
-        }
+		    if(!$this->user){
+				return new \WP_Error('404','User not found');
+			}
+	    }
 
-        $this->url = wp_ulike_pro_get_user_profile_permalink($user_id);
+
+
+        $posts = get_posts(array(
+            'post_status' => 'any',
+            'post_type' => 'member',
+            'author' => $this->ID
+        ));
+        $this->post = reset($posts);
+
+        $this->name = $this->user->display_name;
+
+        $this->url = $this->get_member_profile_permalink();
+
 
 
     }
@@ -45,14 +59,13 @@ class member extends \stdClass
     }
 
 	public function get_liked_group_Ids(){
-		$groups = wp_ulike_get_meta_data( $this->ID, 'user', 'post_status', true );
-		$likes =[];
-		foreach ($groups as $group_id=>$status){
-			if($status == 'like'){
-				$likes[]=$group_id;
-			}
+		$ids = get_user_meta($this->ID, 'rpi_wall_liked_group_id');
+
+		if(is_array($ids)){
+			return get_user_meta($this->ID, 'rpi_wall_liked_group_id');
 		}
-		return $likes;
+		return array();
+
 	}
 	public function is_liked_group($groupId){
 		return in_array($groupId, $this->get_liked_group_Ids());
@@ -60,18 +73,41 @@ class member extends \stdClass
 
 	public function like_group($groupId){
 
-		if(!is_liked_group($groupId)){
+		if(!$this->is_liked_group($groupId)){
 			$this->toggle_like_group($groupId);
 		}
 	}
 	public function un_like_group($groupId){
 
-		if(is_liked_group($groupId)){
+		if($this->is_liked_group($groupId)){
 			$this->toggle_like_group($groupId);
 		}
 	}
 
-	protected function toggle_like_group($groupId){
+	static function ajax_toggle_group_like(){
+
+		if(isset($_POST['group_id'])){
+			$member = new member();
+			$member->toggle_like_group(intval($_POST['group_id']));
+		}
+
+	}
+
+	public function toggle_like_group($groupId)
+	{
+		if ($this->is_liked_group($groupId)) {
+			delete_post_meta($groupId, 'rpi_wall_liker_id', $this->ID);
+			delete_user_meta($this->ID, 'rpi_wall_liked_group_id', $groupId);
+		}else{
+			add_post_meta($groupId, 'rpi_wall_liker_id', $this->ID);
+			add_user_meta($this->ID, 'rpi_wall_liked_group_id', $groupId);
+		}
+
+
+		//$this->un_like_group($groupId);
+	}
+	public function _toggle_like_group($groupId){
+
 		$process  = new \wp_ulike_cta_process( array(
 			'item_id'       =>  $groupId,
 			'item_type'     =>  'post',
@@ -91,6 +127,7 @@ class member extends \stdClass
 	}
 
 	public function get_query_all_groups($args = array()){
+
 
 		$args = wp_parse_args($args,
 		[
@@ -115,7 +152,7 @@ class member extends \stdClass
 		]);
 		return $query;
 	}
-	public function get_my_posts_query($args = array()){
+	public function get_query_my_posts($args = array()){
 		$args = wp_parse_args($args,[
 			'post_type' => 'wall',
 			'post_author'=>$this->ID

@@ -72,18 +72,17 @@ class RpiWall
 
         add_action('init', ['rpi\Wall\member', 'init_handle_request']);
 
+	    add_action('wp_ajax_rpi_wall_toggle_like',['rpi\Wall\member','ajax_toggle_group_like'] );
+	    add_action('wp_ajax_nopriv_rpi_wall_toggle_like',['rpi\Wall\member','ajax_toggle_group_like'] );
+
+
 
         add_action('blocksy:loop:before', function (){
 			echo '<div class="rpi-wall-buttons">';
 			echo do_shortcode('[frontend_admin form="28"]');
 			echo '</div>';
         });
-		add_action('init', function (){
 
-
-
-
-        });
 
 
     }
@@ -144,7 +143,7 @@ class RpiWall
     {
         wp_enqueue_style('rpi-wall-style', plugin_dir_url(__FILE__) . 'assets/css/custom-style.css');
         wp_enqueue_script('rpi-wall-scripts', plugin_dir_url(__FILE__) . 'assets/js/custom-scripts.js', array(), '1.0.0', true);
-
+	    wp_localize_script( 'rpi-wall-scripts', 'epi_wall',   array( 'ajax_url' => admin_url( 'admin-ajax.php' )));
     }
 
 
