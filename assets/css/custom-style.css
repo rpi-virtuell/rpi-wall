@@ -11,6 +11,12 @@
     display: none;
 }
 
+
+.member-message-grid{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-gap: 15px;
+}
 .single-wall article > .ct-comments{
     padding-top: 20px;
 }

@@ -173,6 +173,9 @@ class Shortcodes{
 		$messages = $wp_query->get_posts();
 
 		ob_start();
+        ?>
+        <div class="member-message-grid">
+        <?php
 		foreach ( $messages as $post ):
 			setup_postdata( $post );
             ?>
@@ -186,6 +189,9 @@ class Shortcodes{
 				</div>
 			<?php
 		endforeach;
+        ?>
+        </div>
+        <?php
 
 		echo '<hr>';
 		echo paginate_links( array(
