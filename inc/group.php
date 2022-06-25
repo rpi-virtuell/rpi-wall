@@ -14,6 +14,7 @@ class Group extends \stdClass
     public $title;
     public $group_status = null;
     public $pending_days;
+    public $group_member_min;
     public $matrix_server_home = 'matrix.rpi-virtuell.de';
     public $matrix_server_base = 'rpi-virtuell.de';
 
@@ -24,19 +25,27 @@ class Group extends \stdClass
      * @return Group
      */
 
-    public function __construct($post_id)
+    public function __construct($post)
     {
-
-	    $this->post = get_post($post_id);
+	    if(is_a($post,'WP_POST')){
+		    $this->ID = $post->ID;
+		    $this->post = $post;
+	    }else{
+		    $this->post = get_post($post);
+			if(!$this->post){
+				return new \WP_Error('404','Post not found');
+			}
+		    $this->ID = $this->post->ID;
+	    }
 
 	    $matrixTitle = substr(preg_replace('/[^a-zA-ZüäößÜÄÖ -]*/i', '', $this->post->post_title), 0, 40);
 
-        $this->ID = $post_id;
         $this->group_status = $this->get('pl_group_status');
         $this->slug = 'dibes_plg_' . $this->ID;
         $this->title = 'PLG ' . $matrixTitle;
         $this->channel_url = "https://{$this->matrix_server_home}/#/room/#{$this->slug}:rpi-virtuell.de";
         $this->pending_days = get_option('options_rpi_wall_pl_group_pending_days', 7);
+	    $this->group_member_min = get_option('options_pl_group_min_required_members', 3);
 
         $this->start_PLG_link = $this->get_starlink();
 
@@ -306,8 +315,8 @@ class Group extends \stdClass
      */
     public function get_likers_amount()
     {
-
-        return get_post_meta($this->ID, 'like_amount', true);
+		return count($this->get_likers_Ids());
+        //return get_post_meta($this->ID, 'like_amount', true);
 
     }
 
@@ -316,14 +325,20 @@ class Group extends \stdClass
      */
     public function get_likers_Ids()
     {
+	    $likers = get_post_meta($this->ID, 'rpi_wall_liker_id');
+	    if($likers){
+		    return $likers;
+	    }
+	    return [];
 
-        return wp_ulike_get_likers_list_per_post('ulike', 'likers_list', $this->ID, 100);
+        //return wp_ulike_get_likers_list_per_post('ulike', 'likers_list', $this->ID, 100);
     }
 
 	public function get_liker_and_member_Ids()
 	{
 
-		$likers =  wp_ulike_get_likers_list_per_post('ulike', 'likers_list', $this->ID, 100);
+		//$likers =  wp_ulike_get_likers_list_per_post('ulike', 'likers_list', $this->ID, 100);
+		$likers = $this->get_likers_Ids();
 		$members = $this->get_memberIds();
 		$rest_likers = [];
 		foreach($likers as $liker){
@@ -460,6 +475,17 @@ class Group extends \stdClass
         foreach ($this->get_memberIds() as $user_id) {
             delete_post_meta($this->ID, 'rpi_wall_member_id', $user_id);
             delete_user_meta($user_id, 'rpi_wall_group_id', $this->ID);
+        };
+    }
+	/**
+     * Remove UserIds from Wall Post Meta (Group) und PostIds from User Meta
+     * @return void
+     */
+    protected function remove_likers()
+    {
+        foreach ($this->get_likers_Ids() as $user_id) {
+            delete_post_meta($this->ID, 'rpi_wall_liker_id', $user_id);
+            delete_user_meta($user_id, 'rpi_wall_liked_group_id', $this->ID);
         };
     }
 
@@ -656,6 +682,7 @@ class Group extends \stdClass
 
 		if(!in_array($this->get_status(),['founded', 'closed'] )){
 			echo '<div class="gruppe-liker">';
+			echo $this->display_liker(96);
 			echo do_shortcode('[wp_ulike  style="wpulike-heart"]');
 			echo '</div>';
 		}else{
@@ -681,7 +708,7 @@ class Group extends \stdClass
 	    $ids = $this->get_memberIds();
 		if(count($ids)>0){
 			$out = '<ul class="rpi-wall group-members">';
-			foreach ($this->get_memberIds() as $user_id) {
+			foreach ($ids as $user_id) {
 				$user = get_userdata($user_id);
 				$out .= '<li class="group-member" title="'.$user->display_name.'">';
 				$out .= get_avatar($user_id, $size);
@@ -689,6 +716,29 @@ class Group extends \stdClass
 			}
 			$out .= '</ul>';
 		};
+		return $out;
+    }
+	public function display_liker($size = 48)
+    {
+		ob_start()
+		?>
+		<div class="wp_ulike_general_class wp_ulike_is_already_liked">
+			<button class="rpi-wall-like-button" id="like-group-<?php the_ID();?>" type="button">[#]</button>
+			<span class="count-box wp_ulike_counter_up" data-ulike-counter-value="+2">+2</span>
+		</div>
+		<?php
+	    $button = ob_get_clean();
+	    $ids = $this->get_likers_Ids();
+			$out = '<ul class="rpi-wall group-members">' .$button;
+	        if(count($ids)>0){
+			foreach ($ids as $user_id) {
+				$user = get_userdata($user_id);
+				$out .= '<li class="group-member liker" title="'.$user->display_name.'">';
+				$out .= get_avatar($user_id, $size);
+				$out .= '</li>';
+			}
+		};
+	    $out .= '</ul>';
 		return $out;
     }
 

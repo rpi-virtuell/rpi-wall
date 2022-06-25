@@ -13,28 +13,45 @@ class Shortcodes{
     static $like_icon       = '<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000"><g><rect fill="none" height="24" width="24"/><rect fill="none" height="24" width="24"/></g><g><g><polygon points="22,9 22,7 20,7 20,9 18,9 18,11 20,11 20,13 22,13 22,11 24,11 24,9"/><path d="M8,12c2.21,0,4-1.79,4-4s-1.79-4-4-4S4,5.79,4,8S5.79,12,8,12z M8,6c1.1,0,2,0.9,2,2s-0.9,2-2,2S6,9.1,6,8S6.9,6,8,6z"/><path d="M8,13c-2.67,0-8,1.34-8,4v3h16v-3C16,14.34,10.67,13,8,13z M14,18H2v-0.99C2.2,16.29,5.3,15,8,15s5.8,1.29,6,2V18z"/><path d="M12.51,4.05C13.43,5.11,14,6.49,14,8s-0.57,2.89-1.49,3.95C14.47,11.7,16,10.04,16,8S14.47,4.3,12.51,4.05z"/><path d="M16.53,13.83C17.42,14.66,18,15.7,18,17v3h2v-3C20,15.55,18.41,14.49,16.53,13.83z"/></g></g></svg>';
     static $watch_icon      = '<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M12 6c3.79 0 7.17 2.13 8.82 5.5C19.17 14.87 15.79 17 12 17s-7.17-2.13-8.82-5.5C4.83 8.13 8.21 6 12 6m0-2C7 4 2.73 7.11 1 11.5 2.73 15.89 7 19 12 19s9.27-3.11 11-7.5C21.27 7.11 17 4 12 4zm0 5c1.38 0 2.5 1.12 2.5 2.5S13.38 14 12 14s-2.5-1.12-2.5-2.5S10.62 9 12 9m0-2c-2.48 0-4.5 2.02-4.5 4.5S9.52 16 12 16s4.5-2.02 4.5-4.5S14.48 7 12 7z"/></svg>';
     static $mail_icon       = '<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M22 6c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6zm-2 0l-8 5-8-5h16zm0 12H4V8l8 5 8-5v10z"/></svg>';
-    static $pin_icon       =  '<svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000"><g><rect fill="none" height="24" width="24"/></g><g><path d="M14,4v5c0,1.12,0.37,2.16,1,3H9c0.65-0.86,1-1.9,1-3V4H14 M17,2H7C6.45,2,6,2.45,6,3c0,0.55,0.45,1,1,1c0,0,0,0,0,0l1,0v5 c0,1.66-1.34,3-3,3v2h5.97v7l1,1l1-1v-7H19v-2c0,0,0,0,0,0c-1.66,0-3-1.34-3-3V4l1,0c0,0,0,0,0,0c0.55,0,1-0.45,1-1 C18,2.45,17.55,2,17,2L17,2z"/></g></svg>';
+    static $pin_icon       =  '<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000"><g><rect fill="none" height="24" width="24"/></g><g><path d="M14,4v5c0,1.12,0.37,2.16,1,3H9c0.65-0.86,1-1.9,1-3V4H14 M17,2H7C6.45,2,6,2.45,6,3c0,0.55,0.45,1,1,1c0,0,0,0,0,0l1,0v5 c0,1.66-1.34,3-3,3v2h5.97v7l1,1l1-1v-7H19v-2c0,0,0,0,0,0c-1.66,0-3-1.34-3-3V4l1,0c0,0,0,0,0,0c0.55,0,1-0.45,1-1 C18,2.45,17.55,2,17,2L17,2z"/></g></svg>';
 
 
     public $user;
 
 	public function __construct() {
 
-		add_shortcode( 'user_pinned_posts', [$this,'get_users_pinwall_posts'] );
-        add_shortcode('rpi-userprofile', array($this, 'get_user_profile_tags'));
+		//add_shortcode( 'user_pinned_posts', [$this,'get_users_pinwall_posts'] );
+		add_shortcode('rpi-userprofile', array($this, 'get_user_profile_tags'));
         add_shortcode('my_messages', array($this, 'get_user_messages'));
         add_shortcode('my_groups', array($this, 'get_user_groups'));
         add_shortcode('my_likes', array($this, 'get_user_likes'));
-        add_shortcode('my_comments', array($this, 'get_user_comments'));
+		add_shortcode( 'my_posts', [$this,'get_user_posts'] );
+		add_shortcode('my_comments', array($this, 'get_user_comments'));
+		add_shortcode('like_wall', array($this, 'force_user_like'));
 
-        add_action('init',function (){
-	        $this->user = $user = \wp_ulike_pro_get_current_user();
+        add_action('wp_head',function (){
+	        $this->user = \wp_ulike_pro_get_current_user();
+
+            if('member' === get_post_type()){
+                $this->user = get_userdata (get_post()->post_author);
+            }
+            if(!$this->user->ID && is_user_logged_in()){
+	            $this->user = wp_get_current_user();
+            }
+
+	        $this->force_user_like();
         });
 
 	}
 
+	public function force_user_like($atts = ["user_id"=>6,"group_id"=>498]){
+		$member = new member($atts['user_id']);
+		//$member->toggle_like_group($atts['group_id']);
+    }
+
     public function get_user_comments(){
 
+        ob_start();
         $member  = new member($this->user->ID);
         foreach ($member->get_my_comments_query() as $comment){
             ?>
@@ -55,6 +72,7 @@ class Shortcodes{
             <?php
 
         }
+	    return ob_get_clean();
 
     }
 
@@ -199,201 +217,55 @@ class Shortcodes{
 
 
 	public function get_user_groups($atts){
-
-		$user = wp_ulike_pro_get_current_user();
-
-		//var_dump($user->ID);
-
-		$args = [
-			'post_type' => 'wall',
-			'numberposts' => -1,
-			'meta_query' => [
-				[
-					'key' => 'rpi_wall_member_id',
-					'value' => $user->ID,
-					'compare' => '>=',
-					'type' => 'NUMERIC'
-				]
-			]
-		];
-		$groups = get_posts($args);
-        if(!$groups){
-            return 'Noch keine Mitgliedschaft in professionellen Lerngruppen';
-        }
-
 		ob_start();
-		foreach ( $groups as $group ):
-			setup_postdata( $group );
-            $plg  = new Group($group->ID);
-			?>
-			<div class="mygroup">
-                <div class="mygroup-wrapper">
-                    <div class="entry-title"><h3><?php echo $plg->title;?></h3></div>
-                    <div class="content">
-                        <?php echo wp_trim_words(get_the_content(),50,'...');?>
-                    </div>
-                    <div><?php echo $plg->get_members_amount();?> Mitglied(er) <?php echo $plg->get_status()==='pending'?', Status: Gründungsphase':'';?></div>
-                    <div>
-                        <a href="<?php the_permalink()?>">Pinwandeintrag</a>
-                        <?php if('pending' !== $plg->get_status()):
-                            ?>| Matrix Raum: <?php echo $plg->get_matrix_link();?>
-                        <?php endif;?>
-                    </div>
-			    </div>
-			</div>
-		<?php
-		endforeach;
-		wp_reset_postdata();
+
+		echo '<div class="group-posts">';
+		$member = new member($this->user);
+
+
+        $query = $member->get_query_all_groups();
+		if($query->have_posts()) {
+			while ( $query->have_posts() ) {
+				self::display_post( $query->the_post()  );
+			}
+		}
+		wp_reset_query();
+		echo '</div>';
 		return ob_get_clean();
 	}
     public function get_user_likes($atts){
+        ob_start();
+	    echo '<div class="group-posts">';
+	    $member = new member($this->user);
+
+	    $query = $member->get_query_pending_groups();
+	    if($query->have_posts()) {
+		    while ( $query->have_posts() ) {
+			    self::display_post( $query->the_post()  );
+		    }
+	    }
+	    wp_reset_query();
+	    echo '</div>';
+	    return ob_get_clean();
+    }
+    public function get_user_posts($atts){
 
         ob_start();
+	    echo '<div class="group-posts">';
+	    $member = new member($this->user);
 
-        echo '<div class="group-posts">';
-
-        $user = wp_ulike_pro_get_current_user();
-
-        $args = self::get_query_args([
-            'user_id'=>$user->ID,
-            //'not_group_status'=>['founded','closed'],
-            'not_member'=>true,
-            //'not_author'=>true
-        ]);
-
-        $query = new \WP_Query($args);
-        if($query->have_posts()) {
-	        while ( $query->have_posts() ) {
-		        self::display_post( $query->the_post()  );
-	        }
-        }
-        wp_reset_query();
-
-        echo '</div>';
-
+	    $query = $member->get_query_my_posts();
+	    if($query->have_posts()) {
+		    while ( $query->have_posts() ) {
+			    self::display_post( $query->the_post()  );
+		    }
+	    }
+	    wp_reset_query();
+	    echo '</div>';
         return ob_get_clean();
     }
 
-    static function get_query_args($args){
 
-        $not_in = [];
-
-        $defaults = array(
-		    "type"       => 'post',
-		    "rel_type"   => 'wall',
-		    "is_popular" => true,
-		    "status"     => 'like',
-		    "user_id"    =>  '',
-		    "order"      => 'DESC',
-		    "period"     => 'all',
-		    "offset"     => 1,
-		    "limit"      => 10,
-		    'group_status'=>'',
-		    'not_group_status'=>'',
-            'not_member'=>false,
-            'not_author'=>false
-	    );
-	    $parsed_args = wp_parse_args( $args, $defaults );
-
-
-
-
-	    $item_info   = wp_ulike_get_popular_items_info( $parsed_args );
-	    $ids_stack   = array();
-	    if( ! empty( $item_info ) ){
-		    foreach ($item_info as $key => $info) {
-                if(!in_array($info->item_ID,$not_in)){
-                    $ids_stack[] = $info->item_ID;
-                }
-		    }
-	    }
-
-
-
-	    $args =[
-            'post__in'=>$ids_stack,
-            'post_type'=>$parsed_args['rel_type']
-        ];
-
-	    if($parsed_args['not_author'] && $parsed_args['user_id']){
-		    $args['author__not_in']=$parsed_args['user_id'];
-	    }
-        $meta = [];
-	    if(!empty($parsed_args['group_status'])){
-		    $meta[]=[
-				    'key' => 'pl_group_status',
-				    'value' => $parsed_args['group_status'],
-				    'compare' => 'IN'
-			    ];
-	    }
-	    if(empty($parsed_args['not_group_status'])){
-		    $meta[]=[
-			    'key' => 'pl_group_status',
-			    'value' => $parsed_args['not_group_status'],
-			    'compare' => 'NOT IN'
-		    ];
-	    }
-
-
-        if(count($meta)>0){
-	        $args['meta_query']= [
-		        'relation' => 'AND',
-		        $meta
-                ]
-            ;
-        }
-
-
-	    if(!empty($parsed_args['not_member'])){
-            $m = get_posts([
-                'post_type'=>'wall',
-                'meta_query'=>[
-	                'key' => 'rpi_wall_member_id',
-	                'value' => [$parsed_args['user_id']],
-	                'compare' => 'IN'
-
-                ]
-            ]);
-
-            foreach ($m as $s){
-	            $not_in[]=$s->ID;
-            }
-		    $in = [];
-            foreach ($args['post__in'] as $i){
-                if(!in_array($i,$not_in)){
-	                $in[] = $i;
-                }
-            }
-		    $args['post__in'] = $in;
-	    }
-        // var_dump('<pre>',$args);die();
-	    return $args;
-
-    }
-
-	static function get_comments($args){
-
-		$defaults = array(
-			"type"       => 'comment',
-			"rel_type"   => 'wall',
-			"is_popular" => true,
-			"status"     => 'like',
-			"user_id"    =>  '',
-			"order"      => 'DESC',
-			"period"     => 'all',
-			"offset"     => 1,
-			"limit"      => 10
-		);
-		$parsed_args = wp_parse_args( $args, $defaults );
-		$item_info   = wp_ulike_get_popular_items_info( $parsed_args );
-		$ids_stack   = array();
-		if( ! empty( $item_info ) ){
-			foreach ($item_info as $key => $info) {
-				$ids_stack[] = $info->item_ID;
-			}
-		}
-		return get_comments(['comment__in'=>$ids_stack]);
-	}
 
 	static function display_user($user_id, $size){
         $user  = get_userdata($user_id);
@@ -461,7 +333,22 @@ class Shortcodes{
 					    ?>| Matrix Raum: <?php echo $plg->get_matrix_link();?>
 				    <?php endif;?>
                 </div>
-	            <?php self::display_assignd_user($plg,24);?>
+                <div>
+                    <?php $mn = $plg->get_members_amount();?> <?php if($mn>0) echo $mn .' Mitglied';?><?php if($mn>1) echo 'er';?>
+                    <?php if ( !in_array($plg->get_status(),['founded','closed'] )): ?>
+	                    <?php
+                        $in = $plg->get_likers_amount();
+                        if($in>0) {
+		                    if($in<2){
+                                echo '1 Person interessiert';
+		                    }else{
+			                    echo $in.' Personen interessiert';
+		                    }
+	                    }
+                        echo $plg->get_status()==='pending'?', Status: Gründungsphase':'';?>
+			        <?php endif; ?>
+                </div>
+                <?php self::display_assignd_user($plg,24);?>
 
             </div>
         </div>
