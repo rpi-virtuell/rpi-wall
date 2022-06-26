@@ -160,8 +160,9 @@ class RpiWall
 	public function add_group_status_class( $classes ){
 		if('wall'=== get_post_type()){
 			$group = new Wall\Group(get_the_ID());
+			$classes[]= $group->get_status();
 		}
-		$classes[]= $group->get_status();
+
 		return $classes;
 	}
 
