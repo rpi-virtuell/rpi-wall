@@ -38,6 +38,9 @@ class member extends \stdClass
 			}
 	    }
 
+	    $this->name = $this->user->display_name;
+
+	    $this->url = $this->get_member_profile_permalink();
 
 
         $posts = get_posts(array(
@@ -45,11 +48,17 @@ class member extends \stdClass
             'post_type' => 'member',
             'author' => $this->ID
         ));
-        $this->post = reset($posts);
 
-        $this->name = $this->user->display_name;
 
-        $this->url = $this->get_member_profile_permalink();
+
+		if(count($posts)>0){
+			$this->post = reset($posts);
+		}else{
+			$this->post = $this->setup();
+		}
+
+
+
 
 
 
@@ -57,7 +66,10 @@ class member extends \stdClass
 
     public function get_member_profile_permalink()
     {
-        return wp_ulike_pro_get_user_profile_permalink($this->ID);
+        return get_permalink($this->post);
+
+		//return wp_ulike_pro_get_user_profile_permalink($this->ID);
+
     }
 
 	public function get_liked_group_Ids(){
@@ -99,6 +111,12 @@ class member extends \stdClass
 				delete_user_meta($this->ID, 'rpi_wall_liked_group_id', $groupId);
 				$action = 'unlike';
 			}
+			//recalc likers_amount
+			if(!$ids = get_post_meta($groupId, 'rpi_wall_liker_id')){
+				$ids = [];
+			}
+			update_post_meta($groupId, 'rpi_wall_likers_amount', count($ids));
+
 			do_action('rpi_wall_member_joined_group',$this->ID, $groupId, $action);
 		}
 
@@ -188,7 +206,7 @@ class member extends \stdClass
 
 
 
-    protected function join_group($groupId)
+    public function join_group($groupId)
     {
 	    if ($this->is_in_group($groupId) || $this->ID < 1 ){
             return false;
@@ -280,9 +298,14 @@ class member extends \stdClass
             if ('plgjoin' == $_REQUEST['action']) {
 
                 $member = new member(intval($_REQUEST['new_group_member']));
-                $member->validate_and_join($_REQUEST['hash']);
+                $groupId = $member->validate_and_join($_REQUEST['hash']);
 
-                wp_redirect($member->get_member_profile_permalink());
+				if($groupId){
+					wp_redirect(get_permalink($groupId));
+				}else{
+					wp_redirect(home_url());
+				}
+
                 die();
 
 
@@ -306,7 +329,7 @@ class member extends \stdClass
 
             if ($hash === $joinhash) {
                 $this->join_group($group_id);
-                return;
+                return $group_id;
             }
         }
     }
@@ -354,4 +377,17 @@ class member extends \stdClass
 		Shortcodes::display_user($this->ID,$size);
 	}
 
+	public function setup(){
+
+		if (is_a($this->user, 'WP_User') && $this->user->ID>0) {
+			$member = wp_insert_post(array(
+				'post_title' => $this->user->display_name,
+				'post_status' => 'publish',
+				'post_author' => $this->user->ID,
+				'post_type' => 'member'
+			));
+			return get_post($member);
+
+		}
+	}
 }

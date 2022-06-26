@@ -12,16 +12,21 @@ jQuery(document).ready($=>{
                 },
                 function (response) {
                     const data = JSON.parse(response);
-                    console.log(data.is_liker);
-                    if(data.is_liker){
-                        jQuery('#like-group-'+id+' .rpi-wall-like-button').html(wallIcons.group_sub);
-                    }else{
-                        jQuery('#like-group-'+id+' .rpi-wall-like-button').html(wallIcons.group_add);
-
+                    if(data.success){
+                        if(data.is_member){
+                            jQuery('#like-group-'+id+' .rpi-wall-like-button').html(wallIcons.group);
+                        }else{
+                            if(data.is_liker){
+                                jQuery('#like-group-'+id+' .rpi-wall-like-button').html(wallIcons.group_sub);
+                            }else{
+                                jQuery('#like-group-'+id+' .rpi-wall-like-button').html(wallIcons.group_add);
+                            }
+                        }
+                        jQuery('#like-group-'+id+' .rpi-wall-counter').html(data.amount);
+                        jQuery('#like-group-'+id+' .rpi-wall-group-likers').html(data.likers);
+                        jQuery('#like-group-'+id+' .rpi-wall-group-members').html(data.members);
                     }
 
-                    jQuery('#like-group-'+id+' .rpi-wall-counter').html(data.amount);
-                    jQuery('#like-group-'+id+' .rpi-wall-group-likers').html(data.likers);
                 }
             )
         });

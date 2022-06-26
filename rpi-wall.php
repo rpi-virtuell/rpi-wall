@@ -58,9 +58,13 @@ class RpiWall
 
         add_action('wp_enqueue_scripts', [$this, 'custom_style_and_scripts']);
 
+        add_filter('body_class', [$this, 'add_group_status_class']);
+	    add_action('post_class', [$this, 'add_group_status_class']);
+
         add_action('blocksy:comments:after', [$this, 'display_likers_container']);
 
-        add_action('blocksy:loop:card:end', [$this, 'display_cards_group_info']);
+
+	    add_action('blocksy:loop:card:end', [$this, 'display_cards_group_info']);
 
 
         add_filter('wp_ulike_ajax_respond', [$this, 'wp_ulike_ajax_respond'], 20, 4);
@@ -85,21 +89,41 @@ class RpiWall
 
 
     }
+
 	public function ajax_toggle_group_like(){
 
 
 		$response = ['success'=>false];
 		if(isset($_POST['group_id'])){
 			$group = new Wall\Group($_POST['group_id']);
-			if($group){
+			if($group && $group->is_not_founded()){
+
 				$member = new Wall\member();
-				$member->toggle_like_group($group->ID);
+				if($member->is_in_group($group->ID)){
+					echo json_encode($response);
+					die();
+				}
+
+				if($group->is_pending()){
+					$member->join_group($group->ID);
+					$is_member = $member->is_in_group($group->ID);
+					$amount =$group->get_members_amount();
+					$is_liker = true;
+				}else{
+
+					$member->toggle_like_group($group->ID);
+					$is_liker = $member->is_liked_group($group->ID);
+					$amount =$group->get_likers_amount();
+					$is_member = false;
+				}
 
 				$response = [
-					'success'=>true,
-					'is_liker' => $member->is_liked_group($group->ID),
-					'amount' => $group->get_likers_amount(),
-					'likers' => $group->display_liker()
+					'success'   => true,
+					'is_liker'  => $is_liker,
+					'is_member' => $is_member,
+					'amount'    => $amount,
+					'likers'    => $group->display_liker(),
+					'members'   => $group->display_member()
 				];
 
 			}
@@ -133,10 +157,22 @@ class RpiWall
     }
 
 
-    /**
+	public function add_group_status_class( $classes ){
+		if('wall'=== get_post_type()){
+			$group = new Wall\Group(get_the_ID());
+		}
+		$classes[]= $group->get_status();
+		return $classes;
+	}
+
+
+
+	/**
      * blocksy:loop:card:end action
      * @return void
      */
+
+
 
 
     function display_cards_group_info()
@@ -144,6 +180,7 @@ class RpiWall
 
         $group = new rpi\Wall\Group(get_the_ID());
         $group->display_short_info();
+
     }
 
     function display_likers_container()

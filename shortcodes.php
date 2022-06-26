@@ -344,8 +344,13 @@ class Shortcodes{
         ?>
         <div class="group-post">
             <div class="group-post-wrapper">
-                <div class="entry-title"><h3><?php echo $post->post_title;?></h3></div>
-                <div class="entry-meta"><?php echo self::$user_icon;?> <?php echo self::display_user_name( $post->post_author );?> <?php echo self::$date_icon;?><?php echo date('d.m.Y',strtotime($post->post_date));?></div>
+                <div class="entry-title">
+                    <h3><?php echo $post->post_title;?></h3>
+                </div>
+                <div class="entry-meta"><?php echo self::$user_icon;?>
+                    <?php echo self::display_user_name( $post->post_author );?>
+                    <?php echo self::$date_icon;?><?php echo date('d.m.Y',strtotime($post->post_date));?>
+                </div>
                 <div class="content">
 				    <?php echo wp_trim_words($post->post_content,50,'...');?>
                 </div>
@@ -358,7 +363,7 @@ class Shortcodes{
                 </div>
                 <div>
                     <?php $mn = $plg->get_members_amount();?> <?php if($mn>0) echo $mn .' Mitglied';?><?php if($mn>1) echo 'er';?>
-                    <?php if ( !in_array($plg->get_status(),['founded','closed'] )): ?>
+                    <?php if ( $plg->is_not_founded()): ?>
 	                    <?php
                         $in = $plg->get_likers_amount();
                         if($in>0) {
@@ -368,7 +373,7 @@ class Shortcodes{
 			                    echo $in.' Personen interessiert';
 		                    }
 	                    }
-                        echo $plg->get_status()==='pending'?', Status: Gründungsphase':'';?>
+                        echo $plg->is_pending()?', Status: Gründungsphase':'';?>
 			        <?php endif; ?>
                 </div>
                 <?php self::display_assignd_user($plg,24);?>
