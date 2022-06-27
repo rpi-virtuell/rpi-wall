@@ -43,7 +43,7 @@ class Group extends \stdClass {
 		$this->title            = 'PLG ' . $matrixTitle;
 		$this->channel_url      = "https://{$this->matrix_server_home}/#/room/#{$this->slug}:rpi-virtuell.de";
 		$this->pending_days     = get_option( 'options_rpi_wall_pl_group_pending_days', 7 );
-		$this->group_member_min = get_option( 'options_pl_group_min_required_members', 3 );
+		$this->group_member_min = get_option( 'options_rpi_group_min_required_members', 3 );
 
 		$this->start_PLG_link = $this->get_starlink();
 
@@ -71,7 +71,7 @@ class Group extends \stdClass {
 				'relation' => 'AND',
 				[
 					'key'     => 'rpi_wall_likers_amount',
-					'value'   => get_option( 'options_pl_group_min_required_members', 3 ),
+					'value'   => get_option( 'options_rpi_group_min_required_members', 3 ),
 					'compare' => '>=',
 					'type'    => 'NUMERIC'
 				],
@@ -123,7 +123,7 @@ class Group extends \stdClass {
 		foreach ( $posts as $post ) {
 
 			$group = new Group( $post->ID );
-			if ( $group->get_members_amount() < get_option( 'options_pl_group_min_required_members', 3 ) ) {
+			if ( $group->get_members_amount() < get_option( 'options_rpi_group_min_required_members', 3 ) ) {
 				$group->reset_status();
 				new Message( $group, 'reset' );
 				do_action( 'rpi_wall_pl_group_reset', $group );
@@ -770,7 +770,7 @@ class Group extends \stdClass {
     public function display_short_info()
     {
 
-        $min_required = get_option('options_pl_group_min_required_members', 3);
+        $min_required = get_option('options_rpi_group_min_required_members', 3);
         $max_likes = get_option('options_rpi_wall_max_stars_per_comment', 3);
 
         switch ($status = $this->get_status()) {

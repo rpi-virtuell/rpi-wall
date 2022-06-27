@@ -344,9 +344,9 @@ class RPIWallInstaller
                         'endpoint' => 0,
                     ),
                     array(
-                        'key' => 'field_pl_group_min_required_members',
+                        'key' => 'field_rpi_group_min_required_members',
                         'label' => 'Niedrigste Menge an Mitgliedern',
-                        'name' => 'pl_group_min_required_members',
+                        'name' => 'rpi_group_min_required_members',
                         'type' => 'number',
                         'instructions' => '',
                         'required' => 0,
