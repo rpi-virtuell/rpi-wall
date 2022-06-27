@@ -24,7 +24,7 @@ class Shortcodes{
 	public function __construct() {
 
 		//add_shortcode( 'user_pinned_posts', [$this,'get_users_pinwall_posts'] );
-		add_shortcode('rpi-userprofile', array($this, 'get_user_profile_tags'));
+		add_shortcode('my_tags', array($this, 'get_user_profile_tags'));
         add_shortcode('my_messages', array($this, 'get_user_messages'));
         add_shortcode('my_groups', array($this, 'get_user_groups'));
         add_shortcode('my_likes', array($this, 'get_user_likes'));
@@ -177,23 +177,29 @@ class Shortcodes{
 
     public function get_user_profile_tags($atts)
     {
-        global $wp_ulike_pro_current_user;
+	    $out ='';
 
+        if('member' === get_post_type()){
 
-        if (isset($atts['content']) && is_a($wp_ulike_pro_current_user, 'WP_User')) {
-            $member = get_page_by_title($wp_ulike_pro_current_user->display_name, 'OBJECT', 'member');
-            if (post_type_exists($atts['content'])) {
-                //TODO: Gruppen Link einfügen (Link auf Pinns mit gruppen)
-            } elseif (taxonomy_exists($atts['content'])) {
-                $terms = wp_get_post_terms($member->ID, $atts['content']);
-                foreach ($terms as $term) {
-                    if (is_a($term, 'WP_Term')) {
-                        echo '<a href="' . site_url() . '/' . $atts['content'] . '/' . $term->slug . '">' . $term->name . '</a>';
-                        echo '<br>';
+            if (isset($atts['content'])) {
+
+                if (taxonomy_exists(trim($atts['content']))) {
+
+                    $terms = wp_get_post_terms(get_the_ID(), $atts['content']);
+	                $out .='<ul class="rpi-wall-term-'.$atts['content'].'">';
+                    foreach ($terms as $term) {
+                        if (is_a($term, 'WP_Term')) {
+                            $out .= '<li><a href="' . site_url() . '/' . $atts['content'] . '/' . $term->slug . '">' . $term->name . '</a></li>';
+
+                        }
                     }
-                }
+	                $out .='</ul>';
+
+
+               }
             }
         }
+        return $out;
     }
 
 	public function get_user_messages($atts){
@@ -263,7 +269,7 @@ class Shortcodes{
 
 
         $query = $member->get_query_all_groups();
-		if($query->have_posts()) {
+		if($query && $query->have_posts()) {
 			while ( $query->have_posts() ) {
 				self::display_post( $query->the_post()  );
 			}
@@ -278,7 +284,7 @@ class Shortcodes{
 	    $member = new member($this->user);
 
 	    $query = $member->get_query_pending_groups();
-	    if($query->have_posts()) {
+	    if($query && $query->have_posts()) {
 		    while ( $query->have_posts() ) {
 			    self::display_post( $query->the_post()  );
 		    }
@@ -294,7 +300,7 @@ class Shortcodes{
 	    $member = new member($this->user);
 
 	    $query = $member->get_query_my_posts();
-	    if($query->have_posts()) {
+	    if($query && $query->have_posts()) {
 		    while ( $query->have_posts() ) {
 			    self::display_post( $query->the_post()  );
 		    }
@@ -339,7 +345,7 @@ class Shortcodes{
                 }
                 ?>
             </div>
-            <div><?php echo $group->get_status()==='pending'?', Status: Gründungsphase':'';?></div>
+
         </div>
         <?php
 	}

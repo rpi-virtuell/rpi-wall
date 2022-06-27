@@ -58,17 +58,12 @@ class member extends \stdClass
 		}
 
 
-
-
-
-
     }
 
     public function get_member_profile_permalink()
     {
         return get_permalink($this->post);
 
-		//return wp_ulike_pro_get_user_profile_permalink($this->ID);
 
     }
 
@@ -142,48 +137,58 @@ class member extends \stdClass
 		return [];
 	}
 	public function get_assigned_group_Ids(){
-		return array_merge($this->get_group_Ids(),$this->get_liked_group_Ids());
+
+		$ids = array_merge($this->get_group_Ids(),$this->get_liked_group_Ids());
+		return $ids;
 	}
 
 	public function get_query_all_groups($args = array()){
 
+		if(!empty($postids= $this->get_assigned_group_Ids())){
+			$args = wp_parse_args($args,
+				[
+					'post_type' => 'wall',
+					'post__in' => $postids
+				]);
 
-		$args = wp_parse_args($args,
-		[
-			'post_type' => 'wall',
-			'post__in' => $this->get_assigned_group_Ids()
-		]);
+			$query = new \WP_Query($args);
 
-		$query = new \WP_Query($args);
-		return $query;
-
+			return $query;
+		}
+		return false;
 	}
 
 	public function get_query_watched_groups($args = array()){
 
+		if(!empty($postids= $this->get_watched_group_Ids())){
+			$args = wp_parse_args($args,
+				[
+					'post_type' => 'wall',
+					'post__in' => $postids
+				]);
 
-		$args = wp_parse_args($args,
-		[
-			'post_type' => 'wall',
-			'post__in' => $this->get_watched_group_Ids()
-		]);
+			$query = new \WP_Query($args);
+			return $query;
 
-		$query = new \WP_Query($args);
-		return $query;
+		}
+		return false;
 
 	}
 
 	public function get_query_pending_groups($stati = array ('pending')){
-		$query = new \WP_Query([
-			'post_type' => 'wall',
-			'post__in' => $this->get_assigned_group_Ids(),
-			'meta_query'=>[
-				'key' => 'rpi_wall_group_status',
-				'value' => $stati,
-				'compare' => 'IN'
-			]
-		]);
-		return $query;
+		if(!empty($postids= $this->get_assigned_group_Ids())){
+			$query = new \WP_Query([
+				'post_type' => 'wall',
+				'post__in' => $postids,
+				'meta_query'=>[
+					'key' => 'rpi_wall_group_status',
+					'value' => $stati,
+					'compare' => 'IN'
+				]
+			]);
+			return $query;
+		}
+		return false;
 	}
 	public function get_query_my_posts($args = array()){
 		$args = wp_parse_args($args,[
@@ -252,7 +257,10 @@ class member extends \stdClass
 
     public function get_group_Ids()
     {
-        return get_user_meta($this->id, 'rpi_wall_group_id');
+	    if(!$ids = get_user_meta($this->ID, 'rpi_wall_group_id')){
+		    return [];
+	    }
+        return $ids;
     }
 
     public
@@ -267,8 +275,7 @@ class member extends \stdClass
     {
     }
 
-    public
-    function get_messages()
+    public function get_messages()
     {
         return get_posts([
             'post_type' => 'message',
@@ -282,8 +289,7 @@ class member extends \stdClass
         ]);
     }
 
-    public
-    function current_user_is_member()
+    public function current_user_is_member()
     {
         if (get_current_user_id() === $this->ID) {
             return true;
@@ -292,8 +298,7 @@ class member extends \stdClass
         }
     }
 
-    public
-    function current_member_can($capability)
+    public function current_member_can($capability)
     {
         return user_can($this->ID, $capability);
     }
@@ -306,7 +311,6 @@ class member extends \stdClass
      */
     public function init_handle_request()
     {
-
 
         if (isset($_REQUEST['action']) && isset($_REQUEST['hash']) && isset($_REQUEST['new_group_member'])) {
 
@@ -392,6 +396,7 @@ class member extends \stdClass
 	public function display($size = 15){
 		Shortcodes::display_user($this->ID,$size);
 	}
+
 
 	public function setup(){
 

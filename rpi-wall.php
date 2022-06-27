@@ -28,6 +28,8 @@ require_once("rpi-wall-installer.php");
 require_once("shortcodes.php");
 require_once("inc/member.php");
 require_once("inc/group.php");
+require_once("inc/tabs.php");
+require_once("inc/member-page.php");
 require_once("inc/matrix-helper.php");
 require_once("inc/message.php");
 
@@ -64,6 +66,8 @@ class RpiWall
         add_action('init', ['rpi\Wall\Group', 'init_handle_requests']);
 
         add_action('init', ['rpi\Wall\member', 'init_handle_request']);
+
+		add_action('init', [$this, 'test']);
 
 	    add_action('wp_ajax_rpi_wall_toggle_like',[$this,'ajax_toggle_group_like'] );
 	    add_action('wp_ajax_nopriv_rpi_wall_toggle_like',[$this,'ajax_toggle_group_like'] );
@@ -123,8 +127,6 @@ class RpiWall
 
 
 	}
-
-
 
 	/**
      *
@@ -203,9 +205,35 @@ class RpiWall
         wp_enqueue_script('rpi-wall-script', plugin_dir_url(__FILE__) . 'assets/js/custom-scripts.js', array('jquery'));
 	    wp_localize_script( 'rpi-wall-script', 'wall', array( 'ajaxurl' => admin_url( 'admin-ajax.php' )));
 
+	    wp_enqueue_style('tabs', plugin_dir_url(__FILE__) . 'assets/css/tabs.css');
+
     }
+
+	function test(){
+
+		if (isset($_GET['admin_test'])) {
+			foreach ([3,4,5] as $user_id){
+				$member = new Wall\member($user_id);
+				$member->like_group(41);
+				$member->like_group(46);
+				$member->like_group(55);
+			}
+			foreach ([5,6] as $user_id){
+				$member = new Wall\member($user_id);
+				$member->like_group(72);
+				$member->like_group(478);
+
+			}
+
+			$member = new Wall\member(6);
+			$member->like_group(480);
+		}
+
+
+	}
 }
 
 new RpiWall();
+new MemberPage();
 new Wall\RPIWallInstaller();
 new Wall\Shortcodes();

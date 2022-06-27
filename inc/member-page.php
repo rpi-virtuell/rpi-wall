@@ -3,14 +3,13 @@
 class MemberPage {
 
 	public $is_my_page = false;
-	public $member;
+	public \rpi\Wall\member $member;
 	public $is_member_page = false;
 
 	public function __construct() {
 
-		add_action('wp_head',array($this, 'init'));
 
-		add_action('blocksy:single:content:top', $this->init());
+		add_action('blocksy:single:content:top', [$this,'init']);
 
 
 
@@ -26,7 +25,7 @@ class MemberPage {
 			if($this->member->ID == get_current_user_id()){
 				$this->is_my_page = true;
 			}
-			$this->display();
+            $this->display();
 		}
 
 
@@ -43,30 +42,43 @@ class MemberPage {
 
 	public function display(){
 
+        $tags = '<div class="member-tags"> 
+            [my_tags content="wall-tag"]
+            [my_tags content="badge"]
+            [my_tags content="schooltype"]
+            [my_tags content="profession"]
+         </div>';
+
+		$tags = do_shortcode( $this->member->user->user_description. $tags);
+
 		$tabs = new \rpi\Wall\Tabs('tabset');
 
+		$tabs->addTab('Über mich',    'bio',  $tags, 'checked' );
 		$tabs->addTab('Gruppen',    'groups',   $this->groups());
 		$tabs->addTab('Kommentare', 'comments', $this->comments());
-		$tabs->addTab('Abonnements','watches',    $this->watches());
+		$tabs->addTab('Abonnements','watch',    $this->watches());
+		$tabs->addTab('Benachrichtigungen','messages', do_shortcode('[my_messages]') );
 
 		$tabs->display();
 
 	}
 	public function groups(){
-		ob_start();
 
-		echo '<div class="group-posts">';
+
+		$out =  '<div class="group-posts">';
 
 
 		$query = $this->member->get_query_all_groups();
-		if($query->have_posts()) {
+		if($query && $query->have_posts()) {
 			while ( $query->have_posts() ) {
+                ob_start();
 				\rpi\Wall\Shortcodes::display_post( $query->the_post()  );
+				$out .= ob_get_clean();
 			}
 		}
 		wp_reset_query();
-		echo '</div>';
-		return ob_get_clean();
+		$out .= '</div>';
+		return $out;
 	}
 
 	public function watches(){
@@ -74,8 +86,9 @@ class MemberPage {
 
 		echo '<div class="group-posts">';
 		$query = $this->member->get_query_watched_groups();
-		if($query->have_posts()) {
+		if($query && $query->have_posts()) {
 			while ( $query->have_posts() ) {
+
 				\rpi\Wall\Shortcodes::display_post( $query->the_post()  );
 			}
 		}
@@ -84,14 +97,14 @@ class MemberPage {
 		return ob_get_clean();
 	}
 
-	public function comments($atts){
+	public function comments(){
 
 		ob_start();
-		$member  = new member($this->user->ID);
-		foreach ($member->get_my_comments_query() as $comment){
+
+		foreach ($this->member->get_my_comments_query() as $comment){
 			?>
 			<div class="member-coment">
-				<?php echo $member->display(24); ?>
+				<?php echo $this->member->display(24); ?>
 				<div class="entry-title">
 					<?php echo $comment->comment; ?>
 				</div>
@@ -99,7 +112,7 @@ class MemberPage {
 					<?php echo  $comment->comment_content; ?>
 				</div>
 				<div class="entry-post-permalink">
-					<div class="pin-icon"><?php echo self::$pin_icon;?></div>
+					<div class="pin-icon"><?php echo \rpi\Wall\Shortcodes::$pin_icon;?></div>
 					<a href="<?php echo  get_comment_link($comment);?>"><?php echo $comment->post->post_title; ?></a>
 				</div>
 

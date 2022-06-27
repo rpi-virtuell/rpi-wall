@@ -55,6 +55,31 @@ article.entry-card{
     display: none;
 }
 
+.single-member .meta-author img{
+    height:100px!important;
+    width: auto;
+    border: 10px solid blueviolet;
+    border-radius: 50%;
+    background-color: orange;
+}
+.single-member .ct-meta-element-author{
+    margin-left: 20px;
+}
+.member-tags{
+    display: flex;
+    flex-wrap:wrap;
+}
+.member-tags ul{
+    display: flex;
+    flex-wrap:wrap;
+    margin-right: 20px;
+    padding-inline-start:0px;
+}
+.member-tags li{
+    list-style: none;
+    margin: 0 10px 0 0;
+    padding: 0;
+}
 
 .member-message-grid{
     display: grid;
