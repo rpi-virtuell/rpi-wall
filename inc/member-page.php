@@ -45,12 +45,46 @@ class MemberPage {
 
 		$tabs = new \rpi\Wall\Tabs('tabset');
 
-		$tabs->addTab('Gruppen', 'gruppen',);
+		$tabs->addTab('Gruppen',    'groups',   $this->groups());
+		$tabs->addTab('Kommentare', 'comments', $this->comments());
+		$tabs->addTab('Abonnements','watches',    $this->watches());
+
 		$tabs->display();
 
 	}
+	public function groups(){
+		ob_start();
 
-	public function get_user_comments($atts){
+		echo '<div class="group-posts">';
+
+
+		$query = $this->member->get_query_all_groups();
+		if($query->have_posts()) {
+			while ( $query->have_posts() ) {
+				\rpi\Wall\Shortcodes::display_post( $query->the_post()  );
+			}
+		}
+		wp_reset_query();
+		echo '</div>';
+		return ob_get_clean();
+	}
+
+	public function watches(){
+		ob_start();
+
+		echo '<div class="group-posts">';
+		$query = $this->member->get_query_watched_groups();
+		if($query->have_posts()) {
+			while ( $query->have_posts() ) {
+				\rpi\Wall\Shortcodes::display_post( $query->the_post()  );
+			}
+		}
+		wp_reset_query();
+		echo '</div>';
+		return ob_get_clean();
+	}
+
+	public function comments($atts){
 
 		ob_start();
 		$member  = new member($this->user->ID);
@@ -76,4 +110,6 @@ class MemberPage {
 		return ob_get_clean();
 
 	}
+
+
 }

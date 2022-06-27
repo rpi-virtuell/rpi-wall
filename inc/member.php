@@ -138,7 +138,9 @@ class member extends \stdClass
 	public function is_in_group_or_likes_group($groupId){
 		return in_array($groupId,get_assigned_group_Ids());
 	}
-
+	public function get_watched_group_Ids(){
+		return [];
+	}
 	public function get_assigned_group_Ids(){
 		return array_merge($this->get_group_Ids(),$this->get_liked_group_Ids());
 	}
@@ -150,6 +152,20 @@ class member extends \stdClass
 		[
 			'post_type' => 'wall',
 			'post__in' => $this->get_assigned_group_Ids()
+		]);
+
+		$query = new \WP_Query($args);
+		return $query;
+
+	}
+
+	public function get_query_watched_groups($args = array()){
+
+
+		$args = wp_parse_args($args,
+		[
+			'post_type' => 'wall',
+			'post__in' => $this->get_watched_group_Ids()
 		]);
 
 		$query = new \WP_Query($args);
