@@ -1,13 +1,28 @@
 <?php
-/*
-Plugin Name: Pinnwand
-Plugin URI: https://github.com/rpi-virtuell/rpi-material-input-template
-Description: Wordpress Pinnwand Plugin
-Version: 1.0
-Author: joachim Happel
-Author URI: https://github.com/johappel
-License: A "Slug" license name e.g. GPL2
-*/
+/**
+ * The plugin bootstrap file
+ *
+ * This file is read by WordPress to generate the plugin information in the plugin
+ * admin area. This file also includes all of the dependencies used by the plugin,
+ * registers the activation and deactivation functions, and defines a function
+ * that starts the plugin.
+ *
+ * @link              https://github.com/johappel
+ * @since             1.0.0
+ * @package           Rpi_Wall
+ *
+ * @wordpress-plugin
+ * Plugin Name:       rpi Pinnwand
+ * Plugin URI:        https://github.com/rpi-virtuell/rpi-wall/
+ * Description:       Wordpress Pinnwand Plugin entwickelt für das Projket DiBeS
+ * Version:           1.0.0
+ * Author:            Joachim Happel
+ * Author URI:        https://github.com/johappel
+ * License:           GPL-2.0+
+ * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
+ * Text Domain:       rpi-wall
+ * Domain Path:       /languages
+ */
 
 require_once("rpi-wall-installer.php");
 require_once("shortcodes.php");
@@ -21,33 +36,6 @@ use rpi\Wall;
 
 class RpiWall
 {
-
-    /**
-     * wp_ulike_get_meta_data_default
-     * is_wp_ulike
-     *
-     * function wp_ulike_get_popular_items_info( $args = array() ){
-     *
-     * $defaults = array(
-     * "type"       => 'post',
-     * "rel_type"   => 'wall',
-     * "status"     => 'like',
-     * "user_id"    => '',
-     * "order"      => 'DESC',
-     * "is_popular" => true,
-     * "period"     => 'all',
-     * "offset"     => 1,
-     * "limit"      => 10
-     * );
-     *
-     * wp_ulike_get_popular_items_ids
-     *
-     * wp_ulike_get_likers_list_per_post
-     *
-     * wp_ulike_get_best_likers_info
-     * wp_ulike_is_user_liked
-     */
-
 
     protected $max_stars_per_comment = 5;
     protected $group_member_min = 3;
