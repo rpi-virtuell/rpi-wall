@@ -206,6 +206,7 @@ class Message
             '%memberamount%',
             '%channellink%',
             '%likeramount%',
+            '%deadline%',
 
         ];
         $replace_array = [
@@ -217,6 +218,7 @@ class Message
             $this->group->get_members_amount(),
             $this->group->get_matrix_link(),
             $this->group->get_likers_amount(),
+            $this->group->get_pending_time(),
         ];
 
         $body = str_replace($search_array, $replace_array, $this->get_template($template_key, 'body'));
