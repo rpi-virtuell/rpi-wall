@@ -775,11 +775,11 @@ class Group extends \stdClass {
 
         switch ($status = $this->get_status()) {
             case'ready':
-                $notice = get_option('options_rpi_wall_ready_card_notice', 'PLG gründen: ');
+                $notice = get_option('options_rpi_wall_ready_card_notice', 'Gruppe gründen: ');
                 $stats = $this->get_likers_amount() . ' Interessierte';
                 break;
             case'pending':
-                $notice = get_option('options_rpi_wall_pending_card_notice', 'Beitrittsphase zu einer PLG läuft.');
+                $notice = get_option('options_rpi_wall_pending_card_notice', 'Beitrittsphase.');
                 $stats = $this->get_likers_amount() . ' beigetreten, '. $this->get_members_amount().' interessiert';
                 break;
             case'founded':

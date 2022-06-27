@@ -281,6 +281,9 @@ article.entry-card.type-wall .plg-wrapper{
     position: relative;
     overflow: hidden;
 }
+.gruppe .rpi-wall-group-likers, .gruppe .rpi-wall-group-members{
+    padding-left: 15px;
+}
 .rpi-wall-group-likers:before, .rpi-wall-group-members:before{
     transform: rotate(-90deg);
     position: absolute;
