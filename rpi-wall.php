@@ -14,7 +14,7 @@
  * @wordpress-plugin
  * Plugin Name:       rpi Pinnwand
  * Plugin URI:        https://github.com/rpi-virtuell/rpi-wall/
- * Description:       Wordpress Pinnwand Plugin entwickelt für das Projket DiBeS
+ * Description:       Wordpress Pinnwand Plugin entwickelt für das Projekt DiBeS
  * Version:           1.0.0
  * Author:            Joachim Happel
  * Author URI:        https://github.com/johappel
@@ -52,6 +52,7 @@ class RpiWall
         add_action('blocksy:comments:after', [$this, 'display_likers_container']);
 
 
+	    add_action('blocksy:loop:card:start', [$this, 'display_cards_status_triangle']);
 	    add_action('blocksy:loop:card:end', [$this, 'display_cards_group_info']);
 
 
@@ -155,14 +156,19 @@ class RpiWall
 	}
 
 
+	function display_cards_status_triangle(){
+		$group = new rpi\Wall\Group(get_the_ID());
+		$status = $group->get_status();
+		if($status){
+			echo '<div class="rpi-wall-group-status-triangle '.$status.'"></div>';
+		}
+
+	}
 
 	/**
      * blocksy:loop:card:end action
      * @return void
      */
-
-
-
 
     function display_cards_group_info()
     {
@@ -198,8 +204,6 @@ class RpiWall
 	    wp_localize_script( 'rpi-wall-script', 'wall', array( 'ajaxurl' => admin_url( 'admin-ajax.php' )));
 
     }
-
-
 }
 
 new RpiWall();

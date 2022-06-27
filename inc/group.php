@@ -786,6 +786,7 @@ class Group extends \stdClass {
                 $notice = get_option('options_rpi_wall_founded_card_notice');
                 $notice = $this->display_member(48);
                 $stats = $this->get_members_amount() .' Mitglieder';
+                $stats = '';
 
                 break;
             case'closed':

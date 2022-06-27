@@ -12,6 +12,38 @@ body.pending .page-title:before{
 .entry-card.founded{
     background-color:lightcyan;
 }
+article.entry-card{
+    position: relative;
+}
+.rpi-wall-group-status-triangle{
+    position: absolute;
+    right:-26px;
+    top:-6px;
+    width: 0;
+    height: 0;
+    border-bottom:40px solid black;
+    border-left: 40px solid transparent;
+    border-right: 40px solid transparent;
+    transform: rotate(45deg);
+
+}
+.rpi-wall-group-status-triangle::after{
+    content:'PLG';
+    color:#fff;
+    transform: rotate(-45deg);
+    position: absolute;
+    right: -12px;
+    top: 8px;
+}
+.rpi-wall-group-status-triangle.pending{
+    border-bottom-color: red;
+}
+.rpi-wall-group-status-triangle.ready{
+    border-bottom-color: orange;
+}
+.rpi-wall-group-status-triangle.founded{
+    border-bottom-color: lightseagreen;
+}
 .single-wall #reply-title,.single-wall .ct-comments-title,.single-wall .comment-form-cookies-consent{
     display:none;
 }
@@ -112,6 +144,13 @@ body.pending .page-title:before{
 }
 .rpi-wall .group-member img{
     border-radius: 50%;
+}
+.card_plg_info{
+    height:60px;
+    border-top: 1px dotted #aaaaaa;
+    padding-top:10px;
+    max-width: 100%;
+    /*overflow: hidden;*/
 }
 
 article.entry-card.type-wall .plg-wrapper{
@@ -238,7 +277,7 @@ article.entry-card.type-wall .plg-wrapper{
     flex-wrap: wrap;
     list-style: none;
     margin: 0;
-    padding: 0 0 0 20px;
+    padding: 0;
     position: relative;
     overflow: hidden;
 }
