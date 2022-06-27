@@ -780,7 +780,7 @@ class Group extends \stdClass {
                 break;
             case'pending':
                 $notice = get_option('options_rpi_wall_pending_card_notice', 'Beitrittsphase zu einer PLG läuft.');
-                $stats = $this->get_members_amount() . ' / ' . $this->get_likers_amount() . ' beigetreten';
+                $stats = $this->get_likers_amount() . ' beigetreten, '. $this->get_members_amount().' interessiert';
                 break;
             case'founded':
                 $notice = get_option('options_rpi_wall_founded_card_notice');
@@ -793,7 +793,7 @@ class Group extends \stdClass {
                 break;
             default:
                 $notice = '';
-                $stats = ($i = $this->get_likers_amount()) > 0 ? $i . ' / ' . $min_required . ' für PLG' : '';
+                $stats = ($i = $this->get_likers_amount()) > 0 ? $i. ' interessiert' : '';
         }
 
 
