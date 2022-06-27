@@ -138,7 +138,7 @@ class RpiWall
     public function wp_ulike_ajax_respond($respond, $post_ID, $status, $args)
     {
 
-        //check pl_group_status
+        //check  rpi_group_status
 
         do_action('user_do_like', $post_ID, $status);
 
@@ -188,7 +188,7 @@ class RpiWall
     public function get_group_status()
     {
 
-        return get_post_meta(get_the_ID(), 'pl_group_status', true);
+        return get_post_meta(get_the_ID(), ' rpi_group_status', true);
 
     }
 

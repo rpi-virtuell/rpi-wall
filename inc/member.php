@@ -162,7 +162,7 @@ class member extends \stdClass
 			'post_type' => 'wall',
 			'post__in' => $this->get_assigned_group_Ids(),
 			'meta_query'=>[
-				'key' => 'pl_group_status',
+				'key' => 'rpi_group_status',
 				'value' => $stati,
 				'compare' => 'IN'
 			]
