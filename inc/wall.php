@@ -19,7 +19,7 @@ class wall
 
         $post = get_post($post, ARRAY_A);
 
-        get_post_meta($post->Id, 'rpi_group_status');
+        get_post_meta($post->Id, 'rpi_wall_group_status');
 
 
     }

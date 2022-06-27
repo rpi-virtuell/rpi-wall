@@ -38,7 +38,7 @@ class Group extends \stdClass {
 
 		$matrixTitle = substr( preg_replace( '/[^a-zA-ZüäößÜÄÖ -]*/i', '', $this->post->post_title ), 0, 40 );
 
-		$this->group_status     = $this->get( 'rpi_group_status' );
+		$this->group_status     = $this->get( 'rpi_wall_group_status' );
 		$this->slug             = 'dibes_plg_' . $this->ID;
 		$this->title            = 'PLG ' . $matrixTitle;
 		$this->channel_url      = "https://{$this->matrix_server_home}/#/room/#{$this->slug}:rpi-virtuell.de";
@@ -76,7 +76,7 @@ class Group extends \stdClass {
 					'type'    => 'NUMERIC'
 				],
 				[
-					'key'     => 'rpi_group_status',
+					'key'     => 'rpi_wall_group_status',
 					'compare' => 'NOT EXISTS'
 				]
 			]
@@ -105,12 +105,12 @@ class Group extends \stdClass {
 			'meta_query'  => [
 				'relation' => 'AND',
 				[
-					'key'     => 'rpi_group_status',
+					'key'     => 'rpi_wall_group_status',
 					'value'   => 'pending',
 					'compare' => '='
 				],
 				[
-					'key'     => 'rpi_group_status_timestamp',
+					'key'     => 'rpi_wall_group_status_timestamp',
 					'value'   => time() - $pending_add,
 					'compare' => '<',
 					'type'    => 'NUMERIC'
@@ -160,7 +160,7 @@ class Group extends \stdClass {
 	 * @return string
 	 */
 	public function get_status() {
-		return $this->get( 'rpi_group_status' );
+		return $this->get( 'rpi_wall_group_status' );
 	}
 
 	/**
@@ -208,9 +208,9 @@ class Group extends \stdClass {
 	 */
 	public function set_status( string $status ) {
 		if ( empty( $status ) ) {
-			delete_post_meta( $this->ID, 'rpi_group_status' );
+			delete_post_meta( $this->ID, 'rpi_wall_group_status' );
 		} else {
-			update_post_meta( $this->ID, 'rpi_group_status', $status );
+			update_post_meta( $this->ID, 'rpi_wall_group_status', $status );
 			if ( $status == 'pending' ) {
 				$this->set_status_time();
 			}
@@ -222,7 +222,7 @@ class Group extends \stdClass {
 	 * @return void
 	 */
 	protected function set_status_time() {
-		update_post_meta( $this->ID, 'rpi_group_status_timestamp', time() );
+		update_post_meta( $this->ID, 'rpi_wall_group_status_timestamp', time() );
 	}
 
 	/**
@@ -235,7 +235,7 @@ class Group extends \stdClass {
 
 		$this->remove_members();
 
-		delete_post_meta( $this->ID, 'rpi_group_status_timestamp' );
+		delete_post_meta( $this->ID, 'rpi_wall_group_status_timestamp' );
 
 		$this->set_status( '' );
 	}
@@ -245,7 +245,7 @@ class Group extends \stdClass {
 	 */
 	public function get_status_date() {
 
-		return date( 'd.n.Y', $this->get( 'rpi_group_status_timestamp' ) );
+		return date( 'd.n.Y', $this->get( 'rpi_wall_group_status_timestamp' ) );
 	}
 
 	public function get_pending_time() {
@@ -253,7 +253,7 @@ class Group extends \stdClass {
 		if ( $this->group_status = 'pending' ) {
 			$daySeconds = 86400;
 
-			$end_time    = $this->get( 'rpi_group_status_timestamp' ) + ( $this->pending_days * $daySeconds );
+			$end_time    = $this->get( 'rpi_wall_group_status_timestamp' ) + ( $this->pending_days * $daySeconds );
 			$pendingtime = $end_time - time();
 
 			$days    = floor( $pendingtime / 86400 );
