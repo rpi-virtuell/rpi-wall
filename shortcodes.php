@@ -19,6 +19,7 @@ class Shortcodes{
 
 
     public $user;
+    public $is_member_page = false;
 
 	public function __construct() {
 
@@ -36,14 +37,17 @@ class Shortcodes{
 	}
 
 	public function init(){
-		$this->user = \wp_ulike_pro_get_current_user();
+		//$this->user = \wp_ulike_pro_get_current_user();
 
 		if('member' === get_post_type()){
 			$this->user = get_userdata (get_post()->post_author);
+			$this->is_member_page = true;
 		}
 		if(!$this->user->ID && is_user_logged_in()){
 			$this->user = wp_get_current_user();
 		}
+
+
 
 		?>
         <script>
@@ -66,7 +70,19 @@ class Shortcodes{
 
 	}
 
-	public function get_user_comments(){
+    public function is_member_page(){
+        return $this->is_member_page;
+    }
+
+	/**
+     * [my_comments]
+     * echo self::get_user_comments();
+     *
+	 * @param $atts
+	 *
+	 * @return false|string
+	 */
+	public function get_user_comments($atts){
 
         ob_start();
         $member  = new member($this->user->ID);
