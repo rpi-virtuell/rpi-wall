@@ -206,7 +206,7 @@ class Message
             '%memberamount%',
             '%channellink%',
             '%likeramount%',
-            '%deadline%',
+            '%countdown%',
 
         ];
         $replace_array = [
