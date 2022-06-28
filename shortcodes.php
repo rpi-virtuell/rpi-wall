@@ -30,7 +30,6 @@ class Shortcodes{
         add_shortcode('my_likes', array($this, 'get_user_likes'));
 		add_shortcode( 'my_posts', [$this,'get_user_posts'] );
 		add_shortcode('my_comments', array($this, 'get_user_comments'));
-		add_shortcode('like_wall', array($this, 'force_user_like'));
 
         add_action('wp_head',array($this, 'init'));
 

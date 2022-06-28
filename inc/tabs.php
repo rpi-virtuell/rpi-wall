@@ -17,17 +17,40 @@ class Tabs {
 	 * @param string $name
 	 * @param string $content
 	 * @param string $checked 'checked'
+     * @param string $permission  '','loggedin', 'self'
 	 *
 	 * @return void
 	 */
-	function addTab($label,$name,$content,$checked=''){
+	function addTab($args){
 
-		$this->tabgroup[]       = $this->addLabel($label,sanitize_title($name),$checked);
-		$this->contentgroup[]   = $this->addContent($label,sanitize_title($name),$content);
+        $props = wp_parse_args($args,[
+                'label' => 'Titel',
+                'name'  => 'tab1',
+                'content' => '',
+                'checked' => '',
+                'permission' => ''
+        ]);
+
+        if(!empty($props['permission'])){
+			if('loggedin'===$props['permission'] && !is_user_logged_in()){
+				return;
+			}
+            elseif ('self'===$props['permission'] && get_post()->post_author != get_current_user_id()){
+                return;
+			}else{
+                new \WP_Error('invalidParam','Permission Params: empty|self|loggedin');
+            }
+		}
+
+		$this->tabgroup[]       = $this->addLabel($props['label'], sanitize_title($props['name']), $props['checked'] );
+		$this->contentgroup[]   = $this->addContent($props['label'],sanitize_title($props['name']),$props['content']);
 
 	}
+
+
 	protected function addLabel($label,$name,$checked){
-		if($_GET['tab']==$name){
+
+        if($_GET['tab']==$name){
 	        $checked = 'checked';
         }
 		ob_start();

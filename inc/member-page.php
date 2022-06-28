@@ -53,11 +53,12 @@ class MemberPage {
 
 		$tabs = new \rpi\Wall\Tabs('tabset');
 
-		$tabs->addTab('Über mich',    'bio',  $tags, 'checked' );
-		$tabs->addTab('Gruppen',    'groups',   $this->groups());
-		$tabs->addTab('Kommentare', 'comments', $this->comments());
-		$tabs->addTab('Abonnements','watch',    $this->watches());
-		$tabs->addTab('Benachrichtigungen','messages', do_shortcode('[my_messages]') );
+
+		$tabs->addTab(['label' =>'Über mich',   'name'  => 'bio', 'content' =>  $tags, 'checked'=>'checked' ]);
+		$tabs->addTab(['label' =>'Gruppen',    'name'  =>'groups',  'content' =>  $this->groups()]);
+		$tabs->addTab(['label' =>'Kommentare', 'name'  =>'comments','content' =>  $this->comments()]);
+		$tabs->addTab(['label' =>'Abonnements','name'  =>'watch',   'content' =>  $this->watches()]);
+		$tabs->addTab(['label' =>'Benachrichtigungen','name'  =>'messages', 'content' => do_shortcode('[my_messages]') ,'permission' =>  'self']);
 
 		$tabs->display();
 
