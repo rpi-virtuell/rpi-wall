@@ -950,7 +950,7 @@ class RPIWallInstaller
 
     public function change_author_link_to_user_profile($link, $author_id, $author_nicename)
     {
-        return home_url("/member/".$author_nicename."/");
+        return home_url("/member/" . $author_nicename . "/");
     }
 
     /**
@@ -964,19 +964,22 @@ class RPIWallInstaller
         $new_tags = [];
         $group = new Group($post_ID);
         $group_tags = wp_get_post_terms($post_ID, 'wall-tag');
-        $members = $group->get_memberIds();
-        foreach ($members as $member) {
+        $members = array_merge($group->get_memberIds(), $group->get_likers_Ids());
+
+        $members =get_posts(["post_type" => "member", "author__in" => $members]);
+
+        foreach ($members as $m) {
+            $member = $m->ID;
             $member_tags = wp_get_post_terms($member, 'wall-tag');
-            foreach ($group_tags as $group_tag) {
-                if (is_a($group_tag, 'WP_Term')) {
-                    if (!in_array($group_tag, $member_tags)) {
-                        $new_tags[] = $group_tag->slug;
-                    }
+            foreach ($group_tags as $group_tag ) {
+                if (!in_array($group_tag, $member_tags) && $group_tag instanceof \WP_Term) {
+                    $new_tags[] = $group_tag->term_id;
                 }
             }
-            $new_tags = array_merge(array_column($member_tags, 'slug'), $new_tags);
+            $new_tags = array_merge(array_column($member_tags, 'term_id'), $new_tags);
             wp_set_post_terms($member, $new_tags, 'wall-tag');
         }
+
 
     }
 
@@ -984,7 +987,9 @@ class RPIWallInstaller
     {
         if ($post->post_type === 'pin') {
             $group = new Group($postid);
-            $members = $group->get_memberIds();
+            $members = array_merge($group->get_memberIds(), $group->get_likers_Ids());
+
+            $members =get_posts(["post_type" => "member", "author__in" => $members]);
             foreach ($members as $member) {
                 $member = new member($member);
                 $member_tags = [];

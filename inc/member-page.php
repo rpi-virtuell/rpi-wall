@@ -58,7 +58,7 @@ class MemberPage {
 		$tabs->addTab(['label' =>'Gruppen',    'name'  =>'groups',  'content' =>  $this->groups()]);
 		$tabs->addTab(['label' =>'Kommentare', 'name'  =>'comments','content' =>  $this->comments()]);
 		$tabs->addTab(['label' =>'Abonnements','name'  =>'watch',   'content' =>  $this->watches()]);
-		$tabs->addTab(['label' =>'Benachrichtigungen','name'  =>'messages', 'content' => do_shortcode('[my_messages]') ,'permission' =>  'self']);
+		$tabs->addTab(['label' =>'Benachrichtigungen','name'  =>'messages', 'content' => $this->messages() ,'permission' =>  'self']);
 
 		$tabs->display();
 
@@ -124,6 +124,62 @@ class MemberPage {
 		return ob_get_clean();
 
 	}
+    public function messages(){
+        $user = wp_ulike_pro_get_current_user();
+
+        $paged = ( get_query_var( 'paged' ) ) ? absint( get_query_var( 'paged' ) ) : 1;
+
+        $args = [
+            'post_type' => 'message',
+            'posts_per_page' => 10,
+            'paged' => $paged,
+            'meta_query' => [
+                'relation' => 'AND',
+                [
+                    'key' => 'message_recipient',
+                    'value' => $user->ID,
+                    'compare' => '>=',
+                    'type' => 'NUMERIC'
+                ],
+                [
+                    'key' => 'message_read',
+                    'compare' => 'NOT EXISTS'
+                ]
+            ]
+        ];
+        $wp_query = new \WP_Query($args);
+        $messages = $wp_query->get_posts();
+
+        ob_start();
+        ?>
+        <div class="member-message-grid">
+            <?php
+            foreach ( $messages as $post ):
+                setup_postdata( $post );
+                ?>
+                <div class="message">
+                    <details class="message-content">
+                        <summary class="entry-title">
+                            <?php echo date('d.n.Y',strtotime($post->post_date));?>: <?php echo $post->post_title;?>
+                        </summary>
+                        <?php echo $post->post_content;?>
+                    </details>
+                </div>
+            <?php
+            endforeach;
+            ?>
+        </div>
+        <?php
+
+        echo '<hr>';
+        echo paginate_links( array(
+            'format' => '?paged=%#%',
+            'current' => max( 1, get_query_var('paged') ),
+            'total' => $wp_query->max_num_pages
+        ) );
+        wp_reset_postdata();
+        return ob_get_clean();
+    }
 
 
 }
