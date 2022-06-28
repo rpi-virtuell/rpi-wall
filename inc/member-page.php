@@ -42,6 +42,8 @@ class MemberPage {
 
 	public function display(){
 
+        echo do_shortcode('[basic-user-avatars]');
+
         $tags = '<div class="member-tags"> 
             [my_tags content="wall-tag"]
             [my_tags content="badge"]
