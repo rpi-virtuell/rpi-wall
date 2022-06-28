@@ -45,7 +45,7 @@ class Group extends \stdClass {
 		$this->pending_days     = get_option( 'options_rpi_wall_pl_group_pending_days', 7 );
 		$this->group_member_min = get_option( 'options_rpi_group_min_required_members', 3 );
 
-		$this->start_PLG_link = $this->get_starlink();
+		$this->start_PLG_link = $this->get_startlink();
 
 
 	}
@@ -63,15 +63,14 @@ class Group extends \stdClass {
 		//
 		// check alle Gruppen, die keinen status, aber likers haben
 		// wenn minimum likers erreicht: Gründungsphase zu starten
-
-		$args = [
+        $args = [
 			'post_type'   => 'wall',
 			'numberposts' => - 1,
 			'meta_query'  => [
 				'relation' => 'AND',
 				[
 					'key'     => 'rpi_wall_likers_amount',
-					'value'   => get_option( 'options_rpi_group_min_required_members', 3 ),
+					'value'   => get_option( 'options_rpi_group_min_required_members' ),
 					'compare' => '>=',
 					'type'    => 'NUMERIC'
 				],
@@ -97,7 +96,7 @@ class Group extends \stdClass {
 		// wenn genug Mitglieder gejoined: create matrix room
 		// wenn nicht genug Mitglieder : reset
 		$daySeconds  = 86400;
-		$pending_add = $daySeconds * intval( get_option( 'options_rpi_wall_pl_group_pending_days', 7 ) );
+		$pending_add = $daySeconds * floatval( get_option( 'options_rpi_wall_pl_group_pending_days') );
 
 		$args = [
 			'post_type'   => 'wall',
@@ -120,11 +119,15 @@ class Group extends \stdClass {
 
 
 		$posts = get_posts( $args );
+
+        //var_dump($posts);die();
+
 		foreach ( $posts as $post ) {
 
-			$group = new Group( $post->ID );
-			if ( $group->get_members_amount() < get_option( 'options_rpi_group_min_required_members', 3 ) ) {
-				$group->reset_status();
+            $group = new Group( $post->ID );
+			if ( $group->get_members_amount() < get_option( 'options_rpi_group_min_required_members' ) ) {
+
+                $group->reset_status();
 				new Message( $group, 'reset' );
 				do_action( 'rpi_wall_pl_group_reset', $group );
 
@@ -150,6 +153,8 @@ class Group extends \stdClass {
 			if ( 'plgstart' == $_REQUEST['action'] && $_REQUEST['hash'] == $group->get_hash( 'start' ) ) {
 
 				$group->start_pending();
+                wp_redirect(get_permalink($_REQUEST['new_plg_group']));
+                die();
 			}
 
 		}
@@ -169,35 +174,19 @@ class Group extends \stdClass {
 	public function exists() {
 		return ! empty( $this->get_status() );
 	}
-
-	/**
-	 * @return bool
-	 */
 	public function is_ready() {
 		return $this->get_status() === 'ready';
 	}
-
-	/**
-	 * @return bool
-	 */
 	public function is_pending() {
 		return $this->get_status() === 'pending';
 	}
 	public function is_not_founded() {
 		return !in_array($this->get_status(),['founded', 'closed'] );
 	}
-
-	/**
-	 * @return bool
-	 */
-	public function is_founded() {
+    public function is_founded() {
 		return in_array($this->get_status(),['founded', 'closed'] );
 	}
-
-	/**
-	 * @return bool
-	 */
-	public function is_closed() {
+    public function is_closed() {
 		return $this->get_status() === 'closed';
 	}
 
@@ -212,7 +201,18 @@ class Group extends \stdClass {
 		} else {
 			update_post_meta( $this->ID, 'rpi_wall_group_status', $status );
 			if ( $status == 'pending' ) {
-				$this->set_status_time();
+
+                $this->set_status_time();
+
+			}elseif ( $status == 'founded' ) {
+
+                //remove all  likers
+				foreach ( $this->get_likers_Ids() as $user_id ) {
+					$m = new member($user_id);
+					$m->un_like_group($this->ID);
+
+				};
+
 			}
 		}
 
@@ -270,7 +270,6 @@ class Group extends \stdClass {
 
 	}
 
-
 	/**
 	 * @param string $context email|html|matrix
 	 *
@@ -306,7 +305,6 @@ class Group extends \stdClass {
 	public function get_likers_amount() {
 		return count( $this->get_likers_Ids() );
 		//return get_post_meta($this->ID, 'like_amount', true);
-
 	}
 
 	/**
@@ -320,7 +318,6 @@ class Group extends \stdClass {
 
 		return [];
 
-		//return wp_ulike_get_likers_list_per_post('ulike', 'likers_list', $this->ID, 100);
 	}
 
 	public function get_liker_and_member_Ids() {
@@ -569,7 +566,7 @@ class Group extends \stdClass {
 		update_post_meta( $this->ID, 'rpi_wall_group_room_id', $room_id );
 	}
 
-	public function get_starlink( $label = 'Gruppe gründen' ) {
+	public function get_startlink( $label = 'Gruppe gründen' ): string {
 
 		return '<a class="button" href="' . get_home_url() . '?action=plgstart&hash=' . $this->get_hash( 'start' ) . '&new_plg_group=' . $this->ID . '">' . $label . '</a>';
 	}
@@ -587,6 +584,20 @@ class Group extends \stdClass {
 
 	}
 
+    public function get_current_users_requestlink( $label = 'Beitritt anfragen' ) {
+		$member = new member();
+
+		if (! $this->has_liker( $member )) {
+			$hash = $member->get_join_hash( $this->ID );
+			return '<a class="button" href="' . get_home_url() . '?action=plgrequest&hash=' . $hash . '&new_group_member=' . $member->ID . '">' . $label . '</a>';
+		}else{
+			return 'Anfrage gestellt';
+        }
+
+
+	}
+
+
 	public function has_member( $member ) {
 		if ( is_a( $member, 'rpi\Wall\member' ) ) {
 			$user_id = $member->ID;
@@ -594,6 +605,14 @@ class Group extends \stdClass {
 			$user_id = $member;
 		}
         return in_array( $user_id, $this->get_memberIds() );
+	}
+    public function has_liker( $member ) {
+		if ( is_a( $member, 'rpi\Wall\member' ) ) {
+			$user_id = $member->ID;
+		} else {
+			$user_id = $member;
+		}
+        return in_array( $user_id, $this->get_likers_Ids() );
 	}
 
 	/**
@@ -643,9 +662,7 @@ class Group extends \stdClass {
 	}
 
 	public function display_liker($size = 96){
-        if($this->is_not_founded()){
 	        return $this->display_user('liker', $size);
-        }
     }
 
 	public function display_user($type='member', $size = 96 ) {
@@ -708,7 +725,7 @@ class Group extends \stdClass {
 			case'ready':
 				$headline = get_option( 'options_rpi_wall_ready_header', 'Professionellen Lerngruppe (PLG)' );
 				$notice   = get_option( 'options_rpi_wall_ready_notice', 'Mit Klick auf "Gruppe Gründen" werden alle interessierten angeschrieben und haben eine Woche Zeit, der PLG beizutreten.' );
-				$button   = $this->get_starlink();
+				$button   = $this->get_startlink();
 				$stats    = $this->get_likers_amount() . ' Interessierte.';
 				break;
 			case'pending':
@@ -723,7 +740,7 @@ class Group extends \stdClass {
 			case'founded':
 				$headline = get_option( 'options_rpi_wall_founded_header', 'Professionelle Lerngruppe (PLG) zu diesem Kontext' );
 				$notice   = get_option( 'options_rpi_wall_founded_notice', 'Zu diesem Pinwandeintrag hat sich eine PLG gegründet.' );
-				$button   = $this->get_current_users_joinlink( 'Beitritt anfragen' );
+				$button   = $this->get_current_users_requestlink( 'Beitritt anfragen' );
 				$stats    = $this->get_members_amount() . ' Mitglieder.';
 				break;
 			case'closed':
@@ -770,7 +787,7 @@ class Group extends \stdClass {
     public function display_short_info()
     {
 
-        $min_required = get_option('options_rpi_group_min_required_members', 3);
+        $min_required = get_option('options_rpi_group_min_required_members');
         $max_likes = get_option('options_rpi_wall_max_stars_per_comment', 3);
 
         switch ($status = $this->get_status()) {
