@@ -75,6 +75,12 @@ class RpiWall
 	    add_action('wp_ajax_rpi_wall_toggle_like',[$this,'ajax_toggle_group_like'] );
 	    add_action('wp_ajax_nopriv_rpi_wall_toggle_like',[$this,'ajax_toggle_group_like'] );
 
+	    add_action('wp_ajax_rpi_toggle_message_read',[$this,'ajax_toggle_message_read'] );
+	    add_action('wp_ajax_nopriv_rpi_toggle_message_read',[$this,'ajax_toggle_message_read'] );
+
+	    add_action('wp_ajax_rpi_post_user_messages',[$this,'ajax_post_user_messages'] );
+	    add_action('wp_ajax_nopriv_rpi_post_user_messages',[$this,'ajax_post_user_messages'] );
+
 
         add_action('blocksy:loop:before', function (){
 			echo '<div class="rpi-wall-buttons">';
@@ -142,6 +148,21 @@ class RpiWall
 
 
 	}
+    public function ajax_post_user_messages(){
+       echo MemberPage::messages();
+       die();
+    }
+
+    public function ajax_toggle_message_read(){
+        $response = ['success'=>false];
+        if(isset($_POST['message_id']) && get_current_user() != 0){
+            $member = new Wall\member();
+               $member->set_message_read($_POST['message_id']) ;
+           $response = ['success' => true, 'message_id' => $_POST['message_id']];
+        }
+        echo json_encode($response);
+        die();
+    }
 
 	/**
      *
@@ -219,6 +240,7 @@ class RpiWall
         wp_enqueue_style('rpi-wall-style', plugin_dir_url(__FILE__) . 'assets/css/custom-style.css');
         wp_enqueue_script('rpi-wall-script', plugin_dir_url(__FILE__) . 'assets/js/custom-scripts.js', array('jquery'));
 	    wp_localize_script( 'rpi-wall-script', 'wall', array( 'ajaxurl' => admin_url( 'admin-ajax.php' )));
+
 
 	    wp_enqueue_style('tabs', plugin_dir_url(__FILE__) . 'assets/css/tabs.css');
 

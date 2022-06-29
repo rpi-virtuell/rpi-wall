@@ -53,7 +53,7 @@ class MemberPage {
 		$tabs->addTab(['label' =>'Gruppen',             'name'  =>'groups',     'content'   =>  $this->groups()                                 ]);
 		$tabs->addTab(['label' =>'Kommentare',          'name'  =>'comments',   'content'   =>  $this->comments()                               ]);
 		$tabs->addTab(['label' =>'Abonnements',         'name'  =>'watch',      'content'   =>  $this->watches()                                ]);
-		$tabs->addTab(['label' =>'Benachrichtigungen',  'name'  =>'messages',   'content'   =>  $this->messages() ,'permission' =>  'self'      ]);
+		$tabs->addTab(['label' =>'Benachrichtigungen',  'name'  =>'messages',   'content'   =>  '<div id="user-messages"></div>' ,'permission' =>  'self'      ]);
 		$tabs->addTab(['label' =>'Einstellungen',       'name'  =>'profile',    'content'   =>  do_shortcode('[basic-user-avatars]')     ]);
 
 		$tabs->display();
@@ -120,31 +120,26 @@ class MemberPage {
 		return ob_get_clean();
 
 	}
-    public function messages(){
-        $user = wp_ulike_pro_get_current_user();
+    static public function messages(){
+        $user = new \rpi\Wall\member();
 
-        $paged = ( get_query_var( 'paged' ) ) ? absint( get_query_var( 'paged' ) ) : 1;
-
+        $paged = $_GET['paged'];
         $args = [
             'post_type' => 'message',
-            'posts_per_page' => 10,
+            'posts_per_page' => 2,
             'paged' => $paged,
             'meta_query' => [
-                'relation' => 'AND',
                 [
-                    'key' => 'message_recipient',
+                    'key' => 'rpi_wall_message_recipient',
                     'value' => $user->ID,
-                    'compare' => '>=',
+                    'compare' => '=',
                     'type' => 'NUMERIC'
-                ],
-                [
-                    'key' => 'message_read',
-                    'compare' => 'NOT EXISTS'
                 ]
             ]
         ];
         $wp_query = new \WP_Query($args);
         $messages = $wp_query->get_posts();
+        $read_messages = get_post_meta($user->ID, 'rpi_read_messages');
 
         ob_start();
         ?>
@@ -153,12 +148,12 @@ class MemberPage {
             foreach ( $messages as $post ):
                 setup_postdata( $post );
                 ?>
-                <div class="message">
+                <div class="message" id="message-<?php echo  $post->ID?>">
                     <details class="message-content">
-                        <summary class="entry-title">
+                        <summary class="entry-title" style="<?php echo (!in_array($post->ID,$read_messages)) ? 'font-weight: bold': ''?>" >
                             <?php echo date('d.n.Y',strtotime($post->post_date));?>: <?php echo $post->post_title;?>
                         </summary>
-                        <?php echo $post->post_content;?>
+                        <?php echo $post->post_content?>
                     </details>
                 </div>
             <?php
@@ -168,11 +163,14 @@ class MemberPage {
         <?php
 
         echo '<hr>';
-        echo paginate_links( array(
-            'format' => '?paged=%#%',
-            'current' => max( 1, get_query_var('paged') ),
-            'total' => $wp_query->max_num_pages
-        ) );
+        if ($wp_query->max_num_pages > 1)
+        {
+            echo paginate_links( array(
+                'format' => '?paged=%#%',
+                'current' => max( 1, get_query_var('paged') ),
+                'total' => $wp_query->max_num_pages
+            ) );
+        }
         wp_reset_postdata();
         return ob_get_clean();
     }

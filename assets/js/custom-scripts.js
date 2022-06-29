@@ -30,8 +30,48 @@ jQuery(document).ready($=>{
                 }
             )
         });
-
-
-
     })
+    $('#messages').ready(function (){
+      $.get(
+          wall.ajaxurl,
+          {
+              'action': 'rpi_post_user_messages',
+              'paged' : 1
+          },
+          rpi_wall_print_messages
+      )
+    })
+
+
+    function rpi_wall_print_messages(response){
+        $('#user-messages').html(response);
+        $('.page-numbers').each(function (i, elem){
+            const href = $(elem).attr('href');
+
+            if (typeof href != 'undefined')
+            {
+                console.log(href);
+
+                match = href.match(/paged=(\d*)&/);
+                if (match)
+                {
+                    page =match[1]
+                    $(elem).attr('href', '#'+href);
+
+                    $(elem).on('click', e=>{
+                        $.get(
+                            wall.ajaxurl,
+                            {
+                                'action': 'rpi_post_user_messages',
+                                'paged' : page,
+                            },
+                            rpi_wall_print_messages
+                        )
+                    })
+                }
+            }
+        })
+    }
+
+
 })

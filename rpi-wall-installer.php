@@ -963,24 +963,25 @@ class RPIWallInstaller
     {
         $new_tags = [];
         $group = new Group($post_ID);
-        $group_tags = wp_get_post_terms($post_ID, 'wall-tag');
         $members = array_merge($group->get_memberIds(), $group->get_likers_Ids());
-
         $members =get_posts(["post_type" => "member", "author__in" => $members]);
 
-        foreach ($members as $m) {
-            $member = $m->ID;
-            $member_tags = wp_get_post_terms($member, 'wall-tag');
-            foreach ($group_tags as $group_tag ) {
-                if (!in_array($group_tag, $member_tags) && $group_tag instanceof \WP_Term) {
-                    $new_tags[] = $group_tag->term_id;
+        $taxonomies = get_post_taxonomies($post_ID);
+        foreach ($taxonomies as $taxonomy)
+        {
+            $group_tags = wp_get_post_terms($post_ID, $taxonomy);
+            foreach ($members as $m) {
+                $member = $m->ID;
+                $member_tags = wp_get_post_terms($member, $taxonomy);
+                foreach ($group_tags as $group_tag ) {
+                    if (!in_array($group_tag, $member_tags) && $group_tag instanceof \WP_Term) {
+                        $new_tags[] = $group_tag->term_id;
+                    }
                 }
+                $new_tags = array_merge(array_column($member_tags, 'term_id'), $new_tags);
+                wp_set_post_terms($member, $new_tags, $taxonomy);
             }
-            $new_tags = array_merge(array_column($member_tags, 'term_id'), $new_tags);
-            wp_set_post_terms($member, $new_tags, 'wall-tag');
         }
-
-
     }
 
     public function delete_member_taxonomy_on_pin_deletion(int $postid, WP_Post $post)
@@ -988,8 +989,11 @@ class RPIWallInstaller
         if ($post->post_type === 'pin') {
             $group = new Group($postid);
             $members = array_merge($group->get_memberIds(), $group->get_likers_Ids());
-
             $members =get_posts(["post_type" => "member", "author__in" => $members]);
+
+            $taxonomies = get_post_taxonomies($postid);
+            foreach ($taxonomies as $taxonomy)
+            {
             foreach ($members as $member) {
                 $member = new member($member);
                 $member_tags = [];
@@ -998,7 +1002,7 @@ class RPIWallInstaller
                     if ($group->ID === $member_group) {
                         continue;
                     } else {
-                        $group_tags = wp_get_post_terms($member_group, 'wall-tag');
+                        $group_tags = wp_get_post_terms($member_group, $taxonomy);
                         foreach ($group_tags as $group_tag) {
                             if (is_a($group_tag, 'WP_Term') && !in_array($group_tag->slug, $member_tags)) {
                                 $member_tags[] = $group_tag->slug;
@@ -1006,7 +1010,8 @@ class RPIWallInstaller
                         }
                     }
                 }
-                wp_set_post_terms($member, $member_tags, 'wall-tag');
+                wp_set_post_terms($member, $member_tags, '$taxonomy');
+            }
             }
         }
     }
