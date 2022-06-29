@@ -80,6 +80,7 @@ class RpiWall
 			echo '</div>';
         });
 
+	    $user_url = home_url() . '/member/' . wp_get_current_user()->user_login;
 
 
     }

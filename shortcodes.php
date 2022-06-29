@@ -74,10 +74,18 @@ class Shortcodes{
         return $this->is_member_page;
     }
 
-    public function redirect_to_users_member_page($atts, $content=''){
+    public function redirect_to_users_member_page($atts) {
 
-        return $content;
-
+	    if ( is_user_logged_in() ) {
+            $user_url = home_url() . '/member/' . wp_get_current_user()->user_login;
+            ob_end_clean();
+            wp_redirect($user_url)
+            ?>
+                <script>
+                    location.href = '<?php echo $user_url;?>';
+                </script>
+            <?php
+	    }
     }
 
 	/**
