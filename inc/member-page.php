@@ -167,7 +167,7 @@ class MemberPage {
         {
             echo paginate_links( array(
                 'format' => '?paged=%#%',
-                'current' => max( 1, get_query_var('paged') ),
+                'current' => max( 1, $_GET['paged']),
                 'total' => $wp_query->max_num_pages
             ) );
         }
