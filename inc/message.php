@@ -261,6 +261,9 @@ class Message
 
         ));
         foreach ($recipient_ids as $user_id) {
+			if($user_id instanceof \WP_User){
+				$user_id = $user_id->ID;
+			}
             add_post_meta($message_id, "rpi_wall_message_recipient", $user_id);
         }
     }
@@ -278,6 +281,8 @@ class Message
 			foreach ($member as $user_id) {
 				add_post_meta($message_id, "rpi_wall_message_recipient", $user_id);
 			}
+		}else{
+			add_post_meta($message_id, "rpi_wall_message_recipient", $member);
 		}
 
 

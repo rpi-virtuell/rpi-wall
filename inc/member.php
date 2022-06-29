@@ -228,15 +228,23 @@ class member extends \stdClass
 
 		$rejectlink = $this->get_rejectlink($groupId, $hash);
 
-		foreach ($plg->get_memberIds() as $member_id ){
-			$msg = new \stdClass();
-			$msg->subject = '['.$plg->title.'] Beitrittsanfrage';
-			$msg->body = "Hallo zusammen,\n\nIch bin <a href='{$this->get_member_profile_permalink()}'>{$this->name}</a> und würde gerne der Arbeitsgruppe beitreten.".
-						 "Wenn etwas dagegen spricht, bitte ich meine Anfrage mit dem Klick auf folgenden Link abzulehnen: $rejectlink";
-			Message::send_messages($member_id, $msg);
+		$user_ids = $plg->get_memberIds();
+		if(is_array($user_ids)){
 
+			foreach ($plg->get_memberIds() as $member_id ){
+				$msg = new \stdClass();
+				$msg->subject = '['.$plg->title.'] Beitrittsanfrage';
+				$msg->body = "Hallo zusammen,\n\nIch bin <a href='{$this->get_member_profile_permalink()}'>{$this->name}</a> und würde gerne der Arbeitsgruppe beitreten.".
+				             "Wenn etwas dagegen spricht, bitte ich meine Anfrage mit dem Klick auf folgenden Link abzulehnen: $rejectlink";
+
+
+			}
+			Message::send_messages($user_ids, $msg);
+
+			do_action('rpi_wall_member_request_group', $this->ID, $groupId, $plg->get_memberIds(), $hash, $msg);
 		}
-		do_action('rpi_wall_member_request_group', $this->ID, $groupId, $plg->get_memberIds(), $hash, $msg);
+
+
 
 	}
 
@@ -594,7 +602,7 @@ class member extends \stdClass
     {
 
         $hash = $this->get_join_hash($group_id);
-        return '<a href="' . get_home_url() . '?action=plgjoin&hash=' . $hash . '&member=' . $this->ID . '">Gruppe beitreten</p>';
+        return '<a href="' . get_home_url() . '?action=plgjoin&hash=' . $hash . '&member=' . $this->ID . '">Gruppe beitreten</a>';
 
     }
 

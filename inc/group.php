@@ -78,12 +78,15 @@ class Group extends \stdClass {
 				],
 				[
 					'key'     => 'rpi_wall_group_status',
-					'compare' => 'NOT EXISTS'
+					'compare' => '=',
+					'value'   => ''
 				]
 			]
 		];
 
 		$posts = get_posts( $args );
+
+
 
 
 		foreach ( $posts as $post ) {
@@ -477,14 +480,21 @@ class Group extends \stdClass {
 	 * @return array $user_id[]
 	 */
 	public function get_watcherIds() {
-		return get_post_meta( $this->ID, 'rpi_wall_watcher_id' );
+        if(!$ids = get_post_meta( $this->ID, 'rpi_wall_watcher_id' )){
+	        $ids =[];
+        }
+		return $ids;
 	}
 
 	/**
 	 * @return array WP_User[]
 	 */
 	public function get_watcher() {
-		return get_users( [ 'include' => $this->get_watcherIds() ] );
+		$ids = $this->get_watcherIds();
+        if( count ($ids)>0){
+	        return get_users( [ 'include' => $ids ] );
+        }
+
 	}
 
 	/**
