@@ -204,7 +204,7 @@ class Shortcodes{
 
 	public function get_user_messages($atts){
 
-		$user = wp_ulike_pro_get_current_user();
+		$user = new member();
 
 		$paged = ( get_query_var( 'paged' ) ) ? absint( get_query_var( 'paged' ) ) : 1;
 
@@ -215,7 +215,7 @@ class Shortcodes{
 			'meta_query' => [
 				'relation' => 'AND',
 				[
-					'key' => 'message_recipient',
+					'key' => 'rpi_wall_message_recipient',
 					'value' => $user->ID,
 					'compare' => '>=',
 					'type' => 'NUMERIC'

@@ -18,12 +18,24 @@ class Message
     static $templates = [
 
 
-        'group_pending' =>
+        'group_ready' =>
             [
-                'subject' => 'Gründungsprozess für %grouptitle% gestartet',
-                'body' => 'Für den Pinwandeintrag "%posttitle%" (%postlink%) hat  %actorname% (%actorlink%) die Gründung einer PLG gestartet.  ' .
-                    'Klicke folgenden Link um der PLG beizutreten: %joinlink%.'
+                'subject' => '[%grouptitle%] Gründung möglich',
+                'body' => 'Für den Pinwandeintrag "%posttitle%" (%postlink%) ist die Gründung einer PLG möglich.  ' .
+                    'Klicke auf Gruppe Gründen: %postlink%.'
             ],
+        'orga_ready' =>
+	        [
+		        'subject' => '[%grouptitle%] Gründung möglich',
+		        'body' => 'Für den Pinwandeintrag "%posttitle%" (%postlink%) ist die Gründung einer PLG möglich.  '
+
+	        ],
+        'group_pending' =>
+	        [
+		        'subject' => 'Gründungsprozess für %grouptitle% gestartet',
+		        'body' => 'Für den Pinwandeintrag "%posttitle%" (%postlink%) hat  %actorname% (%actorlink%) die Gründung einer PLG gestartet.  ' .
+		                  'Klicke folgenden Link um der PLG beizutreten: %joinlink%.'
+	        ],
         'group_founded' =>
             [
                 'subject' => 'Gründung erfolgreich. Gruppe %grouptitle% ',
@@ -264,7 +276,7 @@ class Message
 		));
 		if(is_array($member)){
 			foreach ($member as $user_id) {
-				add_post_meta($message_id, "wpi_wall_message_recipient", $user_id);
+				add_post_meta($message_id, "rpi_wall_message_recipient", $user_id);
 			}
 		}
 

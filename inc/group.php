@@ -255,7 +255,7 @@ class Group extends \stdClass {
 		if ( $this->group_status = 'pending' ) {
 			$daySeconds = 86400;
 
-			$end_time    = $this->get( 'rpi_wall_group_status_timestamp' ) + ( $this->pending_days * $daySeconds );
+			$end_time    = intval($this->get( 'rpi_wall_group_status_timestamp' )) + ( $this->pending_days * $daySeconds );
 			$pendingtime = $end_time - time();
 
 			$days    = floor( $pendingtime / 86400 );
@@ -279,12 +279,13 @@ class Group extends \stdClass {
 	 */
 	public function get_matrix_link( string $context = 'html' ) {
 		switch ( $context ) {
-			case 'html':
+			case '___html':
 				return '<a href="' . $this->channel_url . '">#' . $this->slug . ':rpi-virtuell.de</a>';
 				break;
 			case 'matrix':
 				return "#{$this->slug}:rpi-virtuell.de";
 				break;
+			case 'html':
 			case 'email':
 				return $this->channel_url;
 				break;
