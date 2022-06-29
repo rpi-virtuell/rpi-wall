@@ -7,12 +7,7 @@ class MemberPage {
 	public $is_member_page = false;
 
 	public function __construct() {
-
-
-		add_action('blocksy:single:content:top', [$this,'init']);
-
-
-
+		add_action('blocksy:single:content:bottom', [$this,'init']);
 	}
 
 	public function init(){
@@ -42,8 +37,6 @@ class MemberPage {
 
 	public function display(){
 
-        echo do_shortcode('[basic-user-avatars]');
-
         $tags = '<div class="member-tags"> 
             [my_tags content="wall-tag"]
             [my_tags content="badge"]
@@ -56,11 +49,12 @@ class MemberPage {
 		$tabs = new \rpi\Wall\Tabs('tabset');
 
 
-		$tabs->addTab(['label' =>'Über mich',   'name'  => 'bio', 'content' =>  $tags, 'checked'=>'checked' ]);
-		$tabs->addTab(['label' =>'Gruppen',    'name'  =>'groups',  'content' =>  $this->groups()]);
-		$tabs->addTab(['label' =>'Kommentare', 'name'  =>'comments','content' =>  $this->comments()]);
-		$tabs->addTab(['label' =>'Abonnements','name'  =>'watch',   'content' =>  $this->watches()]);
-		$tabs->addTab(['label' =>'Benachrichtigungen','name'  =>'messages', 'content' => $this->messages() ,'permission' =>  'self']);
+		$tabs->addTab(['label' =>'Über mich',           'name'  => 'bio',       'content'   =>  $tags, 'checked'=>true                          ]);
+		$tabs->addTab(['label' =>'Gruppen',             'name'  =>'groups',     'content'   =>  $this->groups()                                 ]);
+		$tabs->addTab(['label' =>'Kommentare',          'name'  =>'comments',   'content'   =>  $this->comments()                               ]);
+		$tabs->addTab(['label' =>'Abonnements',         'name'  =>'watch',      'content'   =>  $this->watches()                                ]);
+		$tabs->addTab(['label' =>'Benachrichtigungen',  'name'  =>'messages',   'content'   =>  $this->messages() ,'permission' =>  'self'      ]);
+		$tabs->addTab(['label' =>'Einstellungen',       'name'  =>'profile',    'content'   =>  do_shortcode('[basic-user-avatars]')     ]);
 
 		$tabs->display();
 

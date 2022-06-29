@@ -68,6 +68,8 @@ class RpiWall
 
         add_action('init', ['rpi\Wall\member', 'init_handle_request']);
 
+		add_action('wp', [$this ,'redirect_to_users_member_page']);
+
 		add_action('init', [$this, 'test']);
 
 	    add_action('wp_ajax_rpi_wall_toggle_like',[$this,'ajax_toggle_group_like'] );
@@ -80,10 +82,21 @@ class RpiWall
 			echo '</div>';
         });
 
-	    $user_url = home_url() . '/member/' . wp_get_current_user()->user_login;
+
 
 
     }
+
+	public function redirect_to_users_member_page() {
+
+		if ( is_user_logged_in() && strpos($_SERVER['REQUEST_URI'],'/member_profile')!==false) {
+			var_dump('#profile');
+			$user_url = home_url() . '/member/' . wp_get_current_user()->user_login;
+			wp_redirect($user_url);
+			die();
+
+		}
+	}
 
 	public function ajax_toggle_group_like(){
 

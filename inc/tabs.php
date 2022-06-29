@@ -27,9 +27,10 @@ class Tabs {
                 'label' => 'Titel',
                 'name'  => 'tab1',
                 'content' => '',
-                'checked' => '',
+                'checked' => false,
                 'permission' => ''
         ]);
+        $checked = $props['checked']?'checked':'';
 
         if(!empty($props['permission'])){
 			if('loggedin'===$props['permission'] && !is_user_logged_in()){
@@ -42,8 +43,8 @@ class Tabs {
             }
 		}
 
-		$this->tabgroup[]       = $this->addLabel($props['label'], sanitize_title($props['name']), $props['checked'] );
-		$this->contentgroup[]   = $this->addContent($props['label'],sanitize_title($props['name']),$props['content']);
+		$this->tabgroup[]       = $this->addLabel($props['label'], sanitize_title($props['name']), $checked );
+		$this->contentgroup[]   = $this->addContent($props['label'],sanitize_title($props['name']) , $props['content']);
 
 	}
 

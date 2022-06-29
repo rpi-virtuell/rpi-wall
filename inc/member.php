@@ -379,7 +379,8 @@ class member extends \stdClass
      */
     public function init_handle_request()
     {
-        if (isset($_REQUEST['action']) && isset($_REQUEST['hash']) && isset($_REQUEST['new_group_member'])) {
+
+		if (isset($_REQUEST['action']) && isset($_REQUEST['hash']) && isset($_REQUEST['new_group_member'])) {
 
 
             if ('plgjoin' == $_REQUEST['action']) {
