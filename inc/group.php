@@ -586,8 +586,7 @@ class Group extends \stdClass {
 
     public function get_current_users_requestlink( $label = 'Beitritt anfragen' ) {
 		$member = new member();
-
-		if (! $this->has_liker( $member )) {
+        if (! $this->has_liker( $member )) {
 			$hash = $member->get_join_hash( $this->ID );
 			return '<a class="button" href="' . get_home_url() . '?action=plgrequest&hash=' . $hash . '&new_group_member=' . $member->ID . '">' . $label . '</a>';
 		}else{

@@ -24,6 +24,7 @@ class member extends \stdClass
             $this->ID = $user->ID;
 
 
+
         } else {
             if ($user === 0) {
                 $this->ID = get_current_user_id();
@@ -31,10 +32,12 @@ class member extends \stdClass
                 $this->ID = $user;
             }
 
-            $this->user = get_userdata($this->ID);
+	        $this->user = get_userdata($this->ID);
 
             if (!$this->user) {
-                return new \WP_Error('404', 'User not found');
+				echo '<pre>';
+	            debug_print_backtrace(null,5);
+	            wp_die( new \WP_Error('401', 'No valid Member. Not Logged_id?') );
             }
         }
 

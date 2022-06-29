@@ -30,6 +30,7 @@ class Shortcodes{
         add_shortcode('my_likes', array($this, 'get_user_likes'));
 		add_shortcode( 'my_posts', [$this,'get_user_posts'] );
 		add_shortcode('my_comments', array($this, 'get_user_comments'));
+		add_shortcode('redirect_to_my_member_page', array($this, 'redirect_to_users_member_page'));
 
         add_action('wp_head',array($this, 'init'));
 
@@ -71,6 +72,12 @@ class Shortcodes{
 
     public function is_member_page(){
         return $this->is_member_page;
+    }
+
+    public function redirect_to_users_member_page($atts, $content=''){
+
+        return $content;
+
     }
 
 	/**
