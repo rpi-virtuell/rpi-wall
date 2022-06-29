@@ -232,7 +232,7 @@ class Message
      * create a Message CPT
      *          title:      subject,
      *          content:    body,
-     *          recipients: meta_key message_recipients,
+     *          recipients: meta_key rpi_wall_message_recipient,
      *          actor_id:   post_author
      *
      * @return void
@@ -249,9 +249,28 @@ class Message
 
         ));
         foreach ($recipient_ids as $user_id) {
-            add_post_meta($message_id, "message_recipient", $user_id);
+            add_post_meta($message_id, "rpi_wall_message_recipient", $user_id);
         }
     }
+
+	static function send_messages($member, $msg){
+
+		$message_id = wp_insert_post(array(
+			'post_title' => $msg->subject,
+			'post_status' => 'publish',
+			'post_author' => get_current_user_id(),
+			'post_type' => 'message',
+			'post_content' => $msg->body
+		));
+		if(is_array($member)){
+			foreach ($member as $user_id) {
+				add_post_meta($message_id, "wpi_wall_message_recipient", $user_id);
+			}
+		}
+
+
+		//Matrix\Helper::send($msg->subject, $msg->body, $msg->room_id);
+	}
 
     static function get_messages($member_id)
     {
@@ -260,7 +279,7 @@ class Message
             'post_type' => 'massage',
             'numberposts' => -1,
             'meta_query' => [
-                'key' => 'message_recipient',
+                'key' => 'rpi_wall_message_recipient',
                 'value' => $member_id,
                 'compare' => '=',
                 'type' => 'NUMERIC'

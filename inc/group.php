@@ -605,7 +605,7 @@ class Group extends \stdClass {
             return $this->get_blocksy_login_button($label);
         }
 		$member = new member();
-        if (! $this->has_liker( $member )) {
+        if (! $this->has_liker( $member ) && ! $this->has_member($member)) {
 			$hash = $member->get_join_hash( $this->ID );
 			return '<a class="button" href="' . get_home_url() . '?action=plgrequest&hash=' . $hash . '&new_group_member=' . $member->ID . '">' . $label . '</a>';
 		}else{
@@ -614,7 +614,20 @@ class Group extends \stdClass {
 
 
 	}
+	public function get_current_users_rejectlink( $label = 'Anfrage ablehnen' ) {
+		if(is_user_logged_in()){
+			$member = new member();
+			if ($this->has_member($member)) {
+				$hash = $member->get_join_hash( $this->ID );
+				return '<a class="button" href="' . get_home_url() . '?action=plgreject&hash=' . $hash . '&new_group_member=' . $member->ID . '">' . $label . '</a>';
+			}else{
+				return 'Anfrage gestellt';
+			}
+		}
 
+
+
+	}
 
 	public function has_member( $member ) {
 		if ( is_a( $member, 'rpi\Wall\member' ) ) {

@@ -194,21 +194,58 @@ class member extends \stdClass
         do_action('rpi_wall_member_joined_group', $this->ID, $groupId);
     }
 
+	public function reject_group($groupId)
+    {
+	    $this->un_like_group($groupId);
+		$groups = unserialize(get_user_meta($this->ID,'rpi_wall_group_request',true));
+	    unset($groups[$groupId]);
+		update_user_meta($this->ID,'rpi_wall_group_request',serialize($groups));
+	    do_action('rpi_wall_member_group_reject', $this->ID, $groupId);
+    }
+
 	public function request_group($groupId)
 	{
+		$plg = new Group($groupId);
 		if ($this->is_in_group($groupId) || $this->ID < 1) {
 			return false;
 		}
 
 		$this->like_group($groupId);
-		$requests = unserialize(get_user_meta($this->ID, 'rpi_wall_group_request', ));
+		$requests = unserialize(get_user_meta($this->ID, 'rpi_wall_group_request', true));
 		if(!$requests) $requests =[];
-		$requests[$groupId]= time();
+		$hash = wp_hash(strval($groupId).strval(time()),'nonce');
+		$requests[$groupId]= array('timesstamp'=>time(),'hash'=>$hash);
 		update_user_meta($this->ID, 'rpi_wall_group_request', serialize($requests));
-		do_action('rpi_wall_member_request_group', $this->ID, $groupId);
+
+		$member_requests= unserialize(get_post_meta($groupId,'rpi_wall_member_requests',true));
+		if(!is_array($member_requests)){
+			$member_requests =[];
+		}
+		$member_requests[$this->ID]= $hash;
+
+		update_post_meta($groupId,'rpi_wall_member_requests', $member_requests);
+
+
+		$rejectlink = $this->get_rejectlink($groupId, $hash);
+
+		foreach ($plg->get_memberIds() as $member_id ){
+			$msg = new \stdClass();
+			$msg->subject = '['.$plg->title.'] Beitrittsanfrage';
+			$msg->body = "Hallo zusammen,\n\nIch bin <a href='{$this->get_member_profile_permalink()}'>{$this->name}</a> und würde gerne der Arbeitsgruppe beitreten.".
+						 "Wenn etwas dagegen spricht, bitte ich meine Anfrage mit dem Klick auf folgenden Link abzulehnen: $rejectlink";
+			Message::send_messages($member_id, $msg);
+
+		}
+		do_action('rpi_wall_member_request_group', $this->ID, $groupId, $plg->get_memberIds(), $hash, $msg);
 
 	}
 
+	public function get_rejectlink($groupId, $hash){
+		if(is_user_logged_in()){
+			return '<a class="button" href="' . get_home_url() . '?action=plgreject&hash=' . $hash . '&new_group_member=' . $this->ID . '">Anfrage ablehnen</a>';
+		}
+
+	}
 	public function leave_group($groupId)
     {
         delete_post_meta($groupId, 'rpi_wall_member_id', $this->ID);
@@ -382,8 +419,23 @@ class member extends \stdClass
 
 		if (isset($_REQUEST['action']) && isset($_REQUEST['hash']) && isset($_REQUEST['new_group_member'])) {
 
+			if ('plgreject' == $_REQUEST['action']) {
 
-            if ('plgjoin' == $_REQUEST['action']) {
+				$member = new member(intval($_REQUEST['new_group_member']));
+				$groupId = $member->validate_and_reject($_REQUEST['hash']);
+
+				if ($groupId) {
+					wp_redirect(get_permalink($groupId));
+				} else {
+					wp_redirect(home_url());
+				}
+
+				die();
+
+			}
+
+
+			if ('plgjoin' == $_REQUEST['action']) {
 
                 $member = new member(intval($_REQUEST['new_group_member']));
                 $groupId = $member->validate_and_join($_REQUEST['hash']);
@@ -437,12 +489,15 @@ class member extends \stdClass
 		foreach ($users as $user){
 			if($user instanceof \WP_User){
 				$groups = unserialize($user->get('rpi_wall_group_request'));
-				foreach ($groups as $group_id=>$timestamp){
+				foreach ($groups as $group_id=>$group){
 
 					//Wartezeit abgelaufen
-					if($timestamp + $pending < time()){
+					if($group['timestamp'] + $pending < time()){
 						$member = new member($user);
-						$member->join_group($group_id);
+						$member->join_group($group_id);                             // gruppe beitreten & interesse ende
+						unset($groups[$group_id]);                                  // request löschen
+						update_user_meta('rpi_wall_group_request',$groups);
+
 					}
 				}
 			}
@@ -465,6 +520,25 @@ class member extends \stdClass
 
             if ($hash === $joinhash) {
                 $this->join_group($group_id);
+                return $group_id;
+            }
+        }
+    }
+	/**
+     * @param $joinhash
+     *
+     * @return bool
+     */
+    public function validate_and_reject($joinhash)
+    {
+
+
+		$groups = unserialize(get_user_meta($this->ID, 'rpi_wall_group_request', true));
+
+		foreach ($groups as $group_id => $group) {
+
+            if ($group['hash'] === $joinhash) {
+                $this->reject_group($group_id);
                 return $group_id;
             }
         }
@@ -509,7 +583,6 @@ class member extends \stdClass
         return $groups[$group_id];
 
     }
-
 
     /**
      * @param $group_id Group
