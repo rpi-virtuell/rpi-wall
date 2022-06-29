@@ -31,7 +31,9 @@ class Group extends \stdClass {
 		} else {
 			$this->post = get_post( $post );
 			if ( ! $this->post ) {
-				return new \WP_Error( '404', 'Post not found' );
+                echo '<pre>';
+                wp_debug_backtrace_summary();
+				die(new \WP_Error( '404', 'Post not found' ));
 			}
 			$this->ID = $this->post->ID;
 		}
@@ -565,14 +567,27 @@ class Group extends \stdClass {
 	public function set_matrix_room_id( $room_id ) {
 		update_post_meta( $this->ID, 'rpi_wall_group_room_id', $room_id );
 	}
+	public function get_blocksy_login_button($label){
+
+		return '<a href="account-modal" data-id="account" data-state="out" class="ct-header-account button">'.__('Log In').', dann<br>'.$label.'</a>';
+	}
 
 	public function get_startlink( $label = 'Gruppe gründen' ): string {
+		if(!is_user_logged_in()){
+			return $this->get_blocksy_login_button($label);
+		}
 
 		return '<a class="button" href="' . get_home_url() . '?action=plgstart&hash=' . $this->get_hash( 'start' ) . '&new_plg_group=' . $this->ID . '">' . $label . '</a>';
 	}
-
-
 	public function get_current_users_joinlink( $label = 'Gruppe beitreten' ) {
+		if(!is_user_logged_in()){
+			return $this->get_blocksy_login_button($label);
+		}
+
+		if(!is_user_logged_in()){
+			return '<a href="account-modal" data-id="account" data-state="out" class="ct-header-account button">Anmelden</a>';
+		}
+
 		$member = new member();
 
 		if ( ! $this->has_member( $member ) ) {
@@ -584,7 +599,11 @@ class Group extends \stdClass {
 
 	}
 
+
     public function get_current_users_requestlink( $label = 'Beitritt anfragen' ) {
+        if(!is_user_logged_in()){
+            return $this->get_blocksy_login_button($label);
+        }
 		$member = new member();
         if (! $this->has_liker( $member )) {
 			$hash = $member->get_join_hash( $this->ID );
@@ -635,7 +654,7 @@ class Group extends \stdClass {
 	//outputs
 
 	public function display_liker_button(){
-		$amount = $this->is_founded()||$this->is_pending()?$this->get_members_amount():$this->get_likers_amount();
+        $amount = $this->is_founded()||$this->is_pending()?$this->get_members_amount():$this->get_likers_amount();
 
         ?>
         <div class="like-btn-wrapper <?php echo $this->get_status();?>">

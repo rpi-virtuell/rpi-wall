@@ -35,10 +35,13 @@ class member extends \stdClass
 	        $this->user = get_userdata($this->ID);
 
             if (!$this->user) {
+
 				echo '<pre>';
-	            debug_print_backtrace(null,5);
-	            wp_die( new \WP_Error('401', 'No valid Member. Not Logged_id?') );
+	            echo 'ungültiger User: Member->ID =0<br>';
+				debug_print_backtrace(null,5);
+	            echo '</pre>';
             }
+
         }
 
         $this->name = $this->user->display_name;
