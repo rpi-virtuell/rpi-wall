@@ -153,7 +153,7 @@ class MemberPage {
                         <summary class="entry-title" style="<?php echo (!in_array($post->ID,$read_messages)) ? 'font-weight: bold': ''?>" >
                             <?php echo date('d.n.Y',strtotime($post->post_date));?>: <?php echo $post->post_title;?>
                         </summary>
-                        <?php echo $post->post_content?>
+                        <?php echo apply_filters('the_content',$post->post_content);?>
                     </details>
                 </div>
             <?php

@@ -45,13 +45,11 @@ jQuery(document).ready($=>{
 
     function rpi_wall_print_messages(response){
         $('#user-messages').html(response);
-        $('.page-numbers').each(function (i, elem){
+        $('a.page-numbers').each(function (i, elem){
             const href = $(elem).attr('href');
-
+            console.log(href);
             if (typeof href != 'undefined')
             {
-                console.log(href);
-
                 match = href.match(/paged=(\d*)&/);
                 if (match)
                 {
