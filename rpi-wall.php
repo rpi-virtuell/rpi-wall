@@ -72,6 +72,8 @@ class RpiWall
 
 		add_action('init', [$this, 'test']);
 
+
+
 	    add_action('wp_ajax_rpi_wall_toggle_like',[$this,'ajax_toggle_group_like'] );
 	    add_action('wp_ajax_nopriv_rpi_wall_toggle_like',[$this,'ajax_toggle_group_like'] );
 

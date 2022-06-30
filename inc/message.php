@@ -146,24 +146,6 @@ class Message
     protected function prepare_message($template_key)
     {
 
-        switch ($template_key) {
-            case 'group_min_likers':
-                $template_key = 'watch_min_likers';
-                break;
-            case 'orga_comment':
-            case 'group_comment':
-                $template_key = 'watch_comment';
-                break;
-            case 'orga_reset':
-            case 'group_reset':
-                $template_key = 'watch_reset';
-                break;
-            case 'orga_pending':
-                $template_key = 'watch_pending';
-                break;
-
-        }
-
         if (!isset($this->templates[$template_key])) {
 
             return false;
@@ -179,14 +161,16 @@ class Message
             '%channellink%',
             '%likeramount%',
             '%countdown%',
+	        '%commentlink%',
+	        '%commentcontent%',
 
         ];
         $replace_array = [
             $this->group->title,
             $this->group->post->post_title,
-            get_permalink($this->group->ID),
+            $this->group->link,
             $this->actor->name,
-            $this->actor->get_member_profile_permalink(),
+            $this->actor->get_link(),
             $this->group->get_members_amount(),
             $this->group->get_matrix_link(),
             $this->group->get_likers_amount(),

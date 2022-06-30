@@ -69,8 +69,12 @@ class Member extends \stdClass
     {
         return get_permalink($this->post);
 
-
     }
+	public function get_link()
+	{
+		return '<a href="'.$this->get_member_profile_permalink().'" class="member_link-">'.$this->name.'</a>';
+
+	}
 
 
 	/**
