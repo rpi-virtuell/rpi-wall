@@ -11,6 +11,7 @@ class Member extends \stdClass
     public string $url;
     public $post;  //CPT Member WP_Post
     public $user;
+    public $link;
 
     /**
      * @param WP_User|int $user
@@ -47,6 +48,7 @@ class Member extends \stdClass
         $this->name = $this->user->display_name;
 
         $this->url = $this->get_member_profile_permalink();
+        $this->link = $this->get_link();
 
 
         $posts = get_posts(array(
