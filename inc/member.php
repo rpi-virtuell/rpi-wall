@@ -361,8 +361,7 @@ class Member extends \stdClass
 
 	public function set_message_read($message_id)
     {
-        $read_messages = get_user_meta($this->ID, 'rpi_read_messages');
-        if ($read_messages )
+        if ($read_messages = get_user_meta($this->ID, 'rpi_read_messages', true) )
         {
             $read_messages = unserialize($read_messages);
         }else{
@@ -375,7 +374,7 @@ class Member extends \stdClass
 
     public function set_message_unread($message_id)
     {
-        $read_messages = unserialize(get_user_meta($this->ID, 'rpi_read_messages'));
+        $read_messages = unserialize(get_user_meta($this->ID, 'rpi_read_messages' , true));
        unset($read_messages[$message_id]) ;
        return update_user_meta($this->ID, 'rpi_read_messages', serialize($read_messages));
 
