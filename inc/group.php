@@ -103,7 +103,7 @@ class Group extends \stdClass {
 		foreach ( $posts as $post ) {
 			$group = new Group( $post->ID );
 			$group->set_status( 'ready' );
-			new Message( $group, 'ready', [ 'orga', 'group' ] );
+			new Message( $group, 'ready' );
 			do_action( 'rpi_wall_pl_group_ready', $group );
 		}
 

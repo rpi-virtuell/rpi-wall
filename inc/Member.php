@@ -102,8 +102,11 @@ class Member extends \stdClass
     {
 
         if (!$this->is_liked_group($groupId)) {
-            $this->toggle_like_group($groupId);
+
+			$this->toggle_like_group($groupId);
+	        new Message($groupId,'liked',$this->ID);
         }
+
     }
 
     public function un_like_group($groupId)
@@ -191,6 +194,7 @@ class Member extends \stdClass
 
         $this->un_like_group($groupId);
 
+		new Message($groupId,'joined',$this->ID);
         do_action('rpi_wall_member_joined_group', $this->ID, $groupId);
     }
 

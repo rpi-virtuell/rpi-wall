@@ -49,7 +49,7 @@ class Message
                 'body' => '%actorlink% hat folgendes an die Pinnwand gepostet: <br>Titel:  %posttitle%<br>%content%'
 
             ],
-        'like' =>
+        'liked' =>
             [
                 'subject' => '[%grouptitle%] Intresse bekundet',
                 'body' => '%actorlink% hat Interesse an einer Professionellen Lerngruppe im Kontext von %postlink%'
