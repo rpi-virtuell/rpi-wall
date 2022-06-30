@@ -964,16 +964,15 @@ class RPIWallInstaller
         $new_tags = [];
         $group = new Group($post_ID);
         $members = array_merge($group->get_memberIds(), $group->get_likers_Ids());
-        $members =get_posts(["post_type" => "member", "author__in" => $members]);
+        $members = get_posts(["post_type" => "member", "author__in" => $members]);
 
         $taxonomies = get_post_taxonomies($post_ID);
-        foreach ($taxonomies as $taxonomy)
-        {
+        foreach ($taxonomies as $taxonomy) {
             $group_tags = wp_get_post_terms($post_ID, $taxonomy);
             foreach ($members as $m) {
                 $member = $m->ID;
                 $member_tags = wp_get_post_terms($member, $taxonomy);
-                foreach ($group_tags as $group_tag ) {
+                foreach ($group_tags as $group_tag) {
                     if (!in_array($group_tag, $member_tags) && $group_tag instanceof \WP_Term) {
                         $new_tags[] = $group_tag->term_id;
                     }
@@ -989,29 +988,28 @@ class RPIWallInstaller
         if ($post->post_type === 'pin') {
             $group = new Group($postid);
             $members = array_merge($group->get_memberIds(), $group->get_likers_Ids());
-            $members =get_posts(["post_type" => "member", "author__in" => $members]);
+            $members = get_posts(["post_type" => "member", "author__in" => $members]);
 
             $taxonomies = get_post_taxonomies($postid);
-            foreach ($taxonomies as $taxonomy)
-            {
-            foreach ($members as $member) {
-                $member = new Member($member);
-                $member_tags = [];
-                $member_groups = $member->get_group_Ids();
-                foreach ($member_groups as $member_group) {
-                    if ($group->ID === $member_group) {
-                        continue;
-                    } else {
-                        $group_tags = wp_get_post_terms($member_group, $taxonomy);
-                        foreach ($group_tags as $group_tag) {
-                            if (is_a($group_tag, 'WP_Term') && !in_array($group_tag->slug, $member_tags)) {
-                                $member_tags[] = $group_tag->slug;
+            foreach ($taxonomies as $taxonomy) {
+                foreach ($members as $member) {
+                    $member = new Member($member);
+                    $member_tags = [];
+                    $member_groups = $member->get_group_Ids();
+                    foreach ($member_groups as $member_group) {
+                        if ($group->ID === $member_group) {
+                            continue;
+                        } else {
+                            $group_tags = wp_get_post_terms($member_group, $taxonomy);
+                            foreach ($group_tags as $group_tag) {
+                                if (is_a($group_tag, 'WP_Term') && !in_array($group_tag->slug, $member_tags)) {
+                                    $member_tags[] = $group_tag->slug;
+                                }
                             }
                         }
                     }
+                    wp_set_post_terms($member, $member_tags, '$taxonomy');
                 }
-                wp_set_post_terms($member, $member_tags, '$taxonomy');
-            }
             }
         }
     }

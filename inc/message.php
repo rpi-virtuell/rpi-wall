@@ -16,28 +16,28 @@ class Message
 
 
         'ready' =>
-	        [
-		        'subject' => '[%grouptitle%] Gründung möglich',
-		        'body' => 'Für den Pinwandeintrag %postlink% '.
-		                  'haben sich einige Interessierte gefunden. Die Gründung einer Professionellen Lerngruppe ist jetzt möglich. '.
-		                  'Klicke auf dem Beitrag ganz unten auf den Button "Gruppe gründen"'
+            [
+                'subject' => '[%grouptitle%] Gründung möglich',
+                'body' => 'Für den Pinwandeintrag %postlink% ' .
+                    'haben sich einige Interessierte gefunden. Die Gründung einer Professionellen Lerngruppe ist jetzt möglich. ' .
+                    'Klicke auf dem Beitrag ganz unten auf den Button "Gruppe gründen"'
 
-	        ],
+            ],
         'pending' =>
-	        [
-		        'subject' => '[%grouptitle%] Jetzt beitreten!',
-		        'body' => '%actorname% (%actorlink%) hat die Beitrittsphase zur Gründung einer Professionellen Lerngruppe eröffnet.  ' .
-			              'Klicke innerhalb der nächsten %countdown% auf dem Pinwandeintrag %postlink% '.
-		                  'ganz unten auf den Button "Beitreten", um Mitglied der Gruppe zu werden'
+            [
+                'subject' => '[%grouptitle%] Jetzt beitreten!',
+                'body' => '%actorname% (%actorlink%) hat die Beitrittsphase zur Gründung einer Professionellen Lerngruppe eröffnet.  ' .
+                    'Klicke innerhalb der nächsten %countdown% auf dem Pinwandeintrag %postlink% ' .
+                    'ganz unten auf den Button "Beitreten", um Mitglied der Gruppe zu werden'
 
-	        ],
+            ],
         'founded' =>
             [
                 'subject' => '[%grouptitle%] Gruppe erfolgreich eingerichtet ',
                 'body' => 'Auf der Seite %postlink%  wurde eine Professionellen Lerngruppe eingerichtet. ' .
-                          '%memberamount%  Mitglieder sind beigetreten. '.
-                          'Mitglieder der Gruppe finden unten auf der Seite  den Link zu einer geschützten Raum '.
-                          'und zu weiteren hilfreichen Kooperationswerkzeugen.'
+                    '%memberamount%  Mitglieder sind beigetreten. ' .
+                    'Mitglieder der Gruppe finden unten auf der Seite  den Link zu einer geschützten Raum ' .
+                    'und zu weiteren hilfreichen Kooperationswerkzeugen.'
             ],
         'create' =>
             [
@@ -53,20 +53,20 @@ class Message
 
             ],
         'joined' =>
-	        [
-		        'subject' => '[%grouptitle%] neues Mitglied',
-		        'body' => '%actorlink% der Professionellen Lerngruppe unter %postlink% beigetreten.'
+            [
+                'subject' => '[%grouptitle%] neues Mitglied',
+                'body' => '%actorlink% der Professionellen Lerngruppe unter %postlink% beigetreten.'
 
 
-	        ],
+            ],
         'requested' =>
-	        [
-		        'subject' => '[%grouptitle%] Beitrittsanfrage',
-		        'body' => '%actorlink% möchte der Professionellen Lerngruppe beitreten. '.
-		                  'Mitglieder haben unter %postlink%  kurze Zeit, das Beitrittsgesuche abzulehnen.'
+            [
+                'subject' => '[%grouptitle%] Beitrittsanfrage',
+                'body' => '%actorlink% möchte der Professionellen Lerngruppe beitreten. ' .
+                    'Mitglieder haben unter %postlink%  kurze Zeit, das Beitrittsgesuche abzulehnen.'
 
 
-	        ],
+            ],
         'comment' =>
             [
                 'subject' => '[%posttitle%] neuer Kommentar',
@@ -82,66 +82,65 @@ class Message
             ],
 
     ];
-    protected $events = ['create','ready','liked','joined', 'pending', 'founded', 'requested', 'comment','reset'];
+    protected $events = ['create', 'ready', 'liked', 'joined', 'pending', 'founded', 'requested', 'comment', 'reset'];
 
-	/**
-	 * @param Group $group
-	 * @param string $event ['create','pending','founded','liked','minimum_likers_met','comment','reset']
-	 * @param array $to :   ['orga','watch','group'] welche Zielgruppe soll benachrichtigt werden
-	 * @param int $actor_id handelnder User z.B. Kommentarschreiber
-	 */
+    /**
+     * @param Group $group
+     * @param string $event ['create','pending','founded','liked','minimum_likers_met','comment','reset']
+     * @param array $to :   ['orga','watch','group'] welche Zielgruppe soll benachrichtigt werden
+     * @param int $actor_id handelnder User z.B. Kommentarschreiber
+     */
 
-	public function __construct(Group $group, $event = 'pending', $user_ids = null, $actor=0,$search_replace = array('search'=>[],'replace'=>[]))
-	{
-		$this->group = $group;
+    public function __construct(Group $group, $event = 'pending', $user_ids = null, $actor = 0, $search_replace = array('search' => [], 'replace' => []))
+    {
+        $this->group = $group;
 
-		$this->templates = Message::$templates;
+        $this->templates = Message::$templates;
 
-		//ceck if actor is _logged in or anonymous commentor
-		if(is_int($actor)){
-			$this->actor = new Member($actor);
-		}else{
-			$this->actor = new \stdClass();
-			$this->actor->name = $actor;
-			$this->actor->link = $actor;
-		}
+        //ceck if actor is _logged in or anonymous commentor
+        if (is_int($actor)) {
+            $this->actor = new Member($actor);
+        } else {
+            $this->actor = new \stdClass();
+            $this->actor->name = $actor;
+            $this->actor->link = $actor;
+        }
 
-		//ceck for additional replacements
-		if(
-			isset($search_replace['search']) &&
-			isset($search_replace['replace']) &&
-			count($search_replace['search']) == count($search_replace['replace'])
-		){
-			$replace_data = $search_replace;
-		}else{
-			$replace_data = ['search'=>[],'replace'=>[]];
-		}
+        //ceck for additional replacements
+        if (
+            isset($search_replace['search']) &&
+            isset($search_replace['replace']) &&
+            count($search_replace['search']) == count($search_replace['replace'])
+        ) {
+            $replace_data = $search_replace;
+        } else {
+            $replace_data = ['search' => [], 'replace' => []];
+        }
 
-		if ($user_ids === null) {
-			//message to all watches
-			$user_ids = $group->get_watcher();
-		}
+        if ($user_ids === null) {
+            //message to all watches
+            $user_ids = $group->get_watcher();
+        }
 
-		if (in_array($event,$this->events) && $msg = $this->prepare_message($event,$replace_data)) {
-			if ($msg !== false) {
-				$this->create($msg, $user_ids);
-				$this->send($msg, $user_ids);
-			}
-		}
-	}
+        if (in_array($event, $this->events) && $msg = $this->prepare_message($event, $replace_data)) {
+            if ($msg !== false) {
+                $this->create($msg, $user_ids);
+                $this->send($msg, $user_ids);
+            }
+        }
+    }
 
-	/**
-	 * @param string $slug : $this->$events
-	 * @param string $part 'subject'|'body'
-	 *
-	 * @return false|mixed|void
-	 */
+    /**
+     * @param string $slug : $this->$events
+     * @param string $part 'subject'|'body'
+     *
+     * @return false|mixed|void
+     */
     public function get_template(string $slug, string $part)
     {
 
         return get_option('option_rpi_message_' . $slug . '_template_' . $part, Message::$templates[$slug][$part]);
     }
-
 
 
     /**
@@ -160,9 +159,9 @@ class Message
      *
      * @return object
      */
-    protected function prepare_message($template_key,$search_replace)
+    protected function prepare_message($template_key, $search_replace)
     {
-		if (!isset($this->templates[$template_key])) {
+        if (!isset($this->templates[$template_key])) {
 
             return false;
         }
@@ -191,8 +190,8 @@ class Message
             $this->group->get_likers_amount(),
             $this->group->get_pending_time(),
         ];
-	    $search_array = array_merge($search_array,$search_replace['search']);
-	    $replace_array = array_merge($replace_array,$search_replace['replace']);
+        $search_array = array_merge($search_array, $search_replace['search']);
+        $replace_array = array_merge($replace_array, $search_replace['replace']);
 
 
         $body = str_replace($search_array, $replace_array, $this->get_template($template_key, 'body'));
@@ -223,9 +222,9 @@ class Message
 
         ));
         foreach ($recipient_ids as $user_id) {
-			if($user_id instanceof \WP_User){
-				$user_id = $user_id->ID;
-			}
+            if ($user_id instanceof \WP_User) {
+                $user_id = $user_id->ID;
+            }
             add_post_meta($message_id, "rpi_wall_message_recipient", $user_id);
         }
     }
@@ -267,48 +266,49 @@ class Message
 
     }
 
-	/**
-	 * @param array|int $member_ids
-	 * @param object $msg ->subject ->body
-	 *
-	 * @return void
-	 */
-	static function send_messages($member, $msg){
+    /**
+     * @param array|int $member_ids
+     * @param object $msg ->subject ->body
+     *
+     * @return void
+     */
+    static function send_messages($member, $msg)
+    {
 
-		$message_id = wp_insert_post(array(
-			'post_title' => $msg->subject,
-			'post_status' => 'publish',
-			'post_author' => get_current_user_id(),
-			'post_type' => 'message',
-			'post_content' => $msg->body
-		));
-		if(is_array($member)){
-			foreach ($member as $user_id) {
-				add_post_meta($message_id, "rpi_wall_message_recipient", $user_id);
-			}
-		}else{
-			add_post_meta($message_id, "rpi_wall_message_recipient", $member);
-		}
+        $message_id = wp_insert_post(array(
+            'post_title' => $msg->subject,
+            'post_status' => 'publish',
+            'post_author' => get_current_user_id(),
+            'post_type' => 'message',
+            'post_content' => $msg->body
+        ));
+        if (is_array($member)) {
+            foreach ($member as $user_id) {
+                add_post_meta($message_id, "rpi_wall_message_recipient", $user_id);
+            }
+        } else {
+            add_post_meta($message_id, "rpi_wall_message_recipient", $member);
+        }
 
 
-		//Matrix\Helper::send($msg->subject, $msg->body, $msg->room_id);
-	}
+        //Matrix\Helper::send($msg->subject, $msg->body, $msg->room_id);
+    }
 
-	static function get_messages($member_id)
-	{
+    static function get_messages($member_id)
+    {
 
-		return get_posts([
-			'post_type' => 'massage',
-			'numberposts' => -1,
-			'meta_query' => [
-				'key' => 'rpi_wall_message_recipient',
-				'value' => $member_id,
-				'compare' => '=',
-				'type' => 'NUMERIC'
-			]
-		]);
+        return get_posts([
+            'post_type' => 'massage',
+            'numberposts' => -1,
+            'meta_query' => [
+                'key' => 'rpi_wall_message_recipient',
+                'value' => $member_id,
+                'compare' => '=',
+                'type' => 'NUMERIC'
+            ]
+        ]);
 
-	}
+    }
 
 
 }

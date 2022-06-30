@@ -1,110 +1,129 @@
 /*Kommentar Überschrift ausblenden*/
 
-body.pending .page-title:before{
+body.pending .page-title:before {
     content: 'Jetzt beitreten!';
-    color:red;
+    color: red;
     display: block;
     text-align: right;
 }
-.entry-card.pending{
-    background-color:blanchedalmond;
+
+.entry-card.pending {
+    background-color: blanchedalmond;
 }
-.entry-card.founded{
-    background-color:lightcyan;
+
+.entry-card.founded {
+    background-color: lightcyan;
 }
-article.entry-card{
+
+article.entry-card {
     position: relative;
 }
-.rpi-wall-group-status-triangle{
+
+.rpi-wall-group-status-triangle {
     position: absolute;
-    right:-26px;
-    top:-6px;
+    right: -26px;
+    top: -6px;
     width: 0;
     height: 0;
-    border-bottom:40px solid black;
+    border-bottom: 40px solid black;
     border-left: 40px solid transparent;
     border-right: 40px solid transparent;
     transform: rotate(45deg);
 
 }
-.rpi-wall-group-status-triangle::after{
-    content:'PLG';
-    color:#fff;
+
+.rpi-wall-group-status-triangle::after {
+    content: 'PLG';
+    color: #fff;
     transform: rotate(-45deg);
     position: absolute;
     right: -12px;
     top: 8px;
 }
-.rpi-wall-group-status-triangle.pending{
+
+.rpi-wall-group-status-triangle.pending {
     border-bottom-color: red;
 }
-.rpi-wall-group-status-triangle.ready{
+
+.rpi-wall-group-status-triangle.ready {
     border-bottom-color: orange;
 }
-.rpi-wall-group-status-triangle.founded{
+
+.rpi-wall-group-status-triangle.founded {
     border-bottom-color: lightseagreen;
 }
-.single-wall #reply-title,.single-wall .ct-comments-title,.single-wall .comment-form-cookies-consent{
-    display:none;
-}
-#comments{
-    margin-top: 0;
-    border: none;
-}
-#comments .logged-in-as{
+
+.single-wall #reply-title, .single-wall .ct-comments-title, .single-wall .comment-form-cookies-consent {
     display: none;
 }
 
-.single-member .meta-author img{
-    height:100px!important;
+#comments {
+    margin-top: 0;
+    border: none;
+}
+
+#comments .logged-in-as {
+    display: none;
+}
+
+.single-member .meta-author img {
+    height: 100px !important;
     width: auto;
     border: 10px solid blueviolet;
     border-radius: 50%;
     background-color: orange;
 }
-.single-member .ct-meta-element-author{
+
+.single-member .ct-meta-element-author {
     margin-left: 20px;
 }
-.member-tags{
+
+.member-tags {
     display: flex;
-    flex-wrap:wrap;
+    flex-wrap: wrap;
 }
-.member-tags ul{
+
+.member-tags ul {
     display: flex;
-    flex-wrap:wrap;
+    flex-wrap: wrap;
     margin-right: 20px;
-    padding-inline-start:0px;
+    padding-inline-start: 0px;
 }
-.member-tags li{
+
+.member-tags li {
     list-style: none;
     margin: 0 10px 0 0;
     padding: 0;
 }
 
-.member-message-grid{
+.member-message-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     grid-gap: 15px;
 }
+
 @media only screen and (max-width: 1300px) {
-    .member-message-grid{
+    .member-message-grid {
         grid-template-columns: repeat(2, 1fr);
     }
 }
+
 @media only screen and (max-width: 900px) {
-    .member-message-grid{
+    .member-message-grid {
         grid-template-columns: repeat(1, 1fr);
     }
 }
-.single-wall article > .ct-comments{
+
+.single-wall article > .ct-comments {
     padding-top: 20px;
 }
-.single-wall .ct-comment-inner{
+
+.single-wall .ct-comment-inner {
     padding-top: 20px;
 }
 
 /*user profile sortcode user_pinned_posts */
-.wp-ulike-pro-items-container.user_pinned_posts article{
+.wp-ulike-pro-items-container.user_pinned_posts article {
     margin-bottom: 20px;
     padding: 20px;
     background-color: white;
@@ -114,97 +133,115 @@ article.entry-card{
     font-size: 1.5em;
     margin-bottom: 0;
 }
-.wp-ulike-pro-items-container.user_pinned_posts .entry-excerpt p{
+
+.wp-ulike-pro-items-container.user_pinned_posts .entry-excerpt p {
     font-size: 1em;
     margin: 0;
 
 }
-.wp-ulike-pro-items-container .boundless-image{
+
+.wp-ulike-pro-items-container .boundless-image {
     display: none;
 }
+
 .wp-ulike-pro-items-container.user_pinned_posts .entry-meta {
     margin: 0;
     font-size: .8em;
 }
+
 .wp-ulike-pro-profile-custom-info {
     display: flex;
     flex-direction: column;
 }
 
 /*interessierte liker in einer Post*/
-.gruppe-header{
+.gruppe-header {
     margin-top: 5px;
     font-weight: bold;
     margin-bottom: 20px;
 }
-.gruppe{
+
+.gruppe {
     border-top: 1px solid #bbbbbb;
     /*border-radius: 5px;*/
 }
-.gruppe .wp_ulike_btn.wp_ulike_put_image::after{
+
+.gruppe .wp_ulike_btn.wp_ulike_put_image::after {
     width: 30px;
     height: 30px;
 }
+
 .gruppe .wpulike-heart .wp_ulike_general_class {
     box-shadow: 1px 1px 9px 1px #bdbdbd;
     border-radius: 50%;
     padding: 21px 10px;
 }
+
 .gruppe .wp_ulike_likers_wrapper {
     flex: auto;
     margin: -7px 5px;
 }
-.gruppe-footer{
+
+.gruppe-footer {
     margin-top: 20px;
     display: grid;
     grid-template-columns: 2fr 1fr;
 }
-.gruppe-footer .notice{
+
+.gruppe-footer .notice {
     justify-self: start;
     display: inline-grid;
 }
-.gruppe-button{
+
+.gruppe-button {
     justify-self: end;
     display: inline-grid;
 }
 
-.rpi-wall.group-members{
+.rpi-wall.group-members {
     list-style: none;
     display: flex;
     margin: 0;
     padding: 0;
 }
-.rpi-wall .group-member{
+
+.rpi-wall .group-member {
     margin-left: -10px;
 }
-.rpi-wall .group-member img{
+
+.rpi-wall .group-member img {
     border-radius: 50%;
 }
-.card_plg_info{
-    height:60px;
+
+.card_plg_info {
+    height: 60px;
     border-top: 1px dotted #aaaaaa;
-    padding-top:10px;
+    padding-top: 10px;
     max-width: 100%;
     /*overflow: hidden;*/
 }
 
-article.entry-card.type-wall .plg-wrapper{
+article.entry-card.type-wall .plg-wrapper {
     display: grid;
     grid-template-columns: 3fr 1fr;
 }
+
 .hot-comments {
     text-align: right;
     color: orangered;
     position: relative;
 }
-.addlikes{
+
+.addlikes {
     position: absolute;
     top: -3px;
 }
-.plg-wrapper .hot-comments i::before{
+
+.plg-wrapper .hot-comments i::before {
     font-size: 130%;
 }
-.plg-wrapper .hot-comments i::after{
+
+.plg-wrapper .hot-comments i::after {
     font-style: normal;
     color: black;
     font-size: 19px;
@@ -213,101 +250,118 @@ article.entry-card.type-wall .plg-wrapper{
     float: right;
     margin-top: -6px;
 }
-.rpi-wall-buttons{
+
+.rpi-wall-buttons {
     display: grid;
     justify-content: right;
     margin-bottom: 20px;
 }
+
 .modal-button.render-form {
-    background-color: darkorange!important;
-    padding: 10px 30px!important;;
-    color: #fff!important;
+    background-color: darkorange !important;
+    padding: 10px 30px !important;;
+    color: #fff !important;
     font-weight: bold;
     border-radius: 5px;
 }
-.group-posts{
+
+.group-posts {
     display: grid;
     grid-column-gap: 30px;
     grid-template-columns: repeat(3, 1fr);
 
 }
 
-.group-post{
-    box-shadow:1px 1px 3px 0px #888;
+.group-post {
+    box-shadow: 1px 1px 3px 0px #888;
     margin-bottom: 20px;
     padding: 20px;
 }
-.group-post .entry-meta svg{
+
+.group-post .entry-meta svg {
     max-width: 18px;
     height: 15px;
 
 }
-.group-post-wrapper .content{
+
+.group-post-wrapper .content {
     padding-bottom: 20px;
     border-bottom: 1px solid #ddd;
 }
-.group-post-wrapper .ghost{
+
+.group-post-wrapper .ghost {
     min-height: 20px;
 }
-.group-post-wrapper .user-assignd{
+
+.group-post-wrapper .user-assignd {
     margin-top: 20px;
     display: grid;
 
 }
-.user-grid{
+
+.user-grid {
     display: grid;
     grid-column-gap: 10px;
     grid-template-columns: 30px 250px auto;
     margin: 0 0px 10px 0;
 }
-.user-assignd .user-members{
-    display: grid;
-}
-.user-assignd .user-members .user-name{
-    border-bottom: 1px solid green;
-}
-.user-assignd .user-likers{
+
+.user-assignd .user-members {
     display: grid;
 }
 
-.user-assignd .user-likers .user-name{
+.user-assignd .user-members .user-name {
+    border-bottom: 1px solid green;
+}
+
+.user-assignd .user-likers {
+    display: grid;
+}
+
+.user-assignd .user-likers .user-name {
     border-bottom: 2px dotted orange;
 }
+
 @media only screen and (max-width: 1300px) {
-    .group-posts{
+    .group-posts {
         grid-template-columns: repeat(2, 1fr);
     }
 }
+
 @media only screen and (max-width: 900px) {
-    .group-posts{
+    .group-posts {
         grid-template-columns: repeat(1, 1fr);
     }
 }
-.member-coment{
-    box-shadow:1px 1px 3px 0px #888;
+
+.member-coment {
+    box-shadow: 1px 1px 3px 0px #888;
     margin-bottom: 20px;
     padding: 20px;
 
 }
-.member-coment .entry-content{
+
+.member-coment .entry-content {
     margin-left: 40px;
     margin-bottom: 10px;
 }
 
-.member-coment .entry-post-permalink{
+.member-coment .entry-post-permalink {
     display: grid;
     grid-template-columns: auto 1fr;
     justify-content: left;
     column-gap: 20px;
 
 }
-.like-group-box{
+
+.like-group-box {
     display: grid;
     column-gap: 4px;
-    grid-template-columns: minmax(48px, 96px)  minmax(20%,80%)  auto;
+    grid-template-columns: minmax(48px, 96px)  minmax(20%, 80%)  auto;
 
 }
-.rpi-wall-group-likers, .rpi-wall-group-members{
+
+.rpi-wall-group-likers, .rpi-wall-group-members {
     display: flex;
     flex-wrap: wrap;
     list-style: none;
@@ -316,10 +370,12 @@ article.entry-card.type-wall .plg-wrapper{
     position: relative;
     overflow: hidden;
 }
-.gruppe .rpi-wall-group-likers, .gruppe .rpi-wall-group-members{
+
+.gruppe .rpi-wall-group-likers, .gruppe .rpi-wall-group-members {
     padding-left: 15px;
 }
-.rpi-wall-group-likers:before, .rpi-wall-group-members:before{
+
+.rpi-wall-group-likers:before, .rpi-wall-group-members:before {
     transform: rotate(-90deg);
     position: absolute;
     left: -39px;
@@ -329,19 +385,23 @@ article.entry-card.type-wall .plg-wrapper{
     font-size: 14px;
     height: 22px;
 }
+
 .single-wall .rpi-wall-group-members:before {
     content: 'beigetreten';
 }
-.single-wall .rpi-wall-group-likers:before{
+
+.single-wall .rpi-wall-group-likers:before {
     content: 'interessiert';
 }
-.pending .rpi-wall-group-likers li{
+
+.pending .rpi-wall-group-likers li {
     opacity: 0.3;
 }
-.like-group-box .group-member.my_avatar img{
-     border-style: dotted;
-     border-color: red;
- }
+
+.like-group-box .group-member.my_avatar img {
+    border-style: dotted;
+    border-color: red;
+}
 
 .like-btn-wrapper {
     display: grid;
@@ -352,46 +412,53 @@ article.entry-card.type-wall .plg-wrapper{
     padding: 25px 7px;
     box-shadow: 1px 2px 9px 1px #aaaaaa;
 }
-.like-btn-wrapper.founded{
+
+.like-btn-wrapper.founded {
     box-shadow: none;
     background-color: #C8B6EC;
     border-color: #C8B6EC;
 }
-.like-btn-wrapper .closed{
+
+.like-btn-wrapper .closed {
     box-shadow: none;
     background-color: #ccc;
     border-color: #ccc;
 }
 
-.like-btn-wrapper .rpi-wall-like-button{
+.like-btn-wrapper .rpi-wall-like-button {
     max-height: 36px;
     height: auto;
     background: transparent;
 }
-.like-btn-wrapper .rpi-wall-like-button svg{
+
+.like-btn-wrapper .rpi-wall-like-button svg {
     min-width: 36px;
     height: auto;
     margin-left: 10px;
 
 }
+
 .like-group-box .rpi-wall-counter {
     padding: 0 10px;
     font-size: 23px;
     text-align: right;
 }
+
 .group-member img {
     border-radius: 50%;
     border: 2px solid #fff;
 }
+
 .group-member {
     margin-right: -20px;
     margin-bottom: -30px;
 }
-.gruppe.pending .gruppe-header{
+
+.gruppe.pending .gruppe-header {
     border-top: 5px solid orangered;
     border-bottom: 5px solid orangered;
 }
 
-.message .unread{
+.message .unread {
     font-weight: bold;
 }
