@@ -123,7 +123,8 @@ class MemberPage {
     static public function messages(){
         $user = new \rpi\Wall\Member();
 
-        $paged = $_GET['paged'];
+        $paged = $_POST['paged'];
+
         $args = [
             'post_type' => 'message',
             'posts_per_page' => 2,
@@ -171,9 +172,10 @@ class MemberPage {
         {
             echo paginate_links( array(
                 'format' => '?paged=%#%',
-                'current' => max( 1, $_GET['paged']),
+                'current' => max( 1, $_POST['paged']),
                 'total' => $wp_query->max_num_pages
             ) );
+            var_dump($_POST['paged']);
         }
         wp_reset_postdata();
         return ob_get_clean();

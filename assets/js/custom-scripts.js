@@ -33,7 +33,7 @@ jQuery(document).ready($=>{
     })
 
     $('#messages').ready(function (){
-      $.get(
+      $.post(
           wall.ajaxurl,
           {
               'action': 'rpi_post_user_messages',
@@ -53,23 +53,28 @@ jQuery(document).ready($=>{
             if (typeof href != 'undefined')
             {
                 //link zerstören
-                $(elem).attr('href', '#');
 
-                match = href.match(/paged=(\d*)&/);
+
+                match = href.match(/paged=(\d*)/)
                 if (match)
                 {
                     page =match[1]
+                    data=   {'action': 'rpi_post_user_messages',
+                    'paged' : page};
                 }
                 else{
                     page=1
+                    data = {'action': 'rpi_post_user_messages'}
                 }
+                $(elem).attr('href', '#'+page);
+                console.log(data);
+               $(elem).unbind();
+
                 $(elem).on('click', e=>{
-                    $.get(
+                    $.post(
                         wall.ajaxurl,
-                        {
-                            'action': 'rpi_post_user_messages',
-                            'paged' : page,
-                        },
+                            data
+                      ,
                         rpi_wall_print_messages
 
                     )
