@@ -13,94 +13,87 @@ class Message
     protected Member $member;
     protected $recipient_ids;
     //protected $recipient_groups=['orga','watch','group'];
-
+//Hallo zusammen,\n\nIch bin <a href='{$this->get_member_profile_permalink()}'>{$this->name}</a> und würde gerne der Arbeitsgruppe beitreten.".
+//				             "Wenn etwas dagegen spricht, bitte meine Anfrage auf dem Pinnwandeintrag ".$plg->link." ablehnen"
 
     static $templates = [
 
 
-        'group_ready' =>
-            [
-                'subject' => '[%grouptitle%] Gründung möglich',
-                'body' => 'Für den Pinwandeintrag "%posttitle%" (%postlink%) ist die Gründung einer PLG möglich.  ' .
-                    'Klicke auf Gruppe Gründen: %postlink%.'
-            ],
         'orga_ready' =>
 	        [
 		        'subject' => '[%grouptitle%] Gründung möglich',
-		        'body' => 'Für den Pinwandeintrag "%posttitle%" (%postlink%) ist die Gründung einer PLG möglich.  '
+		        'body' => 'Für den Pinwandeintrag %postlink% '.
+		                  'haben sich einige Interessierte gefunden. Die Gründung einer Professionellen Lerngruppe ist jetzt möglich. '.
+		                  'Klicke auf dem Beitrag ganz unten auf den Button "Gruppe gründen"'
 
 	        ],
-        'group_pending' =>
+        'pending' =>
 	        [
-		        'subject' => 'Gründungsprozess für %grouptitle% gestartet',
-		        'body' => 'Für den Pinwandeintrag "%posttitle%" (%postlink%) hat  %actorname% (%actorlink%) die Gründung einer PLG gestartet.  ' .
-		                  'Klicke folgenden Link um der PLG beizutreten: %joinlink%.'
+		        'subject' => '[%grouptitle%] Jetzt beitreten!',
+		        'body' => '%actorname% (%actorlink%) hat die Beitrittsphase zur Gründung einer Professionellen Lerngruppe eröffnet.  ' .
+			              'Klicke innerhalb der nächsten %countdown% auf dem Pinwandeintrag %postlink% '.
+		                  'ganz unten auf den Button "Beitreten", um Mitglied der Gruppe zu werden'
+
 	        ],
-        'group_founded' =>
+        'founded' =>
             [
-                'subject' => 'Gründung erfolgreich. Gruppe %grouptitle% ',
-                'body' => 'Zum Pinwandeintrag "%posttitle%" (%postlink%) wurd eine PLG gegründet.' .
-                    ' %memberamount%  Mitglieder sind beigetreten. ' .
-                    'Für die Mitglieder der Gruppe wurde ein eigener Matrix Raum %grouptitle% erzeugt, dem  du unter folgendem Link beitreten kannst: %channellink%.'
+                'subject' => '[%grouptitle%] Gruppe erfolgreich eingerichtet ',
+                'body' => 'Auf der Seite %postlink%  wurde eine Professionellen Lerngruppe eingerichtet. ' .
+                          '%memberamount%  Mitglieder sind beigetreten. '.
+                          'Mitglieder der Gruppe finden unten auf der Seite  den Link zu einer geschützten Raum '.
+                          'und zu weiteren hilfreichen Kooperationswerkzeugen.'
             ],
-        'orga_create' =>
+        'create' =>
             [
-                'subject' => 'Ein neuer Eintrag an der Pinnwand erstellt',
-                'body' => 'Für den Pinwandeintrag ""%posttitle%" (%postlink%)" von %actorname% (%actorlink%) erstellt: ' .
-                    '%content%'
+                'subject' => '[Pinwandeintrag]: %posttitle%',
+                'body' => '%actorlink% hat folgendes an die Pinnwand gepostet: <br>Titel:  %posttitle%<br>%content%'
 
             ],
-        'watch_like' =>
+        'like' =>
             [
-                'subject' => 'PLG Intresse  %posttitle% :',
-                'body' => 'Für den Pinwandeintrag "%posttitle%" (%postlink%) hat %actorname% (%actorlink%) Interessent an einer PLG markiert'
-
-
-            ],
-        'watch_minimum_likers_met' =>
-            [
-                'subject' => 'PLG Gründung möglich: %posttitle%"',
-                'body' => 'Zu dem Beitrag "%posttitle%" (%postlink%) haben sich genügend Interessierte für eine PLG gefunden.' .
-                    'Wenn du an einer PLG interessiert bist, klicke unter dem Beitrag auf "Gruppe gründen und starte den Gründungsprozess."'
-            ],
-        'watch_comment' =>
-            [
-                'subject' => 'Dein Beitrag  %posttitle% an der Pinnwand wurde kommentiert:',
-                'body' => 'Für den Pinwandeintrag "%posttitle%" (%postlink%) von %actorname% (%actorlink%) ein Kommentar verfasst '
+                'subject' => '[%grouptitle%] Intresse bekundet',
+                'body' => '%actorlink% hat Interesse an einer Professionellen Lerngruppe im Kontext von %postlink%'
 
 
             ],
-        'watch_pending' =>
+        'joined' =>
+	        [
+		        'subject' => '[%grouptitle%] neues Mitglied',
+		        'body' => '%actorlink% der Professionellen Lerngruppe unter %postlink% beigetreten.'
+
+
+	        ],
+        'requested' =>
+	        [
+		        'subject' => '[%grouptitle%] Beitrittsanfrage',
+		        'body' => '%actorlink% möchte der Professionellen Lerngruppe beitreten. '.
+		                  'Mitglieder haben unter %postlink%  kurze Zeit, das Beitrittsgesuche abzulehnen.'
+
+
+	        ],
+        'comment' =>
             [
-                'subject' => 'Gründungsprozess für %grouptitle% gestartet',
-                'body' => 'Für den Pinwandeintrag "%posttitle%" (%postlink%)  hat  %actorname% (%actorlink%) die Gründung einer PLG gestartet. ' .
-                    'Es haben sie sich %likeramount% Mitglieder dafür interessiert.'
+                'subject' => '[%posttitle%] neuer Kommentar',
+                'body' => '%actorlink% hat unter %commentlink% einen neuen Kommentar  verfasst:<br>%commentcontent% '
+
 
             ],
-        'orga_minimum_likers_met' =>
+        'reset' =>
             [
-                'subject' => 'Minimum an Interessierten erreicht: %posttitle%',
-                'body' => 'Zu dem Beitrag "%posttitle%" (%postlink%) haben sich das eingestellte Minimum an Interessierten gefunden. ' .
-                    'Es kann jetzt ein PLG Gründungsprozess gestartet werden. '
-            ],
-        'orga_founded' =>
-            [
-                'subject' => 'Gründung erfolgreich. Gruppe %grouptitle% ',
-                'body' => 'Für den Pinwandeintrag "%posttitle%" (%postlink%) wurde eine PLG erstellt. %memberamount% Mitglieder sind beigetreten. ' .
-                    'Tritt bitte dem Matrix Raum %grouptitle% hier bei: %channellink% '
-
-            ],
-        'watch_reset' =>
-            [
-                'subject' => 'Gründung der Gruppe %grouptitle% leider nicht erfolgreich ',
-                'body' => 'Für den Pinwandeintrag "%posttitle%" (%postlink%) haben sich leider nicht genug Interessierte gefunden, um eine PLG zu gründen. ' .
-                    'Der Gründungsvorgang wurde zurückgesetzt. Wenn sich mehr Interessierte finden, kann der Prozess erneut gestartet werden.'
+                'subject' => '[%grouptitle%] zu wenig Intresse',
+                'body' => 'Für den Pinwandeintrag "%posttitle%" (%postlink%) haben sich leider nicht genug Interessierte gefunden, um eine Professionelle Lerngruppe zu etablieren. ' .
+                    'Der Gründungsvorgang wurde zurückgesetzt. Wenn sich mehr Interessierte finden, kann der Gründungsprozess erneut gestartet werden.'
             ],
 
     ];
-    protected $events = ['create', 'pending', 'founded', 'liked', 'minimum_likers_met', 'comment', 'reset'];
+    protected $events = ['create','ready','liked','joined', 'pending', 'founded', 'requested', 'comment','reset'];
 
-
+	/**
+	 * @param string $slug : $this->$events
+	 * @param string $part 'subject'|'body'
+	 *
+	 * @return false|mixed|void
+	 */
     public function get_template(string $slug, string $part)
     {
 
@@ -113,7 +106,7 @@ class Message
      * @param array $to :   ['orga','watch','group'] welche Zielgruppe soll benachrichtigt werden
      * @param int $actor_id handelnder User z.B. Kommentarschreiber
      */
-    public function __construct(Group $group, $event = 'pending', $to = ['orga', 'watch', 'group'], $actor_id = 0)
+    public function __construct(Group $group, $event = 'pending', $user_ids = null, $actor_id = 0)
     {
         $this->group = $group;
 
@@ -121,50 +114,17 @@ class Message
 
         $this->actor = new Member($actor_id);
 
-        foreach ($to as $reciever) {
-            $template_key = $reciever . '_' . $event;
-            if ($actor_id === 0) {
-                $actor_id = get_current_user_id();
-            }
-            $this->prepare_message($template_key, $actor_id);
-            if ('group' == $reciever) {
-                if ('pending' == $event || 'create' == $event || 'minimum_likers_met' == $event) {
-                    $user_ids = $group->get_likers();
-                }
-                if ('founded' == $event || 'comment' == $event || 'liked' == $event) {
-                    $user_ids = $group->get_likers();
-                }
-
-            }
-            if ('watch' == $reciever) {
-                $user_ids = $group->get_watcher();
-            }
-            if ('orga' == $reciever) {
-                $user_ids = $this->get_orga_ids();
-            }
-
-            if ($msg = $this->prepare_message($template_key)) {
-                if ($msg !== false) {
-                    if ('group_pending' == $template_key) {
-                        //user einzeln anschreiben
-                        foreach ($user_ids as $user_id) {
-                            $m = new Member($user_id);
-                            $link = $m->get_joinlink($group->ID);
-                            $msg->body = str_replace('%joinlink%', $link, $msg->body);
-                            $this->create($msg, [$user_id]);
-                            $this->send($msg, $user_id);
-                        }
-                    } else {
-                        $this->create($msg, $user_ids);
-                        $this->send($msg, $user_ids);
-                    }
-
-                }
-            }
-
+        if ($user_ids === null) {
+	        //message to all watches
+	        $user_ids = $group->get_watcher();
         }
 
-
+        if (in_array($event,$this->events) && $msg = $this->prepare_message($event)) {
+            if ($msg !== false) {
+                $this->create($msg, $user_ids);
+                $this->send($msg, $user_ids);
+            }
+        }
     }
 
     /**

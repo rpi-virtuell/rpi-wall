@@ -16,6 +16,7 @@ class Group extends \stdClass {
 	public $group_member_min;
 	public $matrix_server_home = 'matrix.rpi-virtuell.de';
 	public $matrix_server_base = 'rpi-virtuell.de';
+	public $link;
 
 
 	/**
@@ -36,6 +37,7 @@ class Group extends \stdClass {
 				die(new \WP_Error( '404', 'Post not found' ));
 			}
 			$this->ID = $this->post->ID;
+
 		}
 
 		$matrixTitle = substr( preg_replace( '/[^a-zA-ZüäößÜÄÖ -]*/i', '', $this->post->post_title ), 0, 40 );
@@ -48,7 +50,7 @@ class Group extends \stdClass {
 		$this->group_member_min = get_option( 'options_rpi_group_min_required_members', 3 );
 
 		$this->start_PLG_link = $this->get_startlink();
-
+		$this->link = '<a href="'.get_permalink($this->post).'">'.$matrixTitle.'</a>';
 
 	}
 
@@ -492,6 +494,7 @@ class Group extends \stdClass {
         if(!$ids = get_post_meta( $this->ID, 'rpi_wall_watcher_id' )){
 	        $ids =[];
         }
+		$ids = array_unique(array_merge($this->get_likers_Ids(),$this->get_memberIds()));
 		return $ids;
 	}
 
@@ -640,7 +643,7 @@ class Group extends \stdClass {
 	protected function get_current_users_rejectlink( $label = 'Anfrage ablehnen' ) {
 		$out ='';
 
-		$member_requests= unserialize(get_post_meta($this->ID,'rpi_wall_member_requests',true));
+		$member_requests= get_post_meta($this->ID,'rpi_wall_member_requests',true);
         if(is_array($member_requests)){
 		    foreach ($member_requests as $member_id=>$hash){
                 $member = new Member($member_id);

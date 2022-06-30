@@ -196,11 +196,20 @@ class Member extends \stdClass
 
 	public function reject_group($groupId)
     {
-	    $this->un_like_group($groupId);
+	    //remove requesting liker
+		$this->un_like_group($groupId);
+
+		//delete rpi_wall_group_request
 		$groups = unserialize(get_user_meta($this->ID,'rpi_wall_group_request',true));
 	    unset($groups[$groupId]);
 		update_user_meta($this->ID,'rpi_wall_group_request',serialize($groups));
-	    do_action('rpi_wall_member_group_reject', $this->ID, $groupId);
+
+		//delete rpi_wall_member_request
+	    $member_requests= unserialize(get_post_meta($groupId,'rpi_wall_member_requests',true));
+	    unset($member_requests[$this->ID]);
+	    update_post_meta($groupId,'rpi_wall_member_requests', serialize($member_requests));
+
+		do_action('rpi_wall_member_group_reject', $this->ID, $groupId);
     }
 
 	public function request_group($groupId)
@@ -223,10 +232,7 @@ class Member extends \stdClass
 		}
 		$member_requests[$this->ID]= $hash;
 
-		update_post_meta($groupId,'rpi_wall_member_requests', $member_requests);
-
-
-		$rejectlink = $this->get_rejectlink($groupId, $hash);
+		update_post_meta($groupId,'rpi_wall_member_requests', serialize($member_requests));
 
 		$user_ids = $plg->get_memberIds();
 		if(is_array($user_ids)){
@@ -235,8 +241,7 @@ class Member extends \stdClass
 				$msg = new \stdClass();
 				$msg->subject = '['.$plg->title.'] Beitrittsanfrage';
 				$msg->body = "Hallo zusammen,\n\nIch bin <a href='{$this->get_member_profile_permalink()}'>{$this->name}</a> und würde gerne der Arbeitsgruppe beitreten.".
-				             "Wenn etwas dagegen spricht, bitte ich meine Anfrage mit dem Klick auf folgenden Link abzulehnen: $rejectlink";
-
+				             "Wenn etwas dagegen spricht, bitte meine Anfrage auf dem Pinnwandeintrag ".$plg->link." ablehnen";
 
 			}
 			Message::send_messages($user_ids, $msg);
