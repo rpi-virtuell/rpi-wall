@@ -3,7 +3,7 @@
 class MemberPage {
 
 	public $is_my_page = false;
-	public \rpi\Wall\member $member;
+	public \rpi\Wall\Member $member;
 	public $is_member_page = false;
 
 	public function __construct() {
@@ -13,7 +13,7 @@ class MemberPage {
 	public function init(){
 
 		if('member' === get_post_type()){
-			$this->member = new \rpi\Wall\member(get_post()->post_author);
+			$this->member = new \rpi\Wall\Member(get_post()->post_author);
 			$this->is_member_page = true;
 			$this->post = $this->member->post ;
 			$this->ID = $this->member->post->ID;
@@ -37,7 +37,7 @@ class MemberPage {
 
 	public function display(){
 
-        $tags = '<div class="member-tags"> 
+        $tags = '<div class="Member-tags"> 
             [my_tags content="wall-tag"]
             [my_tags content="badge"]
             [my_tags content="schooltype"]
@@ -121,7 +121,7 @@ class MemberPage {
 
 	}
     static public function messages(){
-        $user = new \rpi\Wall\member();
+        $user = new \rpi\Wall\Member();
 
         $paged = $_GET['paged'];
         $args = [

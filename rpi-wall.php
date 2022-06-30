@@ -66,7 +66,7 @@ class RpiWall
 
 	    add_action('init', ['rpi\Wall\Group', 'init_cronjob']);
 
-        add_action('init', ['rpi\Wall\member', 'init_handle_request']);
+        add_action('init', [ 'rpi\Wall\Member', 'init_handle_request']);
 
 		add_action('wp', [$this ,'redirect_to_users_member_page']);
 
@@ -96,8 +96,8 @@ class RpiWall
 	public function redirect_to_users_member_page() {
 
 		if ( is_user_logged_in() && strpos($_SERVER['REQUEST_URI'],'/member_profile')!==false) {
-			var_dump('#profile');
-			$user_url = home_url() . '/member/' . wp_get_current_user()->user_login;
+			$member = new Wall\Member(wp_get_current_user());
+			$user_url = $member->get_member_profile_permalink();
 			wp_redirect($user_url);
 			die();
 
@@ -112,7 +112,7 @@ class RpiWall
 			$group = new Wall\Group($_POST['group_id']);
 			if($group && $group->is_not_founded()){
 
-				$member = new Wall\member();
+				$member = new Wall\Member();
 				if($member->is_in_group($group->ID)){
 					echo json_encode($response);
 					die();
@@ -156,7 +156,7 @@ class RpiWall
     public function ajax_toggle_message_read(){
         $response = ['success'=>false];
         if(isset($_POST['message_id']) && get_current_user() != 0){
-            $member = new Wall\member();
+            $member = new Wall\Member();
                $member->set_message_read($_POST['message_id']) ;
            $response = ['success' => true, 'message_id' => $_POST['message_id']];
         }
@@ -250,19 +250,19 @@ class RpiWall
 
 		if (isset($_GET['admin_test'])) {
 			foreach ([3,4,5] as $user_id){
-				$member = new Wall\member($user_id);
+				$member = new Wall\Member($user_id);
 				$member->like_group(41);
 				$member->like_group(46);
 				$member->like_group(55);
 			}
 			foreach ([5,6] as $user_id){
-				$member = new Wall\member($user_id);
+				$member = new Wall\Member($user_id);
 				$member->like_group(72);
 				$member->like_group(478);
 
 			}
 
-			$member = new Wall\member(6);
+			$member = new Wall\Member(6);
 			$member->like_group(480);
 		}
 

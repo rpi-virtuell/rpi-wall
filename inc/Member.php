@@ -3,13 +3,13 @@
 namespace rpi\Wall;
 
 
-class member extends \stdClass
+class Member extends \stdClass
 {
 
     public $ID;
     public $name;
     public string $url;
-    public $post;  //CPT member WP_Post
+    public $post;  //CPT Member WP_Post
     public $user;
 
     /**
@@ -250,7 +250,7 @@ class member extends \stdClass
 
 	public function get_rejectlink($groupId, $hash){
 		if(is_user_logged_in()){
-			return '<a class="button" href="' . get_home_url() . '?action=plgreject&hash=' . $hash . '&new_group_member=' . $this->ID . '">Anfrage ablehnen</a>';
+			return '<a class="button" href="' . get_home_url() . '?action=plgreject&hash=' . $hash . '&new_group_member=' . $this->ID . '">Anfrage von '.$this->name.' ablehnen</a>';
 		}
 
 	}
@@ -429,7 +429,7 @@ class member extends \stdClass
 
 			if ('plgreject' == $_REQUEST['action']) {
 
-				$member = new member(intval($_REQUEST['new_group_member']));
+				$member = new Member(intval($_REQUEST['new_group_member']));
 				$groupId = $member->validate_and_reject($_REQUEST['hash']);
 
 				if ($groupId) {
@@ -445,7 +445,7 @@ class member extends \stdClass
 
 			if ('plgjoin' == $_REQUEST['action']) {
 
-                $member = new member(intval($_REQUEST['new_group_member']));
+                $member = new Member(intval($_REQUEST['new_group_member']));
                 $groupId = $member->validate_and_join($_REQUEST['hash']);
 
                 if ($groupId) {
@@ -459,7 +459,7 @@ class member extends \stdClass
 
             }elseif ('plgrequest' == $_REQUEST['action']) {
 
-                $member = new member(intval($_REQUEST['new_group_member']));
+                $member = new Member(intval($_REQUEST['new_group_member']));
                 $groupId = $member->validate_and_request($_REQUEST['hash']);
 
                 if ($groupId) {
@@ -501,7 +501,7 @@ class member extends \stdClass
 
 					//Wartezeit abgelaufen
 					if($group['timestamp'] + $pending < time()){
-						$member = new member($user);
+						$member = new Member($user);
 						$member->join_group($group_id);                             // gruppe beitreten & interesse ende
 						unset($groups[$group_id]);                                  // request löschen
 						update_user_meta('rpi_wall_group_request',$groups);

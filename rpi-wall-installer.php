@@ -995,7 +995,7 @@ class RPIWallInstaller
             foreach ($taxonomies as $taxonomy)
             {
             foreach ($members as $member) {
-                $member = new member($member);
+                $member = new Member($member);
                 $member_tags = [];
                 $member_groups = $member->get_group_Ids();
                 foreach ($member_groups as $member_group) {

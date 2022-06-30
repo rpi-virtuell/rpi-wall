@@ -76,11 +76,20 @@ class Group extends \stdClass {
 					'compare' => '>=',
 					'type'    => 'NUMERIC'
 				],
-				[
-					'key'     => 'rpi_wall_group_status',
-					'compare' => '=',
-					'value'   => ''
-				]
+                [
+	                'relation' => 'OR',
+	                [
+		                'key'     => 'rpi_wall_group_status',
+		                'compare' => '=',
+		                'value'   => ''
+	                ],
+	                [
+		                'key'     => 'rpi_wall_group_status',
+		                'compare' => 'NOT EXISTS',
+
+	                ]
+                ]
+
 			]
 		];
 
@@ -152,7 +161,7 @@ class Group extends \stdClass {
 	 */
 	static function init_handle_requests() {
 
-		//member möchte einer Gruppe beitreten
+		//Member möchte einer Gruppe beitreten
 		if ( ! is_admin() && isset( $_REQUEST['action'] ) && isset( $_REQUEST['hash'] ) && isset( $_REQUEST['new_plg_group'] ) ) {
 			$group = new Group( $_REQUEST['new_plg_group'] );
 			if ( 'plgstart' == $_REQUEST['action'] && $_REQUEST['hash'] == $group->get_hash( 'start' ) ) {
@@ -213,7 +222,7 @@ class Group extends \stdClass {
 
                 //remove all  likers
 				foreach ( $this->get_likers_Ids() as $user_id ) {
-					$m = new member($user_id);
+					$m = new Member($user_id);
 					$m->un_like_group($this->ID);
 
 				};
@@ -411,13 +420,13 @@ class Group extends \stdClass {
 	}
 
 	/**
-	 * @return array member[]
+	 * @return array Member[]
 	 *
 	 */
 	public function get_members() {
 		$members = [];
 		foreach ( $this->get_memberIds() as $member_id ) {
-			$members[] = new member( $member_id );
+			$members[] = new Member( $member_id );
 		}
 
 		return $members;
@@ -426,10 +435,10 @@ class Group extends \stdClass {
 	/**
 	 * @param \WP_User $user_id
 	 *
-	 * @return member
+	 * @return Member
 	 */
 	public function get_member( $user_id ) {
-		return new member( $user_id );
+		return new Member( $user_id );
 	}
 
 	/**
@@ -541,7 +550,7 @@ class Group extends \stdClass {
 	protected function start_pending() {
 		$this->set_status( 'pending' );
 		new Message( $this, 'pending' );
-		$starter = new member();
+		$starter = new Member();
 		$starter->join_group( $this->ID );
 		do_action( 'rpi_wall_pl_group_pending', $this );
 
@@ -599,7 +608,7 @@ class Group extends \stdClass {
 			return '<a href="account-modal" data-id="account" data-state="out" class="ct-header-account button">Anmelden</a>';
 		}
 
-		$member = new member();
+		$member = new Member();
 
 		if ( ! $this->has_member( $member ) ) {
 			$hash = $member->get_join_hash( $this->ID );
@@ -615,33 +624,37 @@ class Group extends \stdClass {
         if(!is_user_logged_in()){
             return $this->get_blocksy_login_button($label);
         }
-		$member = new member();
-        if (! $this->has_liker( $member ) && ! $this->has_member($member)) {
-			$hash = $member->get_join_hash( $this->ID );
-			return '<a class="button" href="' . get_home_url() . '?action=plgrequest&hash=' . $hash . '&new_group_member=' . $member->ID . '">' . $label . '</a>';
-		}else{
-			return 'Anfrage gestellt';
+		$member = new Member();
+	    if(! $this->has_member($member)) {
+		    if ( $this->has_liker( $member ) ) {
+			    return 'Anfrage gestellt';
+		    } else {
+			    $hash = $member->get_join_hash( $this->ID );
+                return '<a class="button" href="' . get_home_url() . '?action=plgrequest&hash=' . $hash . '&new_group_member=' . $member->ID . '">' . $label . '</a>';
+		    }
+	    }else{
+            return $this->get_current_users_rejectlink();
         }
 
-
 	}
-	public function get_current_users_rejectlink( $label = 'Anfrage ablehnen' ) {
-		if(is_user_logged_in()){
-			$member = new member();
-			if ($this->has_member($member)) {
-				$hash = $member->get_join_hash( $this->ID );
-				return '<a class="button" href="' . get_home_url() . '?action=plgreject&hash=' . $hash . '&new_group_member=' . $member->ID . '">' . $label . '</a>';
-			}else{
-				return 'Anfrage gestellt';
-			}
-		}
+	protected function get_current_users_rejectlink( $label = 'Anfrage ablehnen' ) {
+		$out ='';
 
+		$member_requests= unserialize(get_post_meta($this->ID,'rpi_wall_member_requests',true));
+        if(is_array($member_requests)){
+		    foreach ($member_requests as $member_id=>$hash){
+                $member = new Member($member_id);
+	            $out .= $member->get_rejectlink($this->ID,$hash);
+            }
+
+		}
+        return $out;
 
 
 	}
 
 	public function has_member( $member ) {
-		if ( is_a( $member, 'rpi\Wall\member' ) ) {
+		if ( is_a( $member, 'rpi\Wall\Member' ) ) {
 			$user_id = $member->ID;
 		} else {
 			$user_id = $member;
@@ -649,7 +662,7 @@ class Group extends \stdClass {
         return in_array( $user_id, $this->get_memberIds() );
 	}
     public function has_liker( $member ) {
-		if ( is_a( $member, 'rpi\Wall\member' ) ) {
+		if ( is_a( $member, 'rpi\Wall\Member' ) ) {
 			$user_id = $member->ID;
 		} else {
 			$user_id = $member;
@@ -727,7 +740,7 @@ class Group extends \stdClass {
         $zIndex = count($ids);
         foreach ( $ids as $user_id ) {
 	        $class ='';
-            $member = new member($user_id);
+            $member = new Member($user_id);
             if($user_id == get_current_user_id()){
                 $class = ' my_avatar';
             }

@@ -85,7 +85,7 @@ class Shortcodes{
 	public function get_user_comments($atts){
 
         ob_start();
-        $member  = new member($this->user->ID);
+        $member  = new Member($this->user->ID);
         foreach ($member->get_my_comments_query() as $comment){
             ?>
             <div class="member-coment">
@@ -204,7 +204,7 @@ class Shortcodes{
 
 	public function get_user_messages($atts){
 
-		$user = new member();
+		$user = new Member();
 
 		$paged = ( get_query_var( 'paged' ) ) ? absint( get_query_var( 'paged' ) ) : 1;
 
@@ -265,7 +265,7 @@ class Shortcodes{
 		ob_start();
 
 		echo '<div class="group-posts">';
-		$member = new member($this->user);
+		$member = new Member($this->user);
 
 
         $query = $member->get_query_all_groups();
@@ -281,7 +281,7 @@ class Shortcodes{
     public function get_user_likes($atts){
         ob_start();
 	    echo '<div class="group-posts">';
-	    $member = new member($this->user);
+	    $member = new Member($this->user);
 
 	    $query = $member->get_query_pending_groups();
 	    if($query && $query->have_posts()) {
@@ -297,7 +297,7 @@ class Shortcodes{
 
         ob_start();
 	    echo '<div class="group-posts">';
-	    $member = new member($this->user);
+	    $member = new Member($this->user);
 
 	    $query = $member->get_query_my_posts();
 	    if($query && $query->have_posts()) {

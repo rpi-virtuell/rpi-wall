@@ -10,7 +10,7 @@ class Message
     protected $template;
     protected $subject;
     protected $body;
-    protected member $member;
+    protected Member $member;
     protected $recipient_ids;
     //protected $recipient_groups=['orga','watch','group'];
 
@@ -41,7 +41,7 @@ class Message
                 'subject' => 'Gründung erfolgreich. Gruppe %grouptitle% ',
                 'body' => 'Zum Pinwandeintrag "%posttitle%" (%postlink%) wurd eine PLG gegründet.' .
                     ' %memberamount%  Mitglieder sind beigetreten. ' .
-                    'Für die Mitglieder der Gruppe wurde eib eigener Matrix Raum %grouptitle% erzeugt, dem  du unter folgendem Link beitreten kannst: %channellink%.'
+                    'Für die Mitglieder der Gruppe wurde ein eigener Matrix Raum %grouptitle% erzeugt, dem  du unter folgendem Link beitreten kannst: %channellink%.'
             ],
         'orga_create' =>
             [
@@ -119,7 +119,7 @@ class Message
 
         $this->templates = Message::$templates;
 
-        $this->actor = new member($actor_id);
+        $this->actor = new Member($actor_id);
 
         foreach ($to as $reciever) {
             $template_key = $reciever . '_' . $event;
@@ -148,7 +148,7 @@ class Message
                     if ('group_pending' == $template_key) {
                         //user einzeln anschreiben
                         foreach ($user_ids as $user_id) {
-                            $m = new member($user_id);
+                            $m = new Member($user_id);
                             $link = $m->get_joinlink($group->ID);
                             $msg->body = str_replace('%joinlink%', $link, $msg->body);
                             $this->create($msg, [$user_id]);
