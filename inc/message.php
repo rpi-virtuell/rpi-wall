@@ -11,15 +11,11 @@ class Message
     protected $subject;
     protected $body;
     protected Member $member;
-    protected $recipient_ids;
-    //protected $recipient_groups=['orga','watch','group'];
-//Hallo zusammen,\n\nIch bin <a href='{$this->get_member_profile_permalink()}'>{$this->name}</a> und würde gerne der Arbeitsgruppe beitreten.".
-//				             "Wenn etwas dagegen spricht, bitte meine Anfrage auf dem Pinnwandeintrag ".$plg->link." ablehnen"
 
     static $templates = [
 
 
-        'orga_ready' =>
+        'ready' =>
 	        [
 		        'subject' => '[%grouptitle%] Gründung möglich',
 		        'body' => 'Für den Pinwandeintrag %postlink% '.
@@ -74,7 +70,7 @@ class Message
         'comment' =>
             [
                 'subject' => '[%posttitle%] neuer Kommentar',
-                'body' => '%actorlink% hat unter %commentlink% einen neuen Kommentar  verfasst:<br>%commentcontent% '
+                'body' => '%actorname% schreibt unter %commentlink%:<br>%commentcontent% '
 
 
             ],
@@ -89,6 +85,52 @@ class Message
     protected $events = ['create','ready','liked','joined', 'pending', 'founded', 'requested', 'comment','reset'];
 
 	/**
+	 * @param Group $group
+	 * @param string $event ['create','pending','founded','liked','minimum_likers_met','comment','reset']
+	 * @param array $to :   ['orga','watch','group'] welche Zielgruppe soll benachrichtigt werden
+	 * @param int $actor_id handelnder User z.B. Kommentarschreiber
+	 */
+
+	public function __construct(Group $group, $event = 'pending', $user_ids = null, $actor=0,$search_replace = array('search'=>[],'replace'=>[]))
+	{
+		$this->group = $group;
+
+		$this->templates = Message::$templates;
+
+		//ceck if actor is _logged in or anonymous commentor
+		if(is_int($actor)){
+			$this->actor = new Member($actor);
+		}else{
+			$this->actor = new \stdClass();
+			$this->actor->name = $actor;
+			$this->actor->link = $actor;
+		}
+
+		//ceck for additional replacements
+		if(
+			isset($search_replace['search']) &&
+			isset($search_replace['replace']) &&
+			count($search_replace['search']) == count($search_replace['replace'])
+		){
+			$replace_data = $search_replace;
+		}else{
+			$replace_data = ['search'=>[],'replace'=>[]];
+		}
+
+		if ($user_ids === null) {
+			//message to all watches
+			$user_ids = $group->get_watcher();
+		}
+
+		if (in_array($event,$this->events) && $msg = $this->prepare_message($event,$replace_data)) {
+			if ($msg !== false) {
+				$this->create($msg, $user_ids);
+				$this->send($msg, $user_ids);
+			}
+		}
+	}
+
+	/**
 	 * @param string $slug : $this->$events
 	 * @param string $part 'subject'|'body'
 	 *
@@ -100,32 +142,7 @@ class Message
         return get_option('option_rpi_message_' . $slug . '_template_' . $part, Message::$templates[$slug][$part]);
     }
 
-    /**
-     * @param Group $group
-     * @param string $event ['create','pending','founded','liked','minimum_likers_met','comment','reset']
-     * @param array $to :   ['orga','watch','group'] welche Zielgruppe soll benachrichtigt werden
-     * @param int $actor_id handelnder User z.B. Kommentarschreiber
-     */
-    public function __construct(Group $group, $event = 'pending', $user_ids = null, $actor_id = 0)
-    {
-        $this->group = $group;
 
-        $this->templates = Message::$templates;
-
-        $this->actor = new Member($actor_id);
-
-        if ($user_ids === null) {
-	        //message to all watches
-	        $user_ids = $group->get_watcher();
-        }
-
-        if (in_array($event,$this->events) && $msg = $this->prepare_message($event)) {
-            if ($msg !== false) {
-                $this->create($msg, $user_ids);
-                $this->send($msg, $user_ids);
-            }
-        }
-    }
 
     /**
      * ToDo set in Optin page
@@ -143,10 +160,9 @@ class Message
      *
      * @return object
      */
-    protected function prepare_message($template_key)
+    protected function prepare_message($template_key,$search_replace)
     {
-
-        if (!isset($this->templates[$template_key])) {
+		if (!isset($this->templates[$template_key])) {
 
             return false;
         }
@@ -161,8 +177,7 @@ class Message
             '%channellink%',
             '%likeramount%',
             '%countdown%',
-	        '%commentlink%',
-	        '%commentcontent%',
+
 
         ];
         $replace_array = [
@@ -170,12 +185,15 @@ class Message
             $this->group->post->post_title,
             $this->group->link,
             $this->actor->name,
-            $this->actor->get_link(),
+            $this->actor->link,
             $this->group->get_members_amount(),
             $this->group->get_matrix_link(),
             $this->group->get_likers_amount(),
             $this->group->get_pending_time(),
         ];
+	    $search_array = array_merge($search_array,$search_replace['search']);
+	    $replace_array = array_merge($replace_array,$search_replace['replace']);
+
 
         $body = str_replace($search_array, $replace_array, $this->get_template($template_key, 'body'));
         $subject = str_replace($search_array, $replace_array, $this->get_template($template_key, 'subject'));
@@ -212,42 +230,6 @@ class Message
         }
     }
 
-	static function send_messages($member, $msg){
-
-		$message_id = wp_insert_post(array(
-			'post_title' => $msg->subject,
-			'post_status' => 'publish',
-			'post_author' => get_current_user_id(),
-			'post_type' => 'message',
-			'post_content' => $msg->body
-		));
-		if(is_array($member)){
-			foreach ($member as $user_id) {
-				add_post_meta($message_id, "rpi_wall_message_recipient", $user_id);
-			}
-		}else{
-			add_post_meta($message_id, "rpi_wall_message_recipient", $member);
-		}
-
-
-		//Matrix\Helper::send($msg->subject, $msg->body, $msg->room_id);
-	}
-
-    static function get_messages($member_id)
-    {
-
-        return get_posts([
-            'post_type' => 'massage',
-            'numberposts' => -1,
-            'meta_query' => [
-                'key' => 'rpi_wall_message_recipient',
-                'value' => $member_id,
-                'compare' => '=',
-                'type' => 'NUMERIC'
-            ]
-        ]);
-
-    }
 
     public function send($msg, $recipient_ids)
     {
@@ -284,6 +266,49 @@ class Message
     {
 
     }
+
+	/**
+	 * @param array|int $member_ids
+	 * @param object $msg ->subject ->body
+	 *
+	 * @return void
+	 */
+	static function send_messages($member, $msg){
+
+		$message_id = wp_insert_post(array(
+			'post_title' => $msg->subject,
+			'post_status' => 'publish',
+			'post_author' => get_current_user_id(),
+			'post_type' => 'message',
+			'post_content' => $msg->body
+		));
+		if(is_array($member)){
+			foreach ($member as $user_id) {
+				add_post_meta($message_id, "rpi_wall_message_recipient", $user_id);
+			}
+		}else{
+			add_post_meta($message_id, "rpi_wall_message_recipient", $member);
+		}
+
+
+		//Matrix\Helper::send($msg->subject, $msg->body, $msg->room_id);
+	}
+
+	static function get_messages($member_id)
+	{
+
+		return get_posts([
+			'post_type' => 'massage',
+			'numberposts' => -1,
+			'meta_query' => [
+				'key' => 'rpi_wall_message_recipient',
+				'value' => $member_id,
+				'compare' => '=',
+				'type' => 'NUMERIC'
+			]
+		]);
+
+	}
 
 
 }

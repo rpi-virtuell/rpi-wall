@@ -391,3 +391,7 @@ article.entry-card.type-wall .plg-wrapper{
     border-top: 5px solid orangered;
     border-bottom: 5px solid orangered;
 }
+
+.message .unread{
+    font-weight: bold;
+}

@@ -157,13 +157,14 @@ class RpiWall
 
     public function ajax_toggle_message_read(){
         $response = ['success'=>false];
-        if(isset($_POST['message_id']) && get_current_user() != 0){
-            $member = new Wall\Member();
-               $member->set_message_read($_POST['message_id']) ;
+        if(isset($_POST['message_id'])){
+            $member = new rpi\Wall\Member();
+            $member->set_message_read($_POST['message_id']);
            $response = ['success' => true, 'message_id' => $_POST['message_id']];
         }
         echo json_encode($response);
         die();
+
     }
 
 	/**

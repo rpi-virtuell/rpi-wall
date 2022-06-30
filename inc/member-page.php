@@ -139,7 +139,13 @@ class MemberPage {
         ];
         $wp_query = new \WP_Query($args);
         $messages = $wp_query->get_posts();
-        $read_messages = get_post_meta($user->ID, 'rpi_read_messages');
+        $read_messages = get_user_meta($user->ID, 'rpi_read_messages');
+        if ($read_messages)
+        {
+            $read_messages = unserialize($read_messages);
+        }else{
+            $read_messages = array();
+        }
 
         ob_start();
         ?>
@@ -150,7 +156,7 @@ class MemberPage {
                 ?>
                 <div class="message" id="message-<?php echo  $post->ID?>">
                     <details class="message-content">
-                        <summary class="entry-title" style="<?php echo (!in_array($post->ID,$read_messages)) ? 'font-weight: bold': ''?>" >
+                        <summary class="entry-title <?php echo !$read_messages[$post->ID] ? 'unread': ''?>" >
                             <?php echo date('d.n.Y',strtotime($post->post_date));?>: <?php echo $post->post_title;?>
                         </summary>
                         <?php echo apply_filters('the_content',$post->post_content);?>

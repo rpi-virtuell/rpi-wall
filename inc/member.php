@@ -359,18 +359,23 @@ class Member extends \stdClass
 
 	public function set_message_read($message_id)
     {
-        $read_messages = get_post_meta($this->ID, 'rpi_read_messages');
-        $read_messages[] = $message_id;
-        update_post_meta($this->ID, 'rpi_read_messages', $read_messages);
+        $read_messages = get_user_meta($this->ID, 'rpi_read_messages');
+        if ($read_messages )
+        {
+            $read_messages = unserialize($read_messages);
+        }else{
+            $read_messages = array();
+        }
+        $read_messages[$message_id] = true;
+        return update_user_meta($this->ID, 'rpi_read_messages', serialize($read_messages));
     }
+
 
     public function set_message_unread($message_id)
     {
-        $read_messages = get_post_meta($this->ID, 'rpi_read_messages');
-        if (in_array($message_id, $read_messages)) {
-            $read_messages = array_diff($read_messages, $message_id);
-            update_post_meta($this->ID, 'rpi_read_messages', $read_messages);
-        }
+        $read_messages = unserialize(get_user_meta($this->ID, 'rpi_read_messages'));
+       unset($read_messages[$message_id]) ;
+       return update_user_meta($this->ID, 'rpi_read_messages', serialize($read_messages));
 
     }
 
