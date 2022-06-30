@@ -91,9 +91,51 @@ class RpiWall
         });
 
 
-
-
+	    add_action('save_post_wall',[$this,'on_new_pin'],10,3);
+	    add_action('save_post_member',[$this,'on_new_member'],10,3);
+	    add_action( 'wp_insert_comment', [$this,'on_new_comment'], 99, 2);
     }
+
+	public function on_new_comment( $comment_id, WP_Comment $comment ) {
+
+		$group = new Wall\Group($comment->comment_post_ID);
+		$url = get_comment_link($comment);
+
+
+		$replace_data =[
+			'search'=>[
+				'%commentlink%',
+	            '%commentcontent%'
+			],
+			'replace'=>[
+				'<a href="'.$url.'" class="comment-link">'.$group->title.'</a>',
+				$comment->comment_content
+			]
+		];
+
+
+		if($comment->user_id>0){
+			$actor = $comment->user_id>0;
+		}else{
+			$actor = $comment->comment_author;
+		}
+
+		new Wall\Message($group,'comment',null,$actor,$replace_data);
+
+	}
+	public function on_new_member( int $post_ID, WP_Post $post, bool $update) {
+		if(!update){
+			Wall\Message::send_messages();
+		}
+
+	}
+	public function on_new_pin0( int $post_ID, WP_Post $post, bool $update) {
+		if(!update){
+			$group = new Wall\Group($post_ID);
+			new Wall\Message($group,'create',null,get_current_user_id());
+		}	// do something
+
+	}
 
 	public function redirect_to_users_member_page() {
 
