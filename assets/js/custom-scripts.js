@@ -111,4 +111,31 @@ function mark_message_as_read() {
     })
 }
 
+
+    $('.rpi-wall-watch-button').each((i, btn) => {
+        const id = btn.id.replace(/[^\d]*/, '');
+        console.log(id);
+        $(btn).on('click', e => {
+            $.post(
+                wall.ajaxurl,
+                {
+                    'action': 'rpi_wall_toggle_watch',
+                    'group_id': id
+                },
+                function (response) {
+                    const data = JSON.parse(response);
+                    if (data.success) {
+                        if (data.is_watcher) {
+                            jQuery('#watch-group-' + id + ' .rpi-wall-watch-button').html(wallIcons.pin);
+                        } else {
+                            jQuery('#watch-group-' + id + ' .rpi-wall-watch-button').html(wallIcons.watch);
+
+                        }
+                        jQuery('#like-group-' + id + ' .rpi-wall-counter').html(data.amount);
+                    }
+
+                }
+            )
+        });
+    })
 })

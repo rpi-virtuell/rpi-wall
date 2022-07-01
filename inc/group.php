@@ -346,6 +346,7 @@ class Group extends \stdClass
         //return get_post_meta($this->ID, 'like_amount', true);
     }
 
+
     /**
      * @return array user Ids
      */
@@ -533,26 +534,16 @@ class Group extends \stdClass
         $ids = array_unique(array_merge($this->get_likers_Ids(), $this->get_memberIds()));
         return $ids;
     }
+	/**
+	 * @return int
+	 */
+	public function get_watcher_amount()
+	{
+		return count($this->get_watcherIds());
+	}
 
-    /**
-     * @return array WP_User[]
-     */
-    public function get_watcher()
-    {
-        $ids = $this->get_watcherIds();
-        if (count($ids) > 0) {
-            return get_users(['include' => $ids]);
-        }
 
-    }
 
-    /**
-     * @return int
-     */
-    public function get_watcher_amount()
-    {
-        return count($this->get_watcherIds());
-    }
 
     /**
      * get metakey value
@@ -656,19 +647,14 @@ class Group extends \stdClass
     public function get_current_users_joinlink($label = 'Gruppe beitreten')
     {
         if (!is_user_logged_in()) {
-            return $this->get_blocksy_login_button($label);
-        }
-
-        if (!is_user_logged_in()) {
             return '<a href="account-modal" data-id="account" data-state="out" class="ct-header-account button">Anmelden</a>';
         }
 
         $member = new Member();
-
         if (!$this->has_member($member)) {
-            $hash = $member->get_join_hash($this->ID);
 
-            return '<a class="button" href="' . get_home_url() . '?action=plgjoin&hash=' . $hash . '&new_group_member=' . $member->ID . '">' . $label . '</a>';
+            return $member->get_joinlink($this->ID,$label);
+
         }
 
 
@@ -748,7 +734,19 @@ class Group extends \stdClass
         return $hash;
 
     }
-
+	static function display_watcher_area(){
+		if(is_user_logged_in()){
+            $member = new Member();
+			$is_watcher = $member->is_watched_group(get_the_ID());
+        }
+        ?>
+		<div class="watch-btn-wrapper">
+            <button class="rpi-wall-wacht-button" id="btn-watch-group-<?php the_ID(); ?>">
+	            <?php echo ($is_watcher) ? Shortcodes::$watch_icon : Shortcodes::$pin_icon; ?>
+            </button>
+        </div>
+        <?php
+    }
 
     //outputs
 
@@ -967,6 +965,33 @@ class Group extends \stdClass
         echo '</div>';
 
     }
+	public function get_serialized($meta_key, $key = false){
+
+		$val = get_post_meta($this->ID,$meta_key,true);
+		if($val && is_string($val)){
+			$values = unserialize($val);
+		}else{
+			$values = array();
+		}
+		if(false !== $key){
+			return isset($values[$key])?$values[$key]:false;
+		}else{
+			return $values;
+		}
+
+	}
+
+	public function delete_serialized($meta_key,$key){
+		$values = $this->get_serialized($meta_key);
+		unset($values[$key]);
+		update_post_meta($this->ID,$meta_key,serialize($values));
+	}
+
+	public function set_serialized($meta_key,$key,$value = true){
+		$values = $this->get_serialized($meta_key);
+		$values[$key] = $value;
+		update_post_meta($this->ID,$meta_key,serialize($values));
+	}
 }
 
 

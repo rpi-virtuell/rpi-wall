@@ -294,21 +294,6 @@ class Message
         //Matrix\Helper::send($msg->subject, $msg->body, $msg->room_id);
     }
 
-    static function get_messages($member_id)
-    {
-
-        return get_posts([
-            'post_type' => 'massage',
-            'numberposts' => -1,
-            'meta_query' => [
-                'key' => 'rpi_wall_message_recipient',
-                'value' => $member_id,
-                'compare' => '=',
-                'type' => 'NUMERIC'
-            ]
-        ]);
-
-    }
 
 
 }

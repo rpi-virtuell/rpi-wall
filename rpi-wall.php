@@ -51,6 +51,7 @@ class RpiWall
         add_filter('body_class', [$this, 'add_group_status_class']);
         add_action('post_class', [$this, 'add_group_status_class']);
 
+        add_action('blocksy:hero:before', ['rpi\Wall\Group', 'display_watcher_area']);
         add_action('blocksy:comments:after', [$this, 'display_likers_container']);
 
 
@@ -75,6 +76,9 @@ class RpiWall
 
         add_action('wp_ajax_rpi_wall_toggle_like', [$this, 'ajax_toggle_group_like']);
         add_action('wp_ajax_nopriv_rpi_wall_toggle_like', [$this, 'ajax_toggle_group_like']);
+
+        add_action('wp_ajax_rpi_wall_toggle_watch', [$this, 'ajax_toggle_group_watch']);
+        add_action('wp_ajax_nopriv_rpi_wall_toggle_watch', [$this, 'ajax_toggle_group_watch']);
 
         add_action('wp_ajax_rpi_toggle_message_read', [$this, 'ajax_toggle_message_read']);
         add_action('wp_ajax_nopriv_rpi_toggle_message_read', [$this, 'ajax_toggle_message_read']);
@@ -161,6 +165,31 @@ class RpiWall
 
         }
     }
+
+	public function ajax_toggle_group_watch()
+	{
+
+
+		$response = ['success' => false];
+		if (isset($_POST['group_id'])) {
+			$group = new Wall\Group($_POST['group_id']);
+
+			$member = new Wall\Member();
+			$member->toggle_watch_group($group->ID);
+			$amount = $group->get_watcher_amount();
+			$is_watcher = $member->is_watched_group($group->ID);
+
+			$response = [
+				'success' => true,
+				'is_watcher' => $is_watcher,
+				'amount' => $amount
+			];
+		}
+		echo json_encode($response);
+		die();
+
+
+	}
 
     public function ajax_toggle_group_like()
     {
