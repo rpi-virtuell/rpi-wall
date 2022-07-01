@@ -63,7 +63,11 @@ class Tabs
         <!-- Tab 1 -->
         <input type="radio" name="<?php echo $this->tabset; ?>" id="tab-<?php echo $name; ?>"
                aria-controls="<?php echo $name; ?>" <?php echo $checked; ?>>
-        <label for="tab-<?php echo $name; ?>"><?php echo $label; ?></label>
+        <label for="tab-<?php echo $name; ?>">
+            <a href="?tab=<?php echo $name; ?>">
+                <?php echo $label; ?>
+            </a>
+        </label>
 
         <?php
         return ob_get_clean();
