@@ -51,6 +51,7 @@ class RpiWall
         add_filter('body_class', [$this, 'add_group_status_class']);
         add_action('post_class', [$this, 'add_group_status_class']);
 
+        add_action('blocksy:hero:before', ['rpi\Wall\Group', 'display_watcher_area']);
         add_action('blocksy:comments:after', [$this, 'display_likers_container']);
 
 

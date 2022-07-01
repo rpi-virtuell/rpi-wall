@@ -734,7 +734,19 @@ class Group extends \stdClass
         return $hash;
 
     }
-
+	static function display_watcher_area(){
+		if(is_user_logged_in()){
+            $member = new Member();
+			$is_watcher = $member->is_watched_group(get_the_ID());
+        }
+        ?>
+		<div class="watch-btn-wrapper">
+            <button class="rpi-wall-wacht-button" id="btn-watch-group-<?php the_ID(); ?>">
+	            <?php echo ($is_watcher) ? Shortcodes::$watch_icon : Shortcodes::$pin_icon; ?>
+            </button>
+        </div>
+        <?php
+    }
 
     //outputs
 
