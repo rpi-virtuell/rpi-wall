@@ -127,8 +127,10 @@ function mark_message_as_read() {
                     if (data.success) {
                         if (data.is_watcher) {
                             jQuery('#btn-watch-group-' + id).html(wallIcons.watch);
+                            jQuery('#btn-watch-group-' + id).addClass('watching');
                         } else {
                             jQuery('#btn-watch-group-' + id).html(wallIcons.unwatch);
+                            jQuery('#btn-watch-group-' + id).removeClass('watching');
 
                         }
                         jQuery('#rpi-wall-counter-' + id).html(data.amount);

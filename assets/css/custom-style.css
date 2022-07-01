@@ -70,7 +70,7 @@ article.entry-card {
     padding: 5px;
     box-shadow: 2px 2px 2px -1px #555;
 }
-.watch-btn-wrapper.watching .rpi-wall-watch-button{
+.watch-btn-wrapper .rpi-wall-watch-button.watching{
     background-color: yellow;
 }
 .watch-btn-wrapper span{
