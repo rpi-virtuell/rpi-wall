@@ -14,6 +14,8 @@ class Member extends \stdClass
     public $link;
 
     /**
+     * Member Object
+     *
      * @param WP_User|int $user
      */
     public function __construct($user = 0)
@@ -79,15 +81,57 @@ class Member extends \stdClass
     }
 
 
-    /**
-     * GROUP LIKES
-     */
 
+	/**
+	 * WATCHING
+	 */
+
+	public function is_watched_group($groupId)
+	{
+		return in_array($groupId, $this->get_watched_group_Ids());
+	}
+
+	public function toggle_watch_group($groupId)
+	{
+		if ($this->ID > 0) {
+
+			if (!$this->is_watch_group($groupId)) {
+				add_post_meta($groupId, 'rpi_wall_wather_id', $this->ID);
+				add_user_meta($this->ID, 'rpi_wall_watched_group_id', $groupId);
+				$action = 'watch';
+
+			} else {
+				delete_post_meta($groupId, 'rpi_wall_watcher_id', $this->ID);
+				delete_user_meta($this->ID, 'rpi_wall_watched_group_id', $groupId);
+				$action = 'unwatch';
+			}
+			//recalc watchers_amount
+			update_post_meta($groupId, 'rpi_wall_watchers_amount', count($this->get_watched_group_Ids()));
+
+			do_action('rpi_wall_watch_group', $this->ID, $groupId, $action);
+
+		}
+	}
+
+	public function get_watched_group_Ids()
+	{
+		$ids = get_user_meta($this->ID, 'rpi_wall_watched_group_id');
+
+		if (is_array($ids)) {
+			return get_user_meta($this->ID, 'rpi_wall_watched_group_id');
+		}
+		return array();
+	}
+
+
+
+    /**
+     * LIKE GROUP
+     */
 
     /**
      * @return array|mixed
      */
-
     public function get_liked_group_Ids()
     {
         $ids = get_user_meta($this->ID, 'rpi_wall_liked_group_id');
@@ -208,15 +252,10 @@ class Member extends \stdClass
         //remove requesting liker
         $this->un_like_group($groupId);
 
-        //delete rpi_wall_group_request
-        $groups = unserialize(get_user_meta($this->ID, 'rpi_wall_group_request', true));
-        unset($groups[$groupId]);
-        update_user_meta($this->ID, 'rpi_wall_group_request', serialize($groups));
+		$this->delete_serialized('rpi_wall_group_request',$groupId);
 
-        //delete rpi_wall_member_request
-        $member_requests = unserialize(get_post_meta($groupId, 'rpi_wall_member_requests', true));
-        unset($member_requests[$this->ID]);
-        update_post_meta($groupId, 'rpi_wall_member_requests', serialize($member_requests));
+		$group = new Group($groupId);
+	    $group->delete_serialized('rpi_wall_member_requests',$this->ID);
 
         do_action('rpi_wall_member_group_reject', $this->ID, $groupId);
     }
@@ -228,31 +267,21 @@ class Member extends \stdClass
             return false;
         }
 
-        $this->like_group($groupId);
-        $requests = unserialize(get_user_meta($this->ID, 'rpi_wall_group_request', true));
-        if (!$requests) $requests = [];
-        $hash = wp_hash(strval($groupId) . strval(time()), 'nonce');
-        $requests[$groupId] = array('timesstamp' => time(), 'hash' => $hash);
-        update_user_meta($this->ID, 'rpi_wall_group_request', serialize($requests));
+	    $this->like_group($groupId);
 
-        $member_requests = unserialize(get_post_meta($groupId, 'rpi_wall_member_requests', true));
-        if (!is_array($member_requests)) {
-            $member_requests = [];
-        }
-        $member_requests[$this->ID] = $hash;
+	    $hash = wp_hash(strval($groupId) . strval(time()), 'nonce');
+	    $this->set_serialized('rpi_wall_group_request',$groupId,$hash);
+	    $plg->set_serialized('rpi_wall_member_requests', $this->ID,$hash);
 
-        update_post_meta($groupId, 'rpi_wall_member_requests', serialize($member_requests));
 
         $user_ids = $plg->get_memberIds();
         if (is_array($user_ids)) {
 
-            foreach ($plg->get_memberIds() as $member_id) {
-                $msg = new \stdClass();
-                $msg->subject = '[' . $plg->title . '] Beitrittsanfrage';
-                $msg->body = "Hallo zusammen,\n\nIch bin <a href='{$this->get_member_profile_permalink()}'>{$this->name}</a> und würde gerne der Arbeitsgruppe beitreten." .
-                    "Wenn etwas dagegen spricht, bitte meine Anfrage auf dem Pinnwandeintrag " . $plg->link . " ablehnen";
+            $msg = new \stdClass();
+            $msg->subject = '[' . $plg->title . '] Beitrittsanfrage';
+            $msg->body = "Hallo zusammen,\n\nIch bin <a href='{$this->get_member_profile_permalink()}'>{$this->name}</a> und würde gerne der Arbeitsgruppe beitreten." .
+                "Wenn etwas dagegen spricht, bitte meine Anfrage auf dem Pinnwandeintrag " . $plg->link . " ablehnen";
 
-            }
             Message::send_messages($user_ids, $msg);
 
             do_action('rpi_wall_member_request_group', $this->ID, $groupId, $plg->get_memberIds(), $hash, $msg);
@@ -338,20 +367,7 @@ class Member extends \stdClass
     }
 
 
-    /**
-     * WATCHING
-     */
 
-
-    public function watch_group($groupid)
-    {
-
-    }
-
-    public function get_watched_group_Ids()
-    {
-        return [];
-    }
 
     /**
      * USER MESSAGES
@@ -359,53 +375,32 @@ class Member extends \stdClass
 
     public function set_message_read($message_id)
     {
-        if ($read_messages = get_user_meta($this->ID, 'rpi_read_messages', true)) {
-            $read_messages = unserialize($read_messages);
-        } else {
-            $read_messages = array();
-        }
-        $read_messages[$message_id] = true;
-        return update_user_meta($this->ID, 'rpi_read_messages', serialize($read_messages));
+	    return $this->set_serialized('rpi_read_messages',$message_id);
     }
-
 
     public function set_message_unread($message_id)
     {
-        $read_messages = unserialize(get_user_meta($this->ID, 'rpi_read_messages', true));
-        unset($read_messages[$message_id]);
-        return update_user_meta($this->ID, 'rpi_read_messages', serialize($read_messages));
+	    return $this->delete_serialized('rpi_read_messages',$message_id);
 
     }
 
-    public function get_messages()
-    {
-        return get_posts([
-            'post_type' => 'message',
-            'mumberposts' => -1,
-            'meta_query' => [
-                'key' => 'recipient',
-                'value' => $this->ID,
-                'compare' => '=',
-                'type' => 'NUMERIC'
-            ]
-        ]);
-    }
 
-
-    public function current_user_is_member()
-    {
-        if (get_current_user_id() === $this->ID) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
+	/**
+	 * TODO add needed capabilities und roles for moderation
+	 * @param $capability
+	 *
+	 * @return bool
+	 */
     public function current_member_can($capability)
     {
         return user_can($this->ID, $capability);
     }
 
+	/**
+	 * GROUPS QUERY
+	 *
+	 * @return \WP_Query
+	 */
     public function get_query_my_posts($args = array())
     {
         $args = wp_parse_args($args, [
@@ -416,7 +411,14 @@ class Member extends \stdClass
         return $query;
     }
 
-    public function get_my_comments_query($args = array())
+	/**
+	 * COMENTS QUERY
+	 *
+	 * @param $args
+	 *
+	 * @return int[]|\WP_Comment[]
+	 */
+	public function get_my_comments_query($args = array())
     {
 
         $props = wp_parse_args($args, [
@@ -441,21 +443,6 @@ class Member extends \stdClass
     {
 
         if (isset($_REQUEST['action']) && isset($_REQUEST['hash']) && isset($_REQUEST['new_group_member'])) {
-
-            if ('plgreject' == $_REQUEST['action']) {
-
-                $member = new Member(intval($_REQUEST['new_group_member']));
-                $groupId = $member->validate_and_reject($_REQUEST['hash']);
-
-                if ($groupId) {
-                    wp_redirect(get_permalink($groupId));
-                } else {
-                    wp_redirect(home_url());
-                }
-
-                die();
-
-            }
 
 
             if ('plgjoin' == $_REQUEST['action']) {
@@ -485,10 +472,25 @@ class Member extends \stdClass
 
                 die();
 
-
             }
+	        if ('plgreject' == $_REQUEST['action']) {
 
-            return false;
+		        $member = new Member(intval($_REQUEST['new_group_member']));
+		        $groupId = $member->validate_and_reject($_REQUEST['hash']);
+
+		        if ($groupId) {
+			        wp_redirect(get_permalink($groupId));
+		        } else {
+			        wp_redirect(home_url());
+		        }
+
+		        die();
+
+	        }
+
+
+
+	        return false;
         }
     }
 
@@ -513,16 +515,14 @@ class Member extends \stdClass
         $users = get_users($args);
         foreach ($users as $user) {
             if ($user instanceof \WP_User) {
-                $groups = unserialize($user->get('rpi_wall_group_request'));
+	            $groups = $this->get_serialized('rpi_wall_group_request');
                 foreach ($groups as $group_id => $group) {
 
                     //Wartezeit abgelaufen
                     if ($group['timestamp'] + $pending < time()) {
                         $member = new Member($user);
-                        $member->join_group($group_id);                             // gruppe beitreten & interesse ende
-                        unset($groups[$group_id]);                                  // request löschen
-                        update_user_meta('rpi_wall_group_request', $groups);
-
+	                    $member->join_group($group_id);                             // gruppe beitreten & interesse ende
+	                    $member->delete_serialized('rpi_wall_group_request',$group_id);       // request löschen
                     }
                 }
             }
@@ -531,6 +531,7 @@ class Member extends \stdClass
 
 
     /**
+     * check join request
      * @param $joinhash
      *
      * @return bool
@@ -538,9 +539,7 @@ class Member extends \stdClass
     public function validate_and_join($joinhash)
     {
 
-        $groups = unserialize(get_user_meta($this->ID, 'rpi_wall_group_hash', true),);
-
-
+        $groups = $this->get_serialized('rpi_wall_group_hash');
         foreach ($groups as $group_id => $hash) {
 
             if ($hash === $joinhash) {
@@ -551,6 +550,7 @@ class Member extends \stdClass
     }
 
     /**
+     * check reject request
      * @param $joinhash
      *
      * @return bool
@@ -558,8 +558,7 @@ class Member extends \stdClass
     public function validate_and_reject($joinhash)
     {
 
-
-        $groups = unserialize(get_user_meta($this->ID, 'rpi_wall_group_request', true));
+        $groups = $this->get_serialized('rpi_wall_group_request');
 
         foreach ($groups as $group_id => $group) {
 
@@ -571,6 +570,8 @@ class Member extends \stdClass
     }
 
     /**
+     * check founded group join request
+     *
      * @param $joinhash
      *
      * @return bool
@@ -578,8 +579,7 @@ class Member extends \stdClass
     public function validate_and_request($joinhash)
     {
 
-        $groups = unserialize(get_user_meta($this->ID, 'rpi_wall_group_hash', true),);
-
+        $groups = $this->get_serialized('rpi_wall_group_hash');
 
         foreach ($groups as $group_id => $hash) {
 
@@ -591,6 +591,7 @@ class Member extends \stdClass
     }
 
     /**
+     * get user hash
      * @param $group_id  Group
      *
      * @return string hash
@@ -599,7 +600,7 @@ class Member extends \stdClass
     {
 
 
-        $groups = unserialize(get_user_meta($this->ID, 'rpi_wall_group_hash', true));
+        $groups = $this->get_serialized('rpi_wall_group_hash');
 
         $hash = wp_hash($this->name . $group_id, 'nonce');
 
@@ -612,22 +613,17 @@ class Member extends \stdClass
     }
 
     /**
+     * link to join a group
      * @param $group_id Group
      *
      * @return string html link
      */
-
-    public function get_joinlink($group_id)
+    public function get_joinlink($group_id, $label = 'Gruppe beitreten')
     {
 
         $hash = $this->get_join_hash($group_id);
-        return '<a href="' . get_home_url() . '?action=plgjoin&hash=' . $hash . '&member=' . $this->ID . '">Gruppe beitreten</a>';
+	    return '<a href="' . get_home_url() . '?action=plgjoin&hash=' . $hash . '&new_group_member=' . $this->ID . '" class="button">' . $label . '</a>';
 
-    }
-
-    public function display_gravtar($size = 96)
-    {
-        echo get_avatar($this->ID, $size);
     }
 
     public function display($size = 15)
@@ -635,8 +631,47 @@ class Member extends \stdClass
         Shortcodes::display_user($this->ID, $size);
     }
 
+	/**
+	 * HELPER für usermeta
+	 * @param $meta_key
+	 * @param $key
+	 *
+	 * @return array|false|mixed
+	 */
+	public function get_serialized($meta_key, $key = false){
 
-    public function setup()
+		$val = get_user_meta($this->ID,$meta_key,true);
+		if($val && is_string($val)){
+			$values = unserialize($val);
+		}else{
+			$values = array();
+		}
+		if(false !== $key){
+			return isset($values[$key])?$values[$key]:false;
+		}else{
+			return $values;
+		}
+
+	}
+
+	public function delete_serialized($meta_key,$key){
+		$values = $this->get_serialized($meta_key);
+		unset($values[$key]);
+		return update_user_meta($this->ID,$meta_key,serialize($values));
+	}
+
+	public function set_serialized($meta_key,$key,$value = true){
+		$values = $this->get_serialized($meta_key);
+		$values[$key] = $value;
+		return update_user_meta($this->ID,$meta_key,serialize($values));
+	}
+
+
+	/**
+	 * creates a not existing  "member" CPT
+	 * @return array|void|\WP_Post|null
+	 */
+	public function setup()
     {
 
         if (is_a($this->user, 'WP_User') && $this->user->ID > 0) {
