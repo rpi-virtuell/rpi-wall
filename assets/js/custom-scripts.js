@@ -49,31 +49,21 @@ jQuery(document).ready($ => {
         mark_message_as_read();
         $('a.page-numbers').each(function (i, elem) {
             const href = $(elem).attr('href');
-            console.log(href);
             if (typeof href != 'undefined') {
                 //link zerstören
-
-
-                match = href.match(/paged=(\d*)/)
-                if (match) {
-                    page = match[1]
-                    data = {
-                        'action': 'rpi_post_user_messages',
-                        'paged': page
-                    };
-                } else {
-                    page = 1
-                    data = {'action': 'rpi_post_user_messages'}
-                }
-                $(elem).attr('href', '#' + page);
-                console.log(data);
+                const match = href.match(/paged=(\d*)/);
+                const page = match?match[1]:1;
+                const data = {
+                    'action': 'rpi_post_user_messages',
+                    'paged' : page
+                };
+                $(elem).attr('href', '#page_' + page);
                 $(elem).unbind();
 
                 $(elem).on('click', e => {
                     $.post(
                         wall.ajaxurl,
-                        data
-                        ,
+                        data,
                         rpi_wall_print_messages
                     )
                 })

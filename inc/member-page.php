@@ -185,7 +185,7 @@ class MemberPage
                 'current' => max(1, $_POST['paged']),
                 'total' => $wp_query->max_num_pages
             ));
-            var_dump($_POST['paged']);
+
         }
         wp_reset_postdata();
         return ob_get_clean();
