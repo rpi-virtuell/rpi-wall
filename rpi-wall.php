@@ -79,6 +79,15 @@ class RpiWall
         add_action('wp_ajax_rpi_toggle_message_read', [$this, 'ajax_toggle_message_read']);
         add_action('wp_ajax_nopriv_rpi_toggle_message_read', [$this, 'ajax_toggle_message_read']);
 
+        add_action('wp_ajax_rpi_tab_comments_content', [$this, 'ajax_tab_comments_content']);
+        add_action('wp_ajax_nopriv_rpi_tab_comments_content', [$this, 'ajax_tab_comments_content']);
+
+        add_action('wp_ajax_rpi_tab_group_content', [$this, 'ajax_tab_group_content']);
+        add_action('wp_ajax_nopriv_rpi_tab_group_content', [$this, 'ajax_tab_group_content']);
+
+        add_action('wp_ajax_rpi_tab_watches_content', [$this, 'ajax_tab_watches_content']);
+        add_action('wp_ajax_nopriv_rpi_tab_watches_content', [$this, 'ajax_tab_watches_content']);
+
         add_action('wp_ajax_rpi_post_user_messages', [$this, 'ajax_post_user_messages']);
         add_action('wp_ajax_nopriv_rpi_post_user_messages', [$this, 'ajax_post_user_messages']);
 
@@ -202,6 +211,25 @@ class RpiWall
     public function ajax_post_user_messages()
     {
         echo MemberPage::messages();
+        die();
+    }
+
+    public function ajax_tab_group_content(){
+        $member_page = new MemberPage();
+        echo $member_page->groups();
+            die();
+    }
+
+    public function ajax_tab_comments_content(){
+
+        $member_page = new MemberPage();
+        echo $member_page->comments();
+        die();
+    }
+    public function ajax_tab_watches_content(){
+
+        $member_page = new MemberPage();
+        echo $member_page->watches();
         die();
     }
 

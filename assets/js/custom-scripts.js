@@ -32,17 +32,32 @@ jQuery(document).ready($ => {
         });
     })
 
-    $('#messages').ready(function () {
-        $.post(
-            wall.ajaxurl,
-            {
-                'action': 'rpi_post_user_messages',
-                'paged': 1
-            },
-            rpi_wall_print_messages
-        )
-    })
+    site_match = location.pathname.match(/^\/member\//);
+    if (match) {
 
+        $('#messages').ready(function () {
+            tab_match = location.search.match(/tab=([\w-]+)/)
+            if (tab_match) {
+                tab = tab_match[1];
+            }
+            if (tab === 'messages') {
+                $.post(
+                    wall.ajaxurl,
+                    {
+                        'action': 'rpi_post_user_messages',
+                        'paged': 1
+                    },
+                    rpi_wall_print_messages
+                )
+            }
+
+        })
+
+
+        $('label[for="tab-messages"]').on('click', e => {
+            location.search = '?tab=messages'
+        })
+    }
 
     function rpi_wall_print_messages(response) {
         $('#user-messages').html(response);
@@ -52,10 +67,10 @@ jQuery(document).ready($ => {
             if (typeof href != 'undefined') {
                 //link zerstören
                 const match = href.match(/paged=(\d*)/);
-                const page = match?match[1]:1;
+                const page = match ? match[1] : 1;
                 const data = {
                     'action': 'rpi_post_user_messages',
-                    'paged' : page
+                    'paged': page
                 };
                 $(elem).attr('href', '#page_' + page);
                 $(elem).unbind();
@@ -71,28 +86,29 @@ jQuery(document).ready($ => {
         })
     }
 
-    function mark_message_as_read() {
 
-        $('.message').each((i, msg) => {
-            console.log(msg);
-            const id = msg.id.replace('message-', '');
-            $(msg).on('click', e => {
-                console.log(id);
-                $.post(
-                    wall.ajaxurl,
-                    {
-                        'action': 'rpi_toggle_message_read',
-                        'message_id': id
-                    },
-                    function (response) {
-                        const data = JSON.parse(response);
-                        if (data.success) {
-                            $(msg).find('.entry-title').removeClass('unread')
-                        }
+function mark_message_as_read() {
+
+    $('.message').each((i, msg) => {
+        console.log(msg);
+        const id = msg.id.replace('message-', '');
+        $(msg).on('click', e => {
+            console.log(id);
+            $.post(
+                wall.ajaxurl,
+                {
+                    'action': 'rpi_toggle_message_read',
+                    'message_id': id
+                },
+                function (response) {
+                    const data = JSON.parse(response);
+                    if (data.success) {
+                        $(msg).find('.entry-title').removeClass('unread')
                     }
-                )
-            });
-        })
-    }
+                }
+            )
+        });
+    })
+}
 
 })
