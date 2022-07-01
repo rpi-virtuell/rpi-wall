@@ -56,7 +56,7 @@ class MemberPage
 
 
         $tabs->addTab(['label' => 'Über mich', 'name' => 'bio', 'content' => $tags, 'checked' => true]);
-        $tabs->addTab(['label' => 'Gruppen', 'name' => 'groups', 'content' => $this->groups()]);
+        $tabs->addTab(['label' => 'Gruppen', 'name' => 'groups', 'content' =>$this->groups()]);
         $tabs->addTab(['label' => 'Kommentare', 'name' => 'comments', 'content' => $this->comments()]);
         $tabs->addTab(['label' => 'Abonnements', 'name' => 'watch', 'content' => $this->watches()]);
         $tabs->addTab(['label' => 'Benachrichtigungen', 'name' => 'messages', 'content' => '<div id="user-messages"></div>', 'permission' => 'self']);
@@ -69,20 +69,40 @@ class MemberPage
     public function groups()
     {
 
+        $out='';
 
-        $out = '<div class="group-posts">';
+	    if($_REQUEST['tab'] == 'groups'){
+		   $args = [
+              'paged' => isset($_REQUEST['paged'])?$_REQUEST['paged']:1,
+              'posts_per_page' => 2
+            ];
 
+		    $query = $this->member->get_query_all_groups($args);
+		    if ($query && $query->have_posts()) {
+			    $out .= '<div class="group-posts">';
 
-        $query = $this->member->get_query_all_groups();
-        if ($query && $query->have_posts()) {
-            while ($query->have_posts()) {
-                ob_start();
-                \rpi\Wall\Shortcodes::display_post($query->the_post());
-                $out .= ob_get_clean();
-            }
+			    while ($query->have_posts()) {
+				    ob_start();
+				    \rpi\Wall\Shortcodes::display_post($query->the_post());
+				    $out .= ob_get_clean();
+			    }
+			    $out .= '</div>';
+
+		    }
+		    if ($query->max_num_pages > 1) {
+			    $out .= paginate_links(array(
+				    'format' => '?paged=%#%',
+				    'current' => max(1, $_REQUEST['paged']),
+				    'total' => $query->max_num_pages
+			    ));
+
+		    }
+		    wp_reset_query();
         }
-        wp_reset_query();
-        $out .= '</div>';
+
+
+
+
         return $out;
     }
 
