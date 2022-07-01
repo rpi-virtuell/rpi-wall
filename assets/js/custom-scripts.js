@@ -33,35 +33,41 @@ jQuery(document).ready($ => {
     })
 
     site_match = location.pathname.match(/^\/member\//);
-    if (match) {
-
-        $('#messages').ready(function () {
+    if (site_match) {
+        $('.tabset').ready(function () {
             tab_match = location.search.match(/tab=([\w-]+)/)
             if (tab_match) {
                 tab = tab_match[1];
+                action = "rpi_tab_" + tab + "_content";
+                rpi_wall_send_post(action);
             }
-            if (tab === 'messages') {
-                $.post(
-                    wall.ajaxurl,
-                    {
-                        'action': 'rpi_post_user_messages',
-                        'paged': 1
-                    },
-                    rpi_wall_print_messages
-                )
-            }
-
         })
 
-
-        $('label[for="tab-messages"]').on('click', e => {
-            location.search = '?tab=messages'
-        })
     }
 
-    function rpi_wall_print_messages(response) {
-        $('#user-messages').html(response);
-        mark_message_as_read();
+
+    function rpi_wall_send_post(action) {
+        $.post(
+            wall.ajaxurl,
+            {
+                'action': action,
+                'user_ID': rpi_wall.user_ID,
+                'paged': 1
+            },
+            function (response) {
+                rpi_wall_print_content(response, action)
+            }
+        )
+    }
+
+    function rpi_wall_print_content(response, action) {
+        console.log(action);
+        $('#' + action).html(response);
+        if (action === 'rpi_tab_messages_content') {
+            mark_message_as_read();
+        }
+
+
         $('a.page-numbers').each(function (i, elem) {
             const href = $(elem).attr('href');
             if (typeof href != 'undefined') {
@@ -69,7 +75,8 @@ jQuery(document).ready($ => {
                 const match = href.match(/paged=(\d*)/);
                 const page = match ? match[1] : 1;
                 const data = {
-                    'action': 'rpi_post_user_messages',
+                    'action': action,
+                    'user_ID': rpi_wall.user_ID,
                     'paged': page
                 };
                 $(elem).attr('href', '#page_' + page);
@@ -79,7 +86,9 @@ jQuery(document).ready($ => {
                     $.post(
                         wall.ajaxurl,
                         data,
-                        rpi_wall_print_messages
+                        function (response) {
+                            rpi_wall_print_content(response, action)
+                        }
                     )
                 })
             }
@@ -87,34 +96,31 @@ jQuery(document).ready($ => {
     }
 
 
-function mark_message_as_read() {
+    function mark_message_as_read() {
 
-    $('.message').each((i, msg) => {
-        console.log(msg);
-        const id = msg.id.replace('message-', '');
-        $(msg).on('click', e => {
-            console.log(id);
-            $.post(
-                wall.ajaxurl,
-                {
-                    'action': 'rpi_toggle_message_read',
-                    'message_id': id
-                },
-                function (response) {
-                    const data = JSON.parse(response);
-                    if (data.success) {
-                        $(msg).find('.entry-title').removeClass('unread')
+        $('.message').each((i, msg) => {
+            const id = msg.id.replace('message-', '');
+            $(msg).on('click', e => {
+                $.post(
+                    wall.ajaxurl,
+                    {
+                        'action': 'rpi_toggle_message_read',
+                        'message_id': id
+                    },
+                    function (response) {
+                        const data = JSON.parse(response);
+                        if (data.success) {
+                            $(msg).find('.entry-title').removeClass('unread')
+                        }
                     }
-                }
-            )
-        });
-    })
-}
+                )
+            });
+        })
+    }
 
 
     $('.rpi-wall-watch-button').each((i, btn) => {
         const id = btn.id.replace(/[^\d]*/, '');
-        console.log(id);
         $(btn).on('click', e => {
             $.post(
                 wall.ajaxurl,

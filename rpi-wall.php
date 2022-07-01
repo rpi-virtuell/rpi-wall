@@ -86,15 +86,14 @@ class RpiWall
         add_action('wp_ajax_rpi_tab_comments_content', [$this, 'ajax_tab_comments_content']);
         add_action('wp_ajax_nopriv_rpi_tab_comments_content', [$this, 'ajax_tab_comments_content']);
 
-        add_action('wp_ajax_rpi_tab_group_content', [$this, 'ajax_tab_group_content']);
-        add_action('wp_ajax_nopriv_rpi_tab_group_content', [$this, 'ajax_tab_group_content']);
+        add_action('wp_ajax_rpi_tab_groups_content', [$this, 'ajax_tab_groups_content']);
+        add_action('wp_ajax_nopriv_rpi_tab_groups_content', [$this, 'ajax_tab_groups_content']);
 
-        add_action('wp_ajax_rpi_tab_watches_content', [$this, 'ajax_tab_watches_content']);
-        add_action('wp_ajax_nopriv_rpi_tab_watches_content', [$this, 'ajax_tab_watches_content']);
+        add_action('wp_ajax_rpi_tab_watch_content', [$this, 'ajax_tab_watches_content']);
+        add_action('wp_ajax_nopriv_rpi_tab_watch_content', [$this, 'ajax_tab_watches_content']);
 
-        add_action('wp_ajax_rpi_post_user_messages', [$this, 'ajax_post_user_messages']);
-        add_action('wp_ajax_nopriv_rpi_post_user_messages', [$this, 'ajax_post_user_messages']);
-
+        add_action('wp_ajax_rpi_tab_messages_content', [$this, 'ajax_tab_messages_content']);
+        add_action('wp_ajax_nopriv_rpi_tab_messages_content', [$this, 'ajax_tab_messages_content']);
 
         add_action('blocksy:loop:before', function () {
             echo '<div class="rpi-wall-buttons">';
@@ -237,13 +236,13 @@ class RpiWall
 
     }
 
-    public function ajax_post_user_messages()
+    public function ajax_tab_messages_content()
     {
         echo MemberPage::messages();
         die();
     }
 
-    public function ajax_tab_group_content(){
+    public function ajax_tab_groups_content(){
         $member_page = new MemberPage();
         echo $member_page->groups();
             die();
