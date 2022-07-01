@@ -744,6 +744,7 @@ class Group extends \stdClass
             <button class="rpi-wall-wacht-button" id="btn-watch-group-<?php the_ID(); ?>">
 	            <?php echo ($is_watcher) ? Shortcodes::$watch_icon : Shortcodes::$pin_icon; ?>
             </button>
+            <span id="rpi-wall-counter-<?php the_ID();?>"></span>
         </div>
         <?php
     }

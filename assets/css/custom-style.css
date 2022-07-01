@@ -57,6 +57,13 @@ article.entry-card {
     display: none;
 }
 
+.watch-btn-wrapper{
+
+}
+.watch-btn-wrapper .rpi-wall-watch-button{
+
+
+}
 #comments {
     margin-top: 0;
     border: none;
