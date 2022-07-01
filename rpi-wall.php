@@ -134,6 +134,10 @@ class RpiWall
         }
 
         new Wall\Message($group, 'comment', null, $actor, $replace_data);
+	    $currentMember = new Wall\Member();
+	    if(!$currentMember->is_watched_group($group->ID)){
+		    $currentMember->toggle_watch_group($group->ID);
+	    }
 
     }
 
@@ -145,12 +149,17 @@ class RpiWall
 
     }
 
-    public function on_new_pin0(int $post_ID, WP_Post $post, bool $update)
+    public function on_new_pin(int $post_ID, WP_Post $post, bool $update)
     {
         if (!update) {
-            $group = new Wall\Group($post_ID);
-            new Wall\Message($group, 'create', null, get_current_user_id());
-        }    // do something
+
+            new Wall\Message(new Wall\Group($post_ID), 'create', null, get_current_user_id());
+
+			$currentMember = new Wall\Member();
+			if(!$currentMember->is_watched_group($post_ID)){
+				$currentMember->toggle_watch_group($post_ID);
+	        }
+        }
 
     }
 
@@ -383,6 +392,8 @@ class RpiWall
 
 
     }
+
+
 }
 
 new RpiWall();
