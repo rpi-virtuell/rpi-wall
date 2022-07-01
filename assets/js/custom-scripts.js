@@ -33,7 +33,7 @@ jQuery(document).ready($ => {
     })
 
     site_match = location.pathname.match(/^\/member\//);
-    if (match) {
+    if (site_match) {
 
         $('#messages').ready(function () {
             tab_match = location.search.match(/tab=([\w-]+)/)
@@ -126,12 +126,12 @@ function mark_message_as_read() {
                     const data = JSON.parse(response);
                     if (data.success) {
                         if (data.is_watcher) {
-                            jQuery('#watch-group-' + id + ' .rpi-wall-watch-button').html(wallIcons.pin);
+                            jQuery('#btn-watch-group-' + id).html(wallIcons.watch);
                         } else {
-                            jQuery('#watch-group-' + id + ' .rpi-wall-watch-button').html(wallIcons.watch);
+                            jQuery('#btn-watch-group-' + id).html(wallIcons.unwatch);
 
                         }
-                        jQuery('#like-group-' + id + ' .rpi-wall-counter').html(data.amount);
+                        jQuery('#rpi-wall-counter-' + id).html(data.amount);
                     }
 
                 }

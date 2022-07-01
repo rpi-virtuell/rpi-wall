@@ -58,12 +58,27 @@ article.entry-card {
 }
 
 .watch-btn-wrapper{
-
+    position: relative;
+    display: flex;
+    height: 2px;
+    justify-content: right;
 }
 .watch-btn-wrapper .rpi-wall-watch-button{
-
-
+    border-radius: 50%;
+    background-color: #fff;
+    height: 32px;
+    padding: 5px;
+    box-shadow: 2px 2px 2px -1px #555;
 }
+.watch-btn-wrapper.watching .rpi-wall-watch-button{
+    background-color: yellow;
+}
+.watch-btn-wrapper span{
+    display: inline-flex;
+    padding: 4px;
+    color: green;
+}
+
 #comments {
     margin-top: 0;
     border: none;

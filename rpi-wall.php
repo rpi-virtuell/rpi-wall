@@ -177,6 +177,7 @@ class RpiWall
 			$member = new Wall\Member();
 			$member->toggle_watch_group($group->ID);
 			$amount = $group->get_watcher_amount();
+			$amount = $amount>0?$amount:'';
 			$is_watcher = $member->is_watched_group($group->ID);
 
 			$response = [

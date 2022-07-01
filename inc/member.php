@@ -95,8 +95,8 @@ class Member extends \stdClass
 	{
 		if ($this->ID > 0) {
 
-			if (!$this->is_watch_group($groupId)) {
-				add_post_meta($groupId, 'rpi_wall_wather_id', $this->ID);
+			if (!$this->is_watched_group($groupId)) {
+				add_post_meta($groupId, 'rpi_wall_watcher_id', $this->ID);
 				add_user_meta($this->ID, 'rpi_wall_watched_group_id', $groupId);
 				$action = 'watch';
 
@@ -106,11 +106,15 @@ class Member extends \stdClass
 				$action = 'unwatch';
 			}
 			//recalc watchers_amount
-			update_post_meta($groupId, 'rpi_wall_watchers_amount', count($this->get_watched_group_Ids()));
+			$return = update_post_meta($groupId, 'rpi_wall_watchers_amount', count($this->get_watched_group_Ids()));
 
-			do_action('rpi_wall_watch_group', $this->ID, $groupId, $action);
+			if($return){
+				do_action('rpi_wall_watch_group', $this->ID, $groupId, $action);
+			}
+			return $return;
 
 		}
+		return false;
 	}
 
 	public function get_watched_group_Ids()
