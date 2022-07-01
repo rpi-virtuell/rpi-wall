@@ -33,6 +33,7 @@ jQuery(document).ready($ => {
     })
 
     site_match = location.pathname.match(/^\/member\//);
+
     if (site_match) {
         $('.tabset').ready(function () {
             tab_match = location.search.match(/tab=([\w-]+)/)
@@ -132,12 +133,14 @@ jQuery(document).ready($ => {
                     const data = JSON.parse(response);
                     if (data.success) {
                         if (data.is_watcher) {
-                            jQuery('#watch-group-' + id + ' .rpi-wall-watch-button').html(wallIcons.pin);
+                            jQuery('#btn-watch-group-' + id).html(wallIcons.watch);
+                            jQuery('#btn-watch-group-' + id).addClass('watching');
                         } else {
-                            jQuery('#watch-group-' + id + ' .rpi-wall-watch-button').html(wallIcons.watch);
+                            jQuery('#btn-watch-group-' + id).html(wallIcons.unwatch);
+                            jQuery('#btn-watch-group-' + id).removeClass('watching');
 
                         }
-                        jQuery('#like-group-' + id + ' .rpi-wall-counter').html(data.amount);
+                        jQuery('#rpi-wall-counter-' + id).html(data.amount);
                     }
 
                 }

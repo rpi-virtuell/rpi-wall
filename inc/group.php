@@ -531,7 +531,6 @@ class Group extends \stdClass
         if (!$ids = get_post_meta($this->ID, 'rpi_wall_watcher_id')) {
             $ids = [];
         }
-        $ids = array_unique(array_merge($this->get_likers_Ids(), $this->get_memberIds()));
         return $ids;
     }
 	/**
@@ -735,17 +734,23 @@ class Group extends \stdClass
 
     }
 	static function display_watcher_area(){
-		if(is_user_logged_in()){
+		if(is_user_logged_in() && 'wall' === get_post_type()){
             $member = new Member();
 			$is_watcher = $member->is_watched_group(get_the_ID());
-        }
-        ?>
-		<div class="watch-btn-wrapper">
-            <button class="rpi-wall-wacht-button" id="btn-watch-group-<?php the_ID(); ?>">
-	            <?php echo ($is_watcher) ? Shortcodes::$watch_icon : Shortcodes::$pin_icon; ?>
-            </button>
-        </div>
-        <?php
+            $group = new Group(get_the_ID());
+			$amount = $group->get_watcher_amount();
+			$amount = $amount>0?$amount:'';
+            $class  = $is_watcher?'watching':'';
+
+            ?>
+            <div class="watch-btn-wrapper">
+                <button title="beobachten" class="rpi-wall-watch-button <?php echo $class;?>" id="btn-watch-group-<?php the_ID(); ?>">
+                    <?php echo ($is_watcher) ? Shortcodes::$watch_icon : Shortcodes::$unwatch_icon; ?>
+                </button>
+                <span title="Anzahl der Beobachtenden" id="rpi-wall-counter-<?php the_ID();?>"><?php echo $amount; ?></span>
+            </div>
+            <?php
+		}
     }
 
     //outputs
