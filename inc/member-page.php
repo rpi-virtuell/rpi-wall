@@ -6,8 +6,9 @@ class MemberPage
     public $is_my_page = false;
     public \rpi\Wall\Member $member;
     public $is_member_page = false;
+	public $posts_per_page = 6;
 
-    public function __construct()
+	public function __construct()
     {
         add_action('blocksy:single:content:bottom', [$this, 'init']);
     }
@@ -16,6 +17,9 @@ class MemberPage
     {
 
         if ('member' === get_post_type()) {
+
+            $this->posts_per_page = get_option('options_rpi_wall_memberpage_posts_per_page',6);
+
             $this->member = new \rpi\Wall\Member(get_post()->post_author);
             $this->is_member_page = true;
             $this->post = $this->member->post;
@@ -73,7 +77,7 @@ class MemberPage
         $out = '';
             $args = [
                 'paged' => isset($_REQUEST['paged']) ? $_REQUEST['paged'] : 1,
-                'posts_per_page' => 2
+                'posts_per_page' => $this->posts_per_page
             ];
             $member = new \rpi\Wall\Member($_POST['user_ID']);
             $query = $member->get_query_all_groups($args);
@@ -107,7 +111,7 @@ class MemberPage
 
             $args = [
                 'paged' => isset($_REQUEST['paged']) ? $_REQUEST['paged'] : 1,
-                'posts_per_page' => 2
+                'posts_per_page' => $this->posts_per_page
             ];
 
             $member = new \rpi\Wall\Member($_POST['user_ID']);
@@ -142,7 +146,7 @@ class MemberPage
 
             $args = [
                 'paged' => isset($_REQUEST['paged']) ? $_REQUEST['paged'] : 1,
-                'posts_per_page' => 2
+                'posts_per_page' => $this->posts_per_page
             ];
 
 
@@ -185,7 +189,7 @@ class MemberPage
 
     }
 
-    static public function messages()
+	public function messages()
     {
         $user = new \rpi\Wall\Member();
 
@@ -193,7 +197,7 @@ class MemberPage
 
         $args = [
             'post_type' => 'message',
-            'posts_per_page' => 2,
+            'posts_per_page' => $this->posts_per_page,
             'paged' => $paged,
             'meta_query' => [
                 [

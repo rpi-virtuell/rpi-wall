@@ -249,7 +249,8 @@ class RpiWall
 
     public function ajax_post_user_messages()
     {
-        echo MemberPage::messages();
+	    $member_page = new MemberPage();
+	    echo $member_page->messages();
         die();
     }
 
