@@ -143,7 +143,7 @@ class RpiWall
 
     public function on_new_member(int $post_ID, WP_Post $post, bool $update)
     {
-        if (!update) {
+        if (!$update) {
             Wall\Message::send_messages();
         }
 
@@ -151,7 +151,7 @@ class RpiWall
 
     public function on_new_pin(int $post_ID, WP_Post $post, bool $update)
     {
-        if (!update) {
+        if (!$update) {
 
             new Wall\Message(new Wall\Group($post_ID), 'create', null, get_current_user_id());
 
