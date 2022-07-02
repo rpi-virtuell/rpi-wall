@@ -119,7 +119,7 @@ class Message
 
         if ($user_ids === null) {
             //message to all watches
-            $user_ids = $group->get_watcher();
+            $user_ids = $group->get_watcher_Ids();
         }
 
         if (in_array($event, $this->events) && $msg = $this->prepare_message($event, $replace_data)) {

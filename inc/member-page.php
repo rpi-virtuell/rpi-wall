@@ -24,6 +24,7 @@ class MemberPage
                 $this->is_my_page = true;
             }
             $this->display();
+            echo '<script>const rpi_wall ={user_ID: "' . $this->member->ID . '"};</script>';
         }
 
 
@@ -56,10 +57,10 @@ class MemberPage
 
 
         $tabs->addTab(['label' => 'Über mich', 'name' => 'bio', 'content' => $tags, 'checked' => true]);
-        $tabs->addTab(['label' => 'Gruppen', 'name' => 'groups', 'content' => '<div id ="user_groups"></div>']);
-        $tabs->addTab(['label' => 'Kommentare', 'name' => 'comments', 'content' => '<div id ="user_comments"></div>']);
-        $tabs->addTab(['label' => 'Abonnements', 'name' => 'watch', 'content' => '<div id ="user_watches"></div>']);
-        $tabs->addTab(['label' => 'Benachrichtigungen', 'name' => 'messages', 'content' => '<div id="user-messages"></div>', 'permission' => 'self']);
+        $tabs->addTab(['label' => 'Gruppen', 'name' => 'groups', 'content' => '<div id ="rpi_tab_groups_content"></div>']);
+        $tabs->addTab(['label' => 'Kommentare', 'name' => 'comments', 'content' => '<div id ="rpi_tab_comments_content"></div>']);
+        $tabs->addTab(['label' => 'Abonnements', 'name' => 'watch', 'content' => '<div id ="rpi_tab_watch_content"></div>']);
+        $tabs->addTab(['label' => 'Benachrichtigungen', 'name' => 'messages', 'content' => '<div id="rpi_tab_messages_content"></div>', 'permission' => 'self']);
         $tabs->addTab(['label' => 'Einstellungen', 'name' => 'profile', 'content' => do_shortcode('[basic-user-avatars]')]);
 
         $tabs->display();
@@ -70,14 +71,12 @@ class MemberPage
     {
 
         $out = '';
-
-        if ($_REQUEST['tab'] == 'groups') {
             $args = [
                 'paged' => isset($_REQUEST['paged']) ? $_REQUEST['paged'] : 1,
                 'posts_per_page' => 2
             ];
-
-            $query = $this->member->get_query_all_groups($args);
+            $member = new \rpi\Wall\Member($_POST['user_ID']);
+            $query = $member->get_query_all_groups($args);
             if ($query && $query->have_posts()) {
                 $out .= '<div class="group-posts">';
 
@@ -98,7 +97,6 @@ class MemberPage
 
             }
             wp_reset_query();
-        }
         return $out;
     }
 
@@ -107,13 +105,13 @@ class MemberPage
 
         $out = '';
 
-        if ($_REQUEST['tab'] == 'groups') {
             $args = [
                 'paged' => isset($_REQUEST['paged']) ? $_REQUEST['paged'] : 1,
                 'posts_per_page' => 2
             ];
 
-            $query = $this->member->get_query_all_groups($args);
+            $member = new \rpi\Wall\Member($_POST['user_ID']);
+            $query = $member->get_query_all_groups($args);
             if ($query && $query->have_posts()) {
                 $out .= '<div class="group-posts">';
 
@@ -134,7 +132,6 @@ class MemberPage
 
             }
             wp_reset_query();
-        }
         return $out;
     }
 
@@ -143,7 +140,6 @@ class MemberPage
 
         $out = '';
 
-        if ($_REQUEST['tab'] == 'groups') {
             $args = [
                 'paged' => isset($_REQUEST['paged']) ? $_REQUEST['paged'] : 1,
                 'posts_per_page' => 2
@@ -152,41 +148,39 @@ class MemberPage
 
             ob_start();
 
-            $query = $this->member->get_my_comments_query($args);
-            if ($query && $query->have_posts()) {
-            foreach ($query as $comment) {
-                ?>
+            $member = new \rpi\Wall\Member($_POST['user_ID']);
+            $comments = $member->get_my_comments_query($args);
+            if ($comments) {
+                foreach ($comments as $comment) {
+                    ?>
 
-                <div class="member-coment">
-                    <?php echo $this->member->display(24); ?>
-                    <div class="entry-title">
-                        <?php echo $comment->comment; ?>
-                    </div>
-                    <div class="entry-content">
-                        <?php echo $comment->comment_content; ?>
-                    </div>
-                    <div class="entry-post-permalink">
-                        <div class="pin-icon"><?php echo \rpi\Wall\Shortcodes::$pin_icon; ?></div>
-                        <a href="<?php echo get_comment_link($comment); ?>"><?php echo $comment->post->post_title; ?></a>
-                    </div>
+                    <div class="member-coment">
+                        <?php echo $member->display(24); ?>
+                        <div class="entry-title">
+                            <?php echo $comment->comment; ?>
+                        </div>
+                        <div class="entry-content">
+                            <?php echo $comment->comment_content; ?>
+                        </div>
+                        <div class="entry-post-permalink">
+                            <div class="pin-icon"><?php echo \rpi\Wall\Shortcodes::$pin_icon; ?></div>
+                            <a href="<?php echo get_comment_link($comment); ?>"><?php echo $comment->post->post_title; ?></a>
+                        </div>
 
-                </div>
-                <?php
+                    </div>
+                    <?php
 
-            }
+                }
             }
             $out .= ob_get_clean();
 
-            if ($query->max_num_pages > 1) {
-                $out .= paginate_links(array(
-                    'format' => '?paged=%#%',
-                    'current' => max(1, $_REQUEST['paged']),
-                    'total' => $query->max_num_pages
-                ));
-
-            }
-            wp_reset_query();
-        }
+//            if ($comments->max_num_pages > 1) {
+//                $out .= paginate_links(array(
+//                    'format' => '?paged=%#%',
+//                    'current' => max(1, $_REQUEST['paged']),
+//                    'total' => $comments->max_num_pages
+//                ));
+//            }
         return $out;
 
     }

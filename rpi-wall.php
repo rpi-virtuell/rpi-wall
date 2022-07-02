@@ -86,14 +86,14 @@ class RpiWall
         add_action('wp_ajax_rpi_tab_comments_content', [$this, 'ajax_tab_comments_content']);
         add_action('wp_ajax_nopriv_rpi_tab_comments_content', [$this, 'ajax_tab_comments_content']);
 
-        add_action('wp_ajax_rpi_tab_group_content', [$this, 'ajax_tab_group_content']);
+        add_action('wp_ajax_rpi_tab_groups_content', [$this, 'ajax_tab_group_content']);
         add_action('wp_ajax_nopriv_rpi_tab_group_content', [$this, 'ajax_tab_group_content']);
 
-        add_action('wp_ajax_rpi_tab_watches_content', [$this, 'ajax_tab_watches_content']);
-        add_action('wp_ajax_nopriv_rpi_tab_watches_content', [$this, 'ajax_tab_watches_content']);
+        add_action('wp_ajax_rpi_tab_watch_content', [$this, 'ajax_tab_watches_content']);
+        add_action('wp_ajax_nopriv_rpi_tab_watch_content', [$this, 'ajax_tab_watches_content']);
 
-        add_action('wp_ajax_rpi_post_user_messages', [$this, 'ajax_post_user_messages']);
-        add_action('wp_ajax_nopriv_rpi_post_user_messages', [$this, 'ajax_post_user_messages']);
+        add_action('wp_ajax_rpi_tab_messages_content', [$this, 'ajax_post_user_messages']);
+        add_action('wp_ajax_nopriv_rpi_tab_messages_content', [$this, 'ajax_post_user_messages']);
 
 
         add_action('blocksy:loop:before', function () {
