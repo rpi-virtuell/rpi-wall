@@ -332,8 +332,10 @@ class Group extends \stdClass
     public function get_likers()
     {
 
+
         return get_users(array(
-            "include" => wp_ulike_get_likers_list_per_post('ulike', 'likers_list', $this->ID, 100)
+	        "include" =>  $this->get_likers_Ids()
+
         ));
     }
 
@@ -364,7 +366,6 @@ class Group extends \stdClass
     public function get_liker_and_member_Ids()
     {
 
-        //$likers =  wp_ulike_get_likers_list_per_post('ulike', 'likers_list', $this->ID, 100);
         $likers = $this->get_likers_Ids();
         $members = $this->get_memberIds();
         $rest_likers = [];
@@ -417,7 +418,10 @@ class Group extends \stdClass
      */
     public function get_comment_liker_Ids($comment_id)
     {
-        return wp_ulike_get_likers_list_per_post('ulike_comments', 'likers_list', $comment_id, 100);
+        if(function_exists('wp_ulike_get_likers_list_per_post')){
+	        return wp_ulike_get_likers_list_per_post('ulike_comments', 'likers_list', $comment_id, 100);
+        }
+
     }
 
     /**
@@ -426,9 +430,11 @@ class Group extends \stdClass
     public function get_comment_likes_amount()
     {
         $likes = 0;
-        foreach (get_comments(['post_id' => $this->ID]) as $comment) {
-            $likes += intval(wp_ulike_get_comment_likes($comment->comment_ID));
-        }
+	    if(function_exists('wp_ulike_get_comment_likes')) {
+		    foreach ( get_comments( [ 'post_id' => $this->ID ] ) as $comment ) {
+			    $likes += intval( wp_ulike_get_comment_likes( $comment->comment_ID ) );
+		    }
+	    }
 
         return $likes;
     }
@@ -889,7 +895,6 @@ class Group extends \stdClass
         if (!in_array($this->get_status(), ['founded', 'closed'])) {
             echo '<div class="gruppe-liker">';
             echo $this->display_group_box(96);
-            //echo do_shortcode('[wp_ulike  style="wpulike-heart"]');
             echo '</div>';
         } else {
             echo '<div class="gruppe-liker">';
@@ -941,9 +946,11 @@ class Group extends \stdClass
 
 
         $likes = 0;
-        foreach (get_comments(['post_id' => $this->ID]) as $comment) {
-            $likes += intval(wp_ulike_get_comment_likes($comment->comment_ID));
-        }
+	    if(function_exists('wp_ulike_get_comment_likes')) {
+		    foreach ( get_comments( [ 'post_id' => $this->ID ] ) as $comment ) {
+			    $likes += intval( wp_ulike_get_comment_likes( $comment->comment_ID ) );
+		    }
+	    }
         if ($likes > 0) {
             $n = $likes;
             if ($likes > $max_likes) {

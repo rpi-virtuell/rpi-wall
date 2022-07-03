@@ -97,9 +97,12 @@ class RpiWall
 
 
         add_action('blocksy:loop:before', function () {
-            echo '<div class="rpi-wall-buttons">';
-            echo do_shortcode('[frontend_admin form="28"]');
-            echo '</div>';
+			if(is_post_type_archive('wall')){
+				echo '<div class="rpi-wall-buttons">';
+				echo do_shortcode('[frontend_admin form="28"]');
+				echo '</div>';
+			}
+
         });
 
 

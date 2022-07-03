@@ -27,6 +27,7 @@ class Tabs
     {
 
         $props = wp_parse_args($args, [
+            'icon' => '<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M17.63 5.84C17.27 5.33 16.67 5 16 5L5 5.01C3.9 5.01 3 5.9 3 7v10c0 1.1.9 1.99 2 1.99L16 19c.67 0 1.27-.33 1.63-.84L22 12l-4.37-6.16zM16 17H5V7h11l3.55 5L16 17z"/></svg>',
             'label' => 'Titel',
             'name' => 'tab1',
             'content' => '',
@@ -45,13 +46,13 @@ class Tabs
             }
         }
 
-        $this->tabgroup[] = $this->addLabel($props['label'], sanitize_title($props['name']), $checked);
+        $this->tabgroup[] = $this->addLabel($props['icon'], $props['label'], sanitize_title($props['name']), $checked);
         $this->contentgroup[] = $this->addContent($props['label'], sanitize_title($props['name']), $props['content']);
 
     }
 
 
-    protected function addLabel($label, $name, $checked)
+    protected function addLabel($icon, $label, $name, $checked)
     {
 
         if ($_GET['tab'] == $name) {
@@ -60,12 +61,11 @@ class Tabs
         ob_start();
 
         ?>
-        <!-- Tab 1 -->
-        <input type="radio" name="<?php echo $this->tabset; ?>" id="tab-<?php echo $name; ?>"
-               aria-controls="<?php echo $name; ?>" <?php echo $checked; ?>>
+        <input type="radio" name="<?php echo $this->tabset; ?>" id="tab-<?php echo $name; ?>" aria-controls="<?php echo $name; ?>" <?php echo $checked; ?>>
         <label for="tab-<?php echo $name; ?>">
-            <a href="?tab=<?php echo $name; ?>">
-                <?php echo $label; ?>
+            <a href="?tab=<?php echo $name; ?>" class="tab-link">
+                <div class="tab-icon"><?php echo $icon; ?></div>
+                <div class="tab-label"><?php echo $label; ?></div>
             </a>
         </label>
 

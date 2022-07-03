@@ -60,12 +60,15 @@ class MemberPage
         $tabs = new \rpi\Wall\Tabs('tabset');
 
 
-        $tabs->addTab(['label' => 'Über mich', 'name' => 'bio', 'content' => $tags, 'checked' => true]);
-        $tabs->addTab(['label' => 'Gruppen', 'name' => 'groups', 'content' => '<div id ="rpi_tab_groups_content"></div>']);
-        $tabs->addTab(['label' => 'Kommentare', 'name' => 'comments', 'content' => '<div id ="rpi_tab_comments_content"></div>']);
-        $tabs->addTab(['label' => 'Abonnements', 'name' => 'watch', 'content' => '<div id ="rpi_tab_watch_content"></div>']);
-        $tabs->addTab(['label' => 'Benachrichtigungen', 'name' => 'messages', 'content' => '<div id="rpi_tab_messages_content"></div>', 'permission' => 'self']);
-        $tabs->addTab(['label' => 'Einstellungen', 'name' => 'profile', 'content' => do_shortcode('[basic-user-avatars]')]);
+        $tabs->addTab(['label' => 'Über mich', 'name' => 'bio', 'content' => $tags, 'icon' => \rpi\Wall\Shortcodes::$user_icon, 'checked' => true]);
+        $tabs->addTab(['label' => 'Gruppen', 'name' => 'groups', 'content' => '<div id ="rpi_tab_groups_content"></div>','icon' => \rpi\Wall\Shortcodes::$group_icon]);
+        $tabs->addTab(['label' => 'Kommentare', 'name' => 'comments', 'content' => '<div id ="rpi_tab_comments_content"></div>','icon' => \rpi\Wall\Shortcodes::$comment_icon]);
+        $tabs->addTab(['label' => 'Abonnements', 'name' => 'watch', 'content' => '<div id ="rpi_tab_watch_content"></div>','icon' => \rpi\Wall\Shortcodes::$watch_icon]);
+        $tabs->addTab(['label' => 'Benachrichtigungen', 'name' => 'messages', 'content' => '<div id="rpi_tab_messages_content"></div>','icon' => \rpi\Wall\Shortcodes::$mail_icon, 'permission' => 'self']);
+
+	    $settings = '<div class="profile-panel"><div>[basic-user-avatars]</div><div>[frontend_admin form="782"]</div></div>';
+
+        $tabs->addTab(['label' => 'Einstellungen', 'name' => 'profile', 'content' => do_shortcode($settings), 'icon' => \rpi\Wall\Shortcodes::$gear_icon]);
 
         $tabs->display();
 
