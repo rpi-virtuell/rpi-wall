@@ -29,7 +29,9 @@ body {
     font-weight: 300;
 }
 
+.tabset{
 
+}
 
 .tabset > label {
     position: relative;
@@ -102,11 +104,11 @@ body {
 @media only screen and (max-width: 600px) {
 
     article.type-member{
-        margin: 0;
-        padding: 0;
+        /*margin: 0;*/
+        /*padding: 0;*/
     }
     .tab-panels {
-        margin-top: -10px;
+
         padding-top: 0px;
     }
 
@@ -122,7 +124,9 @@ body {
     .meta-author > a{
         display: block;
         text-align: center;
-        font-size: 36px;
+        font-size: 20px;
+        padding: 0;
+        margin:0 !important;
     }
     .profile-panel{
         display: block;
@@ -131,7 +135,14 @@ body {
         border-top: 3px solid #eee;
         margin-top: 40px;
     }
-
-
+    .tabset label a svg{
+        width:28px;
+    }
+    .tab-panel .entry-title h3{
+        font-size: 20px;
+    }
+    .tab-panel .group-post{
+        padding: 4px;
+    }
 }
 

@@ -77,13 +77,19 @@ class RpiWall
         add_action('wp_ajax_rpi_wall_toggle_like', [$this, 'ajax_toggle_group_like']);
         add_action('wp_ajax_nopriv_rpi_wall_toggle_like', [$this, 'ajax_toggle_group_like']);
 
-        add_action('wp_ajax_rpi_wall_toggle_watch', [$this, 'ajax_toggle_group_watch']);
+		add_action('wp_ajax_rpi_wall_toggle_watch', [$this, 'ajax_toggle_group_watch']);
         add_action('wp_ajax_nopriv_rpi_wall_toggle_watch', [$this, 'ajax_toggle_group_watch']);
 
         add_action('wp_ajax_rpi_toggle_message_read', [$this, 'ajax_toggle_message_read']);
         add_action('wp_ajax_nopriv_rpi_toggle_message_read', [$this, 'ajax_toggle_message_read']);
 
-        add_action('wp_ajax_rpi_tab_comments_content', [$this, 'ajax_tab_comments_content']);
+	    add_action('wp_ajax_rpi_tab_bio_content', [$this, 'ajax_rpi_tab_bio_content']);
+	    add_action('wp_ajax_noprivrpi_tab_bio_content', [$this, 'ajax_rpi_tab_bio_content']);
+
+	    add_action('wp_ajax_rpi_tab_profile_content', [$this, 'ajax_rpi_tab_profile_content']);
+	    add_action('wp_ajax_noprivrpi_tab_profile_content', [$this, 'ajax_rpi_tab_profile_content']);
+
+	    add_action('wp_ajax_rpi_tab_comments_content', [$this, 'ajax_tab_comments_content']);
         add_action('wp_ajax_nopriv_rpi_tab_comments_content', [$this, 'ajax_tab_comments_content']);
 
         add_action('wp_ajax_rpi_tab_groups_content', [$this, 'ajax_tab_group_content']);
@@ -169,11 +175,17 @@ class RpiWall
     public function redirect_to_users_member_page()
     {
 
-        if (is_user_logged_in() && strpos($_SERVER['REQUEST_URI'], '/member_profile') !== false) {
-            $member = new Wall\Member(wp_get_current_user());
-            $user_url = $member->get_member_profile_permalink();
-            wp_redirect($user_url);
-            die();
+        if (strpos($_SERVER['REQUEST_URI'], '/member_profile') !== false) {
+	        if(is_user_logged_in()){
+		        $member = new Wall\Member(wp_get_current_user());
+		        $user_url = $member->get_member_profile_permalink();
+		        wp_redirect($user_url);
+
+	        }else{
+				wp_redirect(wp_login_url());
+
+	        }
+	        die();
 
         }
     }
@@ -257,7 +269,19 @@ class RpiWall
         die();
     }
 
-    public function ajax_tab_group_content(){
+
+    public function ajax_rpi_tab_bio_content(){
+        $member_page = new MemberPage();
+        echo $member_page->bio();
+            die();
+    }
+
+	public function ajax_rpi_tab_profile_content(){
+		$member_page = new MemberPage();
+		echo $member_page->profile();
+		die();
+	}
+	public function ajax_tab_group_content(){
         $member_page = new MemberPage();
         echo $member_page->groups();
             die();

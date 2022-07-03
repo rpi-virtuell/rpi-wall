@@ -123,26 +123,32 @@ class Shortcodes
     {
         $out = '';
 
-        if ('member' === get_post_type()) {
-
-            if (isset($atts['content'])) {
-
-                if (taxonomy_exists(trim($atts['content']))) {
-
-                    $terms = wp_get_post_terms(get_the_ID(), $atts['content']);
-                    $out .= '<ul class="rpi-wall-term-' . $atts['content'] . '">';
-                    foreach ($terms as $term) {
-                        if (is_a($term, 'WP_Term')) {
-                            $out .= '<li><a href="' . site_url() . '/' . $atts['content'] . '/' . $term->slug . '">' . $term->name . '</a></li>';
-
-                        }
-                    }
-                    $out .= '</ul>';
+        if (isset($atts['content'])) {
+            $member = new Member($_POST['user_ID']);
 
 
+            if (taxonomy_exists(trim($atts['content']))) {
+
+
+                $terms = wp_get_post_terms($member->post->ID, $atts['content']);
+                if($terms && count($terms)>0){
+                    $tax = get_taxonomy($atts['content']);
+                    $out .= '<h4>'.$tax->label.'</h4>';
                 }
+                $out .= '<ul class="rpi-wall-term-' . $atts['content'] . '">';
+                foreach ($terms as $term) {
+                    if (is_a($term, 'WP_Term')) {
+                        $out .= '<li><a href="' . site_url() . '/' . $atts['content'] . '/' . $term->slug . '">' . $term->name . '</a></li>';
+
+                    }
+                }
+                $out .= '</ul>';
+
+
             }
+
         }
+
         return $out;
     }
 

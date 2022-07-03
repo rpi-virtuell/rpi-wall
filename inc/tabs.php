@@ -109,4 +109,5 @@ class Tabs
         echo ob_get_clean();
 
     }
+
 }

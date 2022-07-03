@@ -224,13 +224,13 @@ class RPIWallInstaller
          */
 
         $labels = [
-            "name" => __("Badges", "blocksy"),
-            "singular_name" => __("Badge", "blocksy"),
+            "name" => __("Auszeichnungen", "blocksy"),
+            "singular_name" => __("Auszeichnung", "blocksy"),
         ];
 
 
         $args = [
-            "label" => __("Badges", "blocksy"),
+            "label" => __("Auszeichnung", "blocksy"),
             "labels" => $labels,
             "public" => true,
             "publicly_queryable" => true,
@@ -290,8 +290,8 @@ class RPIWallInstaller
          */
 
         $labels = [
-            "name" => __("Professionen(Zielgruppen)", "blocksy"),
-            "singular_name" => __("Profession(Zielgruppe)", "blocksy"),
+            "name" => __("Perspektiven", "blocksy"),
+            "singular_name" => __("Perspektiven", "blocksy"),
         ];
 
 

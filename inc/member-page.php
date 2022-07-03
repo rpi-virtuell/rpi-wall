@@ -48,32 +48,72 @@ class MemberPage
     public function display()
     {
 
-        $tags = '<div class="Member-tags"> 
-            [my_tags content="wall-tag"]
-            [my_tags content="badge"]
-            [my_tags content="schooltype"]
-            [my_tags content="profession"]
-         </div>';
 
-        $tags = do_shortcode($this->member->user->user_description . $tags);
 
         $tabs = new \rpi\Wall\Tabs('tabset');
 
 
-        $tabs->addTab(['label' => 'Über mich', 'name' => 'bio', 'content' => $tags, 'icon' => \rpi\Wall\Shortcodes::$user_icon, 'checked' => true]);
+        $tabs->addTab(['label' => 'Über mich', 'name' => 'bio', 'content' =>'<div id ="rpi_tab_bio_content"></div>', 'icon' => \rpi\Wall\Shortcodes::$user_icon, 'checked' => true]);
         $tabs->addTab(['label' => 'Gruppen', 'name' => 'groups', 'content' => '<div id ="rpi_tab_groups_content"></div>','icon' => \rpi\Wall\Shortcodes::$group_icon]);
-        $tabs->addTab(['label' => 'Kommentare', 'name' => 'comments', 'content' => '<div id ="rpi_tab_comments_content"></div>','icon' => \rpi\Wall\Shortcodes::$comment_icon]);
         $tabs->addTab(['label' => 'Abonnements', 'name' => 'watch', 'content' => '<div id ="rpi_tab_watch_content"></div>','icon' => \rpi\Wall\Shortcodes::$watch_icon]);
-        $tabs->addTab(['label' => 'Benachrichtigungen', 'name' => 'messages', 'content' => '<div id="rpi_tab_messages_content"></div>','icon' => \rpi\Wall\Shortcodes::$mail_icon, 'permission' => 'self']);
-
-	    $settings = '<div class="profile-panel"><div>[basic-user-avatars]</div><div>[frontend_admin form="782"]</div></div>';
-
-        $tabs->addTab(['label' => 'Einstellungen', 'name' => 'profile', 'content' => do_shortcode($settings), 'icon' => \rpi\Wall\Shortcodes::$gear_icon]);
+	    $tabs->addTab(['label' => 'Kommentare', 'name' => 'comments', 'content' => '<div id ="rpi_tab_comments_content"></div>','icon' => \rpi\Wall\Shortcodes::$comment_icon]);
+	    $tabs->addTab(['label' => 'Benachrichtigungen', 'name' => 'messages', 'content' => '<div id="rpi_tab_messages_content"></div>','icon' => \rpi\Wall\Shortcodes::$mail_icon, 'permission' => 'self']);
+	    $tabs->addTab(['label' => 'Einstellungen', 'name' => 'profile', 'content' => $this->get_profile(get_the_ID()).'<div id="rpi_tab_profile_content"></div>', 'icon' => \rpi\Wall\Shortcodes::$gear_icon]);
 
         $tabs->display();
 
+
+
     }
 
+	public function bio(){
+		$tags = '<div class="member-tags">
+            <div class="cats"> 
+                [my_tags content="badge"]
+                [my_tags content="schooltype"]
+                [my_tags content="profession"]
+            </div>
+            <div class="tags">
+            [my_tags content="wall-tag"]
+            </div>
+         </div>';
+		$user = get_userdata($_POST['user_ID']);
+		echo do_shortcode($user->user_description . $tags);
+		die();
+	}
+
+	public function profile(){
+
+//		$member = new \rpi\Wall\Member($_POST['user_ID']);
+//		echo $this->get_profile($member->post->ID);
+		die();
+
+	}
+
+	public function get_profile($post_id){
+
+
+		$_GET['member_post']= $post_id;
+        set_query_var('member_post',$post_id);
+
+
+		$settings = '<div class="profile-panel">
+                        <div>
+                            <div class="image-upload">
+                                [basic-user-avatars]
+                            </div>
+                            <div class="tags-selector">
+                                <strong>Welche Perspektiven passen zu dir am ehesten?</strong>
+                                [frontend_admin form="808"]
+                            </div>
+                            
+                        </div>
+                        <div>[frontend_admin form="782"]</div>
+                    </div>';
+
+		return do_shortcode($settings);
+
+	}
     public function groups()
     {
 
