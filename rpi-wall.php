@@ -68,6 +68,7 @@ class RpiWall
         add_action('init', ['rpi\Wall\Group', 'init_cronjob']);
 
         add_action('init', ['rpi\Wall\Member', 'init_handle_request']);
+        add_action('init', ['rpi\Wall\Member', 'init_cronjob']);
 
         add_action('wp', [$this, 'redirect_to_users_member_page']);
 
@@ -136,7 +137,8 @@ class RpiWall
 
 
         if ($comment->user_id > 0) {
-            $actor = $comment->user_id > 0;
+			$member = new Wall\Member($comment->user_id);
+            $actor =  $member->get_link();
         } else {
             $actor = $comment->comment_author;
         }

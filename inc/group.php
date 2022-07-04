@@ -682,7 +682,7 @@ class Group extends \stdClass
                 return '<a class="button" href="' . get_home_url() . '?action=plgrequest&hash=' . $hash . '&new_group_member=' . $member->ID . '">' . $label . '</a>';
             }
         } else {
-            return $this->get_current_users_rejectlink();
+	        return $this->get_current_users_rejectlink();
         }
 
     }
@@ -691,11 +691,12 @@ class Group extends \stdClass
     {
         $out = '';
 
-        $member_requests = get_post_meta($this->ID, 'rpi_wall_member_requests', true);
+        $member_requests = $this->get_serialized('rpi_wall_member_requests') ;
+
         if (is_array($member_requests)) {
             foreach ($member_requests as $member_id => $hash) {
                 $member = new Member($member_id);
-                $out .= $member->get_rejectlink($this->ID, $hash);
+                $out .= $member->get_rejectlink($hash);
             }
 
         }

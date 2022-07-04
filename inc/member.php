@@ -253,11 +253,12 @@ class Member extends \stdClass
         update_post_meta($groupId, 'rpi_wall_members_amount', count($ids));
 
         $this->un_like_group($groupId);
+	    $this->delete_serialized('rpi_wall_group_request',$groupId);
 
 	    if(!$this->is_watched_group($groupId)){
 		    $this->toggle_watch_group($groupId);
 	    }
-        new Message($groupId, 'joined', $this->ID);
+        new Message($groupId, 'joined');
         do_action('rpi_wall_member_joined_group', $this->ID, $groupId);
     }
 
@@ -284,7 +285,7 @@ class Member extends \stdClass
 	    $this->like_group($groupId);
 
 	    $hash = wp_hash(strval($groupId) . strval(time()), 'nonce');
-	    $this->set_serialized('rpi_wall_group_request',$groupId,$hash);
+	    $this->set_serialized('rpi_wall_group_request',$groupId,time());
 	    $plg->set_serialized('rpi_wall_member_requests', $this->ID,$hash);
 
 
@@ -304,7 +305,7 @@ class Member extends \stdClass
 
     }
 
-    public function get_rejectlink($groupId, $hash)
+    public function get_rejectlink($hash)
     {
         if (is_user_logged_in()) {
             return '<a class="button" href="' . get_home_url() . '?action=plgreject&hash=' . $hash . '&new_group_member=' . $this->ID . '">Anfrage von ' . $this->name . ' ablehnen</a>';
@@ -515,7 +516,10 @@ class Member extends \stdClass
      */
     public function init_cronjob()
     {
-        $args = [
+	    $daySeconds = 86400;
+	    $pending = $daySeconds * floatval(get_option('options_rpi_wall_pl_group_pending_days'));
+
+	    $args = [
             'meta_query' => [
                 [
                     'key' => 'rpi_wall_group_request',
@@ -523,20 +527,22 @@ class Member extends \stdClass
                 ]
             ]
         ];
-        $daySeconds = 86400;
-        $pending = $daySeconds * floatval(get_option('options_rpi_wall_pl_group_pending_days'));
 
-        $users = get_users($args);
-        foreach ($users as $user) {
+	    $users = get_users($args);
+
+		foreach ($users as $user) {
             if ($user instanceof \WP_User) {
-	            $groups = $this->get_serialized('rpi_wall_group_request');
-                foreach ($groups as $group_id => $group) {
+				$member = new Member($user);
+
+	            $groups = $member->get_serialized('rpi_wall_group_request');
+				foreach ($groups as $group_id => $group) {
 
                     //Wartezeit abgelaufen
                     if ($group['timestamp'] + $pending < time()) {
-                        $member = new Member($user);
-	                    $member->join_group($group_id);                             // gruppe beitreten & interesse ende
+                        $member->join_group($group_id);                             // gruppe beitreten & interesse ende
 	                    $member->delete_serialized('rpi_wall_group_request',$group_id);       // request löschen
+
+
                     }
                 }
             }

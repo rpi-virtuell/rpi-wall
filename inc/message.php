@@ -95,7 +95,7 @@ class Message
     {
 		if(!$group instanceof Group){
 			$group = new Group($group);
-			if(!$group){
+			if(!$group instanceof Group){
 				return false;
 			}
 		}
