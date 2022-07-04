@@ -63,6 +63,7 @@ class Group extends \stdClass
      * überprüft den Gruppenstatus der Pinwandbeiträge
      */
     static function init_cronjob()
+
     {
 
         //TODO: calc likers_amount
@@ -283,23 +284,25 @@ class Group extends \stdClass
         return date('d.n.Y', $this->get('rpi_wall_group_status_timestamp'));
     }
 
+    public function get_countdown($pendingtime){
+	    $days = floor($pendingtime / 86400);
+	    $hours = floor(($pendingtime - $days * 86400) / 3600);
+	    $minutes = floor(($pendingtime / 60) % 60);
+
+	    $format = '%d Tage, %d Stunden und %d Minuten';
+	    $timeformated = sprintf($format, $days, $hours, $minutes);
+	    return apply_filters('rpi_wall_pendingtime', $timeformated, $days, $hours, $minutes);
+    }
+
     public function get_pending_time()
     {
 
         if ($this->group_status = 'pending') {
             $daySeconds = 86400;
-
             $end_time = intval($this->get('rpi_wall_group_status_timestamp')) + ($this->pending_days * $daySeconds);
             $pendingtime = $end_time - time();
 
-            $days = floor($pendingtime / 86400);
-            $hours = floor(($pendingtime - $days * 86400) / 3600);
-            $minutes = floor(($pendingtime / 60) % 60);
-
-            $format = '%d Tage, %d Stunden und %d Minuten';
-            $timeformated = sprintf($format, $days, $hours, $minutes);
-
-            return apply_filters('rpi_wall_pendingtime', $timeformated, $days, $hours, $minutes);
+            return $this->get_countdown($pendingtime);
         }
 
         return '';
@@ -696,7 +699,11 @@ class Group extends \stdClass
         if (is_array($member_requests)) {
             foreach ($member_requests as $member_id => $hash) {
                 $member = new Member($member_id);
-                $out .= $member->get_rejectlink($hash);
+	            $end_time = $member->get_serialized('rpi_wall_group_request',$this->ID) + floatval($this->pending_days * 86400);
+                $pendingtime = $this->get_countdown($end_time - time());
+
+                //var_dump($member->get_serialized('rpi_wall_group_request',$this->ID));
+                $out .= $member->get_rejectlink($hash, $pendingtime);
             }
 
         }
