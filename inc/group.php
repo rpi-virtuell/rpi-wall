@@ -854,13 +854,13 @@ class Group extends \stdClass
 
         switch ($status = $this->get_status()) {
             case'ready':
-                $headline = get_option('options_rpi_wall_ready_header', 'Professionellen Lerngruppe (PLG)');
+                $headline = get_option('options_rpi_wall_ready_header', 'Professionellen Lerngemeinschaft (PLG)');
                 $notice = get_option('options_rpi_wall_ready_notice', 'Mit Klick auf "Gruppe Gründen" werden alle interessierten angeschrieben und haben eine Woche Zeit, der PLG beizutreten.');
                 $button = $this->get_startlink();
                 $stats = $this->get_likers_amount() . ' Interessierte.';
                 break;
             case'pending':
-                $headline = get_option('options_rpi_wall_pending_header', 'Wir suchen noch Leute für eine Professionellen Lerngruppe (PLG) zu diesem Kontext');
+                $headline = get_option('options_rpi_wall_pending_header', 'Wir suchen noch Leute für eine Professionellen Lerngemeinschaft (PLG) zu diesem Kontext');
                 if (!$this->has_member(get_current_user_id())) {
                     $notice = get_option('options_rpi_wall_pending_notice', 'Die Gruppe befindet sich in der Gründungsphase. Möchtest du dabei sein?');
                 }
@@ -869,18 +869,18 @@ class Group extends \stdClass
                 $stats = 'Noch ' . $this->get_pending_time() . ' um beizutreten.';
                 break;
             case'founded':
-                $headline = get_option('options_rpi_wall_founded_header', 'Professionelle Lerngruppe (PLG) zu diesem Kontext');
+                $headline = get_option('options_rpi_wall_founded_header', 'Professionelle Lerngemeinschaft (PLG) zu diesem Kontext');
                 $notice = get_option('options_rpi_wall_founded_notice', 'Zu diesem Pinwandeintrag hat sich eine PLG gegründet.');
                 $button = $this->get_current_users_requestlink('Beitritt anfragen');
                 $stats = $this->get_members_amount() . ' Mitglieder.';
                 break;
             case'closed':
-                $headline = get_option('options_rpi_wall_closed_header', 'Professionelle Lerngruppe (PLG) zu diesem Kontext');
+                $headline = get_option('options_rpi_wall_closed_header', 'Professionelle Lerngemeinschaft (PLG) zu diesem Kontext');
                 $notice = get_option('options_rpi_wall_closed_notice', '');
                 $stats = 'Gruppe geschlossen';
                 break;
             default:
-                $headline = get_option('options_rpi_wall_not_founded_header', 'Interessiert an einer Professionellen Lerngruppe (PLG) zu diesem Kontext?');
+                $headline = get_option('options_rpi_wall_not_founded_header', 'Interessiert an einer Professionellen Lerngemeinschaft (PLG) zu diesem Kontext?');
                 $notice = get_option('options_rpi_wall_not_founded_notice', 'Wenn du zu den Interessierten gehörst, wirst du automatisch benachrichtigt, sobald sich genügend Interessenten gefunden haben.');
                 $stats = $this->get_likers_amount() . ' von mindestens ' . $this->group_member_min . ' sind interessiert';
 
