@@ -36,7 +36,8 @@ class Group extends \stdClass
             if (!$this->post) {
                 echo '<pre>';
                 wp_debug_backtrace_summary();
-                die(new \WP_Error('404', 'Post not found'));
+	            new \WP_Error('404', 'Post not found');
+                die();
             }
             $this->ID = $this->post->ID;
 
@@ -532,11 +533,12 @@ class Group extends \stdClass
     /**
      * @return array $user_id[]
      */
-    public function get_watcherIds()
+    public function get_watcher_Ids()
     {
         if (!$ids = get_post_meta($this->ID, 'rpi_wall_watcher_id')) {
             $ids = [];
         }
+
         return $ids;
     }
 	/**
@@ -544,7 +546,7 @@ class Group extends \stdClass
 	 */
 	public function get_watcher_amount()
 	{
-		return count($this->get_watcherIds());
+		return count($this->get_watcher_Ids());
 	}
 
 

@@ -101,7 +101,7 @@ class RpiWall
         add_action('wp_ajax_rpi_tab_messages_content', [$this, 'ajax_tab_messages_content']);
         add_action('wp_ajax_nopriv_rpi_tab_messages_content', [$this, 'ajax_tab_messages_content']);
 
-        add_action('blocksy:loop:before', function () {
+        add_action('blocksy:content:top', function () {
 			if(is_post_type_archive('wall')){
 				echo '<div class="rpi-wall-buttons">';
 				echo do_shortcode('[frontend_admin form="28"]');
@@ -152,7 +152,13 @@ class RpiWall
     public function on_new_member(int $post_ID, WP_Post $post, bool $update)
     {
         if (!$update) {
-            Wall\Message::send_messages();
+
+	        $member = new Wall\Member($post->post_author);
+	        $msg = new \stdClass();
+			$msg->subject = '[DiBeS]Neues Mitglied '.$member->name;
+			$msg->body = 'Bitte prüfen: '.$member->get_link();
+
+            Wall\Message::send_messages($orga =[2,3], $msg);
         }
 
     }

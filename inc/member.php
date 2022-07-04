@@ -158,7 +158,7 @@ class Member extends \stdClass
         if (!$this->is_liked_group($groupId)) {
 
             $this->toggle_like_group($groupId);
-            new Message($groupId, 'liked', $this->ID);
+
         }
 
     }
@@ -178,6 +178,8 @@ class Member extends \stdClass
                 add_post_meta($groupId, 'rpi_wall_liker_id', $this->ID);
                 add_user_meta($this->ID, 'rpi_wall_liked_group_id', $groupId);
                 $action = 'like';
+	            new Message($groupId, 'liked');
+
 
             } else {
                 delete_post_meta($groupId, 'rpi_wall_liker_id', $this->ID);

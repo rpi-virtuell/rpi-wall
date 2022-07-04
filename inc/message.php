@@ -47,7 +47,7 @@ class Message
             ],
         'liked' =>
             [
-                'subject' => '[%grouptitle%] Intresse bekundet',
+                'subject' => '[%grouptitle%] Interesse bekundet',
                 'body' => '%actorlink% hat Interesse an einer Professionellen Lerngemeinschaft im Kontext von %postlink%'
 
 
@@ -85,14 +85,21 @@ class Message
     protected $events = ['create', 'ready', 'liked', 'joined', 'pending', 'founded', 'requested', 'comment', 'reset'];
 
     /**
-     * @param Group $group
+     * @param Group|Int $group
      * @param string $event ['create','pending','founded','liked','minimum_likers_met','comment','reset']
      * @param array $to :   ['orga','watch','group'] welche Zielgruppe soll benachrichtigt werden
      * @param int $actor_id handelnder User z.B. Kommentarschreiber
      */
 
-    public function __construct(Group $group, $event = 'pending', $user_ids = null, $actor = 0, $search_replace = array('search' => [], 'replace' => []))
+    public function __construct($group, $event = 'pending', $user_ids = null, $actor = 0, $search_replace = array('search' => [], 'replace' => []))
     {
+		if(!$group instanceof Group){
+			$group = new Group($group);
+			if(!$group){
+				return false;
+			}
+		}
+
         $this->group = $group;
 
         $this->templates = Message::$templates;
