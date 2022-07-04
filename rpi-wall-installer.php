@@ -224,13 +224,13 @@ class RPIWallInstaller
          */
 
         $labels = [
-            "name" => __("Badges", "blocksy"),
-            "singular_name" => __("Badge", "blocksy"),
+            "name" => __("Auszeichnungen", "blocksy"),
+            "singular_name" => __("Auszeichnung", "blocksy"),
         ];
 
 
         $args = [
-            "label" => __("Badges", "blocksy"),
+            "label" => __("Auszeichnung", "blocksy"),
             "labels" => $labels,
             "public" => true,
             "publicly_queryable" => true,
@@ -290,8 +290,8 @@ class RPIWallInstaller
          */
 
         $labels = [
-            "name" => __("Professionen(Zielgruppen)", "blocksy"),
-            "singular_name" => __("Profession(Zielgruppe)", "blocksy"),
+            "name" => __("Perspektiven", "blocksy"),
+            "singular_name" => __("Perspektiven", "blocksy"),
         ];
 
 
@@ -602,7 +602,7 @@ class RPIWallInstaller
                                     ),
                                     'frontend_admin_display_mode' => 'edit',
                                     'readonly' => 0,
-                                    'default_value' => 'Professionellen Lerngruppe (PLG)',
+                                    'default_value' => 'Professionellen Lerngemeinschaft (PLG)',
                                     'placeholder' => '',
                                     'prepend' => '',
                                     'append' => '',
@@ -644,7 +644,7 @@ class RPIWallInstaller
                                     ),
                                     'frontend_admin_display_mode' => 'edit',
                                     'readonly' => 0,
-                                    'default_value' => 'Wir suchen noch Leute für eine Professionellen Lerngruppe (PLG) zu diesem Kontext',
+                                    'default_value' => 'Wir suchen noch Leute für eine Professionellen Lerngemeinschaft (PLG) zu diesem Kontext',
                                     'placeholder' => '',
                                     'prepend' => '',
                                     'append' => '',
@@ -686,7 +686,7 @@ class RPIWallInstaller
                                     ),
                                     'frontend_admin_display_mode' => 'edit',
                                     'readonly' => 0,
-                                    'default_value' => 'Professionelle Lerngruppe (PLG) zu diesem Kontext',
+                                    'default_value' => 'Professionelle Lerngemeinschaft (PLG) zu diesem Kontext',
                                     'placeholder' => '',
                                     'prepend' => '',
                                     'append' => '',
@@ -728,7 +728,7 @@ class RPIWallInstaller
                                     ),
                                     'frontend_admin_display_mode' => 'edit',
                                     'readonly' => 0,
-                                    'default_value' => 'Professionelle Lerngruppe (PLG) zu diesem Kontext',
+                                    'default_value' => 'Professionelle Lerngemeinschaft (PLG) zu diesem Kontext',
                                     'placeholder' => '',
                                     'prepend' => '',
                                     'append' => '',
@@ -770,7 +770,7 @@ class RPIWallInstaller
                                     ),
                                     'frontend_admin_display_mode' => 'edit',
                                     'readonly' => 0,
-                                    'default_value' => 'Interessiert an einer Professionellen Lerngruppe (PLG) zu diesem Kontext?',
+                                    'default_value' => 'Interessiert an einer Professionellen Lerngemeinschaft (PLG) zu diesem Kontext?',
                                     'placeholder' => '',
                                     'prepend' => '',
                                     'append' => '',

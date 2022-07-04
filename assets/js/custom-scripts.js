@@ -40,8 +40,11 @@ jQuery(document).ready($ => {
             if (tab_match) {
                 tab = tab_match[1];
                 action = "rpi_tab_" + tab + "_content";
-                rpi_wall_send_post(action);
+            }else{
+                action = "rpi_tab_bio_content";
             }
+
+            rpi_wall_send_post(action);
         })
 
     }
@@ -122,6 +125,7 @@ jQuery(document).ready($ => {
 
     $('.rpi-wall-watch-button').each((i, btn) => {
         const id = btn.id.replace(/[^\d]*/, '');
+        console.log(id);
         $(btn).on('click', e => {
             $.post(
                 wall.ajaxurl,

@@ -188,7 +188,12 @@ class Member extends \stdClass
             if (!$ids = get_post_meta($groupId, 'rpi_wall_liker_id')) {
                 $ids = [];
             }
-            update_post_meta($groupId, 'rpi_wall_likers_amount', count($ids));
+            if( $action == 'like' && !$this->is_watched_group($groupId)){
+	            $this->toggle_watch_group($groupId);
+            }
+
+			update_post_meta($groupId, 'rpi_wall_likers_amount', count($ids));
+
 
             do_action('rpi_wall_like_group', $this->ID, $groupId, $action);
 
@@ -247,6 +252,9 @@ class Member extends \stdClass
 
         $this->un_like_group($groupId);
 
+	    if(!$this->is_watched_group($groupId)){
+		    $this->toggle_watch_group($groupId);
+	    }
         new Message($groupId, 'joined', $this->ID);
         do_action('rpi_wall_member_joined_group', $this->ID, $groupId);
     }

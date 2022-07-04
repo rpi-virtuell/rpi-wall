@@ -332,8 +332,10 @@ class Group extends \stdClass
     public function get_likers()
     {
 
+
         return get_users(array(
-            "include" => wp_ulike_get_likers_list_per_post('ulike', 'likers_list', $this->ID, 100)
+	        "include" =>  $this->get_likers_Ids()
+
         ));
     }
 
@@ -364,7 +366,6 @@ class Group extends \stdClass
     public function get_liker_and_member_Ids()
     {
 
-        //$likers =  wp_ulike_get_likers_list_per_post('ulike', 'likers_list', $this->ID, 100);
         $likers = $this->get_likers_Ids();
         $members = $this->get_memberIds();
         $rest_likers = [];
@@ -417,7 +418,10 @@ class Group extends \stdClass
      */
     public function get_comment_liker_Ids($comment_id)
     {
-        return wp_ulike_get_likers_list_per_post('ulike_comments', 'likers_list', $comment_id, 100);
+        if(function_exists('wp_ulike_get_likers_list_per_post')){
+	        return wp_ulike_get_likers_list_per_post('ulike_comments', 'likers_list', $comment_id, 100);
+        }
+
     }
 
     /**
@@ -426,9 +430,11 @@ class Group extends \stdClass
     public function get_comment_likes_amount()
     {
         $likes = 0;
-        foreach (get_comments(['post_id' => $this->ID]) as $comment) {
-            $likes += intval(wp_ulike_get_comment_likes($comment->comment_ID));
-        }
+	    if(function_exists('wp_ulike_get_comment_likes')) {
+		    foreach ( get_comments( [ 'post_id' => $this->ID ] ) as $comment ) {
+			    $likes += intval( wp_ulike_get_comment_likes( $comment->comment_ID ) );
+		    }
+	    }
 
         return $likes;
     }
@@ -848,13 +854,13 @@ class Group extends \stdClass
 
         switch ($status = $this->get_status()) {
             case'ready':
-                $headline = get_option('options_rpi_wall_ready_header', 'Professionellen Lerngruppe (PLG)');
+                $headline = get_option('options_rpi_wall_ready_header', 'Professionellen Lerngemeinschaft (PLG)');
                 $notice = get_option('options_rpi_wall_ready_notice', 'Mit Klick auf "Gruppe Gründen" werden alle interessierten angeschrieben und haben eine Woche Zeit, der PLG beizutreten.');
                 $button = $this->get_startlink();
                 $stats = $this->get_likers_amount() . ' Interessierte.';
                 break;
             case'pending':
-                $headline = get_option('options_rpi_wall_pending_header', 'Wir suchen noch Leute für eine Professionellen Lerngruppe (PLG) zu diesem Kontext');
+                $headline = get_option('options_rpi_wall_pending_header', 'Wir suchen noch Leute für eine Professionellen Lerngemeinschaft (PLG) zu diesem Kontext');
                 if (!$this->has_member(get_current_user_id())) {
                     $notice = get_option('options_rpi_wall_pending_notice', 'Die Gruppe befindet sich in der Gründungsphase. Möchtest du dabei sein?');
                 }
@@ -863,18 +869,18 @@ class Group extends \stdClass
                 $stats = 'Noch ' . $this->get_pending_time() . ' um beizutreten.';
                 break;
             case'founded':
-                $headline = get_option('options_rpi_wall_founded_header', 'Professionelle Lerngruppe (PLG) zu diesem Kontext');
+                $headline = get_option('options_rpi_wall_founded_header', 'Professionelle Lerngemeinschaft (PLG) zu diesem Kontext');
                 $notice = get_option('options_rpi_wall_founded_notice', 'Zu diesem Pinwandeintrag hat sich eine PLG gegründet.');
                 $button = $this->get_current_users_requestlink('Beitritt anfragen');
                 $stats = $this->get_members_amount() . ' Mitglieder.';
                 break;
             case'closed':
-                $headline = get_option('options_rpi_wall_closed_header', 'Professionelle Lerngruppe (PLG) zu diesem Kontext');
+                $headline = get_option('options_rpi_wall_closed_header', 'Professionelle Lerngemeinschaft (PLG) zu diesem Kontext');
                 $notice = get_option('options_rpi_wall_closed_notice', '');
                 $stats = 'Gruppe geschlossen';
                 break;
             default:
-                $headline = get_option('options_rpi_wall_not_founded_header', 'Interessiert an einer Professionellen Lerngruppe (PLG) zu diesem Kontext?');
+                $headline = get_option('options_rpi_wall_not_founded_header', 'Interessiert an einer Professionellen Lerngemeinschaft (PLG) zu diesem Kontext?');
                 $notice = get_option('options_rpi_wall_not_founded_notice', 'Wenn du zu den Interessierten gehörst, wirst du automatisch benachrichtigt, sobald sich genügend Interessenten gefunden haben.');
                 $stats = $this->get_likers_amount() . ' von mindestens ' . $this->group_member_min . ' sind interessiert';
 
@@ -889,7 +895,6 @@ class Group extends \stdClass
         if (!in_array($this->get_status(), ['founded', 'closed'])) {
             echo '<div class="gruppe-liker">';
             echo $this->display_group_box(96);
-            //echo do_shortcode('[wp_ulike  style="wpulike-heart"]');
             echo '</div>';
         } else {
             echo '<div class="gruppe-liker">';
@@ -941,9 +946,11 @@ class Group extends \stdClass
 
 
         $likes = 0;
-        foreach (get_comments(['post_id' => $this->ID]) as $comment) {
-            $likes += intval(wp_ulike_get_comment_likes($comment->comment_ID));
-        }
+	    if(function_exists('wp_ulike_get_comment_likes')) {
+		    foreach ( get_comments( [ 'post_id' => $this->ID ] ) as $comment ) {
+			    $likes += intval( wp_ulike_get_comment_likes( $comment->comment_ID ) );
+		    }
+	    }
         if ($likes > 0) {
             $n = $likes;
             if ($likes > $max_likes) {

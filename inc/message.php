@@ -19,14 +19,14 @@ class Message
             [
                 'subject' => '[%grouptitle%] Gründung möglich',
                 'body' => 'Für den Pinwandeintrag %postlink% ' .
-                    'haben sich einige Interessierte gefunden. Die Gründung einer Professionellen Lerngruppe ist jetzt möglich. ' .
+                    'haben sich einige Interessierte gefunden. Die Gründung einer Professionellen Lerngemeinschaft ist jetzt möglich. ' .
                     'Klicke auf dem Beitrag ganz unten auf den Button "Gruppe gründen"'
 
             ],
         'pending' =>
             [
                 'subject' => '[%grouptitle%] Jetzt beitreten!',
-                'body' => '%actorname% (%actorlink%) hat die Beitrittsphase zur Gründung einer Professionellen Lerngruppe eröffnet.  ' .
+                'body' => '%actorname% (%actorlink%) hat die Beitrittsphase zur Gründung einer Professionellen Lerngemeinschaft eröffnet.  ' .
                     'Klicke innerhalb der nächsten %countdown% auf dem Pinwandeintrag %postlink% ' .
                     'ganz unten auf den Button "Beitreten", um Mitglied der Gruppe zu werden'
 
@@ -34,7 +34,7 @@ class Message
         'founded' =>
             [
                 'subject' => '[%grouptitle%] Gruppe erfolgreich eingerichtet ',
-                'body' => 'Auf der Seite %postlink%  wurde eine Professionellen Lerngruppe eingerichtet. ' .
+                'body' => 'Auf der Seite %postlink%  wurde eine Professionellen Lerngemeinschaft eingerichtet. ' .
                     '%memberamount%  Mitglieder sind beigetreten. ' .
                     'Mitglieder der Gruppe finden unten auf der Seite  den Link zu einer geschützten Raum ' .
                     'und zu weiteren hilfreichen Kooperationswerkzeugen.'
@@ -48,21 +48,21 @@ class Message
         'liked' =>
             [
                 'subject' => '[%grouptitle%] Intresse bekundet',
-                'body' => '%actorlink% hat Interesse an einer Professionellen Lerngruppe im Kontext von %postlink%'
+                'body' => '%actorlink% hat Interesse an einer Professionellen Lerngemeinschaft im Kontext von %postlink%'
 
 
             ],
         'joined' =>
             [
                 'subject' => '[%grouptitle%] neues Mitglied',
-                'body' => '%actorlink% der Professionellen Lerngruppe unter %postlink% beigetreten.'
+                'body' => '%actorlink% der Professionellen Lerngemeinschaft unter %postlink% beigetreten.'
 
 
             ],
         'requested' =>
             [
                 'subject' => '[%grouptitle%] Beitrittsanfrage',
-                'body' => '%actorlink% möchte der Professionellen Lerngruppe beitreten. ' .
+                'body' => '%actorlink% möchte der Professionellen Lerngemeinschaft beitreten. ' .
                     'Mitglieder haben unter %postlink%  kurze Zeit, das Beitrittsgesuche abzulehnen.'
 
 
@@ -77,7 +77,7 @@ class Message
         'reset' =>
             [
                 'subject' => '[%grouptitle%] zu wenig Intresse',
-                'body' => 'Für den Pinwandeintrag "%posttitle%" (%postlink%) haben sich leider nicht genug Interessierte gefunden, um eine Professionelle Lerngruppe zu etablieren. ' .
+                'body' => 'Für den Pinwandeintrag "%posttitle%" (%postlink%) haben sich leider nicht genug Interessierte gefunden, um eine Professionelle Lerngemeinschaft zu etablieren. ' .
                     'Der Gründungsvorgang wurde zurückgesetzt. Wenn sich mehr Interessierte finden, kann der Gründungsprozess erneut gestartet werden.'
             ],
 
@@ -119,7 +119,7 @@ class Message
 
         if ($user_ids === null) {
             //message to all watches
-            $user_ids = $group->get_watcher();
+            $user_ids = $group->get_watcher_Ids();
         }
 
         if (in_array($event, $this->events) && $msg = $this->prepare_message($event, $replace_data)) {

@@ -77,13 +77,19 @@ class RpiWall
         add_action('wp_ajax_rpi_wall_toggle_like', [$this, 'ajax_toggle_group_like']);
         add_action('wp_ajax_nopriv_rpi_wall_toggle_like', [$this, 'ajax_toggle_group_like']);
 
-        add_action('wp_ajax_rpi_wall_toggle_watch', [$this, 'ajax_toggle_group_watch']);
+		add_action('wp_ajax_rpi_wall_toggle_watch', [$this, 'ajax_toggle_group_watch']);
         add_action('wp_ajax_nopriv_rpi_wall_toggle_watch', [$this, 'ajax_toggle_group_watch']);
 
         add_action('wp_ajax_rpi_toggle_message_read', [$this, 'ajax_toggle_message_read']);
         add_action('wp_ajax_nopriv_rpi_toggle_message_read', [$this, 'ajax_toggle_message_read']);
 
-        add_action('wp_ajax_rpi_tab_comments_content', [$this, 'ajax_tab_comments_content']);
+	    add_action('wp_ajax_rpi_tab_bio_content', [$this, 'ajax_rpi_tab_bio_content']);
+	    add_action('wp_ajax_noprivrpi_tab_bio_content', [$this, 'ajax_rpi_tab_bio_content']);
+
+	    add_action('wp_ajax_rpi_tab_profile_content', [$this, 'ajax_rpi_tab_profile_content']);
+	    add_action('wp_ajax_noprivrpi_tab_profile_content', [$this, 'ajax_rpi_tab_profile_content']);
+
+	    add_action('wp_ajax_rpi_tab_comments_content', [$this, 'ajax_tab_comments_content']);
         add_action('wp_ajax_nopriv_rpi_tab_comments_content', [$this, 'ajax_tab_comments_content']);
 
         add_action('wp_ajax_rpi_tab_groups_content', [$this, 'ajax_tab_groups_content']);
@@ -96,9 +102,12 @@ class RpiWall
         add_action('wp_ajax_nopriv_rpi_tab_messages_content', [$this, 'ajax_tab_messages_content']);
 
         add_action('blocksy:loop:before', function () {
-            echo '<div class="rpi-wall-buttons">';
-            echo do_shortcode('[frontend_admin form="28"]');
-            echo '</div>';
+			if(is_post_type_archive('wall')){
+				echo '<div class="rpi-wall-buttons">';
+				echo do_shortcode('[frontend_admin form="28"]');
+				echo '</div>';
+			}
+
         });
 
 
@@ -133,34 +142,49 @@ class RpiWall
         }
 
         new Wall\Message($group, 'comment', null, $actor, $replace_data);
+	    $currentMember = new Wall\Member();
+	    if(!$currentMember->is_watched_group($group->ID)){
+		    $currentMember->toggle_watch_group($group->ID);
+	    }
 
     }
 
     public function on_new_member(int $post_ID, WP_Post $post, bool $update)
     {
-        if (!update) {
+        if (!$update) {
             Wall\Message::send_messages();
         }
 
     }
 
-    public function on_new_pin0(int $post_ID, WP_Post $post, bool $update)
+    public function on_new_pin(int $post_ID, WP_Post $post, bool $update)
     {
-        if (!update) {
-            $group = new Wall\Group($post_ID);
-            new Wall\Message($group, 'create', null, get_current_user_id());
-        }    // do something
+        if (!$update) {
+
+            new Wall\Message(new Wall\Group($post_ID), 'create', null, get_current_user_id());
+
+			$currentMember = new Wall\Member();
+			if(!$currentMember->is_watched_group($post_ID)){
+				$currentMember->toggle_watch_group($post_ID);
+	        }
+        }
 
     }
 
     public function redirect_to_users_member_page()
     {
 
-        if (is_user_logged_in() && strpos($_SERVER['REQUEST_URI'], '/member_profile') !== false) {
-            $member = new Wall\Member(wp_get_current_user());
-            $user_url = $member->get_member_profile_permalink();
-            wp_redirect($user_url);
-            die();
+        if (strpos($_SERVER['REQUEST_URI'], '/member_profile') !== false) {
+	        if(is_user_logged_in()){
+		        $member = new Wall\Member(wp_get_current_user());
+		        $user_url = $member->get_member_profile_permalink();
+		        wp_redirect($user_url);
+
+	        }else{
+				wp_redirect(wp_login_url());
+
+	        }
+	        die();
 
         }
     }
@@ -239,11 +263,24 @@ class RpiWall
 
     public function ajax_tab_messages_content()
     {
-        echo MemberPage::messages();
+	    $member_page = new MemberPage();
+	    echo $member_page->messages();
         die();
     }
 
-    public function ajax_tab_groups_content(){
+
+    public function ajax_rpi_tab_bio_content(){
+        $member_page = new MemberPage();
+        echo $member_page->bio();
+            die();
+    }
+
+	public function ajax_rpi_tab_profile_content(){
+		$member_page = new MemberPage();
+		echo $member_page->profile();
+		die();
+	}
+	public function ajax_tab_groups_content(){
         $member_page = new MemberPage();
         echo $member_page->groups();
             die();
@@ -382,6 +419,8 @@ class RpiWall
 
 
     }
+
+
 }
 
 new RpiWall();
