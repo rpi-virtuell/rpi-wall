@@ -81,14 +81,14 @@ class RpiWall
 		add_action('wp_ajax_rpi_wall_toggle_watch', [$this, 'ajax_toggle_group_watch']);
         add_action('wp_ajax_nopriv_rpi_wall_toggle_watch', [$this, 'ajax_toggle_group_watch']);
 
-        add_action('wp_ajax_rpi_toggle_message_read', [$this, 'ajax_toggle_message_read']);
-        add_action('wp_ajax_nopriv_rpi_toggle_message_read', [$this, 'ajax_toggle_message_read']);
+        add_action('wp_ajax_rpi_mark_and_display_message', [$this, 'ajax_mark_and_display_message']);
+        add_action('wp_ajax_nopriv_rpi_mark_and_display_message', [$this, 'ajax_mark_and_display_message']);
 
 	    add_action('wp_ajax_rpi_tab_bio_content', [$this, 'ajax_rpi_tab_bio_content']);
-	    add_action('wp_ajax_noprivrpi_tab_bio_content', [$this, 'ajax_rpi_tab_bio_content']);
+	    add_action('wp_ajax_nopriv_rpi_tab_bio_content', [$this, 'ajax_rpi_tab_bio_content']);
 
 	    add_action('wp_ajax_rpi_tab_profile_content', [$this, 'ajax_rpi_tab_profile_content']);
-	    add_action('wp_ajax_noprivrpi_tab_profile_content', [$this, 'ajax_rpi_tab_profile_content']);
+	    add_action('wp_ajax_nopriv_rpi_tab_profile_content', [$this, 'ajax_rpi_tab_profile_content']);
 
 	    add_action('wp_ajax_rpi_tab_comments_content', [$this, 'ajax_tab_comments_content']);
         add_action('wp_ajax_nopriv_rpi_tab_comments_content', [$this, 'ajax_tab_comments_content']);
@@ -308,13 +308,18 @@ class RpiWall
         die();
     }
 
-    public function ajax_toggle_message_read()
+    public function ajax_mark_and_display_message()
     {
         $response = ['success' => false];
         if (isset($_POST['message_id'])) {
             $member = new rpi\Wall\Member();
+            $message = get_post($_POST['message_id']);
             $member->set_message_read($_POST['message_id']);
-            $response = ['success' => true, 'message_id' => $_POST['message_id']];
+            $response = [
+                'success' => true,
+                'message_id' => $_POST['message_id'],
+                'title' => $message->post_title,
+                'content'=>$message->post_content];
         }
         echo json_encode($response);
         die();

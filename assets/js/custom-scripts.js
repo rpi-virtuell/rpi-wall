@@ -40,7 +40,7 @@ jQuery(document).ready($ => {
             if (tab_match) {
                 tab = tab_match[1];
                 action = "rpi_tab_" + tab + "_content";
-            }else{
+            } else {
                 action = "rpi_tab_bio_content";
             }
 
@@ -68,7 +68,7 @@ jQuery(document).ready($ => {
         console.log(action);
         $('#' + action).html(response);
         if (action === 'rpi_tab_messages_content') {
-            mark_message_as_read();
+            mark_and_display_message();
         }
 
 
@@ -100,7 +100,7 @@ jQuery(document).ready($ => {
     }
 
 
-    function mark_message_as_read() {
+    function mark_and_display_message() {
 
         $('.message').each((i, msg) => {
             const id = msg.id.replace('message-', '');
@@ -108,13 +108,20 @@ jQuery(document).ready($ => {
                 $.post(
                     wall.ajaxurl,
                     {
-                        'action': 'rpi_toggle_message_read',
+                        'action': 'rpi_mark_and_display_message',
                         'message_id': id
                     },
                     function (response) {
                         const data = JSON.parse(response);
                         if (data.success) {
                             $(msg).find('.entry-title').removeClass('unread')
+                            if (data.content) {
+                                $('#member-message-detail-title').html(data.title);
+                                $('#member-message-detail-content').html(data.content);
+                                $('.member-message-grid').addClass('message-detail');
+                                $('.member-message-grid').removeClass('message-list');
+                                $('#member-message-button').addClass('member-button-display');
+                            }
                         }
                     }
                 )
@@ -122,6 +129,13 @@ jQuery(document).ready($ => {
         })
     }
 
+    $('#member-message-button').ready($ => {
+        $('#member-message-button').on('click', e => {
+            $('.member-message-grid').removeClass('message-detail');
+            $('.member-message-grid').addClass('message-list');
+            $('#member-message-button').removeClass('member-button-display');
+        });
+    })
 
     $('.rpi-wall-watch-button').each((i, btn) => {
         const id = btn.id.replace(/[^\d]*/, '');
