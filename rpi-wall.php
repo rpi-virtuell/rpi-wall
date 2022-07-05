@@ -115,6 +115,20 @@ class RpiWall
         add_action('save_post_wall', [$this, 'on_new_pin'], 10, 3);
         add_action('save_post_member', [$this, 'on_new_member'], 10, 3);
         add_action('wp_insert_comment', [$this, 'on_new_comment'], 99, 2);
+
+
+	    add_filter('acf/load_field/name=display_name', function($field){
+			$user = get_userdata(get_current_user_id());
+
+		    $field['choices'] = array();
+		    $field['choices'][$user->nickname] = $user->nickname;
+		    $field['choices'][$user->user_login] = $user->user_login;
+		    $field['choices'][$user->first_name] = $user->first_name .' '. $user->last_name;
+
+			return $field;
+
+	    }, 10, 1);
+
     }
 
     public function on_new_comment($comment_id, WP_Comment $comment)
