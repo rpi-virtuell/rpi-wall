@@ -168,21 +168,14 @@ article.entry-card {
 }
 
 @media only screen and (max-width: 600px) {
-    .member-message-grid.message-detail{
-        grid-template-areas: "detail";
-        grid-template-columns: unset;
-        grid-gap: unset;
+    .member-message-grid{
+        display: unset;
     }
 
     .member-message-grid.message-detail .member-message-list{
         display: none;
     }
 
-    .member-message-grid.message-list{
-        grid-template-areas: "list";
-        grid-template-columns: unset;
-        grid-gap: unset;
-    }
 
     .member-message-grid.message-list .member-message-detail{
         display: none;

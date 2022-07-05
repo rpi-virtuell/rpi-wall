@@ -8,9 +8,11 @@ class MemberPage
     public $is_member_page = false;
     public $posts_per_page = 6;
 
+
     public function __construct()
     {
         add_action('blocksy:single:content:bottom', [$this, 'init']);
+        add_action('wp_head', [$this, 'head_script']);
     }
 
     public function init()
@@ -28,8 +30,10 @@ class MemberPage
                 $this->is_my_page = true;
             }
             $this->display();
-            echo '<script>const rpi_wall ={user_ID: "' . $this->member->ID . '"};</script>';
+
+
         }
+
 
 
     }
@@ -58,6 +62,9 @@ class MemberPage
         $tabs->addTab(['label' => 'Kommentare', 'name' => 'comments', 'content' => '<div id ="rpi_tab_comments_content"></div>', 'icon' => \rpi\Wall\Shortcodes::$comment_icon]);
         $tabs->addTab(['label' => 'Benachrichtigungen', 'name' => 'messages', 'content' => '<div id="rpi_tab_messages_content"></div>', 'icon' => \rpi\Wall\Shortcodes::$mail_icon, 'permission' => 'self']);
         $tabs->addTab(['label' => 'Einstellungen', 'name' => 'profile', 'content' => $this->get_profile(get_the_ID()) . '<div id="rpi_tab_profile_content"></div>', 'icon' => \rpi\Wall\Shortcodes::$gear_icon]);
+
+        echo '<script>var rpi_wall ={user_ID: "' . $this->member->ID . '"};</script>';
+        echo '<script> rpi_wall.allowedtabs = '.json_encode($tabs->get_allowed_tabs()).';</script>';
 
         $tabs->display();
 

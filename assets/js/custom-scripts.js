@@ -32,21 +32,24 @@ jQuery(document).ready($ => {
         });
     })
 
-    site_match = location.pathname.match(/^\/member\//);
+    const site_match = location.pathname.match(/^\/member\//);
+    window.onhashchange = locationHashChanged;
+    locationHashChanged();
 
-    if (site_match) {
-        $('.tabset').ready(function () {
-            tab_match = location.search.match(/tab=([\w-]+)/)
-            if (tab_match) {
-                tab = tab_match[1];
-                action = "rpi_tab_" + tab + "_content";
-            } else {
-                action = "rpi_tab_bio_content";
-            }
+    function locationHashChanged() {
+        if (site_match) {
+            $('.tabset').ready(function () {
+                if (location.hash && rpi_wall.allowedtabs.includes(location.hash.substring(1))) {
+                    hash = location.hash.substring(1);
+                } else {
+                    hash = "bio";
+                }
+                action = "rpi_tab_" + hash + "_content";
+                $('#tab-' + hash).prop('checked', true);
+                rpi_wall_send_post(action);
+            })
 
-            rpi_wall_send_post(action);
-        })
-
+        }
     }
 
 
@@ -69,6 +72,7 @@ jQuery(document).ready($ => {
         $('#' + action).html(response);
         if (action === 'rpi_tab_messages_content') {
             mark_and_display_message();
+            add_member_message_button_event();
         }
 
 
@@ -129,13 +133,15 @@ jQuery(document).ready($ => {
         })
     }
 
-    $('#member-message-button').ready($ => {
-        $('#member-message-button').on('click', e => {
-            $('.member-message-grid').removeClass('message-detail');
-            $('.member-message-grid').addClass('message-list');
-            $('#member-message-button').removeClass('member-button-display');
-        });
-    })
+    function add_member_message_button_event() {
+        $('#member-message-button').ready($ => {
+            $('#member-message-button').on('click', e => {
+                $('.member-message-grid').removeClass('message-detail');
+                $('.member-message-grid').addClass('message-list');
+                $('#member-message-button').removeClass('member-button-display');
+            });
+        })
+    }
 
     $('.rpi-wall-watch-button').each((i, btn) => {
         const id = btn.id.replace(/[^\d]*/, '');

@@ -8,6 +8,7 @@ class Tabs
     protected $tabgroup = [];
     protected $contentgroup = [];
     protected $tabset;
+    protected $allowedtabs = [];
 
     public function __construct($tabset = 'tabset')
     {
@@ -48,6 +49,7 @@ class Tabs
 
         $this->tabgroup[] = $this->addLabel($props['icon'], $props['label'], sanitize_title($props['name']), $checked);
         $this->contentgroup[] = $this->addContent($props['label'], sanitize_title($props['name']), $props['content']);
+        $this->allowedtabs[] = $props['name'];
 
     }
 
@@ -63,7 +65,7 @@ class Tabs
         ?>
         <input type="radio" name="<?php echo $this->tabset; ?>" id="tab-<?php echo $name; ?>" aria-controls="<?php echo $name; ?>" <?php echo $checked; ?>>
         <label for="tab-<?php echo $name; ?>">
-            <a href="?tab=<?php echo $name; ?>" class="tab-link">
+            <a href="#<?php echo $name; ?>" class="tab-link">
                 <div class="tab-icon"><?php echo $icon; ?></div>
                 <div class="tab-label"><?php echo $label; ?></div>
             </a>
@@ -72,6 +74,10 @@ class Tabs
         <?php
         return ob_get_clean();
 
+    }
+
+    public function get_allowed_tabs(){
+        return $this->allowedtabs;
     }
 
     protected function addContent($label, $name, $content)
