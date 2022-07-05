@@ -163,7 +163,7 @@ class RPIWallInstaller
 	 */
 	public function add_new_message_columns($columns, $post_type ){
 		if($post_type == 'message'){
-			$columns['content'] = 'Inhalt';
+			$columns['content'] = 'Mitteilung';
 			$columns['recipients'] = 'Empfänger';
 		}
 		return $columns;
@@ -1002,7 +1002,9 @@ class RPIWallInstaller
 
     public function change_author_link_to_user_profile($link, $author_id, $author_nicename)
     {
-        return home_url("/member/" . $author_nicename . "/");
+        $member = new Member($author_id);
+		return $member->get_member_profile_permalink();
+
     }
 
     /**

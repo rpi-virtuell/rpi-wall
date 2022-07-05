@@ -195,6 +195,7 @@ class RpiWall
 	        die();
 
         }
+
     }
 
 	public function ajax_toggle_group_watch()
