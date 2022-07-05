@@ -163,6 +163,7 @@ class RPIWallInstaller
 	 */
 	public function add_new_message_columns($columns, $post_type ){
 		if($post_type == 'message'){
+			$columns['content'] = 'Inhalt';
 			$columns['recipients'] = 'Empfänger';
 		}
 		return $columns;
@@ -178,6 +179,9 @@ class RPIWallInstaller
 	function display_message_recipients_column($name, $post_id) {
 
 		switch ($name) {
+			case 'content':
+				echo get_the_content(null,true,$post_id);
+				break;
 			case 'recipients':
 				$recipients = get_post_meta($post_id, 'rpi_wall_message_recipient');
 				if($recipients && count($recipients) >0){
