@@ -52,13 +52,12 @@ class MemberPage
 
         $tabs = new \rpi\Wall\Tabs('tabset');
 
-
         $tabs->addTab(['label' => 'Über mich', 'name' => 'bio', 'content' =>'<div id ="rpi_tab_bio_content"></div>', 'icon' => \rpi\Wall\Shortcodes::$user_icon, 'checked' => true]);
         $tabs->addTab(['label' => 'Gruppen', 'name' => 'groups', 'content' => '<div id ="rpi_tab_groups_content"></div>','icon' => \rpi\Wall\Shortcodes::$group_icon]);
-        $tabs->addTab(['label' => 'Abonnements', 'name' => 'watch', 'content' => '<div id ="rpi_tab_watch_content"></div>','icon' => \rpi\Wall\Shortcodes::$watch_icon]);
+        $tabs->addTab(['label' => 'Abonnements', 'name' => 'watch', 'content' => '<div id ="rpi_tab_watch_content"></div>','icon' => \rpi\Wall\Shortcodes::$watch_icon, 'permission' => 'self']);
 	    $tabs->addTab(['label' => 'Kommentare', 'name' => 'comments', 'content' => '<div id ="rpi_tab_comments_content"></div>','icon' => \rpi\Wall\Shortcodes::$comment_icon]);
 	    $tabs->addTab(['label' => 'Benachrichtigungen', 'name' => 'messages', 'content' => '<div id="rpi_tab_messages_content"></div>','icon' => \rpi\Wall\Shortcodes::$mail_icon, 'permission' => 'self']);
-	    $tabs->addTab(['label' => 'Einstellungen', 'name' => 'profile', 'content' => $this->get_profile(get_the_ID()).'<div id="rpi_tab_profile_content"></div>', 'icon' => \rpi\Wall\Shortcodes::$gear_icon]);
+	    $tabs->addTab(['label' => 'Einstellungen', 'name' => 'profile', 'content' => $this->get_profile(get_the_ID()).'<div id="rpi_tab_profile_content"></div>', 'icon' => \rpi\Wall\Shortcodes::$gear_icon, 'permission' => 'self']);
 
         $tabs->display();
 
@@ -103,7 +102,7 @@ class MemberPage
                                 [basic-user-avatars]
                             </div>
                             <div class="tags-selector">
-                                <strong>Welche Perspektiven passen zu dir am ehesten?</strong>
+                                <strong>Welche Perspektiven passen zu dir aam ehesten?</strong>
                                 [frontend_admin form="808"]
                             </div>
                             
