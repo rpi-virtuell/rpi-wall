@@ -18,6 +18,9 @@ class RPIWallInstaller
         add_filter('author_link', array($this, 'change_author_link_to_user_profile'), 10, 3);
         add_action('save_post_wall', array($this, 'sync_taxonomy_of_member_with_pin'), 10, 3);
         add_action('before_delete_post', array($this, 'delete_member_taxonomy_on_pin_deletion'), 10, 2);
+	    add_filter('manage_posts_columns',array($this,'add_new_message_columns'),10,2);
+	    add_action('manage_message_posts_custom_column',array($this,'display_message_recipients_column'),10,2);
+
     }
 
     public function register_post_types()
@@ -148,6 +151,51 @@ class RPIWallInstaller
         register_post_type("message", $args);
 
     }
+
+	/**
+	 * Empfängerspalte in admin columns hinzufügen
+	 * filter hook manage_posts_columns
+	 *
+	 * @param $columns
+	 * @param $post_type
+	 *
+	 * @return mixed
+	 */
+	public function add_new_message_columns($columns, $post_type ){
+		if($post_type == 'message'){
+			$columns['recipients'] = 'Empfänger';
+		}
+		return $columns;
+	}
+
+	/**
+	 * Empfängerspalte  mit Empfängern aus dem mety key 'rpi_wall_message_recipient' befüllen
+	 * @param $name
+	 * @param $post_id
+	 *
+	 * @return void
+	 */
+	function display_message_recipients_column($name, $post_id) {
+
+		switch ($name) {
+			case 'recipients':
+				$recipients = get_post_meta($post_id, 'rpi_wall_message_recipient');
+				if($recipients && count($recipients) >0){
+					$users =[];
+					foreach ($recipients as $user_id){
+						$user = get_userdata($user_id);
+						if($user instanceof \WP_User){
+							$users[]= $user->display_name;
+						}
+
+					}
+					echo implode(', ',$users);
+
+				}
+
+		}
+	}
+
 
     function register_taxonomies()
     {
