@@ -54,25 +54,26 @@ class RpiWall
 
 	    add_action('blocksy:content:top', function () {
 		    if(is_post_type_archive('wall')){
-			    echo '<div class="ct-container rpi-wall-buttons">';
+                echo '<div class="ct-container rpi-wall-buttons">';
 			    echo do_shortcode('[frontend_admin form="28"]');
 			    echo '</div>';
+		    }else{
+                if('wall'===get_post_type()){
+	                echo '<div class="ct-container rpi-wall-buttons">';
+	                echo do_shortcode('[frontend_admin form="932"]');
+	                echo '</div>';
+                }
 		    }
-
 	    });
 
         add_action('blocksy:hero:before', ['rpi\Wall\Group', 'display_watcher_area']);
         add_action('blocksy:comments:after', [$this, 'display_likers_container']);
 
-
         add_action('blocksy:loop:card:start', [$this, 'display_cards_status_triangle']);
         add_action('blocksy:loop:card:end', [$this, 'display_cards_group_info']);
 
-
         add_action('blocksy:loop:card:start', [$this, 'display_cards_member']);
-
         add_filter('wp_ulike_ajax_respond', [$this, 'wp_ulike_ajax_respond'], 20, 4);
-
 
         //incomming
         add_action('init', ['rpi\Wall\Group', 'init_handle_requests']);
