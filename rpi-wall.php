@@ -60,6 +60,8 @@ class RpiWall
         add_action('blocksy:loop:card:end', [$this, 'display_cards_group_info']);
 
 
+        add_action('blocksy:loop:card:start', [$this, 'display_cards_member']);
+
         add_filter('wp_ulike_ajax_respond', [$this, 'wp_ulike_ajax_respond'], 20, 4);
 
 
@@ -69,7 +71,7 @@ class RpiWall
         add_action('init', ['rpi\Wall\Group', 'init_cronjob']);
 
         add_action('init', ['rpi\Wall\Member', 'init_handle_request']);
-        add_action('init', ['rpi\Wall\Member', 'init_cronjob'],5);
+        add_action('init', ['rpi\Wall\Member', 'init_cronjob'], 5);
 
         add_action('wp', [$this, 'redirect_to_users_member_page']);
 
@@ -79,19 +81,19 @@ class RpiWall
         add_action('wp_ajax_rpi_wall_toggle_like', [$this, 'ajax_toggle_group_like']);
         add_action('wp_ajax_nopriv_rpi_wall_toggle_like', [$this, 'ajax_toggle_group_like']);
 
-		add_action('wp_ajax_rpi_wall_toggle_watch', [$this, 'ajax_toggle_group_watch']);
+        add_action('wp_ajax_rpi_wall_toggle_watch', [$this, 'ajax_toggle_group_watch']);
         add_action('wp_ajax_nopriv_rpi_wall_toggle_watch', [$this, 'ajax_toggle_group_watch']);
 
         add_action('wp_ajax_rpi_mark_and_display_message', [$this, 'ajax_mark_and_display_message']);
         add_action('wp_ajax_nopriv_rpi_mark_and_display_message', [$this, 'ajax_mark_and_display_message']);
 
-	    add_action('wp_ajax_rpi_tab_bio_content', [$this, 'ajax_rpi_tab_bio_content']);
-	    add_action('wp_ajax_nopriv_rpi_tab_bio_content', [$this, 'ajax_rpi_tab_bio_content']);
+        add_action('wp_ajax_rpi_tab_bio_content', [$this, 'ajax_rpi_tab_bio_content']);
+        add_action('wp_ajax_nopriv_rpi_tab_bio_content', [$this, 'ajax_rpi_tab_bio_content']);
 
-	    add_action('wp_ajax_rpi_tab_profile_content', [$this, 'ajax_rpi_tab_profile_content']);
-	    add_action('wp_ajax_nopriv_rpi_tab_profile_content', [$this, 'ajax_rpi_tab_profile_content']);
+        add_action('wp_ajax_rpi_tab_profile_content', [$this, 'ajax_rpi_tab_profile_content']);
+        add_action('wp_ajax_nopriv_rpi_tab_profile_content', [$this, 'ajax_rpi_tab_profile_content']);
 
-	    add_action('wp_ajax_rpi_tab_comments_content', [$this, 'ajax_tab_comments_content']);
+        add_action('wp_ajax_rpi_tab_comments_content', [$this, 'ajax_tab_comments_content']);
         add_action('wp_ajax_nopriv_rpi_tab_comments_content', [$this, 'ajax_tab_comments_content']);
 
         add_action('wp_ajax_rpi_tab_groups_content', [$this, 'ajax_tab_groups_content']);
@@ -104,11 +106,11 @@ class RpiWall
         add_action('wp_ajax_nopriv_rpi_tab_messages_content', [$this, 'ajax_tab_messages_content']);
 
         add_action('blocksy:content:top', function () {
-			if(is_post_type_archive('wall')){
-				echo '<div class="rpi-wall-buttons">';
-				echo do_shortcode('[frontend_admin form="28"]');
-				echo '</div>';
-			}
+            if (is_post_type_archive('wall')) {
+                echo '<div class="rpi-wall-buttons">';
+                echo do_shortcode('[frontend_admin form="28"]');
+                echo '</div>';
+            }
 
         });
 
@@ -118,17 +120,17 @@ class RpiWall
         add_action('wp_insert_comment', [$this, 'on_new_comment'], 99, 2);
 
 
-	    add_filter('acf/load_field/name=display_name', function($field){
-			$user = get_userdata(get_current_user_id());
+        add_filter('acf/load_field/name=display_name', function ($field) {
+            $user = get_userdata(get_current_user_id());
 
-		    $field['choices'] = array();
-		    $field['choices'][$user->nickname] = $user->nickname;
-		    $field['choices'][$user->user_login] = $user->user_login;
-		    $field['choices'][$user->first_name] = $user->first_name .' '. $user->last_name;
+            $field['choices'] = array();
+            $field['choices'][$user->nickname] = $user->nickname;
+            $field['choices'][$user->user_login] = $user->user_login;
+            $field['choices'][$user->first_name] = $user->first_name . ' ' . $user->last_name;
 
-			return $field;
+            return $field;
 
-	    }, 10, 1);
+        }, 10, 1);
 
     }
 
@@ -152,17 +154,17 @@ class RpiWall
 
 
         if ($comment->user_id > 0) {
-			$member = new Wall\Member($comment->user_id);
-            $actor =  $member->get_link();
+            $member = new Wall\Member($comment->user_id);
+            $actor = $member->get_link();
         } else {
             $actor = $comment->comment_author;
         }
 
         new Wall\Message($group, 'comment', null, $actor, $replace_data);
-	    $currentMember = new Wall\Member();
-	    if(!$currentMember->is_watched_group($group->ID)){
-		    $currentMember->toggle_watch_group($group->ID);
-	    }
+        $currentMember = new Wall\Member();
+        if (!$currentMember->is_watched_group($group->ID)) {
+            $currentMember->toggle_watch_group($group->ID);
+        }
 
     }
 
@@ -170,12 +172,12 @@ class RpiWall
     {
         if (!$update) {
 
-	        $member = new Wall\Member($post->post_author);
-	        $msg = new \stdClass();
-			$msg->subject = '[DiBeS]Neues Mitglied '.$member->name;
-			$msg->body = 'Bitte prüfen: '.$member->get_link();
+            $member = new Wall\Member($post->post_author);
+            $msg = new \stdClass();
+            $msg->subject = '[DiBeS]Neues Mitglied ' . $member->name;
+            $msg->body = 'Bitte prüfen: ' . $member->get_link();
 
-            Wall\Message::send_messages($orga =[2,3], $msg);
+            Wall\Message::send_messages($orga = [2, 3], $msg);
         }
 
     }
@@ -186,10 +188,10 @@ class RpiWall
 
             new Wall\Message(new Wall\Group($post_ID), 'create', null, get_current_user_id());
 
-			$currentMember = new Wall\Member();
-			if(!$currentMember->is_watched_group($post_ID)){
-				$currentMember->toggle_watch_group($post_ID);
-	        }
+            $currentMember = new Wall\Member();
+            if (!$currentMember->is_watched_group($post_ID)) {
+                $currentMember->toggle_watch_group($post_ID);
+            }
         }
 
     }
@@ -198,46 +200,46 @@ class RpiWall
     {
 
         if (strpos($_SERVER['REQUEST_URI'], '/member_profile') !== false) {
-	        if(is_user_logged_in()){
-		        $member = new Wall\Member(wp_get_current_user());
-		        $user_url = $member->get_member_profile_permalink();
-		        wp_redirect($user_url);
+            if (is_user_logged_in()) {
+                $member = new Wall\Member(wp_get_current_user());
+                $user_url = $member->get_member_profile_permalink();
+                wp_redirect($user_url);
 
-	        }else{
-				wp_redirect(wp_login_url());
+            } else {
+                wp_redirect(wp_login_url());
 
-	        }
-	        die();
+            }
+            die();
 
         }
 
     }
 
-	public function ajax_toggle_group_watch()
-	{
+    public function ajax_toggle_group_watch()
+    {
 
 
-		$response = ['success' => false];
-		if (isset($_POST['group_id'])) {
-			$group = new Wall\Group($_POST['group_id']);
+        $response = ['success' => false];
+        if (isset($_POST['group_id'])) {
+            $group = new Wall\Group($_POST['group_id']);
 
-			$member = new Wall\Member();
-			$member->toggle_watch_group($group->ID);
-			$amount = $group->get_watcher_amount();
-			$amount = $amount>0?$amount:'';
-			$is_watcher = $member->is_watched_group($group->ID);
+            $member = new Wall\Member();
+            $member->toggle_watch_group($group->ID);
+            $amount = $group->get_watcher_amount();
+            $amount = $amount > 0 ? $amount : '';
+            $is_watcher = $member->is_watched_group($group->ID);
 
-			$response = [
-				'success' => true,
-				'is_watcher' => $is_watcher,
-				'amount' => $amount
-			];
-		}
-		echo json_encode($response);
-		die();
+            $response = [
+                'success' => true,
+                'is_watcher' => $is_watcher,
+                'amount' => $amount
+            ];
+        }
+        echo json_encode($response);
+        die();
 
 
-	}
+    }
 
     public function ajax_toggle_group_like()
     {
@@ -262,9 +264,9 @@ class RpiWall
                 } else {
 
                     $action = $member->toggle_like_group($group->ID);
-					if($action == 'like'){
-						new Message($group, 'liked');
-					}
+                    if ($action == 'like') {
+                        new Message($group, 'liked');
+                    }
                     $is_liker = $member->is_liked_group($group->ID);
                     $amount = $group->get_likers_amount();
                     $is_member = false;
@@ -290,36 +292,43 @@ class RpiWall
 
     public function ajax_tab_messages_content()
     {
-	    $member_page = new MemberPage();
-	    echo $member_page->messages();
+        $member_page = new MemberPage();
+        echo $member_page->messages();
         die();
     }
 
 
-    public function ajax_rpi_tab_bio_content(){
+    public function ajax_rpi_tab_bio_content()
+    {
         $member_page = new MemberPage();
         echo $member_page->bio();
-            die();
+        die();
     }
 
-	public function ajax_rpi_tab_profile_content(){
-		$member_page = new MemberPage();
-		echo $member_page->profile();
-		die();
-	}
-	public function ajax_tab_groups_content(){
+    public function ajax_rpi_tab_profile_content()
+    {
+        $member_page = new MemberPage();
+        echo $member_page->profile();
+        die();
+    }
+
+    public function ajax_tab_groups_content()
+    {
         $member_page = new MemberPage();
         echo $member_page->groups();
-            die();
+        die();
     }
 
-    public function ajax_tab_comments_content(){
+    public function ajax_tab_comments_content()
+    {
 
         $member_page = new MemberPage();
         echo $member_page->comments();
         die();
     }
-    public function ajax_tab_watches_content(){
+
+    public function ajax_tab_watches_content()
+    {
 
         $member_page = new MemberPage();
         echo $member_page->watches();
@@ -337,7 +346,7 @@ class RpiWall
                 'success' => true,
                 'message_id' => $_POST['message_id'],
                 'title' => $message->post_title,
-                'content'=>$message->post_content];
+                'content' => $message->post_content];
         }
         echo json_encode($response);
         die();
@@ -404,6 +413,55 @@ class RpiWall
         $group->display();
     }
 
+
+    function display_cards_member()
+    {
+
+        if (get_post_type() === "member") {
+            $user_id = get_the_author_meta('ID');
+            $member = new Wall\Member($user_id);
+            ob_start();
+            ?>
+            <div class="member-card">
+                <a href="<?php echo $member->get_member_profile_permalink() ?>">
+                    <?php echo get_avatar(get_the_ID()) ?>
+                </a>
+                <div class="member-card-name">
+                    <?php echo $member->name ?>
+                </div>
+                <div class="member-card-bio">
+                    <?php echo substr(get_the_author_meta('description'),0, 100) ?>
+                </div>
+                <div class="member-card-tags">
+                    <?php
+                    $taxonomies = get_post_taxonomies(get_the_ID());
+                    foreach ($taxonomies as $taxonomy) {
+                        $taxonomy_obj = get_taxonomy($taxonomy);
+                        $terms = get_the_terms(get_the_ID(), $taxonomy);
+                        if (!empty($terms)) {
+                            ?>
+                            <div class="member-card-taxonomy">
+                                <br> <?php echo $taxonomy_obj->label . ': ' ?>
+                                <?php
+                                foreach ($terms as $term) {
+                                    ?>
+                                    <a href="<?php echo get_home_url() . '/' . $taxonomy_obj->name . '/' . $term->slug ?>"><?php echo $term->name . ' ' ?></a>
+                                    <?php
+                                }
+                                ?>
+                            </div>
+                            <?php
+                        }
+                    }
+                    ?>
+                </div>
+
+            </div>
+
+            <?php
+            echo ob_get_clean();
+        }
+    }
 
     public function get_group_status()
     {
