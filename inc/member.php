@@ -178,8 +178,6 @@ class Member extends \stdClass
                 add_post_meta($groupId, 'rpi_wall_liker_id', $this->ID);
                 add_user_meta($this->ID, 'rpi_wall_liked_group_id', $groupId);
                 $action = 'like';
-	            new Message($groupId, 'liked');
-
 
             } else {
                 delete_post_meta($groupId, 'rpi_wall_liker_id', $this->ID);
@@ -198,6 +196,7 @@ class Member extends \stdClass
 
 
             do_action('rpi_wall_like_group', $this->ID, $groupId, $action);
+			return $action;
 
         }
 
@@ -272,9 +271,18 @@ class Member extends \stdClass
 
 		$this->delete_serialized('rpi_wall_group_request',$groupId);
 
-		$group = new Group($groupId);
-	    $group->delete_serialized('rpi_wall_member_requests',$this->ID);
+	    delete_post_meta($groupId, 'rpi_wall_member_requests',$this->ID);
 
+		$group = new Group($groupId);
+		$msg = new \stdClass();
+		$msg->subject = "[{$group->title}] Beitrittsanfrage abgewiesen";
+		$msg->body = "Leider wurde deine Beitrittsanfrage für die {$group->title} abgewiesen. Die Gruppe hat ihre Arbeit bereits aufgenommen. 
+		Du kannnst aber einen neuen Pinnwandeintrag zun gleichen Thema erzeugen und damit die Voraussetzung für eine weitere Lerngemeinschaft schaffen.";
+		Message::send_messages([$this->ID],$msg);
+	    $msg->subject = "[{$group->title}] Beitrittsanfrage abgewiesen";
+		$actor = new Member(get_current_user_id());
+	    $msg->body = "{$actor->get_link()} hat die Beitrittsanfrage von {$this->get_link()} für die {$group->title} abgewiesen.";
+	    Message::send_messages($group->get_memberIds(),$msg);
         do_action('rpi_wall_member_group_reject', $this->ID, $groupId);
     }
 
@@ -287,10 +295,12 @@ class Member extends \stdClass
 
 	    $this->like_group($groupId);
 
-	    $hash = wp_hash(strval($groupId) . strval(time()), 'nonce');
-	    $this->set_serialized('rpi_wall_group_request',$groupId,time());
-	    $plg->set_serialized('rpi_wall_member_requests', $this->ID,$hash);
+	    $timestamp = time();
+	    $contdown = $plg->get_countdown($timestamp);
 
+	    $hash = wp_hash(strval($groupId) . strval(time()), 'nonce');
+	    $this->set_serialized('rpi_wall_group_request',$groupId,['timestamp'=>$timestamp,'hash'=>$hash]);
+	    add_post_meta($groupId,'rpi_wall_member_requests', $this->ID);
 
         $user_ids = $plg->get_memberIds();
         if (is_array($user_ids)) {
@@ -298,7 +308,7 @@ class Member extends \stdClass
             $msg = new \stdClass();
             $msg->subject = '[' . $plg->title . '] Beitrittsanfrage';
             $msg->body = "Hallo zusammen,\n\nIch bin <a href='{$this->get_member_profile_permalink()}'>{$this->name}</a> und würde gerne der Arbeitsgruppe beitreten." .
-                "Wenn etwas dagegen spricht, bitte meine Anfrage auf dem Pinnwandeintrag " . $plg->link . " ablehnen";
+                "Wenn etwas dagegen spricht, bitte meine Anfrage auf dem Pinnwandeintrag " . $plg->link . " ablehnen. Eine Ablehnung ist noch $contdown möglich";
 
             Message::send_messages($user_ids, $msg);
 
@@ -312,7 +322,8 @@ class Member extends \stdClass
     {
 
         if (is_user_logged_in()) {
-            return '<a class="button" href="' . get_home_url() . '?action=plgreject&hash=' . $hash . '&new_group_member=' . $this->ID . '">Anfrage von ' . $this->name . ' ablehnen</a>' .$pending;
+            return '<a class="button" href="' . get_home_url() . '?action=plgreject&hash=' . $hash . '&new_group_member=' . $this->ID . '">Anfrage von ' . $this->name . ' ablehnen</a>'
+                   ."<script>jQuery('.gruppe-footer .notice').html('Beitrittsanfragen können von jedem Gruppenmitglied abgewiesen werden.<br>Verbleibende Zeit: $pending');</script>";
         }
 
     }
@@ -522,7 +533,7 @@ class Member extends \stdClass
     {
 
 	    $daySeconds = 86400;
-	    $pending = $daySeconds * floatval(get_option('options_rpi_wall_pl_group_pending_days'));
+	    $pending = $daySeconds * get_option('options_rpi_wall_pl_group_pending_days');
 
 	    $args = [
             'meta_query' => [
@@ -542,15 +553,13 @@ class Member extends \stdClass
 
 	            $groups = $member->get_serialized('rpi_wall_group_request');
 
-	            foreach ($groups as $group_id => $group) {
+	            foreach ($groups as $group_id => $props) {
 
                     //Wartezeit abgelaufen
-					if (time() > $group['timestamp']+$pending ) {
+					if (time() > $props['timestamp']+$pending ) {
                         $member->join_group($group_id);                             // gruppe beitreten & interesse ende
 	                    $member->delete_serialized('rpi_wall_group_request',$group_id);       // request löschen
-						$group = new Group($group_id);
-						$group->delete_serialized('rpi_wall_member_requests',$member->ID);
-
+						delete_post_meta($group_id,'rpi_wall_member_requests',$member->ID);
 
                     }
                 }
@@ -589,9 +598,10 @@ class Member extends \stdClass
 
         $groups = $this->get_serialized('rpi_wall_group_request');
 
-        foreach ($groups as $group_id => $group) {
+		foreach ($groups as $group_id => $props) {
 
-            if ($group['hash'] === $joinhash) {
+
+            if ($props['hash'] === $joinhash) {
                 $this->reject_group($group_id);
                 return $group_id;
             }

@@ -35,6 +35,7 @@ require_once("inc/message.php");
 
 
 use rpi\Wall;
+use rpi\Wall\Message;
 
 class RpiWall
 {
@@ -260,7 +261,10 @@ class RpiWall
                     $is_liker = true;
                 } else {
 
-                    $member->toggle_like_group($group->ID);
+                    $action = $member->toggle_like_group($group->ID);
+					if($action == 'like'){
+						new Message($group, 'liked');
+					}
                     $is_liker = $member->is_liked_group($group->ID);
                     $amount = $group->get_likers_amount();
                     $is_member = false;

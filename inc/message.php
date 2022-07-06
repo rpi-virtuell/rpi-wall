@@ -279,7 +279,7 @@ class Message
      *
      * @return void
      */
-    static function send_messages($member, $msg)
+    static function send_messages($member, \stdClass $msg)
     {
 
         $message_id = wp_insert_post(array(
