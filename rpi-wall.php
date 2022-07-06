@@ -419,15 +419,22 @@ class RpiWall
             ob_start();
             ?>
             <div class="member-card">
+                <div class="member-card-head">
                 <a href="<?php echo $member->get_member_profile_permalink() ?>">
-                    <?php echo get_avatar(get_the_ID()) ?>
+                    <?php echo get_avatar($user_id) ?>
                 </a>
-                <div class="member-card-name">
-                    <?php echo $member->name ?>
+                <a href="<?php echo $member->get_member_profile_permalink() ?>">
+                    <h4 class="member-card-name">
+                        <?php echo $member->name ?>
+                    </h4>
+                </a>
                 </div>
+                <?php $bio = substr(get_the_author_meta('description'),0, 250);
+                if(!empty($bio)){?>
                 <div class="member-card-bio">
-                    <?php echo substr(get_the_author_meta('description'),0, 100) ?>
+                    <?php echo $bio ?>
                 </div>
+                    <?php } ?>
                 <div class="member-card-tags">
                     <?php
                     $taxonomies = get_post_taxonomies(get_the_ID());
@@ -436,8 +443,8 @@ class RpiWall
                         $terms = get_the_terms(get_the_ID(), $taxonomy);
                         if (!empty($terms)) {
                             ?>
-                            <div class="member-card-taxonomy">
-                                <br> <?php echo $taxonomy_obj->label . ': ' ?>
+                            <p class="member-card-taxonomy">
+                                <?php echo $taxonomy_obj->label . ': ' ?>
                                 <?php
                                 foreach ($terms as $term) {
                                     ?>
@@ -445,7 +452,7 @@ class RpiWall
                                     <?php
                                 }
                                 ?>
-                            </div>
+                            </p>
                             <?php
                         }
                     }

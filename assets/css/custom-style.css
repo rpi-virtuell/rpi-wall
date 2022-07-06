@@ -57,23 +57,26 @@ article.entry-card {
     display: none;
 }
 
-.watch-btn-wrapper{
+.watch-btn-wrapper {
     position: relative;
     display: flex;
     height: 2px;
     justify-content: right;
 }
-.watch-btn-wrapper .rpi-wall-watch-button{
+
+.watch-btn-wrapper .rpi-wall-watch-button {
     border-radius: 50%;
     background-color: #fff;
     height: 32px;
     padding: 5px;
     box-shadow: 2px 2px 2px -1px #555;
 }
-.watch-btn-wrapper .rpi-wall-watch-button.watching{
+
+.watch-btn-wrapper .rpi-wall-watch-button.watching {
     background-color: yellow;
 }
-.watch-btn-wrapper span{
+
+.watch-btn-wrapper span {
     display: inline-flex;
     padding: 4px;
     color: green;
@@ -119,42 +122,49 @@ article.entry-card {
     margin: 0 10px 0 0;
     padding: 0;
 }
-.tags-selector{
+
+.tags-selector {
     margin-top: 40px;
 }
+
 .member-message-grid {
     display: grid;
     grid-template-areas: "list detail-view";
     grid-gap: 15px;
     grid-template-columns: 50% 50%;
 }
-.member-message-list{
+
+.member-message-list {
     grid-area: list;
 }
-.member-message-detail{
+
+.member-message-detail {
     grid-area: detail-view;
     border: 1px solid grey;
     border-radius: 3px;
     text-align: center;
 }
-.member-message-detail div{
+
+.member-message-detail div {
     margin: 5px;
 }
-#member-message-detail-title{
+
+#member-message-detail-title {
     font-weight: bold;
     font-size: larger;
 }
-#member-message-detail-content{
+
+#member-message-detail-content {
 }
 
-.message{
+.message {
     border: 1px solid grey;
     border-radius: 3px;
     margin: 5px;
     padding: 5px;
 }
 
-.message:hover{
+.message:hover {
     border-color: #2189f2;
     color: #2189f2;
 }
@@ -163,26 +173,26 @@ article.entry-card {
     font-weight: bold;
 }
 
-.hidden{
+.hidden {
     display: none !important;
 }
 
 @media only screen and (max-width: 600px) {
-    .member-message-grid{
+    .member-message-grid {
         display: unset;
     }
 
-    .member-message-grid.message-detail .member-message-list{
+    .member-message-grid.message-detail .member-message-list {
         display: none;
     }
 
 
-    .member-message-grid.message-list .member-message-detail{
+    .member-message-grid.message-list .member-message-detail {
         display: none;
     }
 
-    .member-button-display{
-        display: unset!important;
+    .member-button-display {
+        display: unset !important;
     }
 }
 
@@ -531,3 +541,24 @@ article.entry-card.type-wall .plg-wrapper {
     border-bottom: 5px solid orangered;
 }
 
+.member-card-name {
+    font-weight: bold;
+    margin: 10px !important;
+
+}
+
+.member-card-head {
+    text-align: center;
+    padding-bottom: 10px;
+    border-bottom: 1px dotted #aaaaaa;
+}
+
+.member-card-head img {
+    border-radius: 50%;
+}
+.member-card-tags{
+    margin-top: 10px;
+}
+.member-card-tags p{
+    margin-bottom: 5px;
+}
