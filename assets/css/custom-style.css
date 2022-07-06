@@ -326,7 +326,7 @@ article.entry-card.type-wall .plg-wrapper {
 .rpi-wall-buttons {
     display: grid;
     justify-content: right;
-    margin-bottom: 20px;
+    margin-top: 30px;
 }
 
 .modal-button.render-form {

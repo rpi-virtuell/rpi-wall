@@ -52,6 +52,15 @@ class RpiWall
         add_filter('body_class', [$this, 'add_group_status_class']);
         add_action('post_class', [$this, 'add_group_status_class']);
 
+	    add_action('blocksy:content:top', function () {
+		    if(is_post_type_archive('wall')){
+			    echo '<div class="ct-container rpi-wall-buttons">';
+			    echo do_shortcode('[frontend_admin form="28"]');
+			    echo '</div>';
+		    }
+
+	    });
+
         add_action('blocksy:hero:before', ['rpi\Wall\Group', 'display_watcher_area']);
         add_action('blocksy:comments:after', [$this, 'display_likers_container']);
 
@@ -103,14 +112,7 @@ class RpiWall
         add_action('wp_ajax_rpi_tab_messages_content', [$this, 'ajax_tab_messages_content']);
         add_action('wp_ajax_nopriv_rpi_tab_messages_content', [$this, 'ajax_tab_messages_content']);
 
-        add_action('blocksy:content:top', function () {
-			if(is_post_type_archive('wall')){
-				echo '<div class="rpi-wall-buttons">';
-				echo do_shortcode('[frontend_admin form="28"]');
-				echo '</div>';
-			}
 
-        });
 
 
         add_action('save_post_wall', [$this, 'on_new_pin'], 10, 3);
