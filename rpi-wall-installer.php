@@ -1053,10 +1053,10 @@ class RPIWallInstaller
             $group = new Group($post_ID);
             $members = array_merge($group->get_memberIds(), $group->get_likers_Ids());
 //            $members = get_posts(["post_type" => "member", "author__in" => $members_ids]);
-            $taxonomies = get_post_taxonomies($post_ID);
+            $taxonomies = get_post_taxonomies($members);
             foreach ($taxonomies as $taxonomy) {
-                foreach ($members as $member) {
-                    $member = new Member($member);
+                foreach ($members as $user_id) {
+                    $member = new Member($user_id);
                     $member_tags = [];
                     $member_groups = array_merge($member->get_group_Ids(), $member->get_watched_group_Ids());
                     foreach ($member_groups as $member_group) {
@@ -1072,7 +1072,7 @@ class RPIWallInstaller
                             }
                         }
                     }
-                    wp_set_post_terms($member, $member_tags, $taxonomy);
+                    wp_set_post_terms($member->post->ID, $member_tags, $taxonomy);
                 }
             }
         }
