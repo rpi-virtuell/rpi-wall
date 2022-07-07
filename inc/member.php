@@ -451,8 +451,12 @@ class Member extends \stdClass
 	public function get_my_comments_query($args = array())
     {
 
+	    $comments_per_page=2;
+	    $all_comments = wp_count_comments();
+
         $props = wp_parse_args($args, [
             'author__in' => [$this->ID]
+
         ]);
 
         $comments_query = new \WP_Comment_Query($props);

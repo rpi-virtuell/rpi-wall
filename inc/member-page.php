@@ -81,6 +81,7 @@ class MemberPage
             </div>
             <div class="tags">
             [my_tags content="wall-tag"]
+            [my_tags content="wall-cat"]
             </div>
          </div>';
         $user = get_userdata($_POST['user_ID']);
