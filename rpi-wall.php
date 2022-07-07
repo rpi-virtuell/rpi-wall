@@ -42,6 +42,7 @@ class RpiWall
 
     protected $max_stars_per_comment = 5;
     protected $group_member_min = 3;
+    protected $installer;
 
     public function __construct()
     {
@@ -115,8 +116,19 @@ class RpiWall
         add_action('wp_ajax_rpi_tab_messages_content', [$this, 'ajax_tab_messages_content']);
         add_action('wp_ajax_nopriv_rpi_tab_messages_content', [$this, 'ajax_tab_messages_content']);
 
+	    /**
+	     * ToDo add to cronjob
+	     */
+        add_action('wp_head', function (){
+            global $post;
+            if($post->post_type == 'wall'){
+                $this->installer->sync_taxonomies_of_pin_members($post->ID, $post,false);
+            }
+            if($post->post_type == 'member'){
+                 $this->installer->sync_taxonomies_of_members($post->ID , $post,false);
+            }
 
-
+        });
 
 
         add_action('save_post_wall', [$this, 'on_new_pin'], 10, 3);
@@ -135,6 +147,11 @@ class RpiWall
 			return $field;
 
 	    }, 10, 1);
+
+        $this->installer = new Wall\RPIWallInstaller();
+
+
+
 
     }
 
@@ -519,5 +536,4 @@ class RpiWall
 
 new RpiWall();
 new MemberPage();
-new Wall\RPIWallInstaller();
 new Wall\Shortcodes();
