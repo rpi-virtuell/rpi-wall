@@ -16,10 +16,10 @@ class RPIWallInstaller
         add_action('init', array($this, 'register_options_pages'));
         add_action('wp_login', array($this, 'sync_user_member_relation'), 10, 2);
         add_filter('author_link', array($this, 'change_author_link_to_user_profile'), 10, 3);
-        add_action('save_post_wall', array($this, 'sync_taxonomy_of_member_with_pin'), 10, 3);
+        add_action('save_post_wall', array($this, 'update_taxonomy_of_member_on_pin_save'), 10, 3);
         add_action('before_delete_post', array($this, 'delete_member_taxonomy_on_pin_deletion'), 10, 2);
-	    add_filter('manage_posts_columns',array($this,'add_new_message_columns'),10,2);
-	    add_action('manage_message_posts_custom_column',array($this,'display_message_recipients_column'),10,2);
+        add_filter('manage_posts_columns', array($this, 'add_new_message_columns'), 10, 2);
+        add_action('manage_message_posts_custom_column', array($this, 'display_message_recipients_column'), 10, 2);
 
     }
 
@@ -152,53 +152,55 @@ class RPIWallInstaller
 
     }
 
-	/**
-	 * Empfängerspalte in admin columns hinzufügen
-	 * filter hook manage_posts_columns
-	 *
-	 * @param $columns
-	 * @param $post_type
-	 *
-	 * @return mixed
-	 */
-	public function add_new_message_columns($columns, $post_type ){
-		if($post_type == 'message'){
-			$columns['content'] = 'Mitteilung';
-			$columns['recipients'] = 'Empfänger';
-		}
-		return $columns;
-	}
+    /**
+     * Empfängerspalte in admin columns hinzufügen
+     * filter hook manage_posts_columns
+     *
+     * @param $columns
+     * @param $post_type
+     *
+     * @return mixed
+     */
+    public function add_new_message_columns($columns, $post_type)
+    {
+        if ($post_type == 'message') {
+            $columns['content'] = 'Mitteilung';
+            $columns['recipients'] = 'Empfänger';
+        }
+        return $columns;
+    }
 
-	/**
-	 * Empfängerspalte  mit Empfängern aus dem mety key 'rpi_wall_message_recipient' befüllen
-	 * @param $name
-	 * @param $post_id
-	 *
-	 * @return void
-	 */
-	function display_message_recipients_column($name, $post_id) {
+    /**
+     * Empfängerspalte  mit Empfängern aus dem mety key 'rpi_wall_message_recipient' befüllen
+     * @param $name
+     * @param $post_id
+     *
+     * @return void
+     */
+    function display_message_recipients_column($name, $post_id)
+    {
 
-		switch ($name) {
-			case 'content':
-				echo get_the_content(null,true,$post_id);
-				break;
-			case 'recipients':
-				$recipients = get_post_meta($post_id, 'rpi_wall_message_recipient');
-				if($recipients && count($recipients) >0){
-					$users =[];
-					foreach ($recipients as $user_id){
-						$user = get_userdata($user_id);
-						if($user instanceof \WP_User){
-							$users[]= $user->display_name;
-						}
+        switch ($name) {
+            case 'content':
+                echo get_the_content(null, true, $post_id);
+                break;
+            case 'recipients':
+                $recipients = get_post_meta($post_id, 'rpi_wall_message_recipient');
+                if ($recipients && count($recipients) > 0) {
+                    $users = [];
+                    foreach ($recipients as $user_id) {
+                        $user = get_userdata($user_id);
+                        if ($user instanceof \WP_User) {
+                            $users[] = $user->display_name;
+                        }
 
-					}
-					echo implode(', ',$users);
+                    }
+                    echo implode(', ', $users);
 
-				}
+                }
 
-		}
-	}
+        }
+    }
 
 
     function register_taxonomies()
@@ -1003,7 +1005,7 @@ class RPIWallInstaller
     public function change_author_link_to_user_profile($link, $author_id, $author_nicename)
     {
         $member = new Member($author_id);
-		return $member->get_member_profile_permalink();
+        return $member->get_member_profile_permalink();
 
     }
 
@@ -1013,56 +1015,64 @@ class RPIWallInstaller
      * @param bool $update
      * @return void
      */
-    public function sync_taxonomy_of_member_with_pin(int $post_ID, WP_Post $post, bool $update = false)
+    public function update_taxonomy_of_member_on_pin_save(int $post_ID, WP_Post $post, bool $update = false)
     {
-        $new_tags = [];
-        $group = new Group($post_ID);
-        $members = array_merge($group->get_memberIds(), $group->get_likers_Ids());
-        $members = get_posts(["post_type" => "member", "author__in" => $members]);
 
-        $taxonomies = get_post_taxonomies($post_ID);
-        foreach ($taxonomies as $taxonomy) {
-            $group_tags = wp_get_post_terms($post_ID, $taxonomy);
-            foreach ($members as $m) {
-                $member = $m->ID;
-                $member_tags = wp_get_post_terms($member, $taxonomy);
-                foreach ($group_tags as $group_tag) {
-                    if (!in_array($group_tag, $member_tags) && $group_tag instanceof \WP_Term) {
-                        $new_tags[] = $group_tag->term_id;
-                    }
-                }
-                $new_tags = array_merge(array_column($member_tags, 'term_id'), $new_tags);
-                wp_set_post_terms($member, $new_tags, $taxonomy);
-            }
-        }
+        $this->sync_taxonomies_of_pin_members($post_ID, $post, false);
+//        $new_tags = [];
+//        $group = new Group($post_ID);
+//        $members = array_merge($group->get_memberIds(), $group->get_likers_Ids());
+//        $members = get_posts(["post_type" => "member", "author__in" => $members]);
+//
+//        $taxonomies = get_post_taxonomies($post_ID);
+//        foreach ($taxonomies as $taxonomy) {
+//            $group_tags = wp_get_post_terms($post_ID, $taxonomy);
+//            foreach ($members as $m) {
+//                $member = $m->ID;
+//                $member_tags = wp_get_post_terms($member, $taxonomy);
+//                $member_term_ids = array_column($member_tags, 'term_id');
+//                foreach ($group_tags as $group_tag) {
+//                    if ($group_tag instanceof \WP_Term && !in_array($group_tag->term_id, $member_term_ids) ) {
+//                        $new_tags[] = $group_tag->term_id;
+//                    }
+//                }
+//                $new_tags = array_merge($member_term_ids , $new_tags);
+//                wp_set_post_terms($member, $new_tags, $taxonomy);
+//            }
+//        }
     }
 
     public function delete_member_taxonomy_on_pin_deletion(int $postid, WP_Post $post)
     {
-        if ($post->post_type === 'pin') {
-            $group = new Group($postid);
-            $members = array_merge($group->get_memberIds(), $group->get_likers_Ids());
-            $members = get_posts(["post_type" => "member", "author__in" => $members]);
+        $this->sync_taxonomies_of_pin_members($postid, $post, true);
+    }
 
-            $taxonomies = get_post_taxonomies($postid);
+    function sync_taxonomies_of_pin_members(int $post_ID, WP_Post $post, bool $delete)
+    {
+        if ($post->post_type === 'wall') {
+            $group = new Group($post_ID);
+            $members = array_merge($group->get_memberIds(), $group->get_likers_Ids());
+//            $members = get_posts(["post_type" => "member", "author__in" => $members_ids]);
+            $taxonomies = get_post_taxonomies($post_ID);
             foreach ($taxonomies as $taxonomy) {
                 foreach ($members as $member) {
                     $member = new Member($member);
                     $member_tags = [];
-                    $member_groups = $member->get_group_Ids();
+                    $member_groups = array_merge($member->get_group_Ids(), $member->get_watched_group_Ids());
                     foreach ($member_groups as $member_group) {
-                        if ($group->ID === $member_group) {
+                        if ($delete && $group->ID === $member_group) {
                             continue;
                         } else {
                             $group_tags = wp_get_post_terms($member_group, $taxonomy);
                             foreach ($group_tags as $group_tag) {
-                                if (is_a($group_tag, 'WP_Term') && !in_array($group_tag->slug, $member_tags)) {
-                                    $member_tags[] = $group_tag->slug;
+
+                                if ($group_tag instanceof \WP_Term && !in_array($group_tag->term_id, $member_tags)) {
+                                    $member_tags[] = $group_tag->term_id;
                                 }
                             }
                         }
                     }
-                    wp_set_post_terms($member, $member_tags, '$taxonomy');
+                    wp_set_post_terms($member, $member_tags, $taxonomy);
                 }
             }
         }
