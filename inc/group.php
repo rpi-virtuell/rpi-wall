@@ -139,8 +139,6 @@ class Group extends \stdClass
 
         $posts = get_posts($args);
 
-        //var_dump($posts);die();
-
         foreach ($posts as $post) {
 
             $group = new Group($post->ID);

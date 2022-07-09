@@ -32,10 +32,11 @@ require_once("inc/tabs.php");
 require_once("inc/member-page.php");
 require_once("inc/matrix-helper.php");
 require_once("inc/message.php");
-
+require_once("inc/matrix.php" );
 
 use rpi\Wall;
 use rpi\Wall\Message;
+
 
 class RpiWall
 {
@@ -43,12 +44,12 @@ class RpiWall
     protected $max_stars_per_comment = 5;
     protected $group_member_min = 3;
     protected $installer;
+    public $matrix;
 
     public function __construct()
     {
 
-
-        add_action('wp_enqueue_scripts', [$this, 'custom_style_and_scripts']);
+	    add_action('wp_enqueue_scripts', [$this, 'custom_style_and_scripts']);
 
         add_filter('body_class', [$this, 'add_group_status_class']);
         add_action('post_class', [$this, 'add_group_status_class']);
@@ -150,7 +151,12 @@ class RpiWall
 
         $this->installer = new Wall\RPIWallInstaller();
 
-
+        add_action('init', function (){
+	        if(get_current_user_id()==2){
+		        $matrix = new Wall\Matrix();
+		        //$matrix->tests();
+	        }
+        });
 
 
     }
@@ -537,3 +543,5 @@ class RpiWall
 new RpiWall();
 new MemberPage();
 new Wall\Shortcodes();
+
+

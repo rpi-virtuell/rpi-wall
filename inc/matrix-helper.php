@@ -7,7 +7,8 @@ use http\Client;
 
 class Helper
 {
-    /**
+
+	/**
      * @param $login  WP_User::user_login
      *
      * @return string Matrix_User_Id|false
