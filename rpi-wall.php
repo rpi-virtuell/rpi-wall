@@ -30,7 +30,6 @@ require_once("inc/member.php");
 require_once("inc/group.php");
 require_once("inc/tabs.php");
 require_once("inc/member-page.php");
-require_once("inc/matrix-helper.php");
 require_once("inc/message.php");
 require_once("inc/matrix.php" );
 
@@ -151,12 +150,12 @@ class RpiWall
 
         $this->installer = new Wall\RPIWallInstaller();
 
-        add_action('init', function (){
-	        if(get_current_user_id()==2){
-		        $matrix = new Wall\Matrix();
-		        //$matrix->tests();
-	        }
-        });
+//        add_action('init', function (){
+//	        if(get_current_user_id()==2 && is_singular('wall')){
+//		        $matrix = new Wall\Matrix();
+//		        $matrix->tests(get_the_ID());
+//	        }
+//        });
 
 
     }

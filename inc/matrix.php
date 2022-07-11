@@ -38,7 +38,44 @@ class Matrix {
 
 		$this->client = new MatrixCustomClient('https://'.$this->homeserver, $this->token);
 	}
+
+	function send_msg_obj( Wall\Group $group, \stdClass $msg ){
+
+		$room_id = $this->getRoomId($group);
+		$room = new Room($this->client,$room_id);
+		$room->sendHtml('<strong>'.$msg->subject.'</strong><br>'.$msg->body);
+	}
+
+	/**
+	 * Checks wether User has joined a Matrix group
+	 *
+	 * @param Group $group
+	 * @param Member $member
+	 *
+	 * @return bool
+	 */
+	function get_MatrixRoom_Members( Wall\Group $group){
+
+		$room_id = $this->getRoomId($group);
+		$members =[];
+		$response = $this->client->api()->getRoomMembers($room_id);
+		foreach ($response['chunk'] as $event) {
+			if (array_get($event, 'content.membership') == 'join') {
+				$userId = $event['state_key'];
+				$members[$userId] = array_get($event, 'content.displayname');
+			}
+		}
+
+		return $members;
+	}
+
+
+
 	function create_Room( Wall\Group $group){
+
+		if(!empty($room_id = $group->get_matrix_room_id())){
+			return $room_id;
+		}
 
 		$room_alias = '#'.$group->slug.':rpi-virtuell.de';
 		try {
@@ -139,16 +176,30 @@ class Matrix {
 
 	}
 
-	function tests(){
+	function tests(int $group_id = 0){
 
-		$group = new Group(820);
-		$check = $this->create_Room($group);
-		if($check instanceof \WP_Error){
-			echo $check->get_error_message();
-		}else{
-			echo 'Erfolg. Matrix Raum Id: '.$check;
+		if($group_id>0){
+
+
+			$msg =new \stdClass();
+			$msg->subject = 'Subject: Testnachricht:';
+			$msg->body = 'Body: Dies ist der Body der Textnachhricht.';
+
+			$group = new Group($group_id);
+			$check = $this->create_Room($group);
+			if($check instanceof \WP_Error){
+				echo $check->get_error_message();
+			}else{
+				echo 'Erfolg. Matrix Raum Id: '.$check;
+			}
+			$this -> addToolbar($group);
+
+			$this->send_msg_obj($group,$msg);
+
+			var_dump($this->get_MatrixRoom_Members($group));
+			die();
+
 		}
-		$this -> addToolbar($group);
 
 	}
 

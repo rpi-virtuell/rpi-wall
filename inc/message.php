@@ -257,7 +257,8 @@ class Message
 
             $room_id = false;
             if ($room_id)
-                Matrix\Helper::send($msg->subject, $msg->body, $room_id);
+				$matrix = new Matrix();
+	            $matrix->send_msg_obj($msg, $room_id);
 
         } elseif (is_string($recipient_ids)) {
             //user einzeln anschreiben

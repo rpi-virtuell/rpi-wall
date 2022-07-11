@@ -2,7 +2,7 @@
 
 namespace rpi\Wall;
 
-use rpi\Wall\Matrix\Helper;
+use Aryess\PhpMatrixSdk\MatrixClient;
 
 class Group extends \stdClass
 {
@@ -588,11 +588,11 @@ class Group extends \stdClass
         return $this->get('rpi_wall_group_channel');
     }
 
-    protected function get_joined_member_matrixId($user_login)
+    protected function get_joined_member_matrixId($member)
     {
-        return Matrix\Helper::getUser($user_login);
+        $matrix = new Matrix();
+        return $matrix->get_MatrixRoom_Members($this);
     }
-
 
     protected function start_pending()
     {
@@ -607,9 +607,12 @@ class Group extends \stdClass
     protected function create_room()
     {
 
-        $room_id = Matrix\Helper::create_room($this);
+        $matrix = new Matrix();
 
-
+        $room_id = $matrix->create_room($this);
+        if(is_wp_error($room_id)){
+            echo $room_id->get_error_message();
+        }
         /**
          * Message to orga channel
          * E-Mails to likers
@@ -637,6 +640,11 @@ class Group extends \stdClass
     public function set_matrix_room_id($room_id)
     {
         update_post_meta($this->ID, 'rpi_wall_group_room_id', $room_id);
+    }
+
+    public function get_matrix_room_id(){
+
+        return get_post_meta($this->ID, 'rpi_wall_group_room_id', true);;
     }
 
     public function get_blocksy_login_button($label)
