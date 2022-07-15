@@ -164,11 +164,25 @@ jQuery(document).ready($ => {
                             jQuery('#btn-watch-group-' + id).removeClass('watching');
 
                         }
-                        jQuery('#rpi-wall-counter-' + id).html(data.amount);
+                        jQuery('#rpi-wall-counter-' + id).html(data.amount); 
                     }
 
                 }
             )
         });
     })
+
+    /**
+     * Modal Window open
+     */
+    $("#btn-open-modal").animatedModal()
+    /**
+     * Modal Window schließen
+     */
+    $(document).click(function(event) {
+        var $target = $(event.target);
+        if($target.hasClass('zoomIn') ) {
+            $('#btn-close-modal').click();
+        }
+    });
 })

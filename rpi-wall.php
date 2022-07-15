@@ -31,6 +31,7 @@ require_once("inc/group.php");
 require_once("inc/tabs.php");
 require_once("inc/member-page.php");
 require_once("inc/message.php");
+require_once("inc/protocol.php");
 require_once("inc/matrix.php" );
 
 use rpi\Wall;
@@ -53,16 +54,21 @@ class RpiWall
         add_filter('body_class', [$this, 'add_group_status_class']);
         add_action('post_class', [$this, 'add_group_status_class']);
 
+	    add_action('wp_body_open', function () {
+		    if('wall'===get_post_type()){
+                echo 'toolbar';
+                wp_footer();
+                echo '</body></html>'; die();
+		    }
+	    });
 	    add_action('blocksy:content:top', function () {
 		    if(is_post_type_archive('wall')){
-                echo '<div class="ct-container rpi-wall-buttons">';
-			    echo do_shortcode('[frontend_admin form="28"]');
-			    echo '</div>';
+                $this->modal('form','Neuer Eintrag', do_shortcode('<div><button>zurück</button>[acfe_form name="create-pin"]</div>'));
+
 		    }else{
                 if('wall'===get_post_type()){
-	                echo '<div class="ct-container rpi-wall-buttons">';
-	                echo do_shortcode('[frontend_admin form="932"]');
-	                echo '</div>';
+
+                    $this->modal('form','Bearbeiten',do_shortcode('[acfe_form name="edit-pin"]'));
                 }
 		    }
 	    });
@@ -88,8 +94,7 @@ class RpiWall
 
         add_action('init', [$this, 'test']);
 
-
-        add_action('wp_ajax_rpi_wall_toggle_like', [$this, 'ajax_toggle_group_like']);
+	    add_action('wp_ajax_rpi_wall_toggle_like', [$this, 'ajax_toggle_group_like']);
         add_action('wp_ajax_nopriv_rpi_wall_toggle_like', [$this, 'ajax_toggle_group_like']);
 
 		add_action('wp_ajax_rpi_wall_toggle_watch', [$this, 'ajax_toggle_group_watch']);
@@ -116,7 +121,9 @@ class RpiWall
         add_action('wp_ajax_rpi_tab_messages_content', [$this, 'ajax_tab_messages_content']);
         add_action('wp_ajax_nopriv_rpi_tab_messages_content', [$this, 'ajax_tab_messages_content']);
 
-	    /**
+
+
+        /**
 	     * ToDo add to cronjob
 	     */
         add_action('wp_head', function (){
@@ -489,6 +496,35 @@ class RpiWall
         }
     }
 
+	/**
+     * öffnet den Inhalt in einem Overlay Popup
+     *
+	 * @param string $id
+	 * @param string $content
+	 *
+	 * @return void
+	 */
+    public function modal($id = 'form', $label='Bearbeiten' ,$content =''){
+
+        ?>
+	    <div class="ct-container rpi-wall-buttons">
+	        <a class="fea-submit-button button button-primary" id="btn-open-modal" href="#modal-<?php echo $id;?>"><?php echo $label;?></a>
+        </div>
+        <div id="modal-<?php echo $id;?>">
+            <div  class="modal-wrapper">
+	            <div  id="btn-close-modal" class="close-modal-<?php echo $id;?>">
+                    <button class="button button-primary">X</button>
+                </div>
+                <div class="modal-content"><?php echo $content ?></div>
+	            <?php  the_taxonomies() ;  ?>
+
+            </div>
+        </div>
+
+        <?php
+
+    }
+
     public function get_group_status()
     {
 
@@ -501,10 +537,15 @@ class RpiWall
         return (bool)$this->get_group_status();
     }
 
+
+
     public function custom_style_and_scripts()
     {
         wp_enqueue_style('rpi-wall-style', plugin_dir_url(__FILE__) . 'assets/css/custom-style.css');
+        wp_enqueue_style('rpi-wall-style-modal-norm', plugin_dir_url(__FILE__) . 'assets/css/normalize.min.css');
+        wp_enqueue_style('rpi-wall-style-modal-anim', plugin_dir_url(__FILE__) . 'assets/css/animate.min.css');
         wp_enqueue_script('rpi-wall-script', plugin_dir_url(__FILE__) . 'assets/js/custom-scripts.js', array('jquery'));
+        wp_enqueue_script('rpi-wall-style-modal', plugin_dir_url(__FILE__) . 'assets/js/animatedModal.js', array('jquery'));
         wp_localize_script('rpi-wall-script', 'wall', array('ajaxurl' => admin_url('admin-ajax.php')));
 
 
