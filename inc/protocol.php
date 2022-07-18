@@ -36,6 +36,8 @@ class protocol {
 					return $group;
 				}
 			}
+		}elseif(get_the_ID()){
+			return new Group(get_the_ID());
 		}
 		return false;
 	}
