@@ -33,6 +33,7 @@ require_once("inc/member-page.php");
 require_once("inc/message.php");
 require_once("inc/protocol.php");
 require_once("inc/matrix.php" );
+require_once("inc/toolbar.php");
 
 use rpi\Wall;
 use rpi\Wall\Message;
@@ -63,15 +64,18 @@ class RpiWall
 	    });
 	    add_action('blocksy:content:top', function () {
 		    if(is_post_type_archive('wall')){
-                $this->modal('form','Neuer Eintrag', do_shortcode('<div><button>zurück</button>[acfe_form name="create-pin"]</div>'));
+                RpiWall::modal('form','Neuer Eintrag', do_shortcode('[acfe_form name="create-pin"]'));
 
 		    }else{
                 if('wall'===get_post_type()){
 
-                    $this->modal('form','Bearbeiten',do_shortcode('[acfe_form name="edit-pin"]'));
+                    RpiWall::modal('form','Bearbeiten',do_shortcode('[acfe_form name="edit-pin"]'));
                 }
 		    }
 	    });
+
+        //Toolbar
+        add_action('wp_body_open', ['rpi\Wall\Toolbar', 'display_toolbar']);
 
         add_action('blocksy:hero:before', ['rpi\Wall\Group', 'display_watcher_area']);
         add_action('blocksy:comments:after', [$this, 'display_likers_container']);
@@ -504,7 +508,7 @@ class RpiWall
 	 *
 	 * @return void
 	 */
-    public function modal($id = 'form', $label='Bearbeiten' ,$content =''){
+    static function modal($id = 'form', $label='Bearbeiten' ,$content =''){
 
         ?>
 	    <div class="ct-container rpi-wall-buttons">

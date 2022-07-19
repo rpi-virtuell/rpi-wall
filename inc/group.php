@@ -331,6 +331,39 @@ class Group extends \stdClass
     }
 
     /**
+     * @return array
+     */
+    public function get_toolbar_buttons()
+    {
+        return get_post_meta($this->ID, 'rpi_wall_group_toolbar_buttons');
+    }
+
+    /**
+     * @param array $settings
+     * @return void
+     */
+    public function set_toolbar_settings(array $settings){
+        update_post_meta($this->ID, 'rpi_wall_group_toolbar_buttons', $settings);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function get_toolbar_status(){
+        return get_post_meta($this->ID, 'rpi-wall_group_toolbar_status');
+    }
+
+    /**
+     * @param $status
+     * @return void
+     */
+    public function set_toolbar_status($status)
+    {
+       update_post_meta($this->ID,'rpi-wall_group_toolbar_status', $status);
+    }
+
+
+    /**
      * @return array WP_User[]
      */
     public function get_likers()

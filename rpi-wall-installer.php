@@ -30,14 +30,15 @@ class RPIWallInstaller
         $roles = ['administrator', 'editor'];
         foreach ($roles as $roleslug) {
             $role = get_role($roleslug);
-            $role->add_cap('edit_pins');
-            $role->add_cap('edit_others_pins');
-            $role->add_cap('read_private_pins');
-            $role->add_cap('publish_pins');
-            $role->add_cap('read_pins');
-            $role->add_cap('delete_others_pins');
-            $role->add_cap('delete_published_pins');
-            $role->add_cap('delete_pins');
+            $role->add_cap('edit_walls');
+            $role->add_cap('edit_others_walls');
+            $role->add_cap('read_private_walls');
+            $role->add_cap('publish_walls');
+            $role->add_cap('read_walls');
+            $role->add_cap('delete_others_walls');
+            $role->add_cap('edit_published_walls');
+            $role->add_cap('delete_published_walls');
+            $role->add_cap('delete_walls');
 
             $role->add_cap('manage_wall_tags');
             $role->add_cap('edit_wall_tags');
@@ -65,10 +66,10 @@ class RPIWallInstaller
 
         $role = get_role('author');
 
-        $role->add_cap('edit_pins');
-        $role->add_cap('publish_pins');
-        $role->add_cap('read_pins');
-        $role->add_cap('delete_pins');
+        $role->add_cap('edit_walls');
+        $role->add_cap('publish_walls');
+        $role->add_cap('read_walls');
+        $role->add_cap('delete_walls');
 
         $role->add_cap('edit_wall_tags');
         $role->add_cap('assign_wall_tags');
@@ -107,16 +108,17 @@ class RPIWallInstaller
             "show_in_nav_menus" => true,
             "delete_with_user" => true,
             "exclude_from_search" => false,
-            'capability_type' => 'post',
+            'capability_type' => 'wall',
             'capabilities' => array(
-                'edit_posts' => 'edit_pins',
-                'edit_others_posts' => 'edit_others_pins',
-                'read_private_posts' => 'read_private_pins',
-                'publish_posts' => 'publish_pins',
-                'read_post' => 'read_pins',
-                'delete_others_posts' => 'delete_others_pins',
-                'delete_published_posts' => 'delete_published_pins',
-                'delete_posts' => 'delete_pins',
+                'edit_posts' => 'edit_walls',
+                'edit_others_posts' => 'edit_others_walls',
+                'read_private_posts' => 'read_private_walls',
+                'publish_posts' => 'publish_walls',
+                'read_post' => 'read_walls',
+                'delete_others_posts' => 'delete_others_walls',
+                'edit_published_posts' => 'edit_published_walls',
+                'delete_published_posts' => 'delete_published_walls',
+                'delete_posts' => 'delete_walls',
             ),
             "map_meta_cap" => true,
             "hierarchical" => false,
@@ -707,6 +709,64 @@ class RPIWallInstaller
                         'maxlength' => '',
                     ),
                     array(
+                        'key' => 'field_rpi_toolbar',
+                        'label' => 'Toolbar',
+                        'name' => '',
+                        'type' => 'tab',
+                        'instructions' => '',
+                        'required' => 0,
+                        'conditional_logic' => 0,
+                        'wrapper' => array(
+                            'width' => '',
+                            'class' => '',
+                            'id' => '',
+                        ),
+                        'placement' => 'top',
+                        'endpoint' => 0,
+                    ),
+                    array(
+                        'key' => 'field_rpi_toolbar_kickoff_template',
+                        'label' => 'Kickoff Template Link',
+                        'name' => 'toolbar_kickoff_template',
+                        'type' => 'text',
+                        'instructions' => 'Link zum Kickoff Template',
+                        'required' => 0,
+                        'conditional_logic' => 0,
+                        'wrapper' => array(
+                            'width' => '',
+                            'class' => '',
+                            'id' => '',
+                        ),
+                        'frontend_admin_display_mode' => 'edit',
+                        'readonly' => 0,
+                        'default_value' => '',
+                        'placeholder' => 'Base-Server.de',
+                        'prepend' => '',
+                        'append' => '',
+                        'maxlength' => '',
+                    ),
+                    array(
+                        'key' => 'field_rpi_toolbar_protocol_template',
+                        'label' => 'Protocol Template Link',
+                        'name' => 'toolbar_protocol_template',
+                        'type' => 'text',
+                        'instructions' => 'Link zum Protokoll Template',
+                        'required' => 0,
+                        'conditional_logic' => 0,
+                        'wrapper' => array(
+                            'width' => '',
+                            'class' => '',
+                            'id' => '',
+                        ),
+                        'frontend_admin_display_mode' => 'edit',
+                        'readonly' => 0,
+                        'default_value' => '',
+                        'placeholder' => 'Base-Server.de',
+                        'prepend' => '',
+                        'append' => '',
+                        'maxlength' => '',
+                    ),
+                    array(
                         'key' => 'field_rpi_text_labels',
                         'label' => 'Text Label',
                         'name' => '',
@@ -1192,7 +1252,9 @@ class RPIWallInstaller
     function alter_wall_query(\WP_Query $query)
     {
 
-        if ($query->is_main_query() && !is_user_logged_in() && ($query->is_post_type_archive('wall') || $query->get('post_type') === 'wall')) {
+        if (empty($_GET['widgetId']) && $query->is_main_query() && !is_user_logged_in() && ($query->is_post_type_archive('wall') || $query->get('post_type') === 'wall')) {
+
+            //TODO: Check wether given widgetID is valid
 
             $query->set('meta_query', array(
                 array(

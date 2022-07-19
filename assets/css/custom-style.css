@@ -627,6 +627,18 @@ article.entry-card.type-wall .plg-wrapper {
     display:block
 }
 
+.group-toolbar-grip {
+    padding: 10px;
+    background: white;
+    display: grid;
+    grid-gap: 10px;
+    grid-template-columns: repeat(2, 1fr);
+    align-content: space-around;
+}
+.toolbar-button {
+    box-shadow: 2px 2px 2px -1px #555;
+}
+
 
 /* MODAL */
 .animated.zoomIn{
