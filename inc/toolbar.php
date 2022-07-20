@@ -26,6 +26,7 @@ class Toolbar
                         var_dump($status);
                         switch ($status) {
                             case 'constituted':
+                                RpiWall::modal('edit-planningForm', 'Planungsbogen ', do_shortcode('[acfe_form name="edit-constitution"]'));
                                 RpiWall::modal('protocolForm', 'Arbeits-Struktur-Bogen', do_shortcode('[acfe_form name="protocol"]'));
                                 break;
                             default:

@@ -335,7 +335,7 @@ class Group extends \stdClass
      */
     public function get_toolbar_buttons()
     {
-        return get_post_meta($this->ID, 'rpi_wall_group_toolbar_buttons');
+        return get_post_meta($this->ID, 'rpi_wall_group_toolbar_buttons',true);
     }
 
     /**
@@ -350,7 +350,7 @@ class Group extends \stdClass
      * @return mixed
      */
     public function get_toolbar_status(){
-        return get_post_meta($this->ID, 'rpi-wall_group_toolbar_status');
+        return get_post_meta($this->ID, 'rpi-wall_group_toolbar_status',true);
     }
 
     /**
