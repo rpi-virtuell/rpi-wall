@@ -164,7 +164,7 @@ jQuery(document).ready($ => {
                             jQuery('#btn-watch-group-' + id).removeClass('watching');
 
                         }
-                        jQuery('#rpi-wall-counter-' + id).html(data.amount); 
+                        jQuery('#rpi-wall-counter-' + id).html(data.amount);
                     }
 
                 }
@@ -175,7 +175,7 @@ jQuery(document).ready($ => {
     /**
      * Modal Window open
      */
-    $("#btn-open-modal").animatedModal()
+    //$("#btn-open-modal").animatedModal();
     /**
      * Modal Window schließen
      */

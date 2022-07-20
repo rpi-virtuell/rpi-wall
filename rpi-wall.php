@@ -506,7 +506,7 @@ class RpiWall
 
         ?>
 	    <div class="ct-container rpi-wall-buttons">
-	        <a class="fea-submit-button button button-primary" id="btn-open-modal" href="#modal-<?php echo $id;?>"><?php echo $label;?></a>
+	        <a class="fea-submit-button button button-primary" id="btn-open-modal-<?php echo $id;?>" href="#modal-<?php echo $id;?>"><?php echo $label;?></a>
         </div>
         <div id="modal-<?php echo $id;?>">
             <div  class="modal-wrapper">
@@ -518,6 +518,7 @@ class RpiWall
 
             </div>
         </div>
+        <script>jQuery("#btn-open-modal-<?php echo $id;?>").animatedModal();</script>
 
         <?php
 
