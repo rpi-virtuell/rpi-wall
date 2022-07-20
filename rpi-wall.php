@@ -64,6 +64,10 @@ class RpiWall
 
                     RpiWall::modal('form','Bearbeiten',do_shortcode('[acfe_form name="edit-pin"]'));
                 }
+			    if('protokoll'===get_post_type()){
+
+				    RpiWall::modal('protocol','Bearbeiten',do_shortcode('[acfe_form name="edit-protocol"]'));
+			    }
 		    }
 	    });
 
