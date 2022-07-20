@@ -333,10 +333,14 @@ article.entry-card.type-wall .plg-wrapper {
     margin-top: -6px;
 }
 
-.rpi-wall-buttons {
+#main .rpi-wall-buttons {
     display: grid;
     justify-content: right;
     margin-top: 30px;
+}
+
+.ct-container.rpi-wall-buttons a {
+    display: block;
 }
 
 .modal-button.render-form {
@@ -597,17 +601,28 @@ article.entry-card.type-wall .plg-wrapper {
 }
 
 .group-toolbar-grip {
-    padding: 10px;
-    background: white;
+
     display: grid;
     grid-gap: 10px;
     grid-template-columns: repeat(2, 1fr);
     align-content: space-around;
 }
+
+.toolbar-content{
+    margin: 10px;
+    padding: 10px;
+    background: white;
+}
 .toolbar-button {
     box-shadow: 2px 2px 2px -1px #555;
 }
-
+.toolbar-edit-button{
+    margin: 10px;
+}
+.toolbar-protocols{
+    display: grid;
+    margin: 10px;
+}
 
 /* MODAL */
 .animated.zoomIn{

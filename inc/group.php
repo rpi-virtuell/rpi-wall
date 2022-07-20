@@ -335,7 +335,7 @@ class Group extends \stdClass
      */
     public function get_toolbar_buttons()
     {
-        return get_post_meta($this->ID, 'rpi_wall_group_toolbar_buttons',true);
+        return get_field('rpi_wall_group_toolbar_buttons', $this->ID );
     }
 
     /**

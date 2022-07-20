@@ -73,8 +73,13 @@ class RpiWall
 
         //Toolbar
         add_action('wp_body_open', ['rpi\Wall\Toolbar', 'display_toolbar']);
-        add_action('acfe/form/submit/form=constitution', ['rpi\Wall\Toolbar', 'update_toolbar_status'], 10 ,2 );
-
+        add_action('acfe/form/submit/form=constitution', function ($form, $post_id){
+           Wall\Toolbar::update_toolbar_status($form,$post_id,'constituted');
+        });
+        add_action('acfe/form/submit/form=constitution_date', function ($form, $post_id){
+            do_action('new_meeting_date', get_post_meta($post_id ,'date_of_meeting', true),  $post_id);
+            Wall\Toolbar::update_toolbar_status($form,$post_id,'meeting_planned');
+        });
         add_action('blocksy:hero:before', ['rpi\Wall\Group', 'display_watcher_area']);
         add_action('blocksy:comments:after', [$this, 'display_likers_container']);
 
@@ -321,7 +326,6 @@ class RpiWall
         }
         echo json_encode($response);
         die();
-
 
     }
 

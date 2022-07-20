@@ -12,7 +12,6 @@ class MemberPage
     public function __construct()
     {
         add_action('blocksy:single:content:bottom', [$this, 'init']);
-        add_action('wp_head', [$this, 'head_script']);
     }
 
     public function init()
