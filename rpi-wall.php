@@ -55,13 +55,6 @@ class RpiWall
         add_filter('body_class', [$this, 'add_group_status_class']);
         add_action('post_class', [$this, 'add_group_status_class']);
 
-	    add_action('wp_body_open', function () {
-		    if('wall'===get_post_type()){
-                echo 'toolbar';
-                wp_footer();
-                echo '</body></html>'; die();
-		    }
-	    });
 	    add_action('blocksy:content:top', function () {
 		    if(is_post_type_archive('wall')){
                 RpiWall::modal('form','Neuer Eintrag', do_shortcode('[acfe_form name="create-pin"]'));
@@ -76,6 +69,7 @@ class RpiWall
 
         //Toolbar
         add_action('wp_body_open', ['rpi\Wall\Toolbar', 'display_toolbar']);
+        add_action('acfe/form/submit/form=constitution', ['rpi\Wall\Toolbar', 'update_toolbar_status'], 10 ,2 );
 
         add_action('blocksy:hero:before', ['rpi\Wall\Group', 'display_watcher_area']);
         add_action('blocksy:comments:after', [$this, 'display_likers_container']);

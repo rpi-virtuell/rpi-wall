@@ -12,58 +12,24 @@ class Toolbar
     {
     }
 
-
     static function display_toolbar()
     {
-        if (!empty($_GET['widgetId']) && get_post_type() == "wall") {
+        if (isset($_GET['widgetId']) && get_post_type() == "wall") {
             $group = new Group(get_the_ID());
             $split = explode('_', $_GET['widgetId']);
-            var_dump($split);
             if ($group->get_matrix_room_id() === $split[0]) {
-                ob_start();
-                if (!empty($_GET['template'])) {
-                    switch ($_GET['template']) {
-                        case 'planning':
-
-                            // TODO: ADD filter ?export into protocol?
-                            add_filter('the_content', ['rpi\Wall\Toolbar', 'edit_content']);
-                            RpiWall::modal('planningForm', 'Planungsbogen ', do_shortcode('[acfe_form name="constitution"]'));
-                            echo ob_get_clean();
-                            echo '</body></html>';
-                            wp_footer();
-                            die();
-
-                        case 'protocol':
-                            RpiWall::modal('protocolForm', 'Arbeits-Struktur-Bogen', do_shortcode('[acfe_form name="protocol"]'));
-                            echo ob_get_clean();
-                            echo '</body></html>';
-                            wp_footer();
-                            die();
-                    }
-                }
                 ?>
                 <div class="group-toolbar">
                     <div class="group-toolbar-grip">
                         <?php
-                        $status = "";
                         $status = $group->get_toolbar_status();
                         var_dump($status);
                         switch ($status) {
                             case 'constituted':
-                                ?>
-                                <a class="button toolbar-button"
-                                   href="<?php echo get_permalink() . '?widgetId=' . $_GET['widgetId'] . '&template=' . 'protocol' ?>">
-                                    <?php echo 'Arbeits-Struktur-Bogen' ?>
-                                </a>
-                                <?php
+                                RpiWall::modal('protocolForm', 'Arbeits-Struktur-Bogen', do_shortcode('[acfe_form name="protocol"]'));
                                 break;
                             default:
-                                ?>
-                                <a class="button toolbar-button"
-                                   href="<?php echo get_permalink() . '?widgetId=' . $_GET['widgetId'] . '&template=' . 'planning' ?>">
-                                    <?php echo 'Planungsformular' ?>
-                                </a>
-                                <?php
+                                RpiWall::modal('planningForm', 'Planungsbogen ', do_shortcode('[acfe_form name="constitution"]'));
                                 break;
                         }
                         $buttons = $group->get_toolbar_buttons();
@@ -77,7 +43,7 @@ class Toolbar
                         ?>
                     </div>
                     <div class="group-toolbar-control-panel">
-                        <a class="button toolbar-button" href="<?php echo $button['link'] ?>">
+                        <a class="button toolbar-button" href=" ">
                             <?php echo $button['label'] ?>
                             <span class="dashicons dashicons-admin-tools"></span>
                         </a>
@@ -96,26 +62,17 @@ class Toolbar
         }
     }
 
-    static function edit_content($content){
-        if (get_post_type() == "protokoll")
-        {
-
-        }
+    static function update_toolbar_status($form, $post_id)
+    {
+        $group = new Group($post_id);
+        $group->set_toolbar_status('constituted');
     }
 
-    static function display_button($group, $label, $link, $attach_hash = false)
+    static function edit_content($content)
     {
+        if (get_post_type() == "protokoll") {
 
-        if ($attach_hash) {
-            ?>   <a class="button toolbar-button" href="<?php echo $link ?>">   <?php
-        } else {
-            ?>   <a class="button toolbar-button" href="<?php echo $link ?>"> <?php
         }
-
-        ?>
-        <?php echo $label ?>
-        </a>
-        <?php
     }
 
 }
