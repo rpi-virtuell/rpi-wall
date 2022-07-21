@@ -31,11 +31,18 @@ class protocol {
 			'post_type'=>'protokoll',
 			'numberposts' => -1,
 			'meta_query' => [
-				'key' => 'rpi_wall_protocol_groupid',
-				'value' => $group_id,
-				'compare' => '=',
-				'type' => 'NUMERIC'
-			],
+				'relation' => 'AND',
+				[
+					'key' => 'rpi_wall_protocol_groupid',
+					'value' => $group_id,
+					'compare' => '=',
+					'type' => 'NUMERIC'
+				],
+				[
+					'key' => 'rpi_wall_protocol_groupid',
+					'compare' => 'EXISTS',
+				]
+			]
 		];
 		return get_posts($args);
 

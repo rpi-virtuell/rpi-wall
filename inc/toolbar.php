@@ -10,8 +10,16 @@ class Toolbar
 
     public function __construct()
     {
+
     }
 
+    static function add_toolbar_class_to_body($classes){
+	    if (isset($_GET['widgetId'])) {
+		    $classes[] = 'toolbar';
+	    }
+
+        return $classes;
+    }
     static function display_toolbar()
     {
         if (isset($_GET['widgetId']) && get_post_type() == "wall") {

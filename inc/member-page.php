@@ -11,13 +11,17 @@ class MemberPage
 
     public function __construct()
     {
-        add_action('blocksy:single:content:bottom', [$this, 'init']);
+        add_action('wp', [$this, 'init']);
+	    add_action( 'blocksy:hero:custom_meta:after', [$this, 'the_matrixId' ] );
+        add_action('blocksy:single:content:bottom', [$this, 'display']);
+
     }
 
     public function init()
     {
 
-        if ('member' === get_post_type()) {
+
+	    if(is_singular('member')){
 
             $this->posts_per_page = get_option('options_rpi_wall_memberpage_posts_per_page', 6);
 
@@ -28,7 +32,7 @@ class MemberPage
             if ($this->member->ID == get_current_user_id()) {
                 $this->is_my_page = true;
             }
-            $this->display();
+            //$this->display();
 
 
         }
@@ -47,25 +51,41 @@ class MemberPage
         return $this->is_my_page;
     }
 
+    function the_matrixId(){
+
+        if(is_singular('member')){
+
+	        $matrix_id = get_field('matrixid','user_'. $this->member->ID);
+	        if($matrix_id){
+		        $link = '<a href="https://matrix.to/#/'.$matrix_id.'">'.$matrix_id.'</a>';
+		        echo '<div class="user-matrixId">'.$link.'</div>';
+	        }
+
+        }
+
+
+	}
 
     public function display()
     {
 
+	    if(is_singular('member')){
+		    $tabs = new \rpi\Wall\Tabs('tabset');
 
-        $tabs = new \rpi\Wall\Tabs('tabset');
 
+		    $tabs->addTab(['label' => 'Über mich', 'name' => 'bio', 'content' => '<div id ="rpi_tab_bio_content"></div>', 'icon' => \rpi\Wall\Shortcodes::$user_icon, 'checked' => true]);
+		    $tabs->addTab(['label' => 'Gruppen', 'name' => 'groups', 'content' => '<div id ="rpi_tab_groups_content"></div>', 'icon' => \rpi\Wall\Shortcodes::$group_icon]);
+		    $tabs->addTab(['label' => 'Abonnements', 'name' => 'watch', 'content' => '<div id ="rpi_tab_watch_content"></div>', 'icon' => \rpi\Wall\Shortcodes::$watch_icon, 'permission' => 'self']);
+		    $tabs->addTab(['label' => 'Kommentare', 'name' => 'comments', 'content' => '<div id ="rpi_tab_comments_content"></div>', 'icon' => \rpi\Wall\Shortcodes::$comment_icon]);
+		    $tabs->addTab(['label' => 'Benachrichtigungen', 'name' => 'messages', 'content' => '<div id="rpi_tab_messages_content"></div>', 'icon' => \rpi\Wall\Shortcodes::$mail_icon, 'permission' => 'self']);
+		    $tabs->addTab(['label' => 'Einstellungen', 'name' => 'profile', 'content' => $this->get_profile(get_the_ID()) . '<div id="rpi_tab_profile_content"></div>', 'icon' => \rpi\Wall\Shortcodes::$gear_icon, 'permission' => 'self']);
 
-        $tabs->addTab(['label' => 'Über mich', 'name' => 'bio', 'content' => '<div id ="rpi_tab_bio_content"></div>', 'icon' => \rpi\Wall\Shortcodes::$user_icon, 'checked' => true]);
-        $tabs->addTab(['label' => 'Gruppen', 'name' => 'groups', 'content' => '<div id ="rpi_tab_groups_content"></div>', 'icon' => \rpi\Wall\Shortcodes::$group_icon]);
-        $tabs->addTab(['label' => 'Abonnements', 'name' => 'watch', 'content' => '<div id ="rpi_tab_watch_content"></div>', 'icon' => \rpi\Wall\Shortcodes::$watch_icon, 'permission' => 'self']);
-        $tabs->addTab(['label' => 'Kommentare', 'name' => 'comments', 'content' => '<div id ="rpi_tab_comments_content"></div>', 'icon' => \rpi\Wall\Shortcodes::$comment_icon]);
-        $tabs->addTab(['label' => 'Benachrichtigungen', 'name' => 'messages', 'content' => '<div id="rpi_tab_messages_content"></div>', 'icon' => \rpi\Wall\Shortcodes::$mail_icon, 'permission' => 'self']);
-        $tabs->addTab(['label' => 'Einstellungen', 'name' => 'profile', 'content' => $this->get_profile(get_the_ID()) . '<div id="rpi_tab_profile_content"></div>', 'icon' => \rpi\Wall\Shortcodes::$gear_icon, 'permission' => 'self']);
+		    echo '<script>var rpi_wall ={user_ID: "' . $this->member->ID . '"};</script>';
+		    echo '<script> rpi_wall.allowedtabs = '.json_encode($tabs->get_allowed_tabs()).';</script>';
 
-        echo '<script>var rpi_wall ={user_ID: "' . $this->member->ID . '"};</script>';
-        echo '<script> rpi_wall.allowedtabs = '.json_encode($tabs->get_allowed_tabs()).';</script>';
+		    $tabs->display();
+	    }
 
-        $tabs->display();
 
 
     }
@@ -84,7 +104,8 @@ class MemberPage
             </div>
          </div>';
         $user = get_userdata($_POST['user_ID']);
-        echo do_shortcode($user->user_description . $tags);
+
+	    echo do_shortcode($user->user_description . $tags);
         die();
     }
 
@@ -112,11 +133,11 @@ class MemberPage
                             </div>
                             <div class="tags-selector">
                                 <strong>Welche Perspektiven passen zu dir am ehesten?</strong>
-                                [frontend_admin form="808"]
+                                [acfe_form name="member-taxonomy"]
                             </div>
                             
                         </div>
-                        <div>[frontend_admin form="782"]</div>
+                        <div>[acfe_form name="user-profile"]</div>
                     </div>';
 
         return do_shortcode($settings);

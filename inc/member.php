@@ -82,6 +82,18 @@ class Member extends \stdClass
 
 
 
+
+    static function set_default_matrixId($field){
+
+		$user = wp_get_current_user();
+
+		$matrix_id =  '@'.$user->user_login.':rpi-virtuell.de';
+	    $field['default_value'] =$matrix_id;
+	    return $field;
+    }
+
+
+
 	/**
 	 * WATCHING
 	 */

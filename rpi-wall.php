@@ -72,16 +72,22 @@ class RpiWall
 	    });
 
         //Toolbar
+	    add_filter('body_class', ['\rpi\Wall\Toolbar','add_toolbar_class_to_body']);
         add_action('wp_body_open', ['rpi\Wall\Toolbar', 'display_toolbar']);
+
         add_action('acfe/form/submit/form=constitution', function ($form, $post_id){
            Wall\Toolbar::update_toolbar_status($form,$post_id,'constituted');
-        });
+        }, 10,2);
         add_action('acfe/form/submit/form=constitution_date', function ($form, $post_id){
             do_action('new_meeting_date', get_post_meta($post_id ,'date_of_meeting', true),  $post_id);
             Wall\Toolbar::update_toolbar_status($form,$post_id,'meeting_planned');
-        });
-        add_action('blocksy:hero:before', ['rpi\Wall\Group', 'display_watcher_area']);
-        add_action('blocksy:comments:after', [$this, 'display_likers_container']);
+        }, 10,2);
+
+	    add_filter( 'acf/load_field/name=matrixid', ['rpi\Wall\Member', 'set_default_matrixId' ] );
+
+
+	    add_action('blocksy:hero:before', ['rpi\Wall\Group', 'display_watcher_area']);
+	    add_action('blocksy:comments:after', [$this, 'display_likers_container']);
 
         add_action('blocksy:loop:card:start', [$this, 'display_cards_status_triangle']);
         add_action('blocksy:loop:card:end', [$this, 'display_cards_group_info']);
@@ -423,7 +429,6 @@ class RpiWall
         if ($status) {
             echo '<div class="rpi-wall-group-status-triangle ' . $status . '"></div>';
         }
-
     }
 
     /**
@@ -441,8 +446,11 @@ class RpiWall
 
     function display_likers_container()
     {
-        $group = new rpi\Wall\Group(get_the_ID());
-        $group->display();
+        if(is_singular('wall')){
+	        $group = new rpi\Wall\Group(get_the_ID());
+	        $group->display();
+        }
+
     }
 
 
