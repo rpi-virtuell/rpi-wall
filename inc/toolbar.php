@@ -23,8 +23,9 @@ class Toolbar
                 <div class="group-toolbar">
                     <?php if (!empty($next_meeting)) { ?>
                         <div class="toolbar-header">
-                            <h4> Wir treffen uns am: <?php echo date('D d.n.Y', strtotime($next_meeting)) ?>
-                                um <?php echo date('H:i', strtotime($next_meeting)) ?> Uhr</h4>
+                            <h4><a href="<?php echo get_permalink() ?>"><?php echo $group->title ?></a></h4>
+                            Nächster Termin: <?php echo date('D d.n.Y', strtotime($next_meeting)) ?>
+                            um <?php echo date('H:i', strtotime($next_meeting)) ?> Uhr
                         </div>
                     <?php } ?>
                     <div class="toolbar-content">
@@ -34,11 +35,11 @@ class Toolbar
                             switch ($status) {
 
                                 case 'constituted':
-                                    RpiWall::modal('edit-planningForm', 'Planungsbogen ', do_shortcode('[acfe_form name="edit-constitution"]'));
+                                    RpiWall::modal('edit-planningForm', 'Planungsbogen', do_shortcode('[acfe_form name="edit-constitution"]'));
                                     RpiWall::modal('protocolForm', 'Arbeits-Struktur-Bogen', do_shortcode('[acfe_form name="create-protocol"]'));
                                     break;
                                 case 'meeting_planned':
-                                    RpiWall::modal('planningForm', 'Planungsbogen ', do_shortcode('[acfe_form name="constitution"]'));
+                                    RpiWall::modal('planningForm', 'Planungsbogen', do_shortcode('[acfe_form name="constitution"]'));
                                     break;
                                 default:
                                     RpiWall::modal('planningDate', 'Planungstermin setzen ', do_shortcode('[acfe_form name="constitution_date"]'));
@@ -48,7 +49,8 @@ class Toolbar
                             foreach ($buttons as $button) {
                                 ?>
                                 <a class="button toolbar-button"
-                                   href="<?php echo $button['rpi_wall_group_toolbar_button_url'] ?>">
+                                   href="<?php echo $button['rpi_wall_group_toolbar_button_url'] ?>" target="_blank"
+                                   rel="noopener noreferrer">
                                     <?php echo $button['rpi_wall_group_toolbar_button_label'] ?>
                                 </a>
                                 <?php
@@ -58,19 +60,26 @@ class Toolbar
                         <div class="toolbar-edit-button">
                             <?php RpiWall::modal('edit-buttons', '<span class="dashicons dashicons-admin-tools"></span>', do_shortcode(' [acfe_form name="rpi_wall_group_toolbar_button_form"] ')); ?>
                         </div>
+                        <div class="toolbar-details">
+                            <div class="toolbar-protocols">
+                                <h3>
+                                    Protokolle:
+                                </h3>
+                                <?php
 
-                        <div class="toolbar-protocols">
-                            <h3>
-                                Protokolle:
-                            </h3>
-                            <?php
-
-                            $protocols = protocol::get_protocols($group->ID);
-                            foreach ($protocols as $protocol) {
-                                ?> <a href="<?php echo $protocol->guid ?>" target="_blank"
-                                      rel="noopener noreferrer"><?php echo $protocol->post_date ?> </a> <?php
-                            }
-                            ?>
+                                $protocols = protocol::get_protocols($group->ID);
+                                foreach ($protocols as $protocol) {
+                                    ?> <a href="<?php echo $protocol->guid ?>" target="_blank"
+                                          rel="noopener noreferrer"><?php echo $protocol->post_date ?> </a> <?php
+                                }
+                                ?>
+                            </div>
+                            <div class="toolbar-group-goal">
+                                <h3>
+                                    Ziel:
+                                </h3>
+                                <?php echo get_post_meta($group->ID, "constitution_zielformulierung", true); ?>
+                            </div>
                         </div>
                     </div>
                 </div>
