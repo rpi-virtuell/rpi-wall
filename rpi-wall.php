@@ -77,13 +77,18 @@ class RpiWall
 
         add_action('acfe/form/submit/form=constitution', function ($form, $post_id){
            Wall\Toolbar::update_toolbar_status($form,$post_id,'constituted');
-        }, 10,2);
+        },10 ,2);
+
         add_action('acfe/form/submit/form=constitution_date', function ($form, $post_id){
             do_action('new_meeting_date', get_post_meta($post_id ,'date_of_meeting', true),  $post_id);
             Wall\Toolbar::update_toolbar_status($form,$post_id,'meeting_planned');
-        }, 10,2);
+        },10 ,2);
 
-	    add_filter( 'acf/load_field/name=matrixid', ['rpi\Wall\Member', 'set_default_matrixId' ] );
+        //constituted Group Pins
+
+        add_action('blocksy:hero:title:before',[$this,'display_constituted_group_title']);
+
+        add_filter( 'acf/load_field/name=matrixid', ['rpi\Wall\Member', 'set_default_matrixId' ] );
 
 
 	    add_action('blocksy:hero:before', ['rpi\Wall\Group', 'display_watcher_area']);
@@ -421,6 +426,51 @@ class RpiWall
         return $classes;
     }
 
+
+    function display_constituted_group_title()
+    {
+        if (get_post_type() === "wall") {
+            $group = new Wall\Group(get_the_ID());
+            $status = $group->get_toolbar_status();
+            if ($status === "constituted" || get_the_title() != get_field("constitution_gruppenname")) {
+                ob_start(); ?>
+                <div class="constitutited-post-head">
+                    <h2> <?php echo get_field("constitution_gruppenname") ?> </h2>
+                    <?php $group_goal = get_field("constitution_zielformulierung");
+                    if (!empty($group_goal)) {
+                        ?>
+                        <p>Unsere Zielformulierung:</p>
+                        <p><?php echo $group_goal ?></p>
+                        <?php
+                    } ?>
+                    <?php $protocols = Wall\protocol::get_protocols($group->ID);
+                    if (sizeof($protocols) > 0) {
+                        ?>
+                        <details class="constituted-post-protocol">
+                            <summary><h5>Ergebnisse aus der Gruppenarbeit</h5></summary>
+                            <div>
+                                <?php foreach ($protocols as $protocol) {
+                                    $protocol_result = get_field("rpi_wall_protocol_result", $protocol->ID);
+                                    $publish_result = get_field('rpi_wall_protocol_is_public_result', $protocol->ID);
+                                    if (!empty($protocol_result) && $publish_result) {
+                                        ?>
+                                        <h5>
+                                            <?php echo $protocol->post_date ?><br>
+                                            Ergebnis des Treffens:
+                                        </h5>
+                                        <p><?php echo $protocol_result ?></p>
+                                        <?php
+                                    }
+                                } ?>
+                            </div>
+                        </details>
+                    <?php } ?>
+                </div>
+                <?php
+                echo ob_get_clean();
+            }
+        }
+    }
 
     function display_cards_status_triangle()
     {

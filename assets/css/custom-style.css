@@ -391,6 +391,23 @@ article.entry-card.type-wall .plg-wrapper {
 
 }
 
+.constituted-post-protocol > summary{
+    padding: 4px;
+    background-color: #eeeeee;
+    border: none;
+    box-shadow: 1px 1px 2px #bbbbbb;
+    cursor: pointer;
+}
+.constituted-post-protocol summary h5{
+    margin-bottom: unset;
+}
+.constituted-post-protocol > div{
+    background-color: #eeeeee;
+    padding: 4px;
+    margin: 0;
+    box-shadow: 1px 1px 2px #bbbbbb;
+}
+
 .user-grid {
     display: grid;
     grid-column-gap: 10px;
@@ -635,27 +652,38 @@ article.entry-card.type-wall .plg-wrapper {
     border-radius: 15px;
 }
 
-.toolbar-button {
+.toolbar-button , .rpi-wall-buttons a{
+    font-weight: bold !important;
     box-shadow: 2px 2px 2px -1px #555;
+}
+.toolbar-settings{
+    position: relative;
+    height: 60px;
 }
 .toolbar-edit-button{
     margin: 10px;
     width: 75px;
+    position: absolute;
+    right: 0;
 }
 .toolbar-edit-button span {
     padding-top: 3px;
 }
 .toolbar-details{
     display: grid;
-    grid-template: "protocol goals" ;
+    grid-template: "protocol goals";
+    grid-template-columns: 50% 50%;
 }
-.toolbar-protocols, .toolbar-group-goal{
+.toolbar-protocols{
     grid-area: protocol;
     display: grid;
-    margin: 10px;
+    padding: 10px;
+    border-right: #aaaaaa solid 1px;
 }
 .toolbar-group-goal{
     grid-area: goals;
+    padding: 10px;
+    border-left: #aaaaaa solid 1px;
 }
 
 body.toolbar #wpadminbar{

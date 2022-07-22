@@ -13,13 +13,15 @@ class Toolbar
 
     }
 
-    static function add_toolbar_class_to_body($classes){
-	    if (isset($_GET['widgetId'])) {
-		    $classes[] = 'toolbar';
-	    }
+    static function add_toolbar_class_to_body($classes)
+    {
+        if (isset($_GET['widgetId'])) {
+            $classes[] = 'toolbar';
+        }
 
         return $classes;
     }
+
     static function display_toolbar()
     {
         if (isset($_GET['widgetId']) && get_post_type() == "wall") {
@@ -37,11 +39,15 @@ class Toolbar
                         </div>
                     <?php } ?>
                     <div class="toolbar-content">
+                        <div class="toolbar-settings">
+                        <div class="toolbar-edit-button">
+                            <?php RpiWall::modal('edit-buttons', '<span class="dashicons dashicons-admin-tools"></span>', do_shortcode(' [acfe_form name="rpi_wall_group_toolbar_button_form"] ')); ?>
+                        </div>
+                        </div>
                         <div class="group-toolbar-grip">
                             <?php
                             $status = $group->get_toolbar_status();
                             switch ($status) {
-
                                 case 'constituted':
                                     RpiWall::modal('edit-planningForm', 'Planungsbogen', do_shortcode('[acfe_form name="edit-constitution"]'));
                                     RpiWall::modal('protocolForm', 'Arbeits-Struktur-Bogen', do_shortcode('[acfe_form name="create-protocol"]'));
@@ -65,29 +71,36 @@ class Toolbar
                             }
                             ?>
                         </div>
-                        <div class="toolbar-edit-button">
-                            <?php RpiWall::modal('edit-buttons', '<span class="dashicons dashicons-admin-tools"></span>', do_shortcode(' [acfe_form name="rpi_wall_group_toolbar_button_form"] ')); ?>
-                        </div>
                         <div class="toolbar-details">
-                            <div class="toolbar-protocols">
-                                <h3>
-                                    Protokolle:
-                                </h3>
-                                <?php
-
-                                $protocols = protocol::get_protocols($group->ID);
-                                foreach ($protocols as $protocol) {
-                                    ?> <a href="<?php echo $protocol->guid ?>" target="_blank"
-                                          rel="noopener noreferrer"><?php echo $protocol->post_date ?> </a> <?php
-                                }
+                            <?php
+                            $protocols = protocol::get_protocols($group->ID);
+                            if (sizeof($protocols) > 0) {
                                 ?>
-                            </div>
-                            <div class="toolbar-group-goal">
-                                <h3>
-                                    Ziel:
-                                </h3>
-                                <?php echo get_post_meta($group->ID, "constitution_zielformulierung", true); ?>
-                            </div>
+
+                                <div class="toolbar-protocols">
+                                    <h3>
+                                        Protokolle:
+                                    </h3>
+                                    <?php
+
+                                    foreach ($protocols as $protocol) {
+                                        ?> <a href="<?php echo $protocol->guid ?>" target="_blank"
+                                              rel="noopener noreferrer"><?php echo $protocol->post_date ?> </a> <?php
+                                    }
+                                    ?>
+                                </div>
+                                <?php
+                            } ?>
+                            <?php $group_goal = get_post_meta($group->ID, "constitution_zielformulierung", true);
+                            if (!empty($group_goal)) {
+                                ?>
+                                <div class="toolbar-group-goal">
+                                    <h3>
+                                        Ziel:
+                                    </h3>
+                                    <?php echo $group_goal ?>
+                                </div>
+                            <?php } ?>
                         </div>
                     </div>
                 </div>
