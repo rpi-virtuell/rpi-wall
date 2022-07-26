@@ -32,12 +32,13 @@ jQuery(document).ready($ => {
         });
     })
 
-    const site_match = location.pathname.match(/^\/member\//);
+    const site_match_member = location.pathname.match(/^\/member\//);
+    const site_match_wall = location.pathname.match(/^\/wall\//);
     window.onhashchange = locationHashChanged;
     locationHashChanged();
 
     function locationHashChanged() {
-        if (site_match) {
+        if (site_match_member) {
             $('.tabset').ready(function () {
                 if (location.hash && rpi_wall.allowedtabs.includes(location.hash.substring(1))) {
                     hash = location.hash.substring(1);
@@ -48,6 +49,8 @@ jQuery(document).ready($ => {
                 $('#tab-' + hash).prop('checked', true);
                 rpi_wall_send_post(action);
             })
+
+        }else if(site_match_wall){
 
         }
     }

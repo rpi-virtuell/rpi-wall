@@ -56,19 +56,27 @@ class RpiWall
         add_action('post_class', [$this, 'add_group_status_class']);
 
 	    add_action('blocksy:content:top', function () {
-		    if(is_post_type_archive('wall')){
-                RpiWall::modal('form','Neuer Eintrag', do_shortcode('[acfe_form name="create-pin"]'));
+            if (is_post_type_archive('wall') && current_user_can('publish_walls')) {
+                RpiWall::modal('form', 'Neuer Eintrag', do_shortcode('[acfe_form name="create-pin"]'));
 
-		    }else{
-                if('wall'===get_post_type()){
+            } else {
 
-                    RpiWall::modal('form','Bearbeiten',do_shortcode('[acfe_form name="edit-pin"]'));
+                if (get_post_type() === 'wall' && is_user_logged_in()) {
+                    if (get_post()->post_author == get_current_user_id() || current_user_can('edit_others_walls')) {
+
+                        RpiWall::modal('form', 'Bearbeiten', do_shortcode('[acfe_form name="edit-pin"]'));
+                    }
                 }
-			    if('protokoll'===get_post_type()){
+                if (get_post_type() === 'protokoll') {
+                    RpiWall::modal('protocol', 'Bearbeiten', do_shortcode('[acfe_form name="edit-protocol"]'));
+                }
+                if (is_post_type_archive('member') && !is_user_logged_in()) {
+                    wp_footer();
+                    die();
+                }
+            }
 
-				    RpiWall::modal('protocol','Bearbeiten',do_shortcode('[acfe_form name="edit-protocol"]'));
-			    }
-		    }
+
 	    });
 
         //Toolbar
@@ -138,6 +146,15 @@ class RpiWall
 
         add_action('wp_ajax_rpi_tab_messages_content', [$this, 'ajax_tab_messages_content']);
         add_action('wp_ajax_nopriv_rpi_tab_messages_content', [$this, 'ajax_tab_messages_content']);
+
+
+        // Pin Tabs
+
+        add_action('wp_ajax_rpi_tab_pin_content', [$this, 'ajax_rpi_tab_pin_content']);
+        add_action('wp_ajax_nopriv_rpi_tab_pin_content', [$this, 'ajax_rpi_tab_pin_content']);
+
+        add_action('wp_ajax_rpi_tab_group_content', [$this, 'ajax_rpi_tab_group_content']);
+        add_action('wp_ajax_nopriv_rpi_tab_group_content', [$this, 'ajax_rpi_tab_group_content']);
 
 
 

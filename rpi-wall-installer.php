@@ -31,6 +31,7 @@ class RPIWallInstaller
         foreach ($roles as $roleslug) {
             $role = get_role($roleslug);
             $role->add_cap('edit_walls');
+            $role->add_cap('edit_wall');
             $role->add_cap('edit_others_walls');
             $role->add_cap('read_private_walls');
             $role->add_cap('publish_walls');
@@ -66,7 +67,7 @@ class RPIWallInstaller
 
         $role = get_role('author');
 
-        $role->add_cap('edit_walls');
+        $role->add_cap('edit_wall');
         $role->add_cap('publish_walls');
         $role->add_cap('read_walls');
         $role->add_cap('delete_walls');
@@ -110,6 +111,7 @@ class RPIWallInstaller
             "exclude_from_search" => false,
             'capability_type' => 'wall',
             'capabilities' => array(
+                'edit_post' => 'edit_wall',
                 'edit_posts' => 'edit_walls',
                 'edit_others_posts' => 'edit_others_walls',
                 'read_private_posts' => 'read_private_walls',
@@ -163,7 +165,18 @@ class RPIWallInstaller
             "show_in_nav_menus" => true,
             "delete_with_user" => true,
             "exclude_from_search" => false,
-            'capability_type' => 'post',
+            'capability_type' => 'member',
+            'capabilities' => array(
+                'edit_posts' => 'edit_member',
+                'edit_others_posts' => 'edit_others_member',
+                'read_private_posts' => 'read_private_member',
+                'publish_posts' => 'publish_member',
+                'read_post' => 'read_member',
+                'delete_others_posts' => 'delete_others_member',
+                'edit_published_posts' => 'edit_published_member',
+                'delete_published_posts' => 'delete_published_member',
+                'delete_posts' => 'delete_member',
+            ),
             "map_meta_cap" => true,
             "hierarchical" => false,
             "can_export" => false,
