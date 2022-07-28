@@ -1,5 +1,7 @@
 jQuery(document).ready($ => {
 
+    const unpaginatedActions = [""];
+
     $('.rpi-wall-like-button').each((i, btn) => {
         const id = btn.id.replace(/[^\d]*/, '');
         console.log(id);
@@ -51,7 +53,16 @@ jQuery(document).ready($ => {
             })
 
         }else if(site_match_wall){
-
+            $('.tabset').ready(function () {
+                if (location.hash && rpi_wall.allowedtabs.includes(location.hash.substring(1))) {
+                    hash = location.hash.substring(1);
+                } else {
+                    hash = "pin";
+                }
+                action = "rpi_tab_" + hash + "_content";
+                $('#tab-' + hash).prop('checked', true);
+                rpi_wall_send_post(action);
+            })
         }
     }
 

@@ -25,6 +25,7 @@
  */
 
 require_once("rpi-wall-installer.php");
+require_once("rpi-wall-ajax-handler.php");
 require_once("shortcodes.php");
 require_once("inc/member.php");
 require_once("inc/group.php");
@@ -79,6 +80,8 @@ class RpiWall
 
 	    });
 
+        add_filter( 'acf/load_field/name=matrixid', ['rpi\Wall\Member', 'set_default_matrixId' ] );
+
         //Toolbar
 	    add_filter('body_class', ['\rpi\Wall\Toolbar','add_toolbar_class_to_body']);
         add_action('wp_body_open', ['rpi\Wall\Toolbar', 'display_toolbar']);
@@ -92,20 +95,23 @@ class RpiWall
             Wall\Toolbar::update_toolbar_status($form,$post_id,'meeting_planned');
         },10 ,2);
 
-        //constituted Group Pins
+        // Pin Display
 
-        add_action('blocksy:hero:title:before',[$this,'display_constituted_group_title']);
+//        add_action('blocksy:hero:title:before',[$this,'display_constituted_group_title']);
 
-        add_filter( 'acf/load_field/name=matrixid', ['rpi\Wall\Member', 'set_default_matrixId' ] );
+        add_action('blocksy:hero:before', [$this, 'add_tabs_to_pin_view']);
 
 
-	    add_action('blocksy:hero:before', ['rpi\Wall\Group', 'display_watcher_area']);
-	    add_action('blocksy:comments:after', [$this, 'display_likers_container']);
+        add_action('blocksy:hero:before', ['rpi\Wall\Group', 'display_watcher_area']);
+        add_action('blocksy:comments:after', [$this, 'display_likers_container']);
+
+        // Pinboard Carddisplay
 
         add_action('blocksy:loop:card:start', [$this, 'display_cards_status_triangle']);
         add_action('blocksy:loop:card:end', [$this, 'display_cards_group_info']);
 
         add_action('blocksy:loop:card:start', [$this, 'display_cards_member']);
+
         add_filter('wp_ulike_ajax_respond', [$this, 'wp_ulike_ajax_respond'], 20, 4);
 
         //incomming
@@ -118,45 +124,8 @@ class RpiWall
 
         add_action('wp', [$this, 'redirect_to_users_member_page']);
 
+        // TODO USED FOR DEBUG NEEDS TO BE DELETED BEFORE LAUNCH
         add_action('init', [$this, 'test']);
-
-	    add_action('wp_ajax_rpi_wall_toggle_like', [$this, 'ajax_toggle_group_like']);
-        add_action('wp_ajax_nopriv_rpi_wall_toggle_like', [$this, 'ajax_toggle_group_like']);
-
-		add_action('wp_ajax_rpi_wall_toggle_watch', [$this, 'ajax_toggle_group_watch']);
-        add_action('wp_ajax_nopriv_rpi_wall_toggle_watch', [$this, 'ajax_toggle_group_watch']);
-
-        add_action('wp_ajax_rpi_mark_and_display_message', [$this, 'ajax_mark_and_display_message']);
-        add_action('wp_ajax_nopriv_rpi_mark_and_display_message', [$this, 'ajax_mark_and_display_message']);
-
-	    add_action('wp_ajax_rpi_tab_bio_content', [$this, 'ajax_rpi_tab_bio_content']);
-	    add_action('wp_ajax_nopriv_rpi_tab_bio_content', [$this, 'ajax_rpi_tab_bio_content']);
-
-	    add_action('wp_ajax_rpi_tab_profile_content', [$this, 'ajax_rpi_tab_profile_content']);
-	    add_action('wp_ajax_nopriv_rpi_tab_profile_content', [$this, 'ajax_rpi_tab_profile_content']);
-
-	    add_action('wp_ajax_rpi_tab_comments_content', [$this, 'ajax_tab_comments_content']);
-        add_action('wp_ajax_nopriv_rpi_tab_comments_content', [$this, 'ajax_tab_comments_content']);
-
-        add_action('wp_ajax_rpi_tab_groups_content', [$this, 'ajax_tab_groups_content']);
-        add_action('wp_ajax_nopriv_rpi_tab_groups_content', [$this, 'ajax_tab_groups_content']);
-
-        add_action('wp_ajax_rpi_tab_watch_content', [$this, 'ajax_tab_watches_content']);
-        add_action('wp_ajax_nopriv_rpi_tab_watch_content', [$this, 'ajax_tab_watches_content']);
-
-        add_action('wp_ajax_rpi_tab_messages_content', [$this, 'ajax_tab_messages_content']);
-        add_action('wp_ajax_nopriv_rpi_tab_messages_content', [$this, 'ajax_tab_messages_content']);
-
-
-        // Pin Tabs
-
-        add_action('wp_ajax_rpi_tab_pin_content', [$this, 'ajax_rpi_tab_pin_content']);
-        add_action('wp_ajax_nopriv_rpi_tab_pin_content', [$this, 'ajax_rpi_tab_pin_content']);
-
-        add_action('wp_ajax_rpi_tab_group_content', [$this, 'ajax_rpi_tab_group_content']);
-        add_action('wp_ajax_nopriv_rpi_tab_group_content', [$this, 'ajax_rpi_tab_group_content']);
-
-
 
         /**
 	     * ToDo add to cronjob
@@ -200,6 +169,24 @@ class RpiWall
 //        });
 
 
+    }
+
+    public function add_tabs_to_pin_view()
+    {
+        if (is_singular('wall')) {
+            $group = new Wall\Group(get_the_ID());
+            if ($group->get_toolbar_status() === "constituted"){
+                $tabs = new \rpi\Wall\Tabs('tabset');
+
+                $tabs->addTab(['label' => 'Pin', 'name' => 'pin', 'content' => '<div id ="rpi_tab_pin_content"></div>', 'icon' => \rpi\Wall\Shortcodes::$pin_icon, 'checked' => true]);
+                $tabs->addTab(['label' => 'Gruppe', 'name' => 'group', 'content' => '<div id ="rpi_tab_group_content"></div>', 'icon' => \rpi\Wall\Shortcodes::$group_icon]);
+
+                echo '<script>var rpi_wall ={user_ID: "' . get_the_author_meta("ID") . '"};</script>';
+                echo '<script>rpi_wall.allowedtabs = ' . json_encode($tabs->get_allowed_tabs()) . ';</script>';
+
+                $tabs->display();
+            }
+        }
     }
 
     public function on_new_comment($comment_id, WP_Comment $comment)
@@ -283,136 +270,6 @@ class RpiWall
 
     }
 
-	public function ajax_toggle_group_watch()
-	{
-
-
-		$response = ['success' => false];
-		if (isset($_POST['group_id'])) {
-			$group = new Wall\Group($_POST['group_id']);
-
-			$member = new Wall\Member();
-			$member->toggle_watch_group($group->ID);
-			$amount = $group->get_watcher_amount();
-			$amount = $amount>0?$amount:'';
-			$is_watcher = $member->is_watched_group($group->ID);
-
-			$response = [
-				'success' => true,
-				'is_watcher' => $is_watcher,
-				'amount' => $amount
-			];
-		}
-		echo json_encode($response);
-		die();
-
-
-	}
-
-    public function ajax_toggle_group_like()
-    {
-
-
-        $response = ['success' => false];
-        if (isset($_POST['group_id'])) {
-            $group = new Wall\Group($_POST['group_id']);
-            if ($group && $group->is_not_founded()) {
-
-                $member = new Wall\Member();
-                if ($member->is_in_group($group->ID)) {
-                    echo json_encode($response);
-                    die();
-                }
-
-                if ($group->is_pending()) {
-                    $member->join_group($group->ID);
-                    $is_member = $member->is_in_group($group->ID);
-                    $amount = $group->get_members_amount();
-                    $is_liker = true;
-                } else {
-
-                    $action = $member->toggle_like_group($group->ID);
-					if($action == 'like'){
-						new Message($group, 'liked');
-					}
-                    $is_liker = $member->is_liked_group($group->ID);
-                    $amount = $group->get_likers_amount();
-                    $is_member = false;
-                }
-
-                $response = [
-                    'success' => true,
-                    'is_liker' => $is_liker,
-                    'is_member' => $is_member,
-                    'amount' => $amount,
-                    'likers' => $group->display_liker(),
-                    'members' => $group->display_member()
-                ];
-
-            }
-
-        }
-        echo json_encode($response);
-        die();
-
-    }
-
-    public function ajax_tab_messages_content()
-    {
-	    $member_page = new MemberPage();
-	    echo $member_page->messages();
-        die();
-    }
-
-
-    public function ajax_rpi_tab_bio_content(){
-        $member_page = new MemberPage();
-        echo $member_page->bio();
-            die();
-    }
-
-	public function ajax_rpi_tab_profile_content(){
-		$member_page = new MemberPage();
-		echo $member_page->profile();
-		die();
-	}
-	public function ajax_tab_groups_content(){
-        $member_page = new MemberPage();
-        echo $member_page->groups();
-            die();
-    }
-
-    public function ajax_tab_comments_content(){
-
-        $member_page = new MemberPage();
-        echo $member_page->comments();
-        die();
-    }
-    public function ajax_tab_watches_content(){
-
-        $member_page = new MemberPage();
-        echo $member_page->watches();
-        die();
-    }
-
-    public function ajax_mark_and_display_message()
-    {
-        $response = ['success' => false];
-        if (isset($_POST['message_id'])) {
-            $member = new rpi\Wall\Member();
-            $message = get_post($_POST['message_id']);
-            $member->set_message_read($_POST['message_id']);
-            $response = [
-                'success' => true,
-                'message_id' => $_POST['message_id'],
-                'title' => $message->post_title,
-                'content'=>$message->post_content];
-        }
-        echo json_encode($response);
-        die();
-
-    }
-
     /**
      *
      * @param array $respond
@@ -441,52 +298,6 @@ class RpiWall
         }
 
         return $classes;
-    }
-
-
-    function display_constituted_group_title()
-    {
-        if (get_post_type() === "wall") {
-            $group = new Wall\Group(get_the_ID());
-            $status = $group->get_toolbar_status();
-            if ($status === "constituted" || get_the_title() != get_field("constitution_gruppenname")) {
-                ob_start(); ?>
-                <div class="constitutited-post-head">
-                    <h2> <?php echo get_field("constitution_gruppenname") ?> </h2>
-                    <?php $group_goal = get_field("constitution_zielformulierung");
-                    if (!empty($group_goal)) {
-                        ?>
-                        <p>Unsere Zielformulierung:</p>
-                        <p><?php echo $group_goal ?></p>
-                        <?php
-                    } ?>
-                    <?php $protocols = Wall\protocol::get_protocols($group->ID);
-                    if (sizeof($protocols) > 0) {
-                        ?>
-                        <details class="constituted-post-protocol">
-                            <summary><h5>Ergebnisse aus der Gruppenarbeit</h5></summary>
-                            <div>
-                                <?php foreach ($protocols as $protocol) {
-                                    $protocol_result = get_field("rpi_wall_protocol_result", $protocol->ID);
-                                    $publish_result = get_field('rpi_wall_protocol_is_public_result', $protocol->ID);
-                                    if (!empty($protocol_result) && $publish_result) {
-                                        ?>
-                                        <h5>
-                                            <?php echo $protocol->post_date ?><br>
-                                            Ergebnis des Treffens:
-                                        </h5>
-                                        <p><?php echo $protocol_result ?></p>
-                                        <?php
-                                    }
-                                } ?>
-                            </div>
-                        </details>
-                    <?php } ?>
-                </div>
-                <?php
-                echo ob_get_clean();
-            }
-        }
     }
 
     function display_cards_status_triangle()
@@ -662,6 +473,8 @@ class RpiWall
 
 }
 
+
+new Wall\RpiWallAjaxHandler();
 new RpiWall();
 new MemberPage();
 new Wall\Shortcodes();
