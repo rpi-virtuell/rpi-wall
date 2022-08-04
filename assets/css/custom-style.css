@@ -674,6 +674,13 @@ article.entry-card.type-wall .plg-wrapper {
     grid-template: "protocol goals";
     grid-template-columns: 50% 50%;
 }
+
+@media only screen and (max-width: 600px) {
+    .group-toolbar-grip {
+        grid-template-columns: unset;
+    }
+}
+
 .toolbar-protocols{
     grid-area: protocol;
     display: grid;

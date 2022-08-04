@@ -347,7 +347,7 @@ class Shortcodes
                 <div>
                     <a href="<?php the_permalink() ?>">Pinwandeintrag</a>
                     <?php if (is_user_logged_in() && 'pending' !== $plg->get_status() && $plg->has_member(get_current_user_id())):
-                        ?>| Matrix Raum: <?php echo $plg->get_matrix_link(); ?>
+                        ?>|  <a href="<?php echo $plg->get_matrix_link(); ?>"  target="_blank" rel="noopener noreferrer">Matrix Raum</a>
                     <?php endif; ?>
                 </div>
                 <div>

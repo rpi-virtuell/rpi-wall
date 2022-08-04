@@ -474,8 +474,8 @@ class RpiWall
 }
 
 
-new Wall\RpiWallAjaxHandler();
 new RpiWall();
+new Wall\RpiWallAjaxHandler();
 new MemberPage();
 new Wall\Shortcodes();
 
