@@ -251,8 +251,8 @@ class Message
                 $to[] = $user->user_email;
             }
 
-            $headers .= 'From: Dibes Netzwerk <happel@comeniuse.de>' . "\r\n";
-            $headers .= 'BCC: ' . implode(",", $to) . "\r\n";
+            $headers[] = 'From: Dibes Netzwerk <happel@comeniuse.de>' . "\r\n";
+            $headers[] = 'BCC: ' . implode(",", $to) . "\r\n";
 
             wp_mail(get_option('options_rpi_wall_email_dummy', 'technik@rpi-virtuell.de'), $msg->subject, $msg->body, $headers);
 
