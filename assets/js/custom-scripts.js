@@ -70,6 +70,13 @@ jQuery(document).ready($ => {
 
 
     function rpi_wall_send_post(action) {
+
+        if (action === 'rpi_tab_logout_content'){
+            location.href = "/wp-login.php?action=logout";
+            console.log(location.href);
+            return;
+        }
+
         $.post(
             wall.ajaxurl,
             {

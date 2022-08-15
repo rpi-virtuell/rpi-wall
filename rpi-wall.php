@@ -186,9 +186,10 @@ class RpiWall
     public function add_tabs_to_pin_view()
     {
         if (is_singular('wall')) {
+
+            $tabs = new \rpi\Wall\Tabs('tabset');
             $group = new Wall\Group(get_the_ID());
             if ($group->get_toolbar_status() === "constituted"){
-                $tabs = new \rpi\Wall\Tabs('tabset');
 
                 $tabs->addTab(['label' => 'Pin', 'name' => 'pin', 'content' => ob_get_clean(), 'icon' => \rpi\Wall\Shortcodes::$pin_icon, 'checked' => true]);
 
@@ -196,11 +197,12 @@ class RpiWall
                     $tabs->addTab(['label' => 'Gruppe', 'name' => 'group', 'content' => $this->get_group_tab_of_pin_view(), 'icon' => \rpi\Wall\Shortcodes::$group_icon]);
                 }
 
-                echo '<script>var rpi_wall ={user_ID: "' . get_the_author_meta("ID") . '"};</script>';
-                echo '<script>rpi_wall.allowedtabs = ' . json_encode($tabs->get_allowed_tabs()) . ';</script>';
 
                 $tabs->display();
             }
+
+            echo '<script>var rpi_wall ={user_ID: "' . get_the_author_meta("ID") . '"};</script>';
+            echo '<script>rpi_wall.allowedtabs = ' . json_encode($tabs->get_allowed_tabs()) . ';</script>';
         }
     }
 

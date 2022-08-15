@@ -55,10 +55,10 @@ class RpiWallAjaxHandler
     {
         $response = ['success' => false];
         if (isset($_POST['group_id'])) {
-            $group = new Wall\Group($_POST['group_id']);
+            $group = new Group($_POST['group_id']);
             if ($group && $group->is_not_founded()) {
 
-                $member = new Wall\Member();
+                $member = new Member();
                 if ($member->is_in_group($group->ID)) {
                     echo json_encode($response);
                     die();
