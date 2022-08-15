@@ -453,7 +453,6 @@ class RpiWall
                     <button class="button button-primary">X</button>
                 </div>
                 <div class="modal-content"><?php echo $content ?></div>
-	            <?php  the_taxonomies() ;  ?>
 
             </div>
         </div>

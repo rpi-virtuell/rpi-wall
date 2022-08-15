@@ -98,6 +98,8 @@ class Matrix {
 					$group->set_matrix_channel( $room->room_alias );
 					$group->set_matrix_room_id( $room->room_id );
 					$group->set_status( 'founded' );
+
+                    $this->addToolbar($group);
 				}
 
 				return $room->room_id;
