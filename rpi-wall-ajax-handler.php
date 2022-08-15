@@ -38,6 +38,9 @@ class RpiWallAjaxHandler
         add_action('wp_ajax_rpi_tab_messages_content', [$this, 'ajax_tab_messages_content']);
         add_action('wp_ajax_nopriv_rpi_tab_messages_content', [$this, 'ajax_tab_messages_content']);
 
+        add_action('wp_ajax_rpi_wall_close_pin_group', [$this, 'ajax_close_pin_group']);
+        add_action('wp_ajax_nopriv_rpi_wall_close_pin_group', [$this, 'ajax_close_pin_group']);
+
         // Pin Tabs
 
         add_action('wp_ajax_rpi_tab_group_content', [$this, 'ajax_tab_group_content']);
@@ -193,53 +196,17 @@ class RpiWallAjaxHandler
     function display_constituted_group_title()
     {
 
-        if (get_post_type() === "wall") {
-            $group = new Group(get_the_ID());
-            $status = $group->get_toolbar_status();
-            if ($status === "constituted" || get_the_title() != get_field("constitution_gruppenname")) {
-                ob_start(); ?>
-                <div class="constituted-post-head">
-                    <h2> <?php echo get_field("constitution_gruppenname") ?> </h2>
-                    <?php $group_goal = get_field("constitution_zielformulierung");
-                    if (!empty($group_goal)) {
-                        ?>
-                        <p>Unsere Zielformulierung:</p>
-                        <p><?php echo $group_goal ?></p>
-                        <?php
-                    } ?>
-                    <?php $protocols = protocol::get_protocols($group->ID);
-                    if (sizeof($protocols) > 0) {
-                        ?>
-                        <details class="constituted-post-protocol">
-                            <summary><h5>Ergebnisse aus der Gruppenarbeit</h5></summary>
-                            <div>
-                                <?php foreach ($protocols as $protocol) {
-                                    $protocol_result = get_field("rpi_wall_protocol_result", $protocol->ID);
-                                    $publish_result = get_field('rpi_wall_protocol_is_public_result', $protocol->ID);
-                                    if (!empty($protocol_result) && $publish_result) {
-                                        ?>
-                                        <h5>
-                                            <?php echo $protocol->post_date ?><br>
-                                            Ergebnis des Treffens:
-                                        </h5>
-                                        <p><?php echo $protocol_result ?></p>
-                                        <?php
-                                    }
-                                } ?>
-                            </div>
-                        </details>
-                    <?php } ?>
-                </div>
-                <?php
-                echo ob_get_clean();
-            }
-        }
     }
 
     public function ajax_tab_pin_content()
     {
         //TODO WIP
         die();
+    }
+
+    public function ajax_close_pin_group()
+    {
+
     }
 
 }

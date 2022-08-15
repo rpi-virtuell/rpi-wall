@@ -70,6 +70,7 @@ class Toolbar
                                 <?php
                             }
                             ?>
+                            <div class="button toolbar-button delete_button" id="close-pin-group-button">PLG schließen</div>
                         </div>
                         <div class="toolbar-details">
                             <?php
