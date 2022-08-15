@@ -40,29 +40,31 @@ jQuery(document).ready($ => {
     locationHashChanged();
 
     function locationHashChanged() {
-        if (site_match_member) {
-            $('.tabset').ready(function () {
-                if (location.hash && rpi_wall.allowedtabs.includes(location.hash.substring(1))) {
-                    hash = location.hash.substring(1);
-                } else {
-                    hash = "bio";
-                }
-                action = "rpi_tab_" + hash + "_content";
-                $('#tab-' + hash).prop('checked', true);
-                rpi_wall_send_post(action);
-            })
+        if(location.hash.indexOf('page_')<0){
+            if (site_match_member) {
+                $('.tabset').ready(function () {
+                    if (location.hash && rpi_wall.allowedtabs.includes(location.hash.substring(1))) {
+                        hash = location.hash.substring(1);
+                    } else {
+                        hash = "bio";
+                    }
+                    action = "rpi_tab_" + hash + "_content";
+                    $('#tab-' + hash).prop('checked', true);
+                    rpi_wall_send_post(action);
+                })
 
-        }else if(site_match_wall){
-            $('.tabset').ready(function () {
-                if (location.hash && rpi_wall.allowedtabs.includes(location.hash.substring(1))) {
-                    hash = location.hash.substring(1);
-                } else {
-                    hash = "pin";
-                }
-                action = "rpi_tab_" + hash + "_content";
-                $('#tab-' + hash).prop('checked', true);
-                rpi_wall_send_post(action);
-            })
+            }else if(site_match_wall){
+                $('.tabset').ready(function () {
+                    if (location.hash && rpi_wall.allowedtabs.includes(location.hash.substring(1))) {
+                        hash = location.hash.substring(1);
+                    } else {
+                        hash = "pin";
+                    }
+                    action = "rpi_tab_" + hash + "_content";
+                    $('#tab-' + hash).prop('checked', true);
+                    rpi_wall_send_post(action);
+                })
+            }
         }
     }
 
