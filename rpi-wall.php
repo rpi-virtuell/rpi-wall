@@ -99,11 +99,12 @@ class RpiWall
 
 //        add_action('blocksy:hero:title:before',[$this,'display_constituted_group_title']);
 
-        add_action('blocksy:hero:before', [$this, 'add_tabs_to_pin_view']);
 
+        add_action('blocksy:single:top', [$this, 'add_ob_to_capture_pin_content']);
+        add_action('blocksy:single:bottom', [$this, 'add_tabs_to_pin_view']);
 
         add_action('blocksy:hero:before', ['rpi\Wall\Group', 'display_watcher_area']);
-        add_action('blocksy:comments:after', [$this, 'display_likers_container']);
+//        add_action('blocksy:comments:after', [$this, 'display_likers_container']);
 
         // Pinboard Carddisplay
 
@@ -171,6 +172,17 @@ class RpiWall
 
     }
 
+    public function add_ob_to_capture_pin_content()
+    {
+        if (is_singular('wall')) {
+            $group = new Wall\Group(get_the_ID());
+            if ($group->get_toolbar_status() === "constituted") {
+                ob_start();
+            }
+
+        }
+    }
+
     public function add_tabs_to_pin_view()
     {
         if (is_singular('wall')) {
@@ -178,8 +190,11 @@ class RpiWall
             if ($group->get_toolbar_status() === "constituted"){
                 $tabs = new \rpi\Wall\Tabs('tabset');
 
-                $tabs->addTab(['label' => 'Pin', 'name' => 'pin', 'content' => '<div id ="rpi_tab_pin_content"></div>', 'icon' => \rpi\Wall\Shortcodes::$pin_icon, 'checked' => true]);
-                $tabs->addTab(['label' => 'Gruppe', 'name' => 'group', 'content' => '<div id ="rpi_tab_group_content"></div>', 'icon' => \rpi\Wall\Shortcodes::$group_icon]);
+                $tabs->addTab(['label' => 'Pin', 'name' => 'pin', 'content' => ob_get_clean(), 'icon' => \rpi\Wall\Shortcodes::$pin_icon, 'checked' => true]);
+
+                if (get_the_title() != get_field("constitution_gruppenname")) {
+                    $tabs->addTab(['label' => 'Gruppe', 'name' => 'group', 'content' => $this->get_group_tab_of_pin_view(), 'icon' => \rpi\Wall\Shortcodes::$group_icon]);
+                }
 
                 echo '<script>var rpi_wall ={user_ID: "' . get_the_author_meta("ID") . '"};</script>';
                 echo '<script>rpi_wall.allowedtabs = ' . json_encode($tabs->get_allowed_tabs()) . ';</script>';
@@ -188,6 +203,51 @@ class RpiWall
             }
         }
     }
+
+    public function get_group_tab_of_pin_view()
+    {
+        $group = new Wall\Group(get_the_ID());
+        ob_start();
+        ?>
+        <div class="constituted-post-head">
+            <header class="entry-header">
+                <h1 class="page-title"> <?php echo get_field("constitution_gruppenname") ?> </h1>
+            </header>
+            <?php $group_goal = get_field("constitution_zielformulierung");
+            if (!empty($group_goal)) {
+                ?>
+                <p>Unsere Zielformulierung:</p>
+                <p><?php echo $group_goal ?></p>
+                <?php
+            } ?>
+            <?php $protocols = Wall\protocol::get_protocols($group->ID);
+            if (sizeof($protocols) > 0) {
+                ?>
+                <details class="constituted-post-protocol">
+                    <summary><h5>Ergebnisse aus der Gruppenarbeit</h5></summary>
+                    <div>
+                        <?php foreach ($protocols as $protocol) {
+                            $protocol_result = get_field("rpi_wall_protocol_result", $protocol->ID);
+                            $publish_result = get_field('rpi_wall_protocol_is_public_result', $protocol->ID);
+                            if (!empty($protocol_result) && $publish_result) {
+                                ?>
+                                <h5>
+                                    <?php echo $protocol->post_date ?><br>
+                                    Ergebnis des Treffens:
+                                </h5>
+                                <p><?php echo $protocol_result ?></p>
+                                <?php
+                            }
+                        } ?>
+                    </div>
+                </details>
+            <?php } ?>
+        </div>
+        <?php
+        $this->display_likers_container();
+        return ob_get_clean();
+    }
+
 
     public function on_new_comment($comment_id, WP_Comment $comment)
     {

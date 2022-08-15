@@ -199,4 +199,23 @@ jQuery(document).ready($ => {
             $('#btn-close-modal').click();
         }
     });
+
+    $('#close-pin-group-button').on('click', e => {
+        if (confirm("Soll die PLG wirklich geschlossen werden?"))
+        {
+
+            $.post(
+                wall.ajaxurl,
+                {
+                    'action': 'rpi_wall_close_pin_group',
+                    'group_id': id,
+                },
+                function (response) {
+                    rpi_wall_print_content(response, action)
+                }
+            )
+        }else{
+
+        }
+    });
 })
