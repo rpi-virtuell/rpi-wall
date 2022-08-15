@@ -240,6 +240,8 @@ class Message
     public function send($msg, $recipient_ids)
     {
 
+	    $headers = array('Content-Type: text/html; charset=UTF-8');
+
         if (is_array($recipient_ids) && count($recipient_ids) > 0) {
 
             $to = [];
@@ -249,8 +251,8 @@ class Message
                 $to[] = $user->user_email;
             }
 
-            $headers = 'From: Dibes Netzwerk <happel@comeniuse.de>' . "\r\n";
-            $headers .= 'BCC: ' . implode(",", $to) . "\r\n";
+            $headers[] = 'From: Dibes Netzwerk <happel@comeniuse.de>' . "\r\n";
+            $headers[] = 'BCC: ' . implode(",", $to) . "\r\n";
 
             wp_mail(get_option('options_rpi_wall_email_dummy', 'technik@rpi-virtuell.de'), $msg->subject, $msg->body, $headers);
 
@@ -264,7 +266,7 @@ class Message
         } elseif (is_string($recipient_ids)) {
             //user einzeln anschreiben
             $user = get_userdata($recipient_ids);
-            wp_mail($user->user_email, $msg->subject, $msg->body);
+            wp_mail($user->user_email, $msg->subject, $msg->body, $headers);
         }
 
 
