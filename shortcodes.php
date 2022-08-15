@@ -345,7 +345,7 @@ class Shortcodes
                 </div>
                 <div class="ghost"></div>
                 <div>
-                    <a href="<?php the_permalink() ?>">Pinwandeintrag</a>
+                    <a href="<?php the_permalink() ?>#group">Pinwandeintrag</a>
                     <?php if (is_user_logged_in() && 'pending' !== $plg->get_status() && $plg->has_member(get_current_user_id())):
                         ?>|  <a href="<?php echo $plg->get_matrix_link(); ?>"  target="_blank" rel="noopener noreferrer">Matrix Raum</a>
                     <?php endif; ?>

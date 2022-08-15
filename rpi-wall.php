@@ -104,7 +104,6 @@ class RpiWall
         add_action('blocksy:single:bottom', [$this, 'add_tabs_to_pin_view']);
 
         add_action('blocksy:hero:before', ['rpi\Wall\Group', 'display_watcher_area']);
-        add_action('blocksy:comments:after', [$this, 'display_likers_container']);
 
         // Pinboard Carddisplay
 
@@ -175,11 +174,7 @@ class RpiWall
     public function add_ob_to_capture_pin_content()
     {
         if (is_singular('wall')) {
-            $group = new Wall\Group(get_the_ID());
-            if ($group->get_toolbar_status() === "constituted") {
                 ob_start();
-            }
-
         }
     }
 
@@ -188,8 +183,6 @@ class RpiWall
         if (is_singular('wall')) {
 
             $tabs = new \rpi\Wall\Tabs('tabset');
-            $group = new Wall\Group(get_the_ID());
-            if ($group->get_toolbar_status() === "constituted"){
 
                 $tabs->addTab(['label' => 'Pin', 'name' => 'pin', 'content' => ob_get_clean(), 'icon' => \rpi\Wall\Shortcodes::$pin_icon, 'checked' => true]);
 
@@ -199,7 +192,6 @@ class RpiWall
 
 
                 $tabs->display();
-            }
 
             echo '<script>var rpi_wall ={user_ID: "' . get_the_author_meta("ID") . '"};</script>';
             echo '<script>rpi_wall.allowedtabs = ' . json_encode($tabs->get_allowed_tabs()) . ';</script>';
@@ -381,18 +373,6 @@ class RpiWall
 
         $group = new rpi\Wall\Group(get_the_ID());
         $group->display_short_info();
-
-    }
-
-    function display_likers_container()
-    {
-        if(is_singular('wall')){
-	        $group = new rpi\Wall\Group(get_the_ID());
-            if ($group->get_toolbar_status() != "constituted")
-            {
-                $group->display();
-            }
-        }
 
     }
 

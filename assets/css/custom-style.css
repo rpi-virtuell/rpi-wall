@@ -4,7 +4,7 @@ body.pending .page-title:before {
     content: 'Jetzt beitreten!';
     color: red;
     display: block;
-    text-align: right;
+    text-align: left;
 }
 
 .entry-card.pending {
@@ -368,6 +368,7 @@ article.entry-card.type-wall .plg-wrapper {
     box-shadow: 1px 1px 3px 0px #888;
     margin-bottom: 20px;
     padding: 20px;
+    hyphens: auto;
 }
 
 .group-post .entry-meta svg {
