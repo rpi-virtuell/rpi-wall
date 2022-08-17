@@ -94,6 +94,7 @@ class RpiWall
             }
         });
 
+
         add_action('acfe/form/submit/form=constitution', function ($form, $post_id){
            Wall\Toolbar::update_toolbar_status($form,$post_id,'constituted');
         },10 ,2);
@@ -150,7 +151,10 @@ class RpiWall
         });
 
 
-        add_action('save_post_wall', [$this, 'on_new_pin'], 10, 3);
+        //add_action('save_post_wall', [$this, 'on_new_pin'], 10, 3);
+
+	    add_action('acfe/form/submit/form=create-pin', [$this, 'on_new_pin'],10, 2);
+
         add_action('save_post_member', [$this, 'on_new_member'], 10, 3);
         add_action('wp_insert_comment', [$this, 'on_new_comment'], 99, 2);
 
@@ -304,18 +308,18 @@ class RpiWall
 
     }
 
-    public function on_new_pin(int $post_ID, WP_Post $post, bool $update)
+    public function on_new_pin($form, $post_ID)
     {
-        if (!$update) {
-
-            new Wall\Message(new Wall\Group($post_ID), 'create', null, get_current_user_id());
-
-			$currentMember = new Wall\Member();
+	    new Wall\Message(new Wall\Group($post_ID), 'creator', [get_current_user_id()], get_current_user_id());
+	    //new Wall\Message(new Wall\Group($post_ID), 'create', null, get_current_user_id());
+    		$currentMember = new Wall\Member();
 			if(!$currentMember->is_watched_group($post_ID)){
 				$currentMember->toggle_watch_group($post_ID);
 	        }
-        }
 
+            ?>
+                <script>location.href='/wall';</script>
+            <?php
     }
 
     public function redirect_to_users_member_page()
