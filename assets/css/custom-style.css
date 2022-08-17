@@ -1,6 +1,6 @@
 /*Kommentar Überschrift ausblenden*/
 
-body.pending .page-title:before {
+body.pending #group .page-title:before {
     content: 'Jetzt beitreten!';
     color: red;
     display: block;
