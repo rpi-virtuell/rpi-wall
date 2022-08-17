@@ -27,13 +27,18 @@ class Toolbar
             $next_meeting = get_post_meta($group->ID, 'date_of_meeting', true);
             ?>
             <div class="group-toolbar">
-                <?php if (!empty($next_meeting)) { ?>
-                    <div class="toolbar-header">
+                <div class="toolbar-header">
+
+                    <?php if ($widget) { ?>
                         <h4><a href="<?php echo get_permalink() ?>"><?php echo $group->title ?></a></h4>
+                    <?php } ?>
+                    <?php if (!empty($next_meeting)) { ?>
                         Nächster Termin: <?php echo date('D d.n.Y', strtotime($next_meeting)) ?>
                         um <?php echo date('H:i', strtotime($next_meeting)) ?> Uhr
-                    </div>
-                <?php } ?>
+
+                    <?php } ?>
+                </div>
+
                 <div class="toolbar-content">
                     <div class="toolbar-settings">
                         <div class="toolbar-edit-button">

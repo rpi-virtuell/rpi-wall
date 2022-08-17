@@ -239,23 +239,19 @@ class RpiWall
 
                 <div>
                     <?php foreach ($protocols as $protocol) {
-
-                        ?>
-                        <details class="constituted-post-protocol">
-                            <summary><h5><?php echo $protocol->post_date ?></h5></summary> <?php
-                            $protocol_result = get_field("rpi_wall_protocol_result", $protocol->ID);
-                            $publish_result = get_field('rpi_wall_protocol_is_public_result', $protocol->ID);
-                            if (!empty($protocol_result) && $publish_result) {
+                        $protocol_result = get_field("rpi_wall_protocol_result", $protocol->ID);
+                        $publish_result = get_field('rpi_wall_protocol_is_public_result', $protocol->ID);
+                        if (!empty($protocol_result) && $publish_result) {
+                            ?>
+                            <details class="constituted-post-protocol">
+                                <summary><h5><?php echo $protocol->post_date ?></h5></summary> <?php
                                 ?>
                                 <h5>
                                     Ergebnis des Treffens:
                                 </h5>
                                 <p><?php echo $protocol_result ?></p>
-
-                                <?php
-                            }
-                            ?>
-                        </details> <?php
+                            </details> <?php
+                        }
                     } ?>
                 </div>
             <?php } ?>
