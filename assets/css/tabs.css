@@ -43,6 +43,7 @@ body {
     font-weight: 600;
     border-radius: 5px 5px 0 0;
     border-bottom: 0;
+    background-color: lightgrey;
 }
 
 
@@ -58,12 +59,12 @@ body {
 }
 
 .tabset > input:focus + label {
-    background-color: #ccc;
+    background-color: #aaaaaa;
 }
 .tabset > label:hover
  {
     color: #000;
-    background-color: #ccc;
+    background-color: #aaaaaa;
 
 }
 

@@ -345,6 +345,13 @@ article.entry-card.type-wall .plg-wrapper {
     margin-top: 30px;
 }
 
+.toolbar-content .rpi-wall-buttons {
+    display: unset !important;
+    justify-content: unset !important;
+    margin-top: unset !important;
+}
+
+
 .ct-container.rpi-wall-buttons a {
     display: block;
 }
@@ -627,11 +634,17 @@ article.entry-card.type-wall .plg-wrapper {
 .show {
     display:block
 }
+.group-toolbar-grip .button{
+    width: 100%;
+}
 
 .toolbar-header{
     color: white;
     font-weight: bold;
     text-align: center;
+}
+.tab-panel .toolbar-header{
+    color: unset;
 }
 
 .toolbar-header h4{
@@ -641,9 +654,9 @@ article.entry-card.type-wall .plg-wrapper {
 }
 
 .group-toolbar-grip {
-
     display: grid;
     grid-gap: 10px;
+    margin-bottom: 25px;
     grid-template-columns: repeat(2, 1fr);
     align-content: space-around;
 }
