@@ -52,8 +52,8 @@ class Message
 		                  'Wie geht es nun weiter? Mitglieder des Netzwerkes können deinen Beitrag lesen und kommentieren. '.
 		                  'Wenn du dir darüberhinaus im Kontext deines Beitrages auch eine professionelle Lerngemeinschaft (PLG) wünscht,'.
 		                  'öffne den Tab "Gruppe" und klicke auf "interessiert". Sobald sich mehr eine Mindestzahl an Interessierten gefunden hat, '.
-		                  'bekommst du eine Nachricht, und du kannst eine Gruppe gründen. Wenn alle interessierten beigetreten sind, bekommt ihr als PLG '.
-		                  'einen geschützten digitalen Raum, Unterstützungsinstrumente und auf Wunsch Begleitung bei eurem Vorhaben.'
+		                  'bekommst du eine Nachricht, und du kannst eine Gruppe gründen. Wenn alle Interessierten beigetreten sind, bekommt ihr als PLG '.
+		                  'einen geschützten digitalen Raum, Unterstützungsinstrumente und auf Wunsch Begleitung bei eurem Vorhaben.<br>Viel Erfolg!'
 
 	        ],
         'liked' =>
