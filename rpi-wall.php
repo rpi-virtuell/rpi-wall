@@ -312,14 +312,14 @@ class RpiWall
     {
 	    new Wall\Message(new Wall\Group($post_ID), 'creator', [get_current_user_id()], get_current_user_id());
 	    //new Wall\Message(new Wall\Group($post_ID), 'create', null, get_current_user_id());
-    		$currentMember = new Wall\Member();
-			if(!$currentMember->is_watched_group($post_ID)){
-				$currentMember->toggle_watch_group($post_ID);
-	        }
+        $currentMember = new Wall\Member();
+        if(!$currentMember->is_watched_group($post_ID)){
+            $currentMember->toggle_watch_group($post_ID);
+        }
 
-            ?>
-                <script>location.href='/wall';</script>
-            <?php
+        ?>
+        <script>location.href='/wall';</script>
+        <?php
     }
 
     public function redirect_to_users_member_page()

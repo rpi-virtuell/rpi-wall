@@ -93,7 +93,7 @@ class Message
             ],
 
     ];
-    protected $events = ['create', 'ready', 'liked', 'joined', 'pending', 'founded', 'requested', 'comment', 'reset'];
+    protected $events = ['create','creator', 'ready', 'liked', 'joined', 'pending', 'founded', 'requested', 'comment', 'reset'];
 
     /**
      * @param Group|Int $group
