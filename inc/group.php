@@ -53,7 +53,7 @@ class Group extends \stdClass
         $this->group_member_min = get_option('options_rpi_group_min_required_members', 3);
 
         $this->start_PLG_link = $this->get_startlink();
-        $this->link = '<a href="' . get_permalink($this->post) . '">' . $matrixTitle . '</a>';
+        $this->link = '<a href="' . get_permalink($this->post) . '">' . $this->post->post_title . '</a>';
 
     }
 

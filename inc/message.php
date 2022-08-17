@@ -48,12 +48,12 @@ class Message
         'creator' =>
 	        [
 		        'subject' => '[Pinwandeintrag]: %posttitle%',
-		        'body' => 'Hallo %actorlink%!<br>Vielen Dank für deinen Beitrag an der Pinnwand: %postlink%.<br>'.
+		        'body' => 'Hallo %actorlink%!<br><br>Vielen Dank für deinen Beitrag an der Pinnwand: %postlink%.<br>'.
 		                  'Wie geht es nun weiter? Mitglieder des Netzwerkes können deinen Beitrag lesen und kommentieren. '.
-		                  'Wenn du dir darüberhinaus im Kontext deines Beitrages auch eine professionelle Lerngemeinschaft (PLG) wünscht,'.
-		                  'öffne den Tab "Gruppe" und klicke auf "interessiert". Sobald sich mehr eine Mindestzahl an Interessierten gefunden hat, '.
-		                  'bekommst du eine Nachricht, und du kannst eine Gruppe gründen. Wenn alle Interessierten beigetreten sind, bekommt ihr als PLG '.
-		                  'einen geschützten digitalen Raum, Unterstützungsinstrumente und auf Wunsch Begleitung bei eurem Vorhaben.<br>Viel Erfolg!'
+		                  'Wenn du dir darüberhinaus im Kontext deines Beitrages auch eine professionelle Lerngemeinschaft (PLG) wünscht, '.
+		                  'öffne den Tab "Gruppe" und klicke auf "interessiert". Sobald sich eine Mindestzahl an Interessierten gefunden haben, '.
+		                  'bekommst du eine Nachricht, und du kannst die PLG gründen. Wenn alle Interessierten beigetreten sind, bekommst du Zugang zu einem'.
+		                  'geschützten digitalen Raum, in dem speziell für deine PLG Unterstützungsinstrumente und auf Wunsch auch Begleitung bereit stehen.<br><br>Viel Erfolg!'
 
 	        ],
         'liked' =>
