@@ -41,20 +41,13 @@ class RpiWallAjaxHandler
         add_action('wp_ajax_rpi_wall_close_pin_group', [$this, 'ajax_close_pin_group']);
         add_action('wp_ajax_nopriv_rpi_wall_close_pin_group', [$this, 'ajax_close_pin_group']);
 
-        // Pin Tabs
-
-        add_action('wp_ajax_rpi_tab_group_content', [$this, 'ajax_tab_group_content']);
-        add_action('wp_ajax_nopriv_rpi_tab_group_content', [$this, 'ajax_tab_group_content']);
-
-        add_action('wp_ajax_rpi_tab_pin_content', [$this, 'ajax_tab_pin_content']);
-        add_action('wp_ajax_nopriv_rpi_tab_pin_content', [$this, 'ajax_tab_pin_content']);
 
     }
 
     public function ajax_toggle_group_like()
     {
         $response = ['success' => false];
-        if (isset($_POST['group_id'])) {
+        if (isset($_POST['group_id']) && is_user_logged_in()) {
             $group = new Group($_POST['group_id']);
             if ($group && $group->is_not_founded()) {
 
@@ -186,27 +179,18 @@ class RpiWallAjaxHandler
         die();
     }
 
-    public function ajax_tab_group_content()
-    {
-        $this->display_constituted_group_title();
-        die();
-    }
-
-
-    function display_constituted_group_title()
-    {
-
-    }
-
-    public function ajax_tab_pin_content()
-    {
-        //TODO WIP
-        die();
-    }
-
     public function ajax_close_pin_group()
     {
+//TODO : Write logic to close pin group
 
+        /*
+         * TODO:
+         * Close Matrix chat
+         * Disable Toolbar(No new protocols)
+         * More Publications?
+         * Option to reopen the group
+         *
+         */
     }
 
 }
