@@ -463,7 +463,7 @@ class RpiWall
         <div id="modal-<?php echo $id;?>">
             <div  class="modal-wrapper">
 	            <div  id="btn-close-modal" class="close-modal-<?php echo $id;?>">
-                    <button class="button button-primary">X</button>
+                    <button claaass="button button-primary">X</button>
                 </div>
                 <div class="modal-content"><?php echo $content ?></div>
 

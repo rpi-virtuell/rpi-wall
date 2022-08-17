@@ -497,7 +497,7 @@ class Member extends \stdClass
                 $groupId = $member->validate_and_join($_REQUEST['hash']);
 
                 if ($groupId) {
-                    wp_redirect(get_permalink($groupId));
+                    wp_redirect(get_permalink($groupId).'#group');
                 } else {
                     wp_redirect(home_url());
                 }
@@ -511,7 +511,7 @@ class Member extends \stdClass
                 $groupId = $member->validate_and_request($_REQUEST['hash']);
 
                 if ($groupId) {
-                    wp_redirect(get_permalink($groupId));
+                    wp_redirect(get_permalink($groupId).'#group');
                 } else {
                     wp_redirect(home_url());
                 }
@@ -525,7 +525,7 @@ class Member extends \stdClass
 		        $groupId = $member->validate_and_reject($_REQUEST['hash']);
 
 		        if ($groupId) {
-			        wp_redirect(get_permalink($groupId));
+			        wp_redirect(get_permalink($groupId).'#group');
 		        } else {
 			        wp_redirect(home_url());
 		        }

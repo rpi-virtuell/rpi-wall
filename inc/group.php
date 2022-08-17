@@ -171,7 +171,7 @@ class Group extends \stdClass
             if ('plgstart' == $_REQUEST['action'] && $_REQUEST['hash'] == $group->get_hash('start')) {
 
                 $group->start_pending();
-                wp_redirect(get_permalink($_REQUEST['new_plg_group']));
+                wp_redirect(get_permalink($_REQUEST['new_plg_group']).'#group');
                 die();
             }
 
