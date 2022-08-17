@@ -638,6 +638,11 @@ article.entry-card.type-wall .plg-wrapper {
     width: 100%;
 }
 
+.group-tab-matrix-detail{
+    text-align: center;
+    margin-bottom: 25px;
+}
+
 .toolbar-header{
     color: white;
     font-weight: bold;

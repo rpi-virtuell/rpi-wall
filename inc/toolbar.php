@@ -42,7 +42,7 @@ class Toolbar
                 <div class="toolbar-content">
                     <div class="toolbar-settings">
                         <div class="toolbar-edit-button">
-                            <?php RpiWall::modal('edit-buttons', '<span class="dashicons dashicons-admin-tools"></span>', do_shortcode(' [acfe_form name="rpi_wall_group_toolbar_button_form"] ')); ?>
+                            <?php RpiWall::modal('edit-buttons', '<span class="dashicons dashicons-admin-generic"></span>', do_shortcode(' [acfe_form name="rpi_wall_group_toolbar_button_form"] ')); ?>
                         </div>
                     </div>
                     <div class="group-toolbar-grip">

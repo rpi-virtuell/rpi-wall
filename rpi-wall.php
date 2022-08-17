@@ -193,15 +193,12 @@ class RpiWall
     public function add_tabs_to_pin_view()
     {
         if (is_singular('wall')) {
-
             $tabs = new \rpi\Wall\Tabs('tabset');
 
-                $tabs->addTab(['label' => 'Pin', 'name' => 'pin', 'content' => ob_get_clean(), 'icon' => \rpi\Wall\Shortcodes::$pin_icon, 'checked' => true]);
+            $tabs->addTab(['label' => 'Pin', 'name' => 'pin', 'content' => ob_get_clean(), 'icon' => \rpi\Wall\Shortcodes::$pin_icon, 'checked' => true]);
+            $tabs->addTab(['label' => 'Gruppe', 'name' => 'group', 'content' => $this->get_group_tab_of_pin_view(), 'icon' => \rpi\Wall\Shortcodes::$group_icon]);
 
-                if (get_the_title() != get_field("constitution_gruppenname")) {
-                    $tabs->addTab(['label' => 'Gruppe', 'name' => 'group', 'content' => $this->get_group_tab_of_pin_view(), 'icon' => \rpi\Wall\Shortcodes::$group_icon]);
-                }
-                $tabs->display();
+            $tabs->display();
 
             echo '<script>var rpi_wall ={user_ID: "' . get_the_author_meta("ID") . '"};</script>';
             echo '<script>rpi_wall.allowedtabs = ' . json_encode($tabs->get_allowed_tabs()) . ';</script>';
@@ -214,29 +211,27 @@ class RpiWall
 
         ob_start();
         $group = new Wall\Group(get_the_ID());
-
+        ?>
+        <header class="entry-header">
+            <h1 class="page-title"> <?php echo get_field("constitution_gruppenname") ?> </h1>
+        </header>
+        <?php
         $group->display();
         $currentUser = get_current_user_id();
-        if ($group->is_founded() && $currentUser != 0 && $group->has_member($currentUser)) {
+        if ($group->is_founded() && $currentUser != 0 && ($group->has_member($currentUser) || current_user_can('manage_options'))) {
+            ?>
+            <div class="group-tab-matrix-detail">
+                <a class="toolbar-button button" href="<?php echo $group->get_matrix_link() ?>">Zur Matrix Gruppe</a>
+            </div>
+            <?php
             Wall\Toolbar::display_toolbar($group, false);
-
         }
         ?>
         <div class="constituted-post-head">
-            <header class="entry-header">
-                <h1 class="page-title"> <?php echo get_field("constitution_gruppenname") ?> </h1>
-            </header>
-            <?php $group_goal = get_field("constitution_zielformulierung");
-            if (!empty($group_goal)) {
-                ?>
-                <p>Unsere Zielformulierung:</p>
-                <p><?php echo $group_goal ?></p>
-                <?php
-            } ?>
             <?php $protocols = Wall\protocol::get_protocols($group->ID);
             if (sizeof($protocols) > 0) {
                 ?>
-
+                <h5>Veröffentlichte Protokolle:</h5>
                 <div>
                     <?php foreach ($protocols as $protocol) {
                         $protocol_result = get_field("rpi_wall_protocol_result", $protocol->ID);
