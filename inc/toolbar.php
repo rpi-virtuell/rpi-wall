@@ -22,7 +22,7 @@ class Toolbar
         return $classes;
     }
 
-    static function display_toolbar(Group $group)
+    static function display_toolbar(Group $group, bool $widget)
     {
             $next_meeting = get_post_meta($group->ID, 'date_of_meeting', true);
             ?>
@@ -109,10 +109,13 @@ class Toolbar
                 </div>
             </div>
             <?php
+        if ($widget)
+        {
             echo ob_get_clean();
             echo '</body></html>';
             wp_footer();
             die();
+        }
 
 
     }

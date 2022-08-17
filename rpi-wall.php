@@ -89,7 +89,7 @@ class RpiWall
                 $group = new Wall\Group(get_the_ID());
                 $split = explode('_', $_GET['widgetId']);
                 if ($group->get_matrix_room_id() === $split[0]) {
-                    Wall\Toolbar::display_toolbar($group);
+                    Wall\Toolbar::display_toolbar($group, true);
                 }
             }
         });
@@ -201,8 +201,6 @@ class RpiWall
                 if (get_the_title() != get_field("constitution_gruppenname")) {
                     $tabs->addTab(['label' => 'Gruppe', 'name' => 'group', 'content' => $this->get_group_tab_of_pin_view(), 'icon' => \rpi\Wall\Shortcodes::$group_icon]);
                 }
-
-
                 $tabs->display();
 
             echo '<script>var rpi_wall ={user_ID: "' . get_the_author_meta("ID") . '"};</script>';
@@ -212,12 +210,15 @@ class RpiWall
 
     public function get_group_tab_of_pin_view()
     {
-        $group = new Wall\Group(get_the_ID());
+
+
         ob_start();
+        $group = new Wall\Group(get_the_ID());
+
         $group->display();
         $currentUser = get_current_user_id();
         if ($group->is_founded() && $currentUser != 0 && $group->has_member($currentUser)) {
-            Wall\Toolbar::display_toolbar($group);
+            Wall\Toolbar::display_toolbar($group, false);
 
         }
         ?>
@@ -235,24 +236,28 @@ class RpiWall
             <?php $protocols = Wall\protocol::get_protocols($group->ID);
             if (sizeof($protocols) > 0) {
                 ?>
-                <details class="constituted-post-protocol">
-                    <div>
-                        <?php foreach ($protocols as $protocol) {
-                           ?> <summary><h5><?php echo $protocol->post_date ?></h5></summary> <?php
+
+                <div>
+                    <?php foreach ($protocols as $protocol) {
+
+                        ?>
+                        <details class="constituted-post-protocol">
+                            <summary><h5><?php echo $protocol->post_date ?></h5></summary> <?php
                             $protocol_result = get_field("rpi_wall_protocol_result", $protocol->ID);
                             $publish_result = get_field('rpi_wall_protocol_is_public_result', $protocol->ID);
                             if (!empty($protocol_result) && $publish_result) {
                                 ?>
                                 <h5>
-
                                     Ergebnis des Treffens:
                                 </h5>
                                 <p><?php echo $protocol_result ?></p>
+
                                 <?php
                             }
-                        } ?>
-                    </div>
-                </details>
+                            ?>
+                        </details> <?php
+                    } ?>
+                </div>
             <?php } ?>
         </div>
         <?php

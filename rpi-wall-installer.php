@@ -65,21 +65,24 @@ class RPIWallInstaller
         }
         /// Author capabilities
 
-        $role = get_role('author');
+        $roles = ['author', 'subscriber'];
+        foreach ($roles as $roleslug) {
+            $role = get_role($roleslug);
 
-        $role->add_cap('edit_wall');
-        $role->add_cap('publish_walls');
-        $role->add_cap('read_walls');
-        $role->add_cap('delete_walls');
+            $role->add_cap('edit_wall');
+            $role->add_cap('publish_walls');
+            $role->add_cap('read_walls');
+            $role->add_cap('delete_walls');
 
-        $role->add_cap('edit_wall_tags');
-        $role->add_cap('assign_wall_tags');
+            $role->add_cap('edit_wall_tags');
+            $role->add_cap('assign_wall_tags');
 
-        $role->add_cap('assign_wall_cat');
+            $role->add_cap('assign_wall_cat');
 
-        $role->add_cap('assign_badge');
+            $role->add_cap('assign_badge');
 
-        $role->add_cap('assign_schooltype');
+            $role->add_cap('assign_schooltype');
+        }
     }
 
     public function register_post_types()
