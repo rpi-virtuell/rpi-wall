@@ -874,7 +874,7 @@ class Group extends \stdClass
             $out .= get_avatar($user_id, $size);
             $out .= '</a>';
             $out .= '</li>';
-            $zIndex--;
+            $zIndex++;
         }
         if (!wp_doing_ajax()) {
             $out .= '</ul>';

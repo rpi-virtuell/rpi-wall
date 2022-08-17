@@ -106,7 +106,7 @@ class MemberPage
          </div>';
         $user = get_userdata($_POST['user_ID']);
 
-	    echo do_shortcode($user->user_description . $tags);
+	    echo do_shortcode(nl2br($user->user_description) . $tags);
         die();
     }
 

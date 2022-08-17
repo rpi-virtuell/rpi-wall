@@ -556,7 +556,11 @@ article.entry-card.type-wall .plg-wrapper {
 
 .group-member img {
     border-radius: 50%;
-    border: 2px solid #fff;
+    border: 1px solid #bbb;
+    box-shadow: 3px 1px 9px #555;
+    background-color: white;
+    margin-top: 7px;
+    margin-bottom: 7px;
 }
 
 .group-member {
