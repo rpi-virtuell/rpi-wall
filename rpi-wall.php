@@ -109,10 +109,11 @@ class RpiWall
 //        add_action('blocksy:hero:title:before',[$this,'display_constituted_group_title']);
 
 
-        add_action('blocksy:single:top', [$this, 'add_ob_to_capture_pin_content']);
+	    add_action('blocksy:single:top', ['rpi\Wall\Group', 'display_watcher_area']);
+
+	    add_action('blocksy:single:top', [$this, 'add_ob_to_capture_pin_content']);
         add_action('blocksy:single:bottom', [$this, 'add_tabs_to_pin_view']);
 
-        add_action('blocksy:hero:before', ['rpi\Wall\Group', 'display_watcher_area']);
 
         // Pinboard Carddisplay
 
