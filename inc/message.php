@@ -145,10 +145,34 @@ class Message
             if ($msg !== false) {
                 $this->create($msg, $user_ids);
                 $this->increase_message_counters($user_ids);
+
+                $user_ids = $this->get_watchers_with_mail_permission($event, $user_ids);
                 $this->send($msg, $user_ids);
+
             }
         }
     }
+
+    public function get_watchers_with_mail_permission($event, $watchers)
+    {
+
+        $args = [
+            'post_type' => 'member',
+            'posts_per_page' => -1,
+            'post__in' => array($watchers),
+            'meta_query' => array(
+                array(
+                    'key' => 'rpi_wall_watcher_id',
+                    'value' => 'rpi_user_message_' . $event,
+                    'compare' => '='
+                )
+            )
+
+        ];
+        $members = get_posts($args);
+        return $members;
+    }
+
 
     /**
      * @param string $slug : $this->$events

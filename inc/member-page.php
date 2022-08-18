@@ -136,9 +136,14 @@ class MemberPage
                                 <strong>Welche Perspektiven passen zu dir am ehesten?</strong>
                                 [acfe_form name="member-taxonomy"]
                             </div>
-                            
                         </div>
-                        <div>[acfe_form name="user-profile"]</div>
+                        <div>
+                            [acfe_form name="user-profile"]
+                        </div>
+                        <div>
+                        <strong>Welche Emails sollen zu dir gesendet werden?</strong>
+                            [acfe_form name="user_email_settings"]
+                        </div>
                     </div>';
 
         return do_shortcode($settings);
