@@ -122,12 +122,16 @@ class RpiWallAjaxHandler
         if (isset($_POST['message_id'])) {
             $member = new Member();
             $message = get_post($_POST['message_id']);
+            Message::change_message_counter($member->ID, true);
             $member->set_message_read($_POST['message_id']);
+            $message_count = $member->get_unread_messages_count();
             $response = [
                 'success' => true,
                 'message_id' => $_POST['message_id'],
                 'title' => $message->post_title,
-                'content' => $message->post_content];
+                'content' => $message->post_content,
+                'message_count' => $message_count
+            ];
         }
         echo json_encode($response);
         die();
