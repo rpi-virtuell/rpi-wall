@@ -193,6 +193,7 @@ class RpiWall
     public function add_tabs_to_pin_view()
     {
         if (is_singular('wall')) {
+
             $tabs = new \rpi\Wall\Tabs('tabset');
 
             $tabs->addTab(['label' => 'Pin', 'name' => 'pin', 'content' => ob_get_clean(), 'icon' => \rpi\Wall\Shortcodes::$pin_icon, 'checked' => true]);
@@ -491,6 +492,8 @@ class RpiWall
 
     public function custom_style_and_scripts()
     {
+	    wp_enqueue_style('tabs', plugin_dir_url(__FILE__) . 'assets/css/tabs.css');
+
         wp_enqueue_style('rpi-wall-style', plugin_dir_url(__FILE__) . 'assets/css/custom-style.css');
         wp_enqueue_style('rpi-wall-style-modal-norm', plugin_dir_url(__FILE__) . 'assets/css/normalize.min.css');
         wp_enqueue_style('rpi-wall-style-modal-anim', plugin_dir_url(__FILE__) . 'assets/css/animate.min.css');
@@ -499,13 +502,10 @@ class RpiWall
         wp_localize_script('rpi-wall-script', 'wall', array('ajaxurl' => admin_url('admin-ajax.php')));
 
 
-        wp_enqueue_style('tabs', plugin_dir_url(__FILE__) . 'assets/css/tabs.css');
-
     }
 
     function test()
     {
-
         if (isset($_GET['admin_test'])) {
             foreach ([3, 4, 5] as $user_id) {
                 $member = new Wall\Member($user_id);
@@ -523,11 +523,7 @@ class RpiWall
             $member = new Wall\Member(6);
             $member->like_group(480);
         }
-
-
     }
-
-
 }
 
 

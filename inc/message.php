@@ -11,6 +11,7 @@ class Message
     protected $subject;
     protected $body;
     protected Member $member;
+    protected $actor;
 
     static $templates = [
 

@@ -53,7 +53,7 @@ class Group extends \stdClass
         $this->group_member_min = get_option('options_rpi_group_min_required_members', 3);
 
         $this->start_PLG_link = $this->get_startlink();
-        $this->link = '<a href="' . get_permalink($this->post) . '">' . $this->post->post_title . '</a>';
+        $this->link = '<a href="' . get_permalink($this->post) . '#group">' . $this->post->post_title . '</a>';
 
     }
 
@@ -1012,7 +1012,7 @@ class Group extends \stdClass
         echo '<div class="card_plg_info ' . strval($status) . '">';
         echo '<div class="plg-wrapper">';
         echo '<div class="plg plg-' . $status . '">
-						<a href="' . get_the_permalink() . '">' . $notice . '</a>
+						<a href="' . get_the_permalink() . '#group">' . $notice . '</a>
 						<span plg-stats>' . $stats . '</span>';
         echo '</div>';
         echo '<div class="hot-comments">';

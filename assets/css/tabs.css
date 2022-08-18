@@ -17,7 +17,7 @@
 .tabset > input:nth-child(9):checked ~ .tab-panels > .tab-panel:nth-child(5),
 .tabset > input:nth-child(11):checked ~ .tab-panels > .tab-panel:nth-child(6)
 {
-    display: block;
+    display: block!important;
 }
 
 /*

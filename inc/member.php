@@ -8,7 +8,7 @@ class Member extends \stdClass
 
     public $ID;
     public $name;
-    public string $url;
+    public $url;
     public $post;  //CPT Member WP_Post
     public $user;
     public $link;
@@ -48,8 +48,6 @@ class Member extends \stdClass
 
         $this->name = $this->user->display_name;
 
-        $this->url = $this->get_member_profile_permalink();
-        $this->link = $this->get_link();
 
 
         $posts = get_posts(array(
@@ -65,6 +63,9 @@ class Member extends \stdClass
             $this->post = $this->setup();
         }
 
+	    $this->url = $this->get_member_profile_permalink();
+	    $this->link = $this->get_link();
+
 
     }
 
@@ -76,7 +77,7 @@ class Member extends \stdClass
 
     public function get_link()
     {
-        return '<a href="' . $this->get_member_profile_permalink() . '" class="member_link-">' . $this->name . '</a>';
+        return '<a href="' . $this->url . '" class="member_link-">' . $this->name . '</a>';
 
     }
 
