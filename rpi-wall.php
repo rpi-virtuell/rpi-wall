@@ -137,6 +137,8 @@ class RpiWall
         // TODO USED FOR DEBUG NEEDS TO BE DELETED BEFORE LAUNCH
         add_action('init', [$this, 'test']);
 
+        add_action('wp_footer', [$this, 'initialize_message_counter']);
+
         /**
 	     * ToDo add to cronjob
 	     */
@@ -523,6 +525,18 @@ class RpiWall
 
             $member = new Wall\Member(6);
             $member->like_group(480);
+        }
+    }
+
+    public function initialize_message_counter()
+    {
+        if (is_user_logged_in()) {
+            $member = new Wall\Member();
+            $message_count = $member->get_unread_messages_count();
+            if ($message_count == "0") {
+                $message_count = "";
+            }
+             echo '<script> jQuery(document).ready($ => { $("#message-count").html("' . $message_count . '")})</script>';
         }
     }
 }

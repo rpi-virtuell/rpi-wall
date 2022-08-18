@@ -152,6 +152,13 @@ jQuery(document).ready($ => {
                                 $('.member-message-grid').addClass('message-detail');
                                 $('.member-message-grid').removeClass('message-list');
                                 $('#member-message-button').addClass('member-button-display');
+                                if (data.message_count !== "0")
+                                {
+                                    $('#message-count').html(data.message_count);
+                                }else
+                                {
+                                    $('#message-count').html("");
+                                }
                             }
                         }
                     }
