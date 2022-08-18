@@ -144,6 +144,7 @@ class Message
         if (in_array($event, $this->events) && $msg = $this->prepare_message($event, $replace_data)) {
             if ($msg !== false) {
                 $this->create($msg, $user_ids);
+                $this->increase_message_counters($user_ids);
                 $this->send($msg, $user_ids);
             }
         }
@@ -249,7 +250,57 @@ class Message
     }
 
 
-    public function send($msg, $recipient_ids)
+	/**
+	 * @param array $recipient_ids |WP_User->IDs
+	 *
+	 * @return void
+	 */
+    protected function increase_message_counters($recipient_ids){
+
+		foreach ($recipient_ids as $recipient_id){
+
+			self::change_message_counter($recipient_id);
+		}
+
+    }
+
+	/**
+	 * @param int $recipient_id |WP_User->ID
+	 * @param bool $decrease
+	 *
+	 * @return void
+	 */
+	static function change_message_counter($recipient_id, $decrease = false){
+		if(get_userdata($recipient_id)){
+			$counter  = get_user_meta($recipient_id, 'rpi_wall_unread_messages_count',true);
+			if($decrease){
+				if($counter>0){
+					$counter --;
+				}
+			}else{
+				$counter ++;
+			}
+			update_user_meta($recipient_id, 'rpi_wall_unread_messages_count', $counter);
+		}
+	}
+
+	/**
+	 * @param int $user_id
+	 *
+	 * @return mixed
+	 */
+	static function get_unread_messages_count($user_id){
+		return get_user_meta($user_id,'rpi_wall_unread_messages_count', true);
+	}
+
+
+	/**
+	 * @param \stdClass $msg
+	 * @param array $recipient_ids
+	 *
+	 * @return void
+	 */
+	public function send($msg, $recipient_ids)
     {
 
 	    $headers = array('Content-Type: text/html; charset=UTF-8');

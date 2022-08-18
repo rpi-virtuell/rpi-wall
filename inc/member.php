@@ -81,7 +81,9 @@ class Member extends \stdClass
 
     }
 
-
+	public function get_unread_messages_count(){
+		return get_user_meta($this->ID,'rpi_wall_unread_messages_count', true);
+	}
 
 
     static function set_default_matrixId($field){
