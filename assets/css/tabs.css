@@ -146,4 +146,47 @@ body {
         padding: 4px;
     }
 }
+@media only screen and (min-width: 800px) {
+    .wall .tabset label{
+        width:150px;
+        height: 85px;
+        border-bottom:1px solid #2189F2;
+    }
+    .wall .tabset > input:checked + label:nth-child(2){
+        margin-right: -20px;
+        box-shadow: 2px 0px 5px #999999;
+        z-index: 2;
+        height: 92px;
+        top: -5px;
+    }
+    .wall .tabset > input:checked + label:nth-child(4){
+        margin-left: -20px;
+        box-shadow: -2px 0px 5px #999999;
+        z-index: 2;
+        height: 92px;
+        top: -5px;
 
+    }
+
+}
+
+@media only screen and (max-width: 800px) {
+    .wall .tabset label{
+        width:100px;
+    }
+    .wall .tabset > input:checked + label:nth-child(2){
+        margin-right: -20px;
+        box-shadow: 2px 0px 5px #999999;
+        z-index: 2;
+        height: 63px;
+        top: -3px;
+    }
+    .wall .tabset > input:checked + label:nth-child(4){
+        margin-left: -20px;
+        box-shadow: -2px 0px 5px #999999;
+        z-index: 2;
+        height: 63px;
+        top: -3px;
+    }
+
+}
