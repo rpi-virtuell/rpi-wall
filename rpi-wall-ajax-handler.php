@@ -122,6 +122,7 @@ class RpiWallAjaxHandler
         if (isset($_POST['message_id'])) {
             $member = new Member();
             $message = get_post($_POST['message_id']);
+            Message::change_message_counter($member->ID, true);
             $member->set_message_read($_POST['message_id']);
             $response = [
                 'success' => true,
