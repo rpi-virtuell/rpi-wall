@@ -314,12 +314,14 @@ class RpiWall
 
     public function on_new_pin($form, $post_ID)
     {
+
 	    new Wall\Message(new Wall\Group($post_ID), 'creator', [get_current_user_id()], get_current_user_id());
 	    //new Wall\Message(new Wall\Group($post_ID), 'create', null, get_current_user_id());
         $currentMember = new Wall\Member();
         //if(!$currentMember->is_watched_group($post_ID)){
 
         //}
+
 
 	    if(get_post_meta($post_ID,'plg_liker', true)){
 		    $currentMember->like_group($post_ID);
@@ -330,7 +332,7 @@ class RpiWall
 
         ?>
         <script>
-            location.href='/wall';
+            location.href='/?p=<?php echo $post_ID;?>';
         </script>
         <?php
     }
@@ -401,8 +403,11 @@ class RpiWall
     function display_cards_group_info()
     {
 
-        $group = new rpi\Wall\Group(get_the_ID());
-        $group->display_short_info();
+        if(is_post_type_archive('wall')){
+	        $group = new rpi\Wall\Group(get_the_ID());
+	        $group->display_short_info();
+
+        }
 
     }
 
@@ -429,7 +434,7 @@ class RpiWall
                 <?php $bio = substr(get_the_author_meta('description'),0, 250);
                 if(!empty($bio)){?>
                 <div class="member-card-bio">
-                    <?php echo $bio ?>
+                    <?php //echo $bio ?>
                 </div>
                     <?php } ?>
                 <div class="member-card-tags">
