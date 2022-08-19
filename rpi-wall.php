@@ -313,12 +313,21 @@ class RpiWall
 	    new Wall\Message(new Wall\Group($post_ID), 'creator', [get_current_user_id()], get_current_user_id());
 	    //new Wall\Message(new Wall\Group($post_ID), 'create', null, get_current_user_id());
         $currentMember = new Wall\Member();
-        if(!$currentMember->is_watched_group($post_ID)){
-            $currentMember->toggle_watch_group($post_ID);
-        }
+        //if(!$currentMember->is_watched_group($post_ID)){
+
+        //}
+
+	    if(get_post_meta($post_ID,'plg_liker', true)){
+		    $currentMember->like_group($post_ID);
+	    }else{
+		    $currentMember->toggle_watch_group($post_ID);
+	    }
+
 
         ?>
-        <script>location.href='/wall';</script>
+        <script>
+            location.href='/wall';
+        </script>
         <?php
     }
 
