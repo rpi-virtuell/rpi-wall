@@ -45,35 +45,69 @@ jQuery(document).ready($ => {
 
     function locationHashChanged() {
         if(location.hash.indexOf('page_')<0){
-            if (site_match_member) {
+            if (site_match_member && $('.tabset').length>0) {
                 $('.tabset').ready(function () {
-                    if (location.hash && rpi_wall.allowedtabs.includes(location.hash.substring(1))) {
-                        hash = location.hash.substring(1);
-                    } else {
-                        hash = "bio";
+
+                    var hash = "bio";
+                    var page = 1;
+                    for (const tab of rpi_wall.allowedtabs) {
+                        var regex = new RegExp( tab, 'g' );
+                        if (location.hash && location.hash.match(regex)){
+                             hash = tab;
+                             var match = location.hash.match(/page(\d+)/);
+                             if(match!== null){
+                                 page = match[1];
+                             }
+                            break;
+                        }
+                        //page?
+
                     }
-                    action = "rpi_tab_" + hash + "_content";
+
+                    //location.hash.indexOf(hash)
+
+                    // if (location.hash && rpi_wall.allowedtabs.includes(location.hash.substring(1))) {
+                    //     hash = location.hash.substring(1);
+                    // } else {
+                    //     hash = "bio";
+                    // }
+                    //var action = "rpi_tab_" + hash + "_content";
                     $('#tab-' + hash).prop('checked', true);
-                    rpi_wall_send_post(action);
+                    rpi_wall_send_post(hash,page);
                 })
 
-            }else if(site_match_wall){
+            }else if(site_match_wall && $('.tabset').length>0){
                 $('.tabset').ready(function () {
-                    if (location.hash && rpi_wall.allowedtabs.includes(location.hash.substring(1))) {
-                        hash = location.hash.substring(1);
-                    } else {
-                        hash = "pin";
+                    // if (location.hash && rpi_wall.allowedtabs.includes(location.hash.substring(1))) {
+                    //     hash = location.hash.substring(1);
+                    // } else {
+                    //     hash = "pin";
+                    // }
+                    var page = 1;
+                    var hash = "pin";
+                    for (const tab of rpi_wall.allowedtabs) {
+                        var regex = new RegExp( tab, 'g' );
+                        if (location.hash && location.hash.match(regex)){
+                            hash = tab;
+                            var match = location.hash.match(/page(\d+)/);
+                            if(match!== null){
+                                page = match[1];
+                            }
+                            break;
+                        }
                     }
-                    action = "rpi_tab_" + hash + "_content";
+                    //action = "rpi_tab_" + hash + "_content";
                     $('#tab-' + hash).prop('checked', true);
-                    rpi_wall_send_post(action);
+                    rpi_wall_send_post(hash, page);
                 })
             }
         }
     }
 
 
-    function rpi_wall_send_post(action) {
+    function rpi_wall_send_post(hash, paged=1) {
+
+        var action = "rpi_tab_" + hash + "_content";
 
         if (action === 'rpi_tab_logout_content'){
             location.href = "/wp-login.php?action=logout";
@@ -86,17 +120,24 @@ jQuery(document).ready($ => {
             {
                 'action': action,
                 'user_ID': rpi_wall.user_ID,
-                'paged': 1
+                'paged': paged
             },
             function (response) {
-                rpi_wall_print_content(response, action)
+                rpi_wall_print_content(response, hash)
             }
         )
     }
 
-    function rpi_wall_print_content(response, action) {
-        console.log(action);
-        $('#' + action).html(response);
+    function rpi_wall_print_content(response, hash) {
+
+        console.log(hash);
+
+        if(!response || response == ''){
+            return;
+        }
+
+        var action = "rpi_tab_" + hash + "_content";
+        $('#' + hash).html(response);
         if (action === 'rpi_tab_messages_content') {
             mark_and_display_message();
             add_member_message_button_event();
@@ -114,7 +155,7 @@ jQuery(document).ready($ => {
                     'user_ID': rpi_wall.user_ID,
                     'paged': page
                 };
-                $(elem).attr('href', '#page_' + page);
+                $(elem).attr('href', '#'+hash+'_page' + page);
                 $(elem).unbind();
 
                 $(elem).on('click', e => {
@@ -122,7 +163,7 @@ jQuery(document).ready($ => {
                         wall.ajaxurl,
                         data,
                         function (response) {
-                            rpi_wall_print_content(response, action)
+                            rpi_wall_print_content(response, hash)
                         }
                     )
                 })
