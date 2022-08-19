@@ -51,8 +51,6 @@ class RpiWall
     public function __construct()
     {
 
-        add_action('wp_head');
-
 	    add_action('wp_enqueue_scripts', [$this, 'custom_style_and_scripts']);
 
         add_filter('body_class', [$this, 'add_group_status_class']);
