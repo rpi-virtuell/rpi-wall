@@ -140,6 +140,7 @@ class MemberPage
                         <div>
                             [acfe_form name="user-profile"]
                         </div>
+                        <div><!-- Empty Spacer --></div>
                         <div>
                         <strong>Welche Emails sollen zu dir gesendet werden?</strong>
                             [acfe_form name="user_email_settings"]
@@ -303,7 +304,7 @@ class MemberPage
                 foreach ($messages as $post):
                     setup_postdata($post);
                     ?>
-                    <div class="message" id="message-<?php echo $post->ID ?>">
+                    <div class="message-entry" id="message-<?php echo $post->ID ?>">
                         <div class="entry-title <?php echo $read_messages[$post->ID] ? '' : 'unread' ?>">
                             <?php echo date('d.n.Y', strtotime($post->post_date)); ?>
                             : <?php echo $post->post_title; ?>

@@ -133,7 +133,7 @@ jQuery(document).ready($ => {
 
     function mark_and_display_message() {
 
-        $('.message').each((i, msg) => {
+        $('.message-entry').each((i, msg) => {
             const id = msg.id.replace('message-', '');
             $(msg).on('click', e => {
                 $.post(

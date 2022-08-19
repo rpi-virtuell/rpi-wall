@@ -163,19 +163,19 @@ article.entry-card {
 #member-message-detail-content {
 }
 
-.message {
+.message-entry {
     border: 1px solid grey;
     border-radius: 3px;
     margin: 5px;
     padding: 5px;
 }
 
-.message:hover {
+.message-entry:hover {
     border-color: #2189f2;
     color: #2189f2;
 }
 
-.message .unread {
+.message-entry .unread {
     font-weight: bold;
 }
 

@@ -122,8 +122,17 @@ class RpiWallAjaxHandler
         if (isset($_POST['message_id'])) {
             $member = new Member();
             $message = get_post($_POST['message_id']);
-            Message::change_message_counter($member->ID, true);
-            $member->set_message_read($_POST['message_id']);
+
+            if ($read_messages = get_user_meta($member->ID, 'rpi_read_messages', true)) {
+                $read_messages = unserialize($read_messages);
+            } else {
+                $read_messages = array();
+            }
+            if (!exists($read_messages, $_POST['message_id']))
+            {
+                Message::change_message_counter($member->ID, true);
+                $member->set_message_read($_POST['message_id']);
+            }
             $message_count = $member->get_unread_messages_count();
             $response = [
                 'success' => true,

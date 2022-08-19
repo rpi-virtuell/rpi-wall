@@ -51,6 +51,8 @@ class RpiWall
     public function __construct()
     {
 
+        add_action('wp_head');
+
 	    add_action('wp_enqueue_scripts', [$this, 'custom_style_and_scripts']);
 
         add_filter('body_class', [$this, 'add_group_status_class']);
@@ -151,6 +153,8 @@ class RpiWall
                  $this->installer->sync_taxonomies_of_members($post->ID , $post,false);
             }
 
+           echo '<script> var rpi_wall; </script>';
+
         });
 
 
@@ -204,7 +208,7 @@ class RpiWall
 
             $tabs->display();
 
-            echo '<script>var rpi_wall ={user_ID: "' . get_the_author_meta("ID") . '"};</script>';
+            echo '<script>rpi_wall ={user_ID: "' . get_the_author_meta("ID") . '"};</script>';
             echo '<script>rpi_wall.allowedtabs = ' . json_encode($tabs->get_allowed_tabs()) . ';</script>';
         }
     }
