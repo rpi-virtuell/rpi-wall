@@ -162,8 +162,8 @@ class Message
             'post__in' => array($watchers),
             'meta_query' => array(
                 array(
-                    'key' => 'rpi_wall_watcher_id',
-                    'value' => 'rpi_user_message_' . $event,
+                    'key' => 'rpi_user_message_' . $event,
+                    'value' => 1,
                     'compare' => '='
                 )
             )
