@@ -57,7 +57,7 @@ class RpiWall
         add_action('post_class', [$this, 'add_group_status_class']);
 
 	    add_action('blocksy:content:top', function () {
-            if (is_post_type_archive('wall') && current_user_can('publish_walls')) {
+            if (is_post_type_archive('wall') || is_tax() && current_user_can('publish_walls')) {
                 RpiWall::modal('form', 'Neuer Eintrag', do_shortcode('[acfe_form name="create-pin"]'));
 
             } else {
