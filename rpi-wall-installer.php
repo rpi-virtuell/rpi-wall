@@ -333,17 +333,17 @@ class RPIWallInstaller
         register_taxonomy("wall-tag", ["wall", "member"], $args);
 
         /**
-         * Taxonomy: Kategorien.
+         * Taxonomy: Pin Kategorien.
          */
 
         $labels = [
-            "name" => __("Kategorien", "blocksy"),
-            "singular_name" => __("Kategorie", "blocksy"),
+            "name" => __("Pin Kategorien", "blocksy"),
+            "singular_name" => __("Pin Kategorie", "blocksy"),
         ];
 
 
         $args = [
-            "label" => __("Kategorien", "blocksy"),
+            "label" => __("Pin Kategorien", "blocksy"),
             "labels" => $labels,
             "public" => true,
             "publicly_queryable" => true,
@@ -797,6 +797,49 @@ class RPIWallInstaller
                         ),
                         'placement' => 'top',
                         'endpoint' => 0,
+                    ),
+                    array(
+                        'key' => 'field_rpi_label_general_textfields_group',
+                        'label' => '',
+                        'name' => 'rpi_label_general_textfields_group',
+                        'type' => 'group',
+                        'instructions' => 'Diese Felder werden für unterschiedliche Textbereiche in Bereichen der Pinnwand angezeigt',
+                        'required' => 0,
+                        'conditional_logic' => 0,
+                        'wrapper' => array(
+                            'width' => '',
+                            'class' => '',
+                            'id' => '',
+                        ),
+                        'frontend_admin_display_mode' => 'edit',
+                        'only_front' => 0,
+                        'layout' => 'block',
+                        'acfe_seamless_style' => 0,
+                        'acfe_group_modal' => 0,
+                        'sub_fields' =>
+                            array(
+                                array(
+                                    'key' => 'field_rpi_wall_main_header',
+                                    'label' => 'Pinnwand Header Einleitung',
+                                    'name' => 'rpi_wall_main_header',
+                                    'type' => 'text',
+                                    'instructions' => '',
+                                    'required' => 0,
+                                    'conditional_logic' => 0,
+                                    'wrapper' => array(
+                                        'width' => '',
+                                        'class' => '',
+                                        'id' => '',
+                                    ),
+                                    'frontend_admin_display_mode' => 'edit',
+                                    'readonly' => 0,
+                                    'default_value' => 'Willkommen auf der Pinnwand! Hier kannst du eigene Fragestellungen einbringen und findest spannende Impulse zu verschiedenen Themen. Außerdem kannst dich an Fragen durch Kommentare beteiligen oder Professionelle Lerngruppen (PLG´s) zum intensiveren Austausch zu einem Thema finden.',
+                                    'placeholder' => '',
+                                    'prepend' => '',
+                                    'append' => '',
+                                    'maxlength' => '',
+                                ),
+                            ),
                     ),
                     array(
                         'key' => 'field_rpi_label_group',

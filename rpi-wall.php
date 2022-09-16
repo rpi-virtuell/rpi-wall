@@ -33,7 +33,7 @@ require_once("inc/tabs.php");
 require_once("inc/member-page.php");
 require_once("inc/message.php");
 require_once("inc/protocol.php");
-require_once("inc/matrix.php" );
+require_once("inc/matrix.php");
 require_once("inc/toolbar.php");
 
 use rpi\Wall;
@@ -51,13 +51,20 @@ class RpiWall
     public function __construct()
     {
 
-	    add_action('wp_enqueue_scripts', [$this, 'custom_style_and_scripts']);
+        add_action('wp_enqueue_scripts', [$this, 'custom_style_and_scripts']);
 
         add_filter('body_class', [$this, 'add_group_status_class']);
         add_action('post_class', [$this, 'add_group_status_class']);
 
-	    add_action('blocksy:content:top', function () {
+        add_action('blocksy:content:top', function () {
             if (is_post_type_archive('wall') || is_tax() && current_user_can('publish_walls')) {
+                ob_start();
+                ?>
+                <div class="ct-container rpi-wall-tutorial-header">
+                    <span><?php echo get_option('options_rpi_label_general_textfields_group_rpi_wall_main_header', 'Willkommen auf der Pinnwand! Hier kannst du eigene Fragestellungen einbringen und findest spannende Impulse zu verschiedenen Themen. Außerdem kannst dich an Fragen durch Kommentare beteiligen oder Professionelle Lerngruppen (PLG´s) zum intensiveren Austausch zu einem Thema finden.') ?></span>
+                </div>
+                <?php
+                echo ob_get_clean();
                 RpiWall::modal('form', 'Neuer Eintrag', do_shortcode('[acfe_form name="create-pin"]'));
 
             } else {
@@ -78,13 +85,13 @@ class RpiWall
             }
 
 
-	    });
+        });
 
-        add_filter( 'acf/load_field/name=matrixid', ['rpi\Wall\Member', 'set_default_matrixId' ] );
+        add_filter('acf/load_field/name=matrixid', ['rpi\Wall\Member', 'set_default_matrixId']);
 
         //Toolbar
-	    add_filter('body_class', ['\rpi\Wall\Toolbar','add_toolbar_class_to_body']);
-        add_action('wp_body_open', function() {
+        add_filter('body_class', ['\rpi\Wall\Toolbar', 'add_toolbar_class_to_body']);
+        add_action('wp_body_open', function () {
             if (isset($_GET['widgetId']) && get_post_type() == "wall") {
                 $group = new Wall\Group(get_the_ID());
                 $split = explode('_', $_GET['widgetId']);
@@ -95,34 +102,38 @@ class RpiWall
         });
 
 
-        add_action('acfe/form/submit/form=constitution', function ($form, $post_id){
-           Wall\Toolbar::update_toolbar_status($form,$post_id,'constituted');
-        },10 ,2);
+        add_action('acfe/form/submit/form=constitution', function ($form, $post_id) {
+            Wall\Toolbar::update_toolbar_status($form, $post_id, 'constituted');
+        }, 10, 2);
 
-        add_action('acfe/form/submit/form=constitution_date', function ($form, $post_id){
-            do_action('new_meeting_date', get_post_meta($post_id ,'date_of_meeting', true),  $post_id);
-            Wall\Toolbar::update_toolbar_status($form,$post_id,'meeting_planned');
-        },10 ,2);
+        add_action('acfe/form/submit/form=constitution_date', function ($form, $post_id) {
+            do_action('new_meeting_date', get_post_meta($post_id, 'date_of_meeting', true), $post_id);
+            Wall\Toolbar::update_toolbar_status($form, $post_id, 'meeting_planned');
+        }, 10, 2);
 
         // Pin Display
 
 //        add_action('blocksy:hero:title:before',[$this,'display_constituted_group_title']);
 
 
-	    add_action('blocksy:single:top', ['rpi\Wall\Group', 'display_watcher_area']);
+        add_action('blocksy:single:top', ['rpi\Wall\Group', 'display_watcher_area']);
 
-	    add_action('blocksy:single:top', [$this, 'add_ob_to_capture_pin_content']);
+        add_action('blocksy:single:top', [$this, 'add_ob_to_capture_pin_content']);
         add_action('blocksy:single:bottom', [$this, 'add_tabs_to_pin_view']);
 
 
         // Pinboard Carddisplay
 
+
         add_action('blocksy:loop:card:start', [$this, 'display_cards_status_triangle']);
+        add_action('blocksy:loop:card:start', [$this, 'display_cards_pin_icon']);
+
         add_action('blocksy:loop:card:end', [$this, 'display_cards_group_info']);
 
         add_action('blocksy:loop:card:start', [$this, 'display_cards_member']);
 
         add_filter('wp_ulike_ajax_respond', [$this, 'wp_ulike_ajax_respond'], 20, 4);
+
 
         //incomming
         add_action('init', ['rpi\Wall\Group', 'init_handle_requests']);
@@ -130,7 +141,7 @@ class RpiWall
         add_action('init', ['rpi\Wall\Group', 'init_cronjob']);
 
         add_action('init', ['rpi\Wall\Member', 'init_handle_request']);
-        add_action('init', ['rpi\Wall\Member', 'init_cronjob'],5);
+        add_action('init', ['rpi\Wall\Member', 'init_cronjob'], 5);
 
         add_action('wp', [$this, 'redirect_to_users_member_page']);
 
@@ -140,41 +151,41 @@ class RpiWall
         add_action('wp_footer', [$this, 'initialize_message_counter']);
 
         /**
-	     * ToDo add to cronjob
-	     */
-        add_action('wp_head', function (){
+         * ToDo add to cronjob
+         */
+        add_action('wp_head', function () {
             global $post;
-            if($post->post_type == 'wall'){
-                $this->installer->sync_taxonomies_of_pin_members($post->ID, $post,false);
+            if ($post->post_type == 'wall') {
+                $this->installer->sync_taxonomies_of_pin_members($post->ID, $post, false);
             }
-            if($post->post_type == 'member'){
-                 $this->installer->sync_taxonomies_of_members($post->ID , $post,false);
+            if ($post->post_type == 'member') {
+                $this->installer->sync_taxonomies_of_members($post->ID, $post, false);
             }
 
-           echo '<script> var rpi_wall; </script>';
+            echo '<script> var rpi_wall; </script>';
 
         });
 
 
         //add_action('save_post_wall', [$this, 'on_new_pin'], 10, 3);
 
-	    add_action('acfe/form/submit/form=create-pin', [$this, 'on_new_pin'],10, 2);
+        add_action('acfe/form/submit/form=create-pin', [$this, 'on_new_pin'], 10, 2);
 
         add_action('save_post_member', [$this, 'on_new_member'], 10, 3);
         add_action('wp_insert_comment', [$this, 'on_new_comment'], 99, 2);
 
 
-	    add_filter('acf/load_field/name=display_name', function($field){
-			$user = get_userdata(get_current_user_id());
+        add_filter('acf/load_field/name=display_name', function ($field) {
+            $user = get_userdata(get_current_user_id());
 
-		    $field['choices'] = array();
-		    $field['choices'][$user->nickname] = $user->nickname;
-		    $field['choices'][$user->user_login] = $user->user_login;
-		    $field['choices'][$user->first_name] = $user->first_name .' '. $user->last_name;
+            $field['choices'] = array();
+            $field['choices'][$user->nickname] = $user->nickname;
+            $field['choices'][$user->user_login] = $user->user_login;
+            $field['choices'][$user->first_name] = $user->first_name . ' ' . $user->last_name;
 
-			return $field;
+            return $field;
 
-	    }, 10, 1);
+        }, 10, 1);
 
         $this->installer = new Wall\RPIWallInstaller();
 
@@ -191,7 +202,7 @@ class RpiWall
     public function add_ob_to_capture_pin_content()
     {
         if (is_singular('wall')) {
-                ob_start();
+            ob_start();
         }
     }
 
@@ -282,17 +293,17 @@ class RpiWall
 
 
         if ($comment->user_id > 0) {
-			$member = new Wall\Member($comment->user_id);
-            $actor =  $member->get_link();
+            $member = new Wall\Member($comment->user_id);
+            $actor = $member->get_link();
         } else {
             $actor = $comment->comment_author;
         }
 
         new Wall\Message($group, 'comment', null, $actor, $replace_data);
-	    $currentMember = new Wall\Member();
-	    if(!$currentMember->is_watched_group($group->ID)){
-		    $currentMember->toggle_watch_group($group->ID);
-	    }
+        $currentMember = new Wall\Member();
+        if (!$currentMember->is_watched_group($group->ID)) {
+            $currentMember->toggle_watch_group($group->ID);
+        }
 
     }
 
@@ -300,12 +311,12 @@ class RpiWall
     {
         if (!$update) {
 
-	        $member = new Wall\Member($post->post_author);
-	        $msg = new \stdClass();
-			$msg->subject = '[DiBeS]Neues Mitglied '.$member->name;
-			$msg->body = 'Bitte prüfen: '.$member->get_link();
+            $member = new Wall\Member($post->post_author);
+            $msg = new \stdClass();
+            $msg->subject = '[DiBeS]Neues Mitglied ' . $member->name;
+            $msg->body = 'Bitte prüfen: ' . $member->get_link();
 
-            Wall\Message::send_messages($orga =[2,3], $msg);
+            Wall\Message::send_messages($orga = [2, 3], $msg);
         }
 
     }
@@ -313,24 +324,24 @@ class RpiWall
     public function on_new_pin($form, $post_ID)
     {
 
-	    new Wall\Message(new Wall\Group($post_ID), 'creator', [get_current_user_id()], get_current_user_id());
-	    //new Wall\Message(new Wall\Group($post_ID), 'create', null, get_current_user_id());
+        new Wall\Message(new Wall\Group($post_ID), 'creator', [get_current_user_id()], get_current_user_id());
+        //new Wall\Message(new Wall\Group($post_ID), 'create', null, get_current_user_id());
         $currentMember = new Wall\Member();
         //if(!$currentMember->is_watched_group($post_ID)){
 
         //}
 
 
-	    if(get_post_meta($post_ID,'plg_liker', true)){
-		    $currentMember->like_group($post_ID);
-	    }else{
-		    $currentMember->toggle_watch_group($post_ID);
-	    }
+        if (get_post_meta($post_ID, 'plg_liker', true)) {
+            $currentMember->like_group($post_ID);
+        } else {
+            $currentMember->toggle_watch_group($post_ID);
+        }
 
 
         ?>
         <script>
-            location.href='/?p=<?php echo $post_ID;?>';
+            location.href = '/?p=<?php echo $post_ID;?>';
         </script>
         <?php
     }
@@ -339,16 +350,16 @@ class RpiWall
     {
 
         if (strpos($_SERVER['REQUEST_URI'], '/member_profile') !== false) {
-	        if(is_user_logged_in()){
-		        $member = new Wall\Member(wp_get_current_user());
-		        $user_url = $member->get_member_profile_permalink();
-		        wp_redirect($user_url);
+            if (is_user_logged_in()) {
+                $member = new Wall\Member(wp_get_current_user());
+                $user_url = $member->get_member_profile_permalink();
+                wp_redirect($user_url);
 
-	        }else{
-				wp_redirect(wp_login_url());
+            } else {
+                wp_redirect(wp_login_url());
 
-	        }
-	        die();
+            }
+            die();
 
         }
 
@@ -393,6 +404,14 @@ class RpiWall
         }
     }
 
+    function display_cards_pin_icon()
+    {
+        if (get_post_type() === 'wall' && is_archive()) {
+            echo '<div class="pin-title-icon">' . Wall\Shortcodes::$pin_icon . '</div>';
+            echo '<div class="pin-title-icon">' . Wall\Shortcodes::$group_icon . '</div>';
+        }
+    }
+
     /**
      * blocksy:loop:card:end action
      * @return void
@@ -401,9 +420,9 @@ class RpiWall
     function display_cards_group_info()
     {
 
-        if(is_post_type_archive('wall')){
-	        $group = new rpi\Wall\Group(get_the_ID());
-	        $group->display_short_info();
+        if (is_post_type_archive('wall')) {
+            $group = new rpi\Wall\Group(get_the_ID());
+            $group->display_short_info();
 
         }
 
@@ -420,21 +439,23 @@ class RpiWall
             ?>
             <div class="member-card">
                 <div class="member-card-head">
-                <a href="<?php echo $member->get_member_profile_permalink() ?>">
-                    <?php echo get_avatar($user_id) ?>
-                </a>
-                <a href="<?php echo $member->get_member_profile_permalink() ?>">
-                    <h4 class="member-card-name">
-                        <?php echo $member->name ?>
-                    </h4>
-                </a>
+                    <a href="<?php echo $member->get_member_profile_permalink() ?>">
+                        <?php echo get_avatar($user_id) ?>
+                    </a>
+                    <a href="<?php echo $member->get_member_profile_permalink() ?>">
+                        <h4 class="member-card-name">
+                            <?php echo $member->name ?>
+                        </h4>
+                    </a>
                 </div>
-                <?php $bio = substr(get_the_author_meta('description'),0, 250);
-                if(!empty($bio)){?>
-                <div class="member-card-bio">
-                    <?php //echo $bio ?>
-                </div>
-                    <?php } ?>
+                <?php $bio = substr(get_the_author_meta('description'), 0, 250);
+                if (!empty($bio)) {
+                    ?>
+                    <div class="member-card-bio">
+                        <?php //echo $bio
+                        ?>
+                    </div>
+                <?php } ?>
                 <div class="member-card-tags">
                     <?php
                     $taxonomies = get_post_taxonomies(get_the_ID());
@@ -466,23 +487,25 @@ class RpiWall
         }
     }
 
-	/**
+    /**
      * öffnet den Inhalt in einem Overlay Popup
      *
-	 * @param string $id
-	 * @param string $content
-	 *
-	 * @return void
-	 */
-    static function modal($id = 'form', $label='Bearbeiten' ,$content =''){
+     * @param string $id
+     * @param string $content
+     *
+     * @return void
+     */
+    static function modal($id = 'form', $label = 'Bearbeiten', $content = '')
+    {
 
         ?>
-	    <div class="ct-container rpi-wall-buttons">
-	        <a class="fea-submit-button button button-primary" id="btn-open-modal-<?php echo $id;?>" href="#modal-<?php echo $id;?>"><?php echo $label;?></a>
+        <div class="ct-container rpi-wall-buttons">
+            <a class="fea-submit-button button button-primary" id="btn-open-modal-<?php echo $id; ?>"
+               href="#modal-<?php echo $id; ?>"><?php echo $label; ?></a>
         </div>
-        <div id="modal-<?php echo $id;?>">
-            <div  class="modal-wrapper">
-	            <div  id="btn-close-modal" class="close-modal-<?php echo $id;?>">
+        <div id="modal-<?php echo $id; ?>">
+            <div class="modal-wrapper">
+                <div id="btn-close-modal" class="close-modal-<?php echo $id; ?>">
                     <button class="button button-primary">X</button>
                 </div>
                 <div class="modal-content"><?php echo $content ?></div>
@@ -508,17 +531,16 @@ class RpiWall
     }
 
 
-
     public function custom_style_and_scripts()
     {
-	    wp_enqueue_style('tabs', plugin_dir_url(__FILE__) . 'assets/css/tabs.css');
+        wp_enqueue_style('tabs', plugin_dir_url(__FILE__) . 'assets/css/tabs.css');
 
         wp_enqueue_style('rpi-wall-style', plugin_dir_url(__FILE__) . 'assets/css/custom-style.css');
         wp_enqueue_style('rpi-wall-style-modal-norm', plugin_dir_url(__FILE__) . 'assets/css/normalize.min.css');
         wp_enqueue_style('rpi-wall-style-modal-anim', plugin_dir_url(__FILE__) . 'assets/css/animate.min.css');
         wp_enqueue_script('rpi-wall-style-modal', plugin_dir_url(__FILE__) . 'assets/js/animatedModal.js', array('jquery'));
-	    wp_enqueue_script('rpi-wall-script', plugin_dir_url(__FILE__) . 'assets/js/custom-scripts.js', array('jquery'),false,true);
-	    wp_localize_script('rpi-wall-script', 'wall', array('ajaxurl' => admin_url('admin-ajax.php')));
+        wp_enqueue_script('rpi-wall-script', plugin_dir_url(__FILE__) . 'assets/js/custom-scripts.js', array('jquery'), false, true);
+        wp_localize_script('rpi-wall-script', 'wall', array('ajaxurl' => admin_url('admin-ajax.php')));
 
 
     }
@@ -552,7 +574,7 @@ class RpiWall
             if ($message_count == "0") {
                 $message_count = "";
             }
-             echo '<script> jQuery(document).ready($ => { $("#message-count").html("' . $message_count . '")})</script>';
+            echo '<script> jQuery(document).ready($ => { $("#message-count").html("' . $message_count . '")})</script>';
         }
     }
 }

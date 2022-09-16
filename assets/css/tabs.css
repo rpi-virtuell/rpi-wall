@@ -29,9 +29,14 @@ body {
     font-weight: 300;
 }
 
-.tabset{
-
+.single-wall  .tabset {
+    margin-top: -128px;
 }
+
+.single-wall .wall.type-wall.hentry {
+    margin-top: 51px;
+}
+
 
 .tabset > label {
     position: relative;
@@ -76,12 +81,13 @@ body {
 
 .tabset > input:checked + label {
     border-color: #ccc;
+    border-bottom-color: rgb(204, 204, 204);
     border-bottom: 1px solid #fff;
     margin-bottom: -1px;
-    background: #2189F2;
+    background: #00C886;
     color: white;
-
 }
+
 .tabset > input:checked + label svg{
     fill: white;
 }

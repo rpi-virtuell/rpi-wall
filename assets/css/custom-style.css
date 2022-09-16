@@ -1,3 +1,27 @@
+/* Pinnwand Header */
+.rpi-wall-tutorial-header{
+    background-color: white;
+    border-radius: 2px;
+    margin: 15px 0;
+    padding: 15px;
+}
+
+.pin-title-icon {
+}
+
+.pin-title-icon svg{
+    background: #00C886;
+    fill: white;
+    margin-right: 10px;
+    border-radius: 0 0 5px 5px;
+    top: 0;
+    position: absolute;
+    left: 28px;
+    width: 50px;
+    height: 40px;
+    padding:7px;
+}
+
 /*Kommentar Überschrift ausblenden*/
 
 body.pending #group .page-title:before {
