@@ -36,6 +36,7 @@ class Shortcodes
         add_shortcode('my_likes', array($this, 'get_user_likes'));
         add_shortcode('my_posts', [$this, 'get_user_posts']);
         add_shortcode('my_comments', array($this, 'get_user_comments'));
+        add_shortcode('rpi_wall_filter', array($this, 'get_wall_filter'));
 
         add_action('wp_head', array($this, 'init'));
 
@@ -117,6 +118,27 @@ class Shortcodes
         }
         return ob_get_clean();
 
+    }
+
+    public function get_wall_filter($atts){
+
+        $tags = wp_tag_cloud(array(
+            'taxonomy' => array( 'wall-tag' ),
+             'format'=>'list',
+             'echo'=>false,
+             'show_count'=>true
+        ));
+
+        ob_start();
+        ?>
+            <div>
+                <details>
+                    <summary>Tags</summary>
+                    <?php echo implode('',$tags);?>
+                </details>
+            </div>
+        <?php
+        return ob_get_clean();
     }
 
     public function get_user_profile_tags($atts)

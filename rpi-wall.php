@@ -499,6 +499,9 @@ class RpiWall
     {
 
         ?>
+        <div class="ct-container rpi-wall-filters">
+            <?php echo do_shortcode('[rpi_wall_filter]')?>
+        </div>
         <div class="ct-container rpi-wall-buttons">
             <a class="fea-submit-button button button-primary" id="btn-open-modal-<?php echo $id; ?>"
                href="#modal-<?php echo $id; ?>"><?php echo $label; ?></a>
