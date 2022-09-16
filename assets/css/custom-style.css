@@ -788,3 +788,42 @@ body.toolbar #wpadminbar{
     padding: 5px 13px;
     color: #999;
 }
+
+
+/*wall filters*/
+.ct-container.rpi-wall-filters {
+    margin-top: -44px;
+}
+.rpi-wall-filter {
+    color: white;
+    display: ruby;
+}
+.rpi-wall-filter a{
+    color: white;
+}
+.rpi-wall-filter[open] .rpi-wall-tag-cloud{
+    padding: 10px;
+}
+.rpi-wall-categories ul {
+    display: inline-flex;
+    list-style: none;
+
+}
+.rpi-wall-categories ul li{
+    padding-right: 20px;
+}
+.rpi-wall-filter[open]{
+    display: contents;
+}
+summary {
+    background: #686868;
+    display: inline flow-root list-item;
+    padding: 5px 28px;
+    border-radius: 5px;
+    box-shadow: 1px 1px 2px #000;
+    font-weight: bold;
+}
+summary:hover{
+    background: orangered;
+
+}
