@@ -124,18 +124,67 @@ class Shortcodes
 
         $tags = wp_tag_cloud(array(
             'taxonomy' => array( 'wall-tag' ),
+             'format'=>'flat',
+             'echo'=>false,
+             'show_count'=>false
+        ));
+        $categories = wp_tag_cloud(array(
+            'taxonomy' => array( 'wall-cat' ),
              'format'=>'list',
              'echo'=>false,
+             'smallest'=>18,
+             'largest'=>18,
+             'unit'=>'px',
              'show_count'=>true
         ));
 
-        ob_start();
         ?>
+            <style>
+                .rpi-wall-filter {
+                    color: white;
+                    display: ruby;
+                }
+                .rpi-wall-filter a{
+                    color: white;
+                }
+                .rpi-wall-filter[open] .rpi-wall-tag-cloud{
+                    padding: 10px;
+                }
+                .rpi-wall-categories ul {
+                  display: inline-flex;
+                  list-style: none;
+
+                }
+                .rpi-wall-categories ul li{
+                    padding-right: 20px;
+                }
+                .rpi-wall-filter[open]{
+                    display: contents;
+                }
+                summary {
+                  background: #686868;
+                  display: inline flow-root list-item;
+                  padding: 5px 28px;
+                  border-radius: 5px;
+                  box-shadow: 1px 1px 2px #000;
+                  font-weight: bold;
+                }
+                summary:hover{
+                    background: orangered;
+
+                }
+
+            </style>
             <div>
-                <details>
-                    <summary>Tags</summary>
-                    <?php echo implode('',$tags);?>
+                <details class="rpi-wall-filter categories">
+                    <summary>Kategorien</summary>
+                    <div class="rpi-wall-categories"><?php echo $categories;?></div>
                 </details>
+                <details class="rpi-wall-filter tags">
+                    <summary>Tags</summary>
+                    <div class="rpi-wall-tag-cloud"><?php echo $tags;?></div>
+                </details>
+
             </div>
         <?php
         return ob_get_clean();
