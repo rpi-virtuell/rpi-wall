@@ -53,6 +53,7 @@ class RpiWall
 
         add_action('wp_enqueue_scripts', [$this, 'custom_style_and_scripts']);
 
+        add_action('pre_get_posts', [$this, 'query_tags']);
         add_filter('body_class', [$this, 'add_group_status_class']);
         add_action('post_class', [$this, 'add_group_status_class']);
 
@@ -204,6 +205,16 @@ class RpiWall
         if (is_singular('wall')) {
             ob_start();
         }
+    }
+    public function query_tags(&$query)
+    {
+
+
+	    if (is_tax('wall-tag')) {
+		    $query->set('post_type','wall');
+
+	    }
+
     }
 
     public function add_tabs_to_pin_view()

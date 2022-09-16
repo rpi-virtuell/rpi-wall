@@ -126,8 +126,11 @@ class Shortcodes
             'taxonomy' => array( 'wall-tag' ),
              'format'=>'flat',
              'echo'=>false,
-             'show_count'=>false
+             'show_count'=>false,
+             'post_type'=>'wall'
         ));
+
+
         $categories = wp_tag_cloud(array(
             'taxonomy' => array( 'wall-cat' ),
              'format'=>'list',
