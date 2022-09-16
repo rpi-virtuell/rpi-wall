@@ -408,7 +408,12 @@ class RpiWall
     {
         if (get_post_type() === 'wall' && is_archive()) {
             echo '<a href="'.get_post_permalink().'#pin'.'" class="pin-title-icon pin">' . Wall\Shortcodes::$pin_icon .'</a>';
-            echo '<a href="'.get_post_permalink().'#group'.'" class="pin-title-icon group">' .  Wall\Shortcodes::$group_icon .'</a>';
+           $group = new Wall\Group(get_the_ID());
+           $status = $group->get_status();
+            if ($status)
+            {
+                echo '<a href="'.get_post_permalink().'#group'.'" class="pin-title-icon group">' .  Wall\Shortcodes::$group_icon .'</a>';
+            }
         }
     }
 
