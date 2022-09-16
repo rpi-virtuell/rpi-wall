@@ -407,8 +407,8 @@ class RpiWall
     function display_cards_pin_icon()
     {
         if (get_post_type() === 'wall' && is_archive()) {
-            echo '<div class="pin-title-icon">' . Wall\Shortcodes::$pin_icon . '</div>';
-            echo '<div class="pin-title-icon">' . Wall\Shortcodes::$group_icon . '</div>';
+            echo '<a href="'.get_post_permalink().'#pin'.'" class="pin-title-icon pin">' . Wall\Shortcodes::$pin_icon .'</a>';
+            echo '<a href="'.get_post_permalink().'#group'.'" class="pin-title-icon group">' .  Wall\Shortcodes::$group_icon .'</a>';
         }
     }
 

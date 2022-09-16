@@ -9,18 +9,31 @@
 .pin-title-icon {
 }
 
-.pin-title-icon svg{
+.pin-title-icon.pin svg{
     background: #00C886;
     fill: white;
     margin-right: 10px;
     border-radius: 0 0 5px 5px;
     top: 0;
     position: absolute;
-    left: 28px;
+    left: 20px;
     width: 50px;
     height: 40px;
     padding:7px;
 }
+.pin-title-icon.group svg{
+     background: #00C886;
+     fill: white;
+     margin-right: 10px;
+     border-radius: 0 0 5px 5px;
+     top: 0;
+     position: absolute;
+     left: 75px;
+     width: 50px;
+     height: 40px;
+     padding:7px;
+
+ }
 
 /*Kommentar Überschrift ausblenden*/
 
