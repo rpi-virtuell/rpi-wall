@@ -124,18 +124,31 @@ class Shortcodes
 
         $tags = wp_tag_cloud(array(
             'taxonomy' => array( 'wall-tag' ),
+             'format'=>'flat',
+             'echo'=>false,
+             'show_count'=>false
+        ));
+        $categories = wp_tag_cloud(array(
+            'taxonomy' => array( 'wall-cat' ),
              'format'=>'list',
              'echo'=>false,
+             'smallest'=>18,
+             'largest'=>18,
+             'unit'=>'px',
              'show_count'=>true
         ));
 
-        ob_start();
         ?>
             <div>
-                <details>
-                    <summary>Tags</summary>
-                    <?php echo implode('',$tags);?>
+                <details class="rpi-wall-filter categories">
+                    <summary>Kategorien</summary>
+                    <div class="rpi-wall-categories"><?php echo $categories;?></div>
                 </details>
+                <details class="rpi-wall-filter tags">
+                    <summary>Tags</summary>
+                    <div class="rpi-wall-tag-cloud"><?php echo $tags;?></div>
+                </details>
+
             </div>
         <?php
         return ob_get_clean();
