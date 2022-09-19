@@ -222,6 +222,9 @@ article.entry-card {
     display: none !important;
 }
 
+.single-wall article.wall{
+    margin-top:120px;
+}
 @media only screen and (max-width: 600px) {
     .member-message-grid {
         display: unset;
