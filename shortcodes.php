@@ -131,13 +131,22 @@ class Shortcodes
         ob_start();
         if(is_archive() || is_tax('wall-cat') || is_tax('wall-tag')){
 
-            $tags = wp_tag_cloud(array(
+            $tagsarr = wp_tag_cloud(array(
                 'taxonomy' => array( 'wall-tag' ),
-                 'format'=>'flat',
+                 'format'=>'array',
                  'echo'=>false,
                  'show_count'=>false,
                  'post_type'=>'wall'
             ));
+
+            $tags = array();
+            foreach ($tagsarr as $k=>$tag){
+
+                $tags[] = preg_replace('/href="([^"]*)"/', 'href="$1?post_type=wall"', $tag);
+
+            }
+
+
 
             $categories = wp_tag_cloud(array(
                 'taxonomy' => array( 'wall-cat' ),
@@ -157,7 +166,7 @@ class Shortcodes
                     </details>
                     <details class="rpi-wall-filter tags">
                         <summary>Tags</summary>
-                        <div class="rpi-wall-tag-cloud"><?php echo $tags;?></div>
+                        <div class="rpi-wall-tag-cloud"><?php echo implode('',$tags);?></div>
                     </details>
 
                 </div>

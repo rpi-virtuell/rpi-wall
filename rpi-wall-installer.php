@@ -1213,7 +1213,7 @@ class RPIWallInstaller
             if (is_array($member) && !empty(reset($member))) {
                 return;
             } else {
-                $member = wp_insert_post(array(
+				$member = wp_insert_post(array(
                     'post_title' => $user->display_name,
                     'post_status' => 'publish',
                     'post_author' => $user->ID,

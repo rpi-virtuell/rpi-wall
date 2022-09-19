@@ -211,7 +211,7 @@ class RpiWall
 
 
 	    if (is_tax('wall-tag') && is_post_type_archive('wall')) {
-		    $query->set('post_type','wall');
+		    //$query->set('post_type','wall');
 
 	    }
 
