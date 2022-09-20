@@ -53,6 +53,7 @@ class RpiWall
 
         add_action('wp_enqueue_scripts', [$this, 'custom_style_and_scripts']);
 
+        add_action('pre_get_posts', [$this, 'query_tags']);
         add_filter('body_class', [$this, 'add_group_status_class']);
         add_action('post_class', [$this, 'add_group_status_class']);
 
@@ -217,6 +218,16 @@ class RpiWall
         if (is_singular('wall')) {
             ob_start();
         }
+    }
+    public function query_tags(&$query)
+    {
+
+
+	    if (is_tax('wall-tag') && is_post_type_archive('wall')) {
+		    //$query->set('post_type','wall');
+
+	    }
+
     }
 
     public function add_tabs_to_pin_view()
@@ -592,10 +603,27 @@ class RpiWall
         if (is_user_logged_in()) {
             $member = new Wall\Member();
             $message_count = $member->get_unread_messages_count();
+
+            echo '<script>' .
+                 'var mc='.$message_count.'; ' .
+                 'var src = jQuery(".ct-button.message-bell img").attr("src"); ' .
+                 'if(mc>0) ' .
+                 '  src = src.replace("bell.png", "bell_red.png");' .
+                 'else ' .
+                 '  src = src.replace("bell_red.png", "bell.png");' .
+                 'jQuery(".ct-button.message-bell img").attr("src", src);' .
+                 '</script>';
+
+
+
+
             if ($message_count == "0") {
                 $message_count = "";
             }
-            echo '<script> jQuery(document).ready($ => { $("#message-count").html("' . $message_count . '")})</script>';
+            echo '<script>jQuery(document).ready($ => { $("#message-count").html("' . $message_count . '")})</script>';
+
+
+
         }
     }
 }

@@ -732,14 +732,27 @@ class Member extends \stdClass
 	public function setup()
     {
 
-        if (is_a($this->user, 'WP_User') && $this->user->ID > 0) {
-            $member = wp_insert_post(array(
-                'post_title' => $this->user->display_name,
-                'post_status' => 'publish',
-                'post_author' => $this->user->ID,
-                'post_type' => 'member'
-            ));
-            return get_post($member);
+		if (is_a($this->user, 'WP_User') && $this->user->ID > 0) {
+
+	        $member = get_posts(array(
+		        'post_status' => 'any',
+		        'post_type' => 'member',
+		        'author' => $this->user->ID
+	        ));
+	        if (is_array($member) && !empty(reset($member))) {
+		        return $this->user;
+	        } else {
+
+				$member = wp_insert_post( array(
+			        'post_title'  => $this->user->display_name,
+			        'post_status' => 'publish',
+			        'post_author' => $this->user->ID,
+			        'post_type'   => 'member'
+		        ) );
+
+		        return get_post($member);
+	        }
+
 
         }
     }
