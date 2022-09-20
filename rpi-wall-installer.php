@@ -257,7 +257,7 @@ class RPIWallInstaller
     }
 
     /**
-     * Empfängerspalte  mit Empfängern aus dem mety key 'rpi_wall_message_recipient' befüllen
+     * Empfängerspalte mit Empfängern aus dem mety key 'rpi_wall_message_recipient' befüllen
      *
      * @param $name
      * @param $post_id
@@ -834,6 +834,27 @@ class RPIWallInstaller
                                     'frontend_admin_display_mode' => 'edit',
                                     'readonly' => 0,
                                     'default_value' => 'Willkommen auf der Pinnwand! Hier kannst du eigene Fragestellungen einbringen und findest spannende Impulse zu verschiedenen Themen. Außerdem kannst dich an Fragen durch Kommentare beteiligen oder Professionelle Lerngruppen (PLG´s) zum intensiveren Austausch zu einem Thema finden.',
+                                    'placeholder' => '',
+                                    'prepend' => '',
+                                    'append' => '',
+                                    'maxlength' => '',
+                                ),
+                                array(
+                                    'key' => 'field_rpi_member_main_header',
+                                    'label' => 'Netzwerk (Member) Header Einleitung',
+                                    'name' => 'rpi_member_main_header',
+                                    'type' => 'text',
+                                    'instructions' => '',
+                                    'required' => 0,
+                                    'conditional_logic' => 0,
+                                    'wrapper' => array(
+                                        'width' => '',
+                                        'class' => '',
+                                        'id' => '',
+                                    ),
+                                    'frontend_admin_display_mode' => 'edit',
+                                    'readonly' => 0,
+                                    'default_value' => 'Unser Netzwerk lebt von allen, die gute Fragen stellen, Erfahrungen teilen, Kompetenzen einbringen und Perspektiven eröffnen.  Stell dich mit ein paar Worten und einem Avatarbild vor. Mit jeder Aktivität im Netzwerk wächst auch dein Profil.',
                                     'placeholder' => '',
                                     'prepend' => '',
                                     'append' => '',

@@ -78,9 +78,22 @@ class RpiWall
                 if (get_post_type() === 'protokoll') {
                     RpiWall::modal('protocol', 'Bearbeiten', do_shortcode('[acfe_form name="edit-protocol"]'));
                 }
-                if (is_post_type_archive('member') && !is_user_logged_in()) {
-                    wp_footer();
-                    die();
+                if (is_post_type_archive('member')) {
+                    if (!is_user_logged_in()) {
+                        wp_footer();
+                        die();
+                    } else {
+                        $member = new Wall\Member(get_current_user_id());
+                        ob_start();
+                        ?>
+                        <div class="ct-container rpi-wall-tutorial-header">
+                        <span><?php echo get_option('options_rpi_label_general_textfields_group_rpi_member_main_header', 'Unser Netzwerk lebt von allen, die gute Fragen stellen, Erfahrungen teilen, Kompetenzen einbringen und Perspektiven eröffnen.  Stell dich mit ein paar Worten und einem Avatarbild vor. Mit jeder Aktivität im Netzwerk wächst auch dein Profil.') ?>
+                        <a href="<?php echo $member->url ?>"> Zu deinem Profil</a>
+                        </span>
+                        </div>
+                        <?php
+                        echo ob_get_clean();
+                    }
                 }
             }
 
@@ -407,12 +420,11 @@ class RpiWall
     function display_cards_pin_icon()
     {
         if (get_post_type() === 'wall' && is_archive()) {
-            echo '<a href="'.get_post_permalink().'#pin'.'" class="pin-title-icon pin">' . Wall\Shortcodes::$pin_icon .'</a>';
-           $group = new Wall\Group(get_the_ID());
-           $status = $group->get_status();
-            if ($status)
-            {
-                echo '<a href="'.get_post_permalink().'#group'.'" class="pin-title-icon group">' .  Wall\Shortcodes::$group_icon .'</a>';
+            echo '<a href="' . get_post_permalink() . '#pin' . '" class="pin-title-icon pin">' . Wall\Shortcodes::$pin_icon . '</a>';
+            $group = new Wall\Group(get_the_ID());
+            $status = $group->get_status();
+            if ($status) {
+                echo '<a href="' . get_post_permalink() . '#group' . '" class="pin-title-icon group">' . Wall\Shortcodes::$group_icon . '</a>';
             }
         }
     }
@@ -509,7 +521,7 @@ class RpiWall
                href="#modal-<?php echo $id; ?>"><?php echo $label; ?></a>
         </div>
         <div class="ct-container rpi-wall-filters">
-		    <?php echo do_shortcode('[rpi_wall_filter]')?>
+            <?php echo do_shortcode('[rpi_wall_filter]') ?>
         </div>
 
         <div id="modal-<?php echo $id; ?>">
@@ -523,7 +535,7 @@ class RpiWall
         </div>
         <script>jQuery("#btn-open-modal-<?php echo $id;?>").animatedModal();</script>
 
-	    <?php
+        <?php
 
     }
 
