@@ -147,7 +147,7 @@ class Shortcodes
             }
 
 
-
+            /*
             $categories = wp_tag_cloud(array(
                 'taxonomy' => array( 'wall-cat' ),
                  'format'=>'list',
@@ -157,13 +157,15 @@ class Shortcodes
                  'unit'=>'px',
                  'show_count'=>true
             ));
-
+            */
             ?>
                 <div>
+                    <!--
                     <details class="rpi-wall-filter categories">
                         <summary>Kategorien</summary>
                         <div class="rpi-wall-categories"><?php echo $categories;?></div>
                     </details>
+                    -->
                     <details class="rpi-wall-filter tags">
                         <summary>Tags</summary>
                         <div class="rpi-wall-tag-cloud"><?php echo implode('',$tags);?></div>

@@ -1,7 +1,16 @@
+/*Farben*/
+
+:root {
+    --ci-basis: var(--paletteColor1);
+    --ci-alert-color: orangered;
+    --ci-box-shadow: 2px 2px 7px #444;
+}
+
 /* Pinnwand Header */
 
+
 .rpi-wall-tutorial-header {
-    box-shadow: 2px 2px 7px #444;
+    box-shadow: var(--ci-box-shadow);
     border-radius: 3px;
     background-color: wheat;
     margin: 15px 0;
@@ -240,8 +249,8 @@ article.founded label[for="tab-group"]{
 }
 
 .message-entry:hover {
-    border-color: #2189f2;
-    color: #2189f2;
+    border-color: var(--ci-basis);
+    color: var(--ci-basis);
 }
 
 .message-entry .unread {
@@ -388,7 +397,7 @@ article.entry-card.type-wall .plg-wrapper {
 
 .hot-comments {
     text-align: right;
-    color: orangered;
+    color: var(--ci-alert-color);
     position: relative;
 }
 
