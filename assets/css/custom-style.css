@@ -57,7 +57,7 @@ body.pending #group .page-title:before {
 article.entry-card {
     position: relative;
 }
-
+/*
 .rpi-wall-group-status-triangle {
     position: absolute;
     right: -26px;
@@ -90,6 +90,36 @@ article.entry-card {
 
 .rpi-wall-group-status-triangle.founded {
     border-bottom-color: lightseagreen;
+}
+*/
+
+.ready .pin-title-icon.group svg {
+    background: orange;
+}
+
+.pending .pin-title-icon.group svg {
+    background: orangered;
+}
+.founded .pin-title-icon.group svg {
+    background: rgba(0,100,0,0.5);
+}
+article.founded label svg{
+    fill: #ffffff;
+}article.founded label a{
+     color: #ffffff;
+ }
+
+article.ready label[for="tab-group"]{
+    background: orange;
+}
+article.pending label[for="tab-group"]{
+    background: orangered;
+}
+article.founded label[for="tab-group"]{
+    background: rgba(0,100,0,0.5);
+}
+.tabset > input:checked + label[for="tab-group"]{
+    background: #02C887FF;
 }
 
 .single-wall #reply-title, .single-wall .ct-comments-title, .single-wall .comment-form-cookies-consent {
