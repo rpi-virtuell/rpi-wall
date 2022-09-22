@@ -57,8 +57,22 @@ class MemberPage
 
 	        $matrix_id = get_field('matrixid','user_'. $this->member->ID);
 	        if($matrix_id){
-		        $link = '<a href="https://matrix.to/#/'.$matrix_id.'">'.$matrix_id.'</a>';
-		        echo '<div class="user-matrixId">'.$link.'</div>';
+                $base_rpi = 'https://matrix.rpi-virtuell.de/#/user/';
+                $base_app = 'https://matrix.to/#/';
+		        ?>
+                    <details class="user-matrixId" style="margin-left: 100px;margin-top: -10px;">
+                        <summary style="cursor:pointer"><strong><?php echo \rpi\Wall\Shortcodes::$element_icon?>  Kontakt via Matrix: <?php echo $matrix_id;?></strong></summary>
+                            <br>
+                            <a class="button button-primary" href="<?php echo $base_rpi.$matrix_id;?>" target="_blank">im Browser matrix.rpi-virtuell.de</a>
+                            <a class="button button-secondary" href="<?php echo $base_app.$matrix_id;?>" target="_blank">über die Element App</a>
+
+                        <br>
+                        <br>
+                        <em>Für sichere Kommunikation nutzen wir <b><a href="https://element.io/personal">Element</a></b>,<br /> den Messenger für die Matrix mit vielen Features für professionelle Lerngemeinschaften.</em>
+
+                    </details>
+                <?php
+
 	        }
 
         }
