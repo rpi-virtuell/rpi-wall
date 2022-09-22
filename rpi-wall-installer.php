@@ -43,7 +43,6 @@ class RPIWallInstaller
 
             $role->add_cap('manage_wall_tags');
             $role->add_cap('edit_wall_tags');
-            $role->add_cap('edit_wall_tags');
             $role->add_cap('delete_wall_tags');
             $role->add_cap('assign_wall_tags');
 
@@ -75,7 +74,8 @@ class RPIWallInstaller
             $role->add_cap('delete_walls');
 
             $role->add_cap('edit_wall_tags');
-            $role->add_cap('assign_wall_tags');
+	        $role->add_cap('assign_wall_tags');
+            $role->add_cap('manage_wall_tags');
 
             $role->add_cap('assign_wall_cat');
 
