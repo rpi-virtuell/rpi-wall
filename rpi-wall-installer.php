@@ -62,6 +62,8 @@ class RPIWallInstaller
             $role->add_cap('delete_schooltype');
             $role->add_cap('assign_schooltype');
 
+            //TODO: ADD member capabilities
+
         }
         /// Author capabilities
 

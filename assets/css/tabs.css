@@ -84,7 +84,7 @@ body {
     border-bottom-color: rgb(204, 204, 204);
     border-bottom: 1px solid #fff;
     margin-bottom: -1px;
-    background: #00C886;
+    background: var(--ci-accent-color);
     color: white;
 }
 
