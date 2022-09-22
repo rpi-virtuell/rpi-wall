@@ -38,10 +38,25 @@ class Member extends \stdClass
 
             if (!$this->user) {
 
-                echo '<pre>';
-                echo 'ungültiger User: Member->ID =0<br>';
-                debug_print_backtrace(null, 5);
-                echo '</pre>';
+				if(intval($user ) > 0 ){
+
+					//remove deleted user from groups
+
+					if(get_post_type()=='wall' ){
+
+						delete_post_meta(get_the_ID(), 'rpi_wall_watcher_id',$user);
+						delete_post_meta(get_the_ID(), 'rpi_wall_liker_id',$user);
+						delete_post_meta(get_the_ID(), 'rpi_wall_member_id',$user);
+
+					}
+
+					echo '<pre>';
+					echo 'ungültiger User: Member->ID =0 (called ID:'.$user.')<br>';
+					debug_print_backtrace(null, 5);
+					echo '</pre>';
+				}
+
+
             }
 
         }
