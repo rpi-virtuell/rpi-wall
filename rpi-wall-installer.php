@@ -135,6 +135,7 @@ class RPIWallInstaller
             "menu_icon" => "dashicons-pressthis",
             "supports" => [
                 'title',
+                'author',
                 "editor",
                 "comments",
             ],

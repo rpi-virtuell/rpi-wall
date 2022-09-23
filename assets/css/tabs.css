@@ -82,19 +82,22 @@ body {
 .tabset > input:checked + label {
     border-color: #ccc;
     border-bottom-color: rgb(204, 204, 204);
-    border-bottom: 1px solid #fff;
     margin-bottom: -1px;
     background: var(--ci-accent-color);
-    color: white;
+    color: black;
 }
 
 .tabset > input:checked + label svg{
-    fill: white;
+    fill: black;
 }
 .tab-panels {
-    border-top: 2px solid #2189F2;
+    border-top: 2px solid var(--paletteColor5);
     margin-top: -9px;
     padding-top: 20px;
+}
+
+.wall .tab-panels{
+    border:0;
 }
 .profile-panel{
     display: grid;
@@ -105,10 +108,68 @@ body {
     font-size: 18px;
     color: #aaa;
     text-align: center;
-    border-bottom: 1px solid #2189F2;
+    border-bottom: 1px solid var(--paletteColor5);
     display: none;
 }
+
+@media only screen and (min-width: 800px) {
+
+
+    .wall .tabset label{
+        width:150px;
+        height: 85px;
+    }
+    .wall .tabset > input:checked + label:nth-child(2){
+        margin-right: -20px;
+        box-shadow: 2px 0px 5px #999999;
+        z-index: 2;
+        height: 92px;
+        top: -5px;
+    }
+    .wall .tabset > input:checked + label:nth-child(4){
+        margin-left: -20px;
+        box-shadow: -2px 0px 5px #999999;
+        z-index: 2;
+        height: 92px;
+        top: -5px;
+
+    }
+
+}
+
+
+
+@media only screen and (max-width: 800px) {
+    .single-wall  .tabset {
+        margin-top: -120px;
+    }
+    .wall .tabset label{
+        width:100px;
+    }
+    .wall .tabset > input:checked + label:nth-child(2){
+        margin-right: -20px;
+        box-shadow: 2px 0px 5px #999999;
+        z-index: 2;
+        height: 63px;
+        top: -3px;
+    }
+    .wall .tabset > input:checked + label:nth-child(4){
+        margin-left: -20px;
+        box-shadow: -2px 0px 5px #999999;
+        z-index: 2;
+        height: 63px;
+        top: -3px;
+    }
+
+}
+
+
+
 @media only screen and (max-width: 600px) {
+
+    .single-wall  .tabset {
+        margin-top: -80px;
+    }
 
     article.type-member{
         /*margin: 0;*/
@@ -151,47 +212,4 @@ body {
     .tab-panel .group-post{
         padding: 4px;
     }
-}
-@media only screen and (min-width: 800px) {
-    .wall .tabset label{
-        width:150px;
-        height: 85px;
-    }
-    .wall .tabset > input:checked + label:nth-child(2){
-        margin-right: -20px;
-        box-shadow: 2px 0px 5px #999999;
-        z-index: 2;
-        height: 92px;
-        top: -5px;
-    }
-    .wall .tabset > input:checked + label:nth-child(4){
-        margin-left: -20px;
-        box-shadow: -2px 0px 5px #999999;
-        z-index: 2;
-        height: 92px;
-        top: -5px;
-
-    }
-
-}
-
-@media only screen and (max-width: 800px) {
-    .wall .tabset label{
-        width:100px;
-    }
-    .wall .tabset > input:checked + label:nth-child(2){
-        margin-right: -20px;
-        box-shadow: 2px 0px 5px #999999;
-        z-index: 2;
-        height: 63px;
-        top: -3px;
-    }
-    .wall .tabset > input:checked + label:nth-child(4){
-        margin-left: -20px;
-        box-shadow: -2px 0px 5px #999999;
-        z-index: 2;
-        height: 63px;
-        top: -3px;
-    }
-
 }

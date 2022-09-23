@@ -4,31 +4,27 @@
     --ci-basis: var(--paletteColor1);
     --ci-sub-box-background-color: #0203047a;
     --ci-sub-box-font-color: white;
-    --ci-alert-color: orangered;
-    --ci-notification-color: orange;
-    --ci-success-color:rgba(0,100,0,0.5);
+    --ci-alert-color: var(--paletteColor7);
+    --ci-notification-color: var(--paletteColor6);
+    --ci-success-color:var(--paletteColor4);
+
+    /* Group Status Colors */
+
+    --ci-group-pending: var(--paletteColor7);
+    --ci-group-ready: var(--paletteColor6);
+    --ci-group-founded: var(--paletteColor4);
+
+
     --ci-box-shadow: 2px 2px 7px #444;
-    --ci-tutorial-notification: wheat;
-    --ci-accent-color:#00C886;
+    --ci-tutorial-notification: var(--paletteColor5);
+    --ci-accent-color:var(--paletteColor2);
 
     --ci-secondary-button:#686868;
     --ci-secondary-button-hover: var(--palleteColor6);
 }
 
-/* Farben Override mit Blocksy Variablen */
-:root{
-    --ci-background: var(--selectionBackground);
-
-    --ci-link: var(--paletteColor1);
-    --ci-link-hover: var(--paletteColor2);
-
-    --ci-text: var(--paletteColor3);
-    --ci-headline: var(--paletteColor4);
-
-    --ci-button: var(--buttonInitialColor);
-
-    --ci-accent-color: var(--paletteColor6);
-
+[data-vertical-spacing*="top"] {
+    padding-bottom: var(--content-vertical-spacing);
 }
 
 /* Pinnwand Header */
@@ -47,7 +43,7 @@
 
 .pin-title-icon.pin svg{
     background: var(--ci-accent-color);
-    fill: white;
+    fill: black;
     margin-right: 10px;
     border-radius: 0 0 5px 5px;
     top: 0;
@@ -75,7 +71,7 @@
 
 body.pending #group .page-title:before {
     content: 'Jetzt beitreten!';
-    color: var(--ci-alert-color);
+    color: var(--ci-group-pending);
     display: block;
     text-align: left;
 }
@@ -128,29 +124,29 @@ article.entry-card {
 */
 
 .ready .pin-title-icon.group svg {
-    background: var(--ci-notification-color);
+    background: var(--ci-group-ready);
 }
 
 .pending .pin-title-icon.group svg {
-    background: var(--ci-alert-color);
+    background: var(--ci-group-pending);
 }
 .founded .pin-title-icon.group svg {
-    background: var(--ci-success-color);
+    background: var(--ci-group-founded);
+    fill: white;
+    color: white;
 }
-article.founded label svg{
-    fill: #ffffff;
-}article.founded label a{
-     color: #ffffff;
- }
+.tab-label {
+    margin-top: -8px;
+}
 
 article.ready label[for="tab-group"]{
-    background: var(--ci-notification-color);
+    border-bottom: 10px solid var(--ci-group-ready);
 }
 article.pending label[for="tab-group"]{
-    background: var(--ci-alert-color);
+    border-bottom: 10px solid var(--ci-group-pending);
 }
 article.founded label[for="tab-group"]{
-    background: var(--ci-success-color);
+    border-bottom: 10px solid var(--ci-group-founded);
 }
 .tabset > input:checked + label[for="tab-group"]{
     background: var(--ci-accent-color);
@@ -163,8 +159,10 @@ article.founded label[for="tab-group"]{
 .watch-btn-wrapper {
     position: relative;
     display: flex;
-    height: 2px;
+    height: 27px;
     justify-content: right;
+    margin-right: -29px;
+    margin-top: -27px;
 }
 
 .watch-btn-wrapper .rpi-wall-watch-button {
@@ -172,7 +170,6 @@ article.founded label[for="tab-group"]{
     background-color: #fff;
     height: 32px;
     padding: 5px;
-    box-shadow: 2px 2px 2px -1px #555;
 }
 
 .watch-btn-wrapper .rpi-wall-watch-button.watching {
@@ -199,7 +196,6 @@ article.founded label[for="tab-group"]{
     width: auto;
     border: 10px solid var(--ci-accent-color);
     border-radius: 50%;
-    background-color: var(--ci-notification-color);
 }
 
 .single-member .ct-meta-element-author {
@@ -353,11 +349,6 @@ article.founded label[for="tab-group"]{
     margin-top: 5px;
     font-weight: bold;
     margin-bottom: 20px;
-}
-
-.gruppe {
-    border-top: 1px solid #bbbbbb;
-    /*border-radius: 5px;*/
 }
 
 .gruppe .wp_ulike_btn.wp_ulike_put_image::after {

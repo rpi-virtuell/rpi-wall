@@ -12,7 +12,7 @@ class MemberPage
     public function __construct()
     {
         add_action('wp', [$this, 'init']);
-	    add_action( 'blocksy:hero:custom_meta:after', [$this, 'the_matrixId' ] );
+        add_action('blocksy:hero:custom_meta:after', [$this, 'the_matrixId']);
         add_action('blocksy:single:content:bottom', [$this, 'display']);
 
     }
@@ -21,7 +21,7 @@ class MemberPage
     {
 
 
-	    if(is_singular('member')){
+        if (is_singular('member')) {
 
             $this->posts_per_page = get_option('options_rpi_wall_memberpage_posts_per_page', 6);
 
@@ -38,7 +38,6 @@ class MemberPage
         }
 
 
-
     }
 
     public function is_member_page()
@@ -51,56 +50,61 @@ class MemberPage
         return $this->is_my_page;
     }
 
-    function the_matrixId(){
+    function the_matrixId()
+    {
 
-        if(is_singular('member')){
+        if (is_singular('member')) {
 
-	        $matrix_id = get_field('matrixid','user_'. $this->member->ID);
-	        if($matrix_id){
+            $matrix_id = get_field('matrixid', 'user_' . $this->member->ID);
+            if ($matrix_id) {
                 $base_rpi = 'https://matrix.rpi-virtuell.de/#/user/';
                 $base_app = 'https://matrix.to/#/';
-		        ?>
-                    <details class="user-matrixId" style="margin-left: 100px;margin-top: -10px;">
-                        <summary style="cursor:pointer"><strong><?php echo \rpi\Wall\Shortcodes::$element_icon?>  Kontakt via Matrix: <?php echo $matrix_id;?></strong></summary>
-                            <br>
-                            <a class="button button-primary" href="<?php echo $base_rpi.$matrix_id;?>" target="_blank">im Browser matrix.rpi-virtuell.de</a>
-                            <a class="button button-secondary" href="<?php echo $base_app.$matrix_id;?>" target="_blank">über die Element App</a>
+                ?>
+                <details class="user-matrixId" style="margin-left: 100px;margin-top: -10px;">
+                    <summary style="cursor:pointer"><strong><?php echo \rpi\Wall\Shortcodes::$element_icon ?> Kontakt
+                            via Matrix: <?php echo $matrix_id; ?></strong></summary>
+                    <br>
+                    <a class="button button-primary" href="<?php echo $base_rpi . $matrix_id; ?>" target="_blank">im
+                        Browser matrix.rpi-virtuell.de</a>
+                    <a class="button button-secondary" href="<?php echo $base_app . $matrix_id; ?>" target="_blank">über
+                        die Element App</a>
 
-                        <br>
-                        <br>
-                        <em>Für sichere Kommunikation nutzen wir <b><a href="https://element.io/personal">Element</a></b>,<br /> den Messenger für die Matrix mit vielen Features für professionelle Lerngemeinschaften.</em>
+                    <br>
+                    <br>
+                    <em>Für sichere Kommunikation nutzen wir <b><a
+                                    href="https://element.io/personal">Element</a></b>,<br/> den Messenger für die
+                        Matrix mit vielen Features für professionelle Lerngemeinschaften.</em>
 
-                    </details>
+                </details>
                 <?php
 
-	        }
+            }
 
         }
 
 
-	}
+    }
 
     public function display()
     {
 
-	    if(is_singular('member')){
-		    $tabs = new \rpi\Wall\Tabs('tabset');
+        if (is_singular('member')) {
+            $tabs = new \rpi\Wall\Tabs('tabset');
 
 
-		    $tabs->addTab(['label' => 'Über mich', 'name' => 'bio', 'content' => '<div id ="rpi_tab_bio_content"></div>', 'icon' => \rpi\Wall\Shortcodes::$user_icon, 'checked' => true]);
-		    $tabs->addTab(['label' => 'Gruppen', 'name' => 'groups', 'content' => '<div id ="rpi_tab_groups_content"></div>', 'icon' => \rpi\Wall\Shortcodes::$group_icon]);
-		    $tabs->addTab(['label' => 'Abonnements', 'name' => 'watch', 'content' => '<div id ="rpi_tab_watch_content"></div>', 'icon' => \rpi\Wall\Shortcodes::$watch_icon, 'permission' => 'self']);
-		    $tabs->addTab(['label' => 'Kommentare', 'name' => 'comments', 'content' => '<div id ="rpi_tab_comments_content"></div>', 'icon' => \rpi\Wall\Shortcodes::$comment_icon]);
-		    $tabs->addTab(['label' => 'Benachrichtigungen', 'name' => 'messages', 'content' => '<div id="rpi_tab_messages_content"></div>', 'icon' => \rpi\Wall\Shortcodes::$mail_icon, 'permission' => 'self']);
-		    $tabs->addTab(['label' => 'Einstellungen', 'name' => 'profile', 'content' => $this->get_profile(get_the_ID()) . '<div id="rpi_tab_profile_content"></div>', 'icon' => \rpi\Wall\Shortcodes::$gear_icon, 'permission' => 'self']);
-		    $tabs->addTab(['label' => 'Abmelden', 'name' => 'logout', 'content' => '', 'icon' => \rpi\Wall\Shortcodes::$logout_icon, 'permission' => 'self']);
+            $tabs->addTab(['label' => 'Über mich', 'name' => 'bio', 'content' => '<div id ="rpi_tab_bio_content"></div>', 'icon' => \rpi\Wall\Shortcodes::$user_icon, 'checked' => true]);
+            $tabs->addTab(['label' => 'Gruppen', 'name' => 'groups', 'content' => '<div id ="rpi_tab_groups_content"></div>', 'icon' => \rpi\Wall\Shortcodes::$group_icon]);
+            $tabs->addTab(['label' => 'Abonnements', 'name' => 'watch', 'content' => '<div id ="rpi_tab_watch_content"></div>', 'icon' => \rpi\Wall\Shortcodes::$watch_icon, 'permission' => 'self']);
+            $tabs->addTab(['label' => 'Kommentare', 'name' => 'comments', 'content' => '<div id ="rpi_tab_comments_content"></div>', 'icon' => \rpi\Wall\Shortcodes::$comment_icon]);
+            $tabs->addTab(['label' => 'Benachrichtigungen', 'name' => 'messages', 'content' => '<div id="rpi_tab_messages_content"></div>', 'icon' => \rpi\Wall\Shortcodes::$mail_icon, 'permission' => 'self']);
+            $tabs->addTab(['label' => 'Einstellungen', 'name' => 'profile', 'content' => $this->get_profile(get_the_ID()) . '<div id="rpi_tab_profile_content"></div>', 'icon' => \rpi\Wall\Shortcodes::$gear_icon, 'permission' => 'self']);
+            $tabs->addTab(['label' => 'Abmelden', 'name' => 'logout', 'content' => '', 'icon' => \rpi\Wall\Shortcodes::$logout_icon, 'permission' => 'self']);
 
-		    echo '<script>var rpi_wall ={user_ID: "' . $this->member->ID . '"};</script>';
-		    echo '<script> rpi_wall.allowedtabs = '.json_encode($tabs->get_allowed_tabs()).';</script>';
+            echo '<script>var rpi_wall ={user_ID: "' . $this->member->ID . '"};</script>';
+            echo '<script> rpi_wall.allowedtabs = ' . json_encode($tabs->get_allowed_tabs()) . ';</script>';
 
-		    $tabs->display();
-	    }
-
+            $tabs->display();
+        }
 
 
     }
@@ -120,7 +124,7 @@ class MemberPage
          </div>';
         $user = get_userdata($_POST['user_ID']);
 
-	    echo do_shortcode(nl2br($user->user_description) . $tags);
+        echo do_shortcode(nl2br($user->user_description) . $tags);
         die();
     }
 
@@ -185,6 +189,10 @@ class MemberPage
             }
             $out .= '</div>';
 
+        } else {
+            $out .= '<div>';
+            $out .= 'ist noch kein Mitglied einer Gruppe';
+            $out .= '</div>';
         }
         if ($query->max_num_pages > 1) {
             $out .= paginate_links(array(
@@ -220,6 +228,10 @@ class MemberPage
             }
             $out .= '</div>';
 
+        } else {
+            $out .= '<div>';
+            $out .= 'Du beobachtest noch keine Gruppe';
+            $out .= '</div>';
         }
         if ($query->max_num_pages > 1) {
             $out .= paginate_links(array(
@@ -269,6 +281,12 @@ class MemberPage
                 <?php
 
             }
+        } else {
+            ?>
+            <div>
+                hat noch keine Kommentare auf der Pinnwand geschrieben
+            </div>
+            <?php
         }
         $out .= ob_get_clean();
 
@@ -310,30 +328,39 @@ class MemberPage
             $read_messages = array();
         }
         ob_start();
-        ?>
-        <div id ="member-message-button" class="button hidden">Zurück</div>
-        <div class="member-message-grid message-list">
-            <div class="member-message-list">
-                <?php
-                foreach ($messages as $post):
-                    setup_postdata($post);
-                    ?>
-                    <div class="message-entry" id="message-<?php echo $post->ID ?>">
-                        <div class="entry-title <?php echo $read_messages[$post->ID] ? '' : 'unread' ?>">
-                            <?php echo date('d.n.Y', strtotime($post->post_date)); ?>
-                            : <?php echo $post->post_title; ?>
+        if ($messages) {
+            ?>
+            <div id="member-message-button" class="button hidden">Zurück</div>
+            <div class="member-message-grid message-list">
+                <div class="member-message-list">
+                    <?php
+                    foreach ($messages as $post):
+                        setup_postdata($post);
+                        ?>
+                        <div class="message-entry" id="message-<?php echo $post->ID ?>">
+                            <div class="entry-title <?php echo $read_messages[$post->ID] ? '' : 'unread' ?>">
+                                <?php echo date('d.n.Y', strtotime($post->post_date)); ?>
+                                : <?php echo $post->post_title; ?>
+                            </div>
                         </div>
-                    </div>
-                <?php
-                endforeach;
-                ?>
+                    <?php
+                    endforeach;
+                    ?>
+                </div>
+                <div class="member-message-detail">
+                    <div id="member-message-detail-title"></div>
+                    <div id="member-message-detail-content"></div>
+                </div>
             </div>
-            <div class="member-message-detail">
-                <div id="member-message-detail-title"></div>
-                <div id="member-message-detail-content"></div>
+            <?php
+        } else {
+            ?>
+            <div>
+                Du hast noch keine Benachrichtigungen erhalten
             </div>
-        </div>
-        <?php
+            <?php
+        }
+
 
         echo '<hr>';
         if ($wp_query->max_num_pages > 1) {

@@ -60,6 +60,7 @@ class Toolbar
                                 RpiWall::modal('planningDate', 'Planungstermin setzen ', do_shortcode('[acfe_form name="constitution_date"]'));
                                 break;
                         }
+                        //TODO: REWORK group buttons
                         $buttons = $group->get_toolbar_buttons();
                         foreach ($buttons as $button) {
                             ?>
