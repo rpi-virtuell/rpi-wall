@@ -21,8 +21,19 @@ class RPIWallInstaller
         add_action('before_delete_post', array($this, 'delete_member_taxonomy_on_pin_deletion'), 10, 2);
         add_filter('manage_posts_columns', array($this, 'add_new_message_columns'), 10, 2);
         add_action('manage_message_posts_custom_column', array($this, 'display_message_recipients_column'), 10, 2);
+        add_filter('notify_post_author', array($this, 'prefix_filter_sent_comment_notification'), 10, 2);
 
         add_action('pre_get_posts', array($this, 'alter_wall_query'));
+    }
+
+    /**
+     * @param bool $maybe_notify
+     * @param int $comment_ID
+     * @return false
+     */
+    public function prefix_filter_sent_comment_notification( bool $maybe_notify, int $comment_ID): bool
+    {
+        return false;
     }
 
     public function add_custom_capabilities()
