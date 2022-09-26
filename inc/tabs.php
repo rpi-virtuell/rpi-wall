@@ -84,7 +84,7 @@ class Tabs
         ob_start();
         ?>
         <section id="<?php echo $name; ?>" class="tab-panel">
-            <h2><?php echo $label; ?></h2>
+            <!--<h2><?php echo $label; ?></h2>-->
             <?php echo $content; ?>
         </section>
         <?php

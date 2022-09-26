@@ -348,12 +348,14 @@ class RpiWall
     public function on_new_pin($form, $post_ID)
     {
 
+
+        $posts = get_posts(['post_type'=>'wall','numberposts'=>1]);
+        $post_ID = $posts[0]->ID ;
+
+
         new Wall\Message(new Wall\Group($post_ID), 'creator', [get_current_user_id()], get_current_user_id());
         //new Wall\Message(new Wall\Group($post_ID), 'create', null, get_current_user_id());
         $currentMember = new Wall\Member();
-        //if(!$currentMember->is_watched_group($post_ID)){
-
-        //}
 
 
         if (get_post_meta($post_ID, 'plg_liker', true)) {
