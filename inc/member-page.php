@@ -11,6 +11,8 @@ class MemberPage
 
     public function __construct()
     {
+
+        $this->messages_per_page = get_option('options_rpi_wall_memberpage_posts_per_page', 6);
         add_action('wp', [$this, 'init']);
         add_action('blocksy:hero:custom_meta:after', [$this, 'the_matrixId']);
         add_action('blocksy:single:content:bottom', [$this, 'display']);
@@ -23,7 +25,6 @@ class MemberPage
 
         if (is_singular('member')) {
 
-            $this->posts_per_page = get_option('options_rpi_wall_memberpage_posts_per_page', 6);
 
             $this->member = new \rpi\Wall\Member(get_post()->post_author);
             $this->is_member_page = true;
@@ -309,7 +310,7 @@ class MemberPage
 
         $args = [
             'post_type' => 'message',
-            'posts_per_page' => $this->posts_per_page,
+            'posts_per_page' => $this->messages_per_page,
             'paged' => $paged,
             'meta_query' => [
                 [

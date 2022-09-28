@@ -123,14 +123,14 @@ article.entry-card {
 }
 */
 
-.ready .pin-title-icon.group svg {
+article.ready .pin-title-icon.group svg {
     background: var(--ci-group-ready);
 }
 
-.pending .pin-title-icon.group svg {
+article.pending .pin-title-icon.group svg {
     background: var(--ci-group-pending);
 }
-.founded .pin-title-icon.group svg {
+article.founded .pin-title-icon.group svg {
     background: var(--ci-group-founded);
     fill: white;
     color: white;
@@ -440,7 +440,6 @@ article.entry-card.type-wall .plg-wrapper {
     display: grid;
     justify-content: right;
     margin-top: 30px;
-    margin-bottom: 45px;
 }
 
 .toolbar-content .rpi-wall-buttons {
@@ -848,6 +847,7 @@ body.toolbar #wpadminbar{
     background-color: white;
     padding: 5px 13px;
     color: #999;
+    max-width: 45px;
 }
 
 

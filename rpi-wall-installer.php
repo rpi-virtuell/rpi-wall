@@ -72,7 +72,15 @@ class RPIWallInstaller
             $role->add_cap('delete_schooltype');
             $role->add_cap('assign_schooltype');
 
-            //TODO: ADD member capabilities
+            $role->add_cap('edit_member');
+            $role->add_cap('edit_others_member');
+            $role->add_cap('read_private_member');
+            $role->add_cap('publish_member');
+            $role->add_cap('read_member');
+            $role->add_cap('delete_others_member');
+            $role->add_cap('edit_published_member');
+            $role->add_cap('delete_published_member');
+            $role->add_cap('delete_member');
 
         }
         /// Author capabilities
@@ -629,6 +637,27 @@ class RPIWallInstaller
                         'acfe_bidirectional' => array(
                             'acfe_bidirectional_enabled' => '0',
                         ),
+                    ),
+                    array(
+                        'key' => 'field_rpi_wall_memberpage_posts_per_page',
+                        'label' => 'Menge der angezeigten Nachrichten',
+                        'name' => 'rpi_wall_memberpage_posts_per_page',
+                        'type' => 'number',
+                        'instructions' => '',
+                        'required' => 0,
+                        'conditional_logic' => 0,
+                        'wrapper' => array(
+                            'width' => '',
+                            'class' => '',
+                            'id' => '',
+                        ),
+                        'default_value' => '6',
+                        'placeholder' => '',
+                        'prepend' => '',
+                        'append' => '',
+                        'min' => '',
+                        'max' => '',
+                        'step' => '',
                     ),
                     array(
                         'key' => 'field_rpi_message_templates',
