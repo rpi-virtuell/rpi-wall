@@ -115,7 +115,7 @@ body {
 @media only screen and (min-width: 800px) {
 
 
-    .wall .tabset label{
+    .wall .tabset > label{
         width:150px;
         height: 85px;
     }
