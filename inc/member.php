@@ -377,7 +377,8 @@ class Member extends \stdClass
     public function get_query_all_groups($args = array())
     {
 
-        if (!empty($postids = $this->get_assigned_group_Ids())) {
+        //if (!empty($postids = $this->get_assigned_group_Ids())) {
+        if (!empty($postids = $this->get_group_Ids())) {
             $args = wp_parse_args($args,
                 [
                     'post_type' => 'wall',

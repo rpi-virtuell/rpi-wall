@@ -178,7 +178,7 @@ class MemberPage
             'posts_per_page' => $this->posts_per_page
         ];
         $member = new \rpi\Wall\Member($_POST['user_ID']);
-        $query = $member->get_query_all_groups($args);
+	    $query = $member->get_query_all_groups($args);
         if ($query && $query->have_posts()) {
             $out .= '<div class="group-posts">';
 
