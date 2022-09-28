@@ -58,7 +58,7 @@ class RpiWall
         add_action('post_class', [$this, 'add_group_status_class']);
 
         add_action('blocksy:content:top', function () {
-            if (is_post_type_archive('wall') || is_tax() && current_user_can('publish_walls')) {
+            if (is_user_logged_in() && (is_post_type_archive('wall') || is_tax() && current_user_can('publish_walls'))) {
                 ob_start();
                 ?>
                 <div class="ct-container rpi-wall-tutorial-header">
@@ -66,7 +66,8 @@ class RpiWall
                 </div>
                 <?php
                 echo ob_get_clean();
-                RpiWall::modal('form', 'Neuer Eintrag', do_shortcode('[acfe_form name="create-pin"]'));
+	            RpiWall::modal('form', 'Neuer Eintrag', do_shortcode('[acfe_form name="create-pin"]'));
+
 
             } else {
 

@@ -1343,21 +1343,25 @@ class RPIWallInstaller
         }
     }
 
-    function alter_wall_query(\WP_Query $query)
+	function alter_wall_query(\WP_Query $query)
     {
 
-        if (empty($_GET['widgetId']) && $query->is_main_query() && !is_user_logged_in() && ($query->is_post_type_archive('wall') || $query->get('post_type') === 'wall')) {
+	    $is_main_query = false;
+
+        if (empty($_GET['widgetId']) && $query->is_main_query() &&  ($query->is_post_type_archive('wall') || $query->get('post_type') === 'wall')) {
 
             //TODO: Check wether given widgetID is valid
 
-            $query->set('meta_query', array(
-                array(
-                    'key' => 'public',
-                    'compare' => '=',
-                    'value' => '1'
-                )
-            ));
+	        if(!is_user_logged_in()){
+		        $query->set('meta_query', array(
+			        array(
+				        'key' => 'public',
+				        'compare' => '=',
+				        'value' => '1'
+			        )
+		        ));
+	        }
+
         }
     }
-
 }
