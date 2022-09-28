@@ -98,7 +98,13 @@ class RpiWall
                     }
                 }
             }
-
+            if(is_post_type_archive('wall')):
+                ?>
+                <div class="ct-container rpi-wall-filters">
+                    <?php echo do_shortcode('[rpi_wall_filter]'); ?>
+                </div>
+                <?php
+            endif;
 
         });
 
@@ -534,10 +540,6 @@ class RpiWall
             <a class="fea-submit-button button button-primary" id="btn-open-modal-<?php echo $id; ?>"
                href="#modal-<?php echo $id; ?>"><?php echo $label; ?></a>
         </div>
-        <div class="ct-container rpi-wall-filters">
-            <?php echo do_shortcode('[rpi_wall_filter]') ?>
-        </div>
-
         <div id="modal-<?php echo $id; ?>">
             <div class="modal-wrapper">
                 <div id="btn-close-modal" class="close-modal-<?php echo $id; ?>">
