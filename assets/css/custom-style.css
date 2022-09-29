@@ -123,14 +123,14 @@ article.entry-card {
 }
 */
 
-article.ready .pin-title-icon.group svg {
+.ready .pin-title-icon.group svg {
     background: var(--ci-group-ready);
 }
 
-article.pending .pin-title-icon.group svg {
+.pending .pin-title-icon.group svg {
     background: var(--ci-group-pending);
 }
-article.founded .pin-title-icon.group svg {
+.founded .pin-title-icon.group svg {
     background: var(--ci-group-founded);
     fill: white;
     color: white;
@@ -440,6 +440,7 @@ article.entry-card.type-wall .plg-wrapper {
     display: grid;
     justify-content: right;
     margin-top: 30px;
+    margin-bottom: 45px;
 }
 
 .toolbar-content .rpi-wall-buttons {
@@ -847,7 +848,6 @@ body.toolbar #wpadminbar{
     background-color: white;
     padding: 5px 13px;
     color: #999;
-    max-width: 45px;
 }
 
 
@@ -856,7 +856,7 @@ body.toolbar #wpadminbar{
     margin-top: -44px;
 }
 .rpi-wall-filter {
-    color: var(--ci-sub-box-font-color);
+    /*color: var(--ci-sub-box-font-color);*/
     display: ruby;
 }
 .rpi-wall-filter a{

@@ -131,45 +131,14 @@ class Shortcodes
 
         ob_start();
         if(is_archive() || is_tax('wall-cat') || is_tax('wall-tag')){
-
-            $tagsarr = wp_tag_cloud(array(
-                'taxonomy' => array( 'wall-tag' ),
-                 'format'=>'array',
-                 'echo'=>false,
-                 'show_count'=>false,
-                 'post_type'=>'wall'
-            ));
-
-            $tags = array();
-            foreach ($tagsarr as $k=>$tag){
-
-                $tags[] = preg_replace('/href="([^"]*)"/', 'href="$1?post_type=wall"', $tag);
-
-            }
-
-
-            /*
-            $categories = wp_tag_cloud(array(
-                'taxonomy' => array( 'wall-cat' ),
-                 'format'=>'list',
-                 'echo'=>false,
-                 'smallest'=>18,
-                 'largest'=>18,
-                 'unit'=>'px',
-                 'show_count'=>true
-            ));
-            */
             ?>
                 <div>
-                    <!--
-                    <details class="rpi-wall-filter categories">
-                        <summary>Kategorien</summary>
-                        <div class="rpi-wall-categories"><?php echo $categories;?></div>
-                    </details>
-                    -->
                     <details class="rpi-wall-filter tags">
-                        <summary>Tags</summary>
-                        <div class="rpi-wall-tag-cloud"><?php echo implode('',$tags);?></div>
+                        <summary>Filter</summary>
+
+                        <?php echo facetwp_display('template','blocksy_cards_wall'); ?>
+                        <?php echo facetwp_display('facet','wall_tags'); ?>
+
                     </details>
 
                 </div>
