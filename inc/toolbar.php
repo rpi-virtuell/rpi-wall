@@ -63,15 +63,18 @@ class Toolbar
                         //TODO: REWORK group buttons
                         $buttons = $group->get_toolbar_buttons();
                         foreach ($buttons as $button) {
-                            ?>
-                            <div class="ct-container">
-                                <a class="button toolbar-button"
-                                   href="<?php echo $button['rpi_wall_group_toolbar_button_url'] ?>" target="_blank"
-                                   rel="noopener noreferrer">
-                                    <?php echo $button['rpi_wall_group_toolbar_button_label'] ?>
-                                </a>
-                            </div>
-                            <?php
+                            if (!empty($button['rpi_wall_group_toolbar_button_url']) || !empty($button['rpi_wall_group_toolbar_button_label']))
+                            {
+                                ?>
+                                <div class="ct-container">
+                                    <a class="button toolbar-button"
+                                       href="<?php echo $button['rpi_wall_group_toolbar_button_url'] ?>" target="_blank"
+                                       rel="noopener noreferrer">
+                                        <?php echo $button['rpi_wall_group_toolbar_button_label'] ?>
+                                    </a>
+                                </div>
+                                <?php
+                            }
                         }
                         ?>
                         <div class="ct-container">
