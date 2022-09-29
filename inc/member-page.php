@@ -125,7 +125,13 @@ class MemberPage
          </div>';
         $user = get_userdata($_POST['user_ID']);
 
-        echo do_shortcode(nl2br($user->user_description) . $tags);
+        $description = '<h4>Über Mich</h4>';
+        if (!empty($user->user_description)) {
+            $description .= $user->user_description;
+        } else {
+            $description .= get_option('options_rpi_label_member_profile_textfields_group_member_bio_default_text');
+        }
+        echo do_shortcode(nl2br($description) . $tags);
         die();
     }
 
@@ -179,7 +185,7 @@ class MemberPage
             'posts_per_page' => $this->posts_per_page
         ];
         $member = new \rpi\Wall\Member($_POST['user_ID']);
-	    $query = $member->get_query_all_groups($args);
+        $query = $member->get_query_all_groups($args);
         if ($query && $query->have_posts()) {
             $out .= '<div class="group-posts">';
 
