@@ -39,8 +39,19 @@ class Matrix {
 		$this->client = new MatrixCustomClient('https://'.$this->homeserver, $this->token);
 	}
 
-	function send_msg_obj( Wall\Group $group, \stdClass $msg ){
+	function set_topic( Wall\Group $group, string $topic ){
+		$room_id = $this->getRoomId($group);
+		$room = new Room($this->client,$room_id);
+		$room->setRoomTopic($topic);
+	}
 
+	function send_msg( Wall\Group $group, string $msg ){
+		$room_id = $this->getRoomId($group);
+		$room = new Room($this->client,$room_id);
+		$room->sendHtml($msg);
+	}
+
+	function send_msg_obj( Wall\Group $group, \stdClass $msg ){
 		$room_id = $this->getRoomId($group);
 		$room = new Room($this->client,$room_id);
 		$room->sendHtml('<strong>'.$msg->subject.'</strong><br>'.$msg->body);
@@ -180,14 +191,19 @@ class Matrix {
 
 	function tests(int $group_id = 0){
 
-		if($group_id>0){
+		$group_id = 822;
+
+		if($group_id>0 && get_current_user_id() == 2){
 
 
 			$msg =new \stdClass();
 			$msg->subject = 'Subject: Testnachricht:';
 			$msg->body = 'Body: Dies ist der Body der Textnachhricht.';
 
+
 			$group = new Group($group_id);
+
+
 			$check = $this->create_Room($group);
 			if($check instanceof \WP_Error){
 				echo $check->get_error_message();
@@ -197,6 +213,8 @@ class Matrix {
 			$this -> addToolbar($group);
 
 			$this->send_msg_obj($group,$msg);
+			$this->send_msg($group,'Klicke oben rechts auf <div aria-selected="true" role="tab" aria-label="Rauminfo" tabindex="0" class="mx_AccessibleButton mx_RightPanel_headerButton mx_RightPanel_headerButton_highlight mx_RightPanel_roomSummaryButton"></div>');
+			$this->set_topic($group->url);
 
 			var_dump($this->get_MatrixRoom_Members($group));
 			die();

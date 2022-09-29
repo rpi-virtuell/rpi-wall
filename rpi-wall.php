@@ -50,10 +50,13 @@ class RpiWall
 
     public function __construct()
     {
+	    //session_start();
 
         add_action('wp_enqueue_scripts', [$this, 'custom_style_and_scripts']);
 
+        add_action('pre_get_posts', [$this, 'facetwp_injection']);
         add_action('pre_get_posts', [$this, 'query_tags']);
+
         add_filter('body_class', [$this, 'add_group_status_class']);
         add_action('post_class', [$this, 'add_group_status_class']);
 
@@ -210,12 +213,12 @@ class RpiWall
 
         $this->installer = new Wall\RPIWallInstaller();
 
-//        add_action('init', function (){
-//	        if(get_current_user_id()==2 && is_singular('wall')){
-//		        $matrix = new Wall\Matrix();
-//		        $matrix->tests(get_the_ID());
-//	        }
-//        });
+        add_action('init', function (){
+	        if(get_current_user_id()==2 && is_singular('wall')){
+		        $matrix = new Wall\Matrix();
+		        $matrix->tests(get_the_ID());
+	        }
+        });
 
 
     }
@@ -226,6 +229,16 @@ class RpiWall
             ob_start();
         }
     }
+
+    public function facetwp_injection(WP_Query &$query){
+
+        if($query->is_post_type_archive('wall')){
+
+
+        }
+
+    }
+
     public function query_tags(&$query)
     {
 
