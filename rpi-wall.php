@@ -233,8 +233,7 @@ class RpiWall
     public function facetwp_injection(WP_Query &$query){
 
         if($query->is_post_type_archive('wall')){
-
-
+	        $query->set('post_type', ['wall','member']);
         }
 
     }

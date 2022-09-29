@@ -133,11 +133,12 @@ class Shortcodes
         if(is_archive() || is_tax('wall-cat') || is_tax('wall-tag')){
             ?>
                 <div>
-                    <details class="rpi-wall-filter tags">
-                        <summary>Filter</summary>
+                    <!--<details class="rpi-wall-filter tags">
+                        <summary>Filter</summary>-->
                         <?php echo facetwp_display('facet','wall_tags'); ?>
                         <?php echo facetwp_display('facet','wall_cats'); ?>
-                    </details>
+                        <?php echo facetwp_display('facet','posttype'); ?>
+                    <!--</details>-->
 
                 </div>
             <?php
