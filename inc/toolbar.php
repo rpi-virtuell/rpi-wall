@@ -78,11 +78,6 @@ class Toolbar
                             }
                         }
                         ?>
-                        <div class="ct-container">
-                            <div class="button toolbar-button delete_button" id="close-pin-group-button">
-                                PLG schließen
-                            </div>
-                        </div>
 
                     </div>
                     <div class="toolbar-details">

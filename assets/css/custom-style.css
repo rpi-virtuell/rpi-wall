@@ -732,7 +732,7 @@ article.entry-card.type-wall .plg-wrapper {
 .show {
     display:block
 }
-.group-toolbar-grip .button{
+.group-toolbar-grip a.button{
     width: 100%;
 }
 
@@ -794,12 +794,6 @@ article.entry-card.type-wall .plg-wrapper {
     grid-template-columns: 50% 50%;
 }
 
-@media only screen and (max-width: 600px) {
-    .group-toolbar-grip {
-        grid-template-columns: unset;
-    }
-}
-
 .toolbar-protocols{
     grid-area: protocol;
     display: grid;
@@ -811,6 +805,23 @@ article.entry-card.type-wall .plg-wrapper {
     padding: 10px;
     border-left: #aaaaaa solid 1px;
 }
+
+@media only screen and (max-width: 600px) {
+    .group-toolbar-grip {
+        grid-template-columns: unset;
+    }
+    .toolbar-details {
+        grid-template: "goals""protocol";
+        grid-template-columns: unset;
+    }
+    .toolbar-protocols{
+        border-right: unset;
+    }
+    .toolbar-group-goal{
+        border-left: unset;
+    }
+}
+
 
 body.toolbar #wpadminbar{
     display: none;
