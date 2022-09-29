@@ -273,7 +273,7 @@ class RpiWall
         $group = new Wall\Group(get_the_ID());
         ?>
         <header class="entry-header">
-            <h1 class="page-title"> <?php echo get_field("constitution_gruppenname") ?> </h1>
+            <h1 class="page-title"> <?php echo !empty(get_field("constitution_gruppenname")) ? get_field("constitution_gruppenname") : $group->title ?> </h1>
         </header>
         <?php
         $group->display();
@@ -281,7 +281,8 @@ class RpiWall
         if ($group->is_founded() && $currentUser != 0 && ($group->has_member($currentUser) || current_user_can('manage_options'))) {
             ?>
             <div class="group-tab-matrix-detail">
-                <a class="toolbar-button button" href="<?php echo $group->get_matrix_link() ?>">Zur Matrix Gruppe</a>
+                <a class="toolbar-button button" href="<?php echo $group->get_matrix_link() ?>" target="_blank"
+                   rel="noopener noreferrer">Zur Matrix Gruppe</a>
             </div>
             <?php
             Wall\Toolbar::display_toolbar($group, false);

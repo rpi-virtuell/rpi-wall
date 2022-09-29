@@ -30,7 +30,8 @@ class Toolbar
                 <div class="toolbar-header">
 
                     <?php if ($widget) { ?>
-                        <h4><a href="<?php echo get_permalink() ?>"><?php echo $group->title ?></a></h4>
+                        <h4><a href="<?php echo get_permalink() ?>" target="_blank"
+                               rel="noopener noreferrer"><?php echo $group->title ?></a></h4>
                     <?php } ?>
                     <?php if (!empty($next_meeting)) { ?>
                         Nächster Termin: <?php echo date('D d.n.Y', strtotime($next_meeting)) ?>
