@@ -132,13 +132,27 @@ class Shortcodes
         ob_start();
         if(is_archive() || is_tax('wall-cat') || is_tax('wall-tag')){
             ?>
-                <div>
-                    <!--<details class="rpi-wall-filter tags">
-                        <summary>Filter</summary>-->
-                        <?php echo facetwp_display('facet','wall_tags'); ?>
-                        <?php echo facetwp_display('facet','wall_cats'); ?>
-                        <?php echo facetwp_display('facet','posttype'); ?>
-                    <!--</details>-->
+                <div class="rpi-wall-filter grid">
+                    <details class="rpi-wall-filter tags">
+                        <summary>Filter</summary>
+                        <div>
+                            <?php echo facetwp_display('facet','suche'); ?>
+                        </div>
+
+                        <div>
+                            <?php echo facetwp_display('facet','wall_tags'); ?>
+                        </div>
+
+                        <div>
+                            <?php echo facetwp_display('facet','wall_cats'); ?>
+                        </div>
+
+                        <div>
+                            <?php echo facetwp_display('facet','reset'); ?>
+                        </div>
+
+
+                    </details>
 
                 </div>
             <?php
