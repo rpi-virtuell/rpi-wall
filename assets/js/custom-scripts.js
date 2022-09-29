@@ -280,18 +280,5 @@ jQuery(document).ready($ => {
         }
     });
 
-    //facet wp: reload after filter
 
-    var do_reload = false;
-
-    document.addEventListener('facetwp-loaded', function() {
-
-        if(do_reload){
-
-            document.location.reload();
-        }
-
-
-        do_reload = true;
-    });
 })

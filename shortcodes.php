@@ -135,10 +135,8 @@ class Shortcodes
                 <div>
                     <details class="rpi-wall-filter tags">
                         <summary>Filter</summary>
-
-                        <?php echo facetwp_display('template','blocksy_cards_wall'); ?>
                         <?php echo facetwp_display('facet','wall_tags'); ?>
-
+                        <?php echo facetwp_display('facet','wall_cats'); ?>
                     </details>
 
                 </div>
