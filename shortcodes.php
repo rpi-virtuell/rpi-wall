@@ -27,6 +27,7 @@ class Shortcodes
     public $user;
     public bool $is_member_page = false;
 
+
     public function __construct()
     {
 
@@ -123,6 +124,7 @@ class Shortcodes
 
     /**
     * [rpi_wall_filter}
+    *
     * @param $atts
     *
     * @return false|string
@@ -132,34 +134,136 @@ class Shortcodes
         ob_start();
         if(is_archive() || is_tax('wall-cat') || is_tax('wall-tag')){
             ?>
-                <div class="rpi-wall-filter grid">
-                    <details class="rpi-wall-filter tags">
-                        <summary>Filter</summary>
-                        <div>
-                            <?php echo facetwp_display('facet','suche'); ?>
-                        </div>
+                <style>
+                   .rpi-wall-filters {
+                        margin-top: -80px;
 
-                        <div>
-                            <?php echo facetwp_display('facet','wall_tags'); ?>
-                        </div>
+                    }
+                    .rpi-wall-filters button{
+                        /*color: var(--buttonTextInitialColor);*/
+                        /*background-color: var(--buttonInitialColor);*/
+                        border: var(--button-border);
+                        box-shadow: 1px 1px 1px 2px #aaa;
+                        display: var(--display, inline-flex);
+                        align-items: center;
+                        justify-content: center;
+                        min-height: var(--buttonMinHeight);
+                        padding: var(--button-padding);
+                        cursor: pointer;
+                        user-select: none;
+                        text-align: center;
+                        border-radius: var(--buttonBorderRadius, 3px);
+                    }
+                    .rpi-wall-filters button:hover{
+                        border-color: var(--button-border-hover-color);
+                        color: var(--buttonTextHoverColor);
+                        background-color: var(--buttonHoverColor);
+                    }
 
-                        <div>
-                            <?php echo facetwp_display('facet','wall_cats'); ?>
-                        </div>
+                    .rpi-wall-filter a{
+                        color: var(--ci-sub-box-font-color);
+                    }
+                    .rpi-wall-filter summary{
+                        font-weight: bold;
 
+                    }
+                    .rpi-wall-filter details[open]{
+                        transition: all 2s ease;
+                    }
+                    .rpi-wall-filter .fs-wrap {
+                        width: 100%;
+                        border-radius: 3px;
+                        border-color: #2189F2;
+                        padding: 5px;
+                        border: 1px solid var(--ci-success-color);
+                        background-color: var(--ci-tutorial-notification);
+                    }
+                    .rpi-wall-filter .fs-dropdown {
+                      box-shadow: 2px 2px 5px #777;
+                    }
+                     .rpi-wall-filter .facetwp-search, .rpi-wall-filter select{
+                        background-color: #dddddd;
+                    }
+                    .rpi-wall-filter[open] .rpi-wall-tag-cloud{
+                        padding: 10px;
+                        background:var(--ci-sub-box-background-color);
+                        border-radius: 5px;
+
+                    }
+                    .rpi-wall-filter.container{
+                        background:var(--ci-tutorial-notification);
+                        padding: 30px;
+                        border-radius: 0 5px 5px;
+
+                    }
+                    .rpi-wall-filter.grid{
+                        display: grid;
+                        grid-template-columns: repeat(4, minmax(0, 1fr));
+                        margin-top: 10px;
+                        border-radius: 5px;
+                        column-gap: 30px;
+                    }
+                    .rpi-wall-filter .facetwp-facet {
+                      margin-bottom: 5px;
+                    }
+                    .rpi-wall-filter .facetwp-date.facetwp-date-min.ready.fdate-alt-input ,.rpi-wall-filter .facetwp-date.facetwp-date-max.ready.fdate-alt-input{
+                      width: 40%!important;
+                    }
+
+                    .rpi-wall-tag-cloud a{
+                        margin: 2px 15px;
+                    }
+                    .facetwp-facet-beobachtet .facetwp-counter {
+                        display: none;
+                    }
+
+                </style>
+
+
+                <details class="rpi-wall-filter tags">
+
+                    <summary class="button">Filter</summary>
+                    <div class="rpi-wall-filter container">
+                        <div class="rpi-wall-filter grid">
+                            <div>
+                                <?php //echo facetwp_display('facet','suche'); ?>
+                                <?php echo facetwp_display('facet','suchen'); ?>
+                            </div>
+                            <div>
+                                <?php echo facetwp_display('facet','wall_tags'); ?>
+                            </div>
+
+                            <div>
+                                <?php echo facetwp_display('facet','wall_cats'); ?>
+                            </div>
+                            <div>
+                                <?php echo facetwp_display('facet','sortieren'); ?>
+                            </div>
+                            <div>
+                                <?php echo facetwp_display('facet','zeitraum'); ?>
+                            </div>
+                            <div>
+
+                                <?php echo facetwp_display('facet','beobachtet'); ?>
+                            </div>
+
+
+                        </div>
                         <div>
+                            <?php echo facetwp_display( 'selections' ); ?>
                             <?php echo facetwp_display('facet','reset'); ?>
                         </div>
+                    </div>
 
 
-                    </details>
+                </details>
 
-                </div>
             <?php
 
         }
         return ob_get_clean();
     }
+
 
     public function get_user_profile_tags($atts)
     {

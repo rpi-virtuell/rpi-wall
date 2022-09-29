@@ -57,7 +57,39 @@ class RpiWall
         add_action('pre_get_posts', [$this, 'facetwp_injection']);
         add_action('pre_get_posts', [$this, 'query_tags']);
 
-        add_filter('body_class', [$this, 'add_group_status_class']);
+        /**** beobachte beiträge filtern ****/
+	    add_filter( 'facetwp_facet_display_value', function( $label, $params ) {
+
+		    if ( 'beobachtet' == $params['facet']['name'] ) {
+
+			    $label = 'Nur beobachtete Einträge';
+
+		    }
+		    return $label;
+	    }, 10, 2 );
+
+	    add_filter( 'facetwp_facet_filter_posts', function( $return, $params ) {
+            global $wp_query;
+
+		    if ( 'beobachtet' == $params['facet']['name'] ) {
+			    $args = $wp_query->query_vars;
+			    $args['meta_query'][]=array(
+				    'key' => 'rpi_wall_watcher_id',
+				    'compare' => '=',
+				    'value' => get_current_user_id()
+                );
+                $posts = get_posts($args);
+                foreach ($posts as $post){
+	                $post_ids[]=$post->ID;
+                }
+
+			    return $post_ids;
+		    }
+		    return $return;
+	    }, 10, 2 );
+	    /**** beobachte beiträge filtern END ****/
+
+	    add_filter('body_class', [$this, 'add_group_status_class']);
         add_action('post_class', [$this, 'add_group_status_class']);
 
         add_action('blocksy:content:top', function () {
