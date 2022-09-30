@@ -340,11 +340,11 @@ class Group extends \stdClass
     }
 
     /**
-     * @param array $settings
+     * @param array $buttons
      * @return void
      */
-    public function set_toolbar_settings(array $settings){
-        update_post_meta($this->ID, 'rpi_wall_group_toolbar_buttons', $settings);
+    public function set_toolbar_buttons(array $buttons){
+        update_post_meta($this->ID, 'rpi_wall_group_toolbar_buttons', $buttons);
     }
 
     /**

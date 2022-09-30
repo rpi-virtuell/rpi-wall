@@ -59,10 +59,17 @@ class Toolbar
                                 break;
                             default:
                                 RpiWall::modal('planningDate', 'Planungstermin setzen ', do_shortcode('[acfe_form name="constitution_date"]'));
+                                if (!$group->get_toolbar_buttons())
+                                {
+                                    $buttons = array(array('rpi_wall_group_toolbar_button_label' => 'Terminfindung','rpi_wall_group_toolbar_button_url' => 'https://nuudel.digitalcourage.de/'));
+                                }
                                 break;
                         }
-                        //TODO: REWORK group buttons
-                        $buttons = $group->get_toolbar_buttons();
+                        //TODO: terminfindung button via set_toolbar_buttons hinzufügen
+                        if (!isset($buttons))
+                        {
+                            $buttons = $group->get_toolbar_buttons();
+                        }
                         foreach ($buttons as $button) {
                             if (!empty($button['rpi_wall_group_toolbar_button_url']) || !empty($button['rpi_wall_group_toolbar_button_label']))
                             {
