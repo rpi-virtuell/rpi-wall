@@ -768,6 +768,71 @@ class RPIWallInstaller
                         'maxlength' => '',
                     ),
                     array(
+                        'key' => 'field_rpi_matrix_bot_welcome_message',
+                        'label' => 'Matrix Bot Willkommens Nachricht',
+                        'name' => 'matrix_bot_welcome_message',
+                        'prefix' => 'acf',
+                        'type' => 'acfe_code_editor',
+                        'instructions' => 'Willkommensnachricht des Bots beim erstellen des Raums',
+                        'required' => 0,
+                        'conditional_logic' => 0,
+                        'wrapper' => array(
+                            'width' => '',
+                            'class' => '',
+                            'id' => '',
+                        ),
+                        'frontend_admin_display_mode' => 'edit',
+                        'mode' => 'text/html',
+                        'indent_unit'=> 4,
+                        'readonly' => 0,
+                        'default_value' => '<strong>Willkommen Chatraum unserer Lerngemeinschaft</strong>
+der auch über den <a href="%postlink%">Pinwandeintrag</a> erreichbar ist.
+Schreibt den anderen durch ein kurzes "Hallo" in diesen Chat und wenn ihr möchtet, auch etwas über euch selbst und was dazu bewegt hat, dieser Gemeinschaft beizutreten.<br>
+<br><strong>Nächste Schritte</strong>
+<ul>
+	<li>Findet gemeinsam einen Termin für das erste konstitutierende Treffen und tragt dieses in der Toolbar mit Klick auf "Planungstermin setzen" ein. Vielleicht hilft euch <strong><a href="https://nuudel.digitalcourage.de/">Nuudel</a></strong> bei der Terminfindung</li>
+	<li>Beim ersten Treffen verabredet ihr mit Hilfe eines Planungsbogens Ziele und Vorgehensweisen dieser Gruppe fest.</li>
+	<li>Für allen weiteren Treffen steht euch ein Arbeitssturkturbogen zur Verfügung, der effektiv hilft, das angestrebte Ziel zu erreichen.</li>
+</ul>',
+                        'placeholder' => '',
+                        'prepend' => '',
+                        'append' => '',
+                        'maxlength' => '',
+                        'rows' => 10,
+                        'max_rows' => '',
+                    ),array(
+                        'key' => 'field_rpi_matrix_bot_toolbar_tutorial',
+                        'label' => 'Matrix Bot Toolbar Tutorial',
+                        'name' => 'matrix_bot_toolbar_tutorial',
+                        'prefix' => 'acf',
+                        'type' => 'acfe_code_editor',
+                        'instructions' => 'Tutorial Nachricht um die Nutzung der Toolbar zu erklären',
+                        'required' => 0,
+                        'conditional_logic' => 0,
+                        'wrapper' => array(
+                            'width' => '',
+                            'class' => '',
+                            'id' => '',
+                        ),
+                        'frontend_admin_display_mode' => 'edit',
+                        'mode' => 'text/html',
+                        'indent_unit'=> 4,
+                        'readonly' => 0,
+                        'default_value' => '<strong>Toolbar nutzen</strong><br>
+Du kannst die eingebundene Toolbar direkt aus diesem Chatfenster nutzen: 
+Klicke in der oberen rechten Ecke auf das Infosymbol <strong>(i)</strong>  
+und anchließend weiter unten auf "Toolbar", um diese dauerhaft anzuzeigen: 
+<a href="https://dev-dibes.rpi-virtuell.de/wp-content/uploads/2022/09/toolbar.png"></a>
+
+',
+                        'placeholder' => '',
+                        'prepend' => '',
+                        'append' => '',
+                        'maxlength' => '',
+                        'rows' => 10,
+                        'max_rows' => '',
+                    ),
+                    array(
                         'key' => 'field_rpi_toolbar',
                         'label' => 'Toolbar',
                         'name' => '',
