@@ -1,5 +1,6 @@
 jQuery(document).ready($ => {
 
+    add_watch_button_click_event();
     const unpaginatedActions = [""];
 
     $('.rpi-wall-like-button').each((i, btn) => {
@@ -124,6 +125,7 @@ jQuery(document).ready($ => {
             },
             function (response) {
                 rpi_wall_print_content(response, hash)
+                add_watch_button_click_event();
             }
         )
     }
@@ -163,7 +165,7 @@ jQuery(document).ready($ => {
                         wall.ajaxurl,
                         data,
                         function (response) {
-                            rpi_wall_print_content(response, hash)
+                            rpi_wall_print_content(response, hash);
                         }
                     )
                 })
@@ -218,34 +220,6 @@ jQuery(document).ready($ => {
         })
     }
 
-    $('.rpi-wall-watch-button').each((i, btn) => {
-        const id = btn.id.replace(/[^\d]*/, '');
-        console.log(id);
-        $(btn).on('click', e => {
-            $.post(
-                wall.ajaxurl,
-                {
-                    'action': 'rpi_wall_toggle_watch',
-                    'group_id': id
-                },
-                function (response) {
-                    const data = JSON.parse(response);
-                    if (data.success) {
-                        if (data.is_watcher) {
-                            jQuery('#btn-watch-group-' + id).html(wallIcons.watch);
-                            jQuery('#btn-watch-group-' + id).addClass('watching');
-                        } else {
-                            jQuery('#btn-watch-group-' + id).html(wallIcons.unwatch);
-                            jQuery('#btn-watch-group-' + id).removeClass('watching');
-
-                        }
-                        jQuery('#rpi-wall-counter-' + id).html(data.amount);
-                    }
-
-                }
-            )
-        });
-    })
 
     /**
      * Modal Window open
@@ -282,3 +256,34 @@ jQuery(document).ready($ => {
 
 
 })
+
+function add_watch_button_click_event(){
+    $ = jQuery;
+    $('.rpi-wall-watch-button').each((i, btn) => {
+        const id = btn.id.replace(/[^\d]*/, '');
+        $(btn).on('click', e => {
+            $.post(
+                wall.ajaxurl,
+                {
+                    'action': 'rpi_wall_toggle_watch',
+                    'group_id': id
+                },
+                function (response) {
+                    const data = JSON.parse(response);
+                    if (data.success) {
+                        if (data.is_watcher) {
+                            jQuery('#btn-watch-group-' + id).html(wallIcons.watch);
+                            jQuery('#btn-watch-group-' + id).addClass('watching');
+                        } else {
+                            jQuery('#btn-watch-group-' + id).html(wallIcons.unwatch);
+                            jQuery('#btn-watch-group-' + id).removeClass('watching');
+
+                        }
+                        jQuery('#rpi-wall-counter-' + id).html(data.amount);
+                    }
+
+                }
+            )
+        });
+    })
+}

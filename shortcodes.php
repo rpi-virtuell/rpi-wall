@@ -485,9 +485,22 @@ class Shortcodes
         ?>
         <div class="group-post">
             <div class="group-post-wrapper">
+                <?php
+                    Group::display_watcher_area();
+                ?>
                 <div class="entry-title">
-                    <h3><?php echo $post->post_title; ?></h3>
+                    <span>Pinname:</span>
+                    <a href="<?php the_permalink()?>#pin">
+                        <h3><?php echo $post->post_title; ?></h3>
+                    </a>
+                    <?php if (!empty(get_field("constitution_gruppenname"))) {?>
+                        <span>Gruppenname:</span>
+                        <a href="<?php the_permalink()?>#group">
+                            <h4><?php echo get_field("constitution_gruppenname"); ?></h4>
+                        </a>
+                    <?php } ?>
                 </div>
+
                 <div class="entry-meta"><?php echo self::$user_icon; ?>
                     <?php echo self::display_user_name($post->post_author); ?>
                     <?php echo self::$date_icon; ?><?php echo date('d.m.Y', strtotime($post->post_date)); ?>
@@ -497,9 +510,8 @@ class Shortcodes
                 </div>
                 <div class="ghost"></div>
                 <div>
-                    <a href="<?php the_permalink() ?>#group">Pinwandeintrag</a>
                     <?php if (is_user_logged_in() && 'pending' !== $plg->get_status() && $plg->has_member(get_current_user_id())):
-                        ?>|  <a href="<?php echo $plg->get_matrix_link(); ?>"  target="_blank" rel="noopener noreferrer">Matrix Raum</a>
+                        ?><a href="<?php echo $plg->get_matrix_link(); ?>"  target="_blank" rel="noopener noreferrer">Matrix Raum</a>
                     <?php endif; ?>
                 </div>
                 <div>
