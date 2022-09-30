@@ -155,9 +155,13 @@ class RpiWall
         //Toolbar
         add_filter('body_class', ['\rpi\Wall\Toolbar', 'add_toolbar_class_to_body']);
         add_action('wp_body_open', function () {
-            if (isset($_GET['widgetId']) && get_post_type() == "wall") {
+            if ( (isset($_GET['widgetId'])||isset($_GET['roomId'])) && get_post_type() == "wall") {
                 $group = new Wall\Group(get_the_ID());
-                $split = explode('_', $_GET['widgetId']);
+                $roomId = isset($_GET['roomId'])?$_GET['roomId']:'unknown';
+                if ($group->get_matrix_room_id() ===$roomId){
+		            Wall\Toolbar::display_toolbar($group, true);
+                }
+	            $split = explode('_', $_GET['widgetId']);
                 if ($group->get_matrix_room_id() === $split[0]) {
                     Wall\Toolbar::display_toolbar($group, true);
                 }

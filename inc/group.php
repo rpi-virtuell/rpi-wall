@@ -54,6 +54,7 @@ class Group extends \stdClass
 
         $this->start_PLG_link = $this->get_startlink();
         $this->link = '<a href="' . get_permalink($this->post) . '#group">' . $this->post->post_title . '</a>';
+        $this->url = get_permalink($this->post);
 
     }
 

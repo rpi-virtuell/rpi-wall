@@ -110,7 +110,8 @@ class Matrix {
 					$group->set_matrix_room_id( $room->room_id );
 					$group->set_status( 'founded' );
 
-                    $this->addToolbar($group);
+                    $widget_ID = $this->addToolbar($group);
+
 				}
 
 				return $room->room_id;
@@ -148,6 +149,7 @@ class Matrix {
 
 	protected function stateKey($roomId){
 		return $roomId.'_'.$this->client->userId().'_'.time();
+		//return str_replace([':','@'],['%3A','%40'],$roomId.$this->client->userId().'_'.time());
 	}
 
 	function addWidget($room_id, $name,$url, $type = 'm.custom'){
@@ -157,7 +159,7 @@ class Matrix {
 				'type'  =>  $type,
 				'url'   =>  $url,
 				'name'  =>  $name,
-				'data'  =>  [],
+				'data'  =>  array('m'=>'n')
 			);
 
 			return $room->sendStateEvent('im.vector.modular.widgets', $content, $this->stateKey($room_id));
@@ -184,16 +186,14 @@ class Matrix {
 		}
 		if(!$toolbar_exists) {
 
-			return $this->addWidget( $room_id, 'Toolbar', get_permalink( $group->post ) );
+			return $this->addWidget( $room_id, 'Toolbar', home_url(  )."?p=".$group->post->ID ."&roomId=".$this->getRoomId($group) );
 		}
 
 	}
 
-	function tests(int $group_id = 0){
+	function tests(int $group_id=0){
 
-		$group_id = 822;
-
-		if($group_id>0 && get_current_user_id() == 2){
+		if($group_id>0 && get_current_user_id() == 2 && false){
 
 
 			$msg =new \stdClass();
@@ -210,11 +210,12 @@ class Matrix {
 			}else{
 				echo 'Erfolg. Matrix Raum Id: '.$check;
 			}
-			$this -> addToolbar($group);
+			$widget_ID = $this -> addToolbar($group);
 
 			$this->send_msg_obj($group,$msg);
 			$this->send_msg($group,'Klicke oben rechts auf <div aria-selected="true" role="tab" aria-label="Rauminfo" tabindex="0" class="mx_AccessibleButton mx_RightPanel_headerButton mx_RightPanel_headerButton_highlight mx_RightPanel_roomSummaryButton"></div>');
-			$this->set_topic($group->url);
+
+			$this->set_topic($group,$group->url);
 
 			var_dump($this->get_MatrixRoom_Members($group));
 			die();
@@ -224,6 +225,11 @@ class Matrix {
 	}
 
 }
+
+add_action('init', function (){
+	$matrix = new Matrix();
+	$matrix->tests(7159);
+});
 
 use Aryess\PhpMatrixSdk\MatrixHttpApi;
 
