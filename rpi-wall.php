@@ -143,6 +143,13 @@ class RpiWall
 
         });
 
+        /* pager für fcetwp kolliedirt miot blocksy pager */
+	    add_action('blocksy:loop:after', function () {
+            echo '<div class="rpi-wall-paging">';
+            //echo facetwp_display('facet','paging');
+		    echo '</div>';
+	    });
+
         add_filter('acf/load_field/name=matrixid', ['rpi\Wall\Member', 'set_default_matrixId']);
 
         //Toolbar

@@ -139,7 +139,7 @@ class Shortcodes
                         margin-top: -80px;
 
                     }
-                    .rpi-wall-filters button{
+                    .rpi-wall-filters button,.rpi-wall-paging button{
                         /*color: var(--buttonTextInitialColor);*/
                         /*background-color: var(--buttonInitialColor);*/
                         border: var(--button-border);
@@ -154,7 +154,8 @@ class Shortcodes
                         text-align: center;
                         border-radius: var(--buttonBorderRadius, 3px);
                     }
-                    .rpi-wall-filters button:hover{
+
+                    .rpi-wall-filters button:hover, .rpi-wall-paging button:hover{
                         border-color: var(--button-border-hover-color);
                         color: var(--buttonTextHoverColor);
                         background-color: var(--buttonHoverColor);
@@ -216,6 +217,11 @@ class Shortcodes
                     .facetwp-facet-beobachtet .facetwp-counter {
                         display: none;
                     }
+                    .rpi-wall-paging {
+                      text-align: center;
+                      padding-top: 20px;
+                    }
+
 
                 </style>
 
