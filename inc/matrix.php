@@ -111,6 +111,10 @@ class Matrix {
 					$group->set_status( 'founded' );
 
                     $widget_ID = $this->addToolbar($group);
+					$msg = str_replace('%postlink%',get_permalink($group->post->ID).'#group', get_option('options_matrix_bot_welcome_message'));
+					$this->send_msg($group,$msg);
+					$msg = get_option('options_matrix_bot_toolbar_tutorial');
+					$this->send_msg($group,$msg);
 
 				}
 
@@ -197,8 +201,9 @@ class Matrix {
 
 
 			$msg =new \stdClass();
-			$msg->subject = 'Subject: Testnachricht:';
-			$msg->body = 'Body: Dies ist der Body der Textnachhricht.';
+			$msg->subject = 'Toolbar nutzen';
+			$msg->body = 'Du kannst die eingebundene Toolbar direkt aus diesem Chatfenster nutzen: Klicke in der oberen rechten Ecke auf das Infosymbol <strong>(i)</strong>  und anchließend weiter unten auf "Toolbar", um diese dauerhaft anzuzeigen: <a href="https://dev-dibes.rpi-virtuell.de/wp-content/uploads/2022/09/toolbar.png"></a>' ;
+
 
 
 			$group = new Group($group_id);
@@ -212,10 +217,16 @@ class Matrix {
 			}
 			$widget_ID = $this -> addToolbar($group);
 
-			$this->send_msg_obj($group,$msg);
-			$this->send_msg($group,'Klicke oben rechts auf <div aria-selected="true" role="tab" aria-label="Rauminfo" tabindex="0" class="mx_AccessibleButton mx_RightPanel_headerButton mx_RightPanel_headerButton_highlight mx_RightPanel_roomSummaryButton"></div>');
-
 			$this->set_topic($group,$group->url);
+
+			$msg = str_replace('%postlink%',get_permalink($group_id).'#group', get_option('options_matrix_bot_welcome_message'));
+			$this->send_msg($group,$msg);
+			$msg = get_option('options_matrix_bot_toolbar_tutorial');
+			$this->send_msg($group,$msg);
+
+			//$this->send_msg_obj($group,$msg);
+
+
 
 			var_dump($this->get_MatrixRoom_Members($group));
 			die();

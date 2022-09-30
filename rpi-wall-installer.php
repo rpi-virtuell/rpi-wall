@@ -788,12 +788,17 @@ class RPIWallInstaller
                         'default_value' => '<strong>Willkommen Chatraum unserer Lerngemeinschaft</strong>
 der auch über den <a href="%postlink%">Pinwandeintrag</a> erreichbar ist.
 Schreibt den anderen durch ein kurzes "Hallo" in diesen Chat und wenn ihr möchtet, auch etwas über euch selbst und was dazu bewegt hat, dieser Gemeinschaft beizutreten.<br>
-<br><strong>Nächste Schritte</strong>
+<br>
+<strong>Toolbar einblenden</strong><br>
+Du kannst die eingebundene Toolbar direkt aus diesem Chatfenster nutzen. Lies dazu die zweite Nachicht "Toolbar nutzen" 
+<br>
+<strong>Nächste Schritte</strong>
 <ul>
-	<li>Findet gemeinsam einen Termin für das erste konstitutierende Treffen und tragt dieses in der Toolbar mit Klick auf "Planungstermin setzen" ein. Vielleicht hilft euch <strong><a href="https://nuudel.digitalcourage.de/">Nuudel</a></strong> bei der Terminfindung</li>
+	<li>Zuerst findet gemeinsam einen Termin für das erste konstitutierende Treffen. Vielleicht hilft euch <strong><a href="https://nuudel.digitalcourage.de/">Nuudel</a></strong> bei der <strong>Terminfindung</strong></li>
+	<li>Die Person die den Terminfindungsprozess initiiert hat, trägt den vereinbarten Termin in der Toolbar ein und klickt dazu auf "Planungstermin setzen".</li>
 	<li>Beim ersten Treffen verabredet ihr mit Hilfe eines Planungsbogens Ziele und Vorgehensweisen dieser Gruppe fest.</li>
-	<li>Für allen weiteren Treffen steht euch ein Arbeitssturkturbogen zur Verfügung, der effektiv hilft, das angestrebte Ziel zu erreichen.</li>
-</ul>',
+	<li>Für allen weiteren Treffen steht euch je ein Arbeitssturkturbogen zur Verfügung, der effektiv hilft, das angestrebte Ziel zu erreichen.</li>
+</ul>Viel Erfolg!',
                         'placeholder' => '',
                         'prepend' => '',
                         'append' => '',
@@ -823,7 +828,6 @@ Du kannst die eingebundene Toolbar direkt aus diesem Chatfenster nutzen:
 Klicke in der oberen rechten Ecke auf das Infosymbol <strong>(i)</strong>  
 und anchließend weiter unten auf "Toolbar", um diese dauerhaft anzuzeigen: 
 <a href="https://dev-dibes.rpi-virtuell.de/wp-content/uploads/2022/09/toolbar.png"></a>
-
 ',
                         'placeholder' => '',
                         'prepend' => '',
