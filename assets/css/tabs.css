@@ -29,9 +29,6 @@ body {
     font-weight: 300;
 }
 
-.single-wall  .tabset {
-    margin-top: -128px;
-}
 
 .single-wall .wall.type-wall.hentry {
     margin-top: 100px;
@@ -40,6 +37,7 @@ body {
 
 .tabset > label {
     position: relative;
+    top: -125px;
     display: inline-block;
     /*padding: 15px 15px 25px;*/
     border: 0px solid transparent;
@@ -120,19 +118,20 @@ body {
         height: 85px;
     }
     .wall .tabset > input:checked + label:nth-child(2){
+        position: relative;
+        top: -125px;
         margin-right: -20px;
         box-shadow: 2px 0px 5px #999999;
         z-index: 2;
         height: 92px;
-        top: -5px;
     }
     .wall .tabset > input:checked + label:nth-child(4){
+        position: relative;
+        top: -125px;
         margin-left: -20px;
         box-shadow: -2px 0px 5px #999999;
         z-index: 2;
         height: 92px;
-        top: -5px;
-
     }
 
 }
@@ -140,25 +139,26 @@ body {
 
 
 @media only screen and (max-width: 800px) {
-    .single-wall  .tabset {
-        margin-top: -120px;
-    }
     .wall .tabset label{
+        height: 63px;
         width:100px;
+    }
+    .tabset > label{
+        top: -3px;
     }
     .wall .tabset > input:checked + label:nth-child(2){
         margin-right: -20px;
         box-shadow: 2px 0px 5px #999999;
         z-index: 2;
-        height: 63px;
-        top: -3px;
+        height: 70px;
+        position: relative;
     }
     .wall .tabset > input:checked + label:nth-child(4){
         margin-left: -20px;
         box-shadow: -2px 0px 5px #999999;
         z-index: 2;
-        height: 63px;
-        top: -3px;
+        height: 70px;
+        position: relative;
     }
 
 }
