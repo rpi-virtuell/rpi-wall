@@ -481,12 +481,12 @@ class Shortcodes
 
         $plg = new Group($post->ID);
         $plg->get_comment_likes_amount();
+        $status = $plg->get_status();
         ?>
         <div class="group-post">
-            <div class="group-post-wrapper">
+            <div class="group-post-wrapper <?php echo $status ?>">
             <a href="<?php the_permalink($post->ID);?>#pin"  class="pin-title-icon pin"><?php echo Shortcodes::$pin_icon ?></a>
             <?php
-            $status = $plg->get_status();
             if ($status) { ?>
                 <a href="<?php the_permalink($post->ID) ?>#group" class="pin-title-icon group"> <?php echo Shortcodes::$group_icon ?> </a>
             <?php

@@ -123,14 +123,13 @@ article.entry-card {
 }
 */
 
-article.ready .pin-title-icon.group svg {
+article.ready .pin-title-icon.group svg , .group-post-wrapper.ready .pin-title-icon.group svg {
     background: var(--ci-group-ready);
 }
-
-article.pending .pin-title-icon.group svg {
+article.pending .pin-title-icon.group svg , .group-post-wrapper.pending .pin-title-icon.group svg{
     background: var(--ci-group-pending);
 }
-article.founded .pin-title-icon.group svg {
+article.founded .pin-title-icon.group svg , .group-post-wrapper.founded .pin-title-icon.group svg{
     background: var(--ci-group-founded);
     fill: white;
     color: white;
@@ -474,8 +473,9 @@ article.entry-card.type-wall .plg-wrapper {
 .group-post {
     box-shadow: 1px 1px 3px 0px #888;
     margin-bottom: 20px;
-    padding: 20px;
+    padding: 50px 30px 30px 30px;
     hyphens: auto;
+    position: relative;
 }
 
 .group-post .entry-meta svg {
