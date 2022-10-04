@@ -136,8 +136,8 @@ class Shortcodes
             ?>
                 <style>
                    .rpi-wall-filters {
-                        margin-top: -80px;
-
+                   margin-top: 40px;
+                        margin-bottom: 15px;
                     }
                     .rpi-wall-filters button,.rpi-wall-paging button{
                         /*color: var(--buttonTextInitialColor);*/
@@ -481,10 +481,17 @@ class Shortcodes
 
         $plg = new Group($post->ID);
         $plg->get_comment_likes_amount();
-
         ?>
         <div class="group-post">
             <div class="group-post-wrapper">
+            <a href="<?php the_permalink($post->ID);?>#pin"  class="pin-title-icon pin"><?php echo Shortcodes::$pin_icon ?></a>
+            <?php
+            $status = $plg->get_status();
+            if ($status) { ?>
+                <a href="<?php the_permalink($post->ID) ?>#group" class="pin-title-icon group"> <?php echo Shortcodes::$group_icon ?> </a>
+            <?php
+            }
+            ?>
                 <?php
                     Group::display_watcher_area();
                 ?>

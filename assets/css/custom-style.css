@@ -123,14 +123,14 @@ article.entry-card {
 }
 */
 
-.ready .pin-title-icon.group svg {
+article.ready .pin-title-icon.group svg {
     background: var(--ci-group-ready);
 }
 
-.pending .pin-title-icon.group svg {
+article.pending .pin-title-icon.group svg {
     background: var(--ci-group-pending);
 }
-.founded .pin-title-icon.group svg {
+article.founded .pin-title-icon.group svg {
     background: var(--ci-group-founded);
     fill: white;
     color: white;
@@ -436,13 +436,14 @@ article.entry-card.type-wall .plg-wrapper {
     margin-top: -6px;
 }
 
-#main .rpi-wall-buttons {
+#main > .rpi-wall-buttons {
     display: grid;
     justify-content: right;
-    margin-top: 30px;
+    margin-top: 25px;
     margin-bottom: 45px;
     position: absolute;
 }
+
 
 .toolbar-content .rpi-wall-buttons {
     display: unset !important;

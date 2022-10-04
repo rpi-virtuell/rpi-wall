@@ -103,12 +103,9 @@ class RpiWall
                 echo ob_get_clean();
 	            RpiWall::modal('form', 'Neuer Eintrag', do_shortcode('[acfe_form name="create-pin"]'));
 
-
             } else {
-
                 if (get_post_type() === 'wall' && is_user_logged_in()) {
                     if (get_post()->post_author == get_current_user_id() || current_user_can('edit_others_walls')) {
-
                         RpiWall::modal('form', 'Bearbeiten', do_shortcode('[acfe_form name="edit-pin"]'));
                     }
                 }
