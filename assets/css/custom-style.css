@@ -441,6 +441,7 @@ article.entry-card.type-wall .plg-wrapper {
     justify-content: right;
     margin-top: 30px;
     margin-bottom: 45px;
+    position: absolute;
 }
 
 .toolbar-content .rpi-wall-buttons {
