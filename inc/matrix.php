@@ -200,9 +200,9 @@ class Matrix {
 		if($group_id>0 && get_current_user_id() == 2 && false){
 
 
-			$msg =new \stdClass();
-			$msg->subject = 'Toolbar nutzen';
-			$msg->body = 'Du kannst die eingebundene Toolbar direkt aus diesem Chatfenster nutzen: Klicke in der oberen rechten Ecke auf das Infosymbol <strong>(i)</strong>  und anchließend weiter unten auf "Toolbar", um diese dauerhaft anzuzeigen: <a href="https://dev-dibes.rpi-virtuell.de/wp-content/uploads/2022/09/toolbar.png"></a>' ;
+			$msg_obj =new \stdClass();
+			$msg_obj->subject = 'Toolbar nutzen';
+			$msg_obj->body = 'Du kannst die eingebundene Toolbar direkt aus diesem Chatfenster nutzen: Klicke in der oberen rechten Ecke auf das Infosymbol <strong>(i)</strong>  und anchließend weiter unten auf "Toolbar", um diese dauerhaft anzuzeigen: <a href="https://dev-dibes.rpi-virtuell.de/wp-content/uploads/2022/09/toolbar.png"></a>' ;
 
 
 
@@ -224,7 +224,16 @@ class Matrix {
 			$msg = get_option('options_matrix_bot_toolbar_tutorial');
 			$this->send_msg($group,$msg);
 
-			//$this->send_msg_obj($group,$msg);
+
+			$user = wp_get_current_user();
+			$to = $user->user_email;
+			$subject = $msg_obj->subject;
+			$body = $msg_obj->body;
+			$headers = array('Content-Type: text/html; charset=UTF-8');
+
+			var_dump(wp_mail( $to, $subject, $body, $headers ));
+
+			//$this->send_msg_obj($group,$msg_obj);
 
 
 

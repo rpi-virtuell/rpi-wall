@@ -141,13 +141,16 @@ class Message
             $user_ids = $group->get_watcher_Ids();
         }
 
+
+
         if (in_array($event, $this->events) && $msg = $this->prepare_message($event, $replace_data)) {
             if ($msg !== false) {
                 $this->create($msg, $user_ids);
                 $this->increase_message_counters($user_ids);
 
                 $user_ids = $this->get_watchers_with_mail_permission($event, $user_ids);
-                $this->send($msg, $user_ids);
+
+	            $this->send($msg, $user_ids);
 
             }
         }
@@ -159,7 +162,7 @@ class Message
         $args = [
             'post_type' => 'member',
             'posts_per_page' => -1,
-            'post__in' => array($watchers),
+            'author__in' => (array) $watchers,
             'meta_query' => array(
                 array(
                     'key' => 'rpi_user_message_' . $event,
@@ -169,8 +172,12 @@ class Message
             )
 
         ];
-        $members = get_posts($args);
-        return $members;
+	    $member_ids = array();
+		$members = get_posts($args);
+		foreach ($members as $member){
+			$member_ids[]=$member->post_author;
+		}
+		return $member_ids;
     }
 
 
@@ -338,10 +345,12 @@ class Message
                 $to[] = $user->user_email;
             }
 
-            $headers[] = 'From: Dibes Netzwerk <happel@comeniuse.de>' . "\r\n";
-            $headers[] = 'BCC: ' . implode(",", $to) . "\r\n";
+            $headers[] = 'From: Dibes Netzwerk <technik@rpi-virtuell.de>' . "\r\n";
+			foreach ($to as $bcc){
+				$headers[] = 'Bcc: ' . $bcc ;
+			}
 
-            wp_mail(get_option('options_rpi_wall_email_dummy', 'technik@rpi-virtuell.de'), $msg->subject, $msg->body, $headers);
+			wp_mail('', $msg->subject, $msg->body, $headers);
 
 
             $room_id = false;
