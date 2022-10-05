@@ -454,6 +454,9 @@ article.entry-card.type-wall .plg-wrapper {
     position: absolute;
     right: 0;
 }
+.group-toolbar-grip .ct-container.rpi-wall-buttons a{
+    position: unset;
+}
 
 .modal-button.render-form {
     background-color: var(--ci-notification-color) !important;
@@ -808,7 +811,96 @@ article.entry-card.type-wall .plg-wrapper {
     border-left: #aaaaaa solid 1px;
 }
 
+.rpi-wall-filters button,.rpi-wall-paging button{
+    /*color: var(--buttonTextInitialColor);*/
+    /*background-color: var(--buttonInitialColor);*/
+    border: var(--button-border);
+    box-shadow: 1px 1px 1px 2px #aaa;
+    display: var(--display, inline-flex);
+    align-items: center;
+    justify-content: center;
+    min-height: var(--buttonMinHeight);
+    padding: var(--button-padding);
+    cursor: pointer;
+    user-select: none;
+    text-align: center;
+    border-radius: var(--buttonBorderRadius, 3px);
+}
+
+.rpi-wall-filters button:hover, .rpi-wall-paging button:hover{
+    border-color: var(--button-border-hover-color);
+    color: var(--buttonTextHoverColor);
+    background-color: var(--buttonHoverColor);
+}
+
+.rpi-wall-filter a{
+    color: var(--ci-sub-box-font-color);
+}
+.rpi-wall-filter summary{
+    font-weight: bold;
+
+}
+.rpi-wall-filter details[open]{
+    transition: all 2s ease;
+}
+.rpi-wall-filter .fs-wrap {
+    width: 100%;
+    border-radius: 3px;
+    border-color: #2189F2;
+    padding: 5px;
+    border: 1px solid var(--ci-success-color);
+    background-color: var(--ci-tutorial-notification);
+}
+.rpi-wall-filter .fs-dropdown {
+    box-shadow: 2px 2px 5px #777;
+}
+.rpi-wall-filter .facetwp-search, .rpi-wall-filter select{
+    background-color: #dddddd;
+}
+.rpi-wall-filter[open] .rpi-wall-tag-cloud{
+    padding: 10px;
+    background:var(--ci-sub-box-background-color);
+    border-radius: 5px;
+
+}
+.rpi-wall-filter.container{
+    background:var(--ci-tutorial-notification);
+    padding: 30px;
+    border-radius: 0 5px 5px;
+
+}
+.rpi-wall-filter.grid{
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    margin-top: 10px;
+    border-radius: 5px;
+    column-gap: 30px;
+}
+.rpi-wall-filter .facetwp-facet {
+    margin-bottom: 5px;
+}
+.rpi-wall-filter .facetwp-date.facetwp-date-min.ready.fdate-alt-input ,.rpi-wall-filter .facetwp-date.facetwp-date-max.ready.fdate-alt-input{
+    width: 40%!important;
+}
+
+.rpi-wall-tag-cloud a{
+    margin: 2px 15px;
+}
+.facetwp-facet-beobachtet .facetwp-counter {
+    display: none;
+}
+.rpi-wall-paging {
+    text-align: center;
+    padding-top: 20px;
+}
+
+
+
 @media only screen and (max-width: 600px) {
+
+    .rpi-wall-filter.grid{
+        display: unset;
+    }
     .group-toolbar-grip {
         grid-template-columns: unset;
     }
