@@ -34,10 +34,12 @@ body {
     margin-top: 100px;
 }
 
+.wall .tabset > label{
+    top: -125px;
+}
 
 .tabset > label {
     position: relative;
-    top: -125px;
     display: inline-block;
     /*padding: 15px 15px 25px;*/
     border: 0px solid transparent;

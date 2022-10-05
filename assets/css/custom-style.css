@@ -438,9 +438,7 @@ article.entry-card.type-wall .plg-wrapper {
 #main > .rpi-wall-buttons {
     display: grid;
     justify-content: right;
-    margin-top: 25px;
-    margin-bottom: 45px;
-    position: absolute;
+    position: relative;
 }
 
 
@@ -453,6 +451,8 @@ article.entry-card.type-wall .plg-wrapper {
 
 .ct-container.rpi-wall-buttons a {
     display: block;
+    position: absolute;
+    right: 0;
 }
 
 .modal-button.render-form {

@@ -135,10 +135,6 @@ class Shortcodes
         if(is_archive() || is_tax('wall-cat') || is_tax('wall-tag')){
             ?>
                 <style>
-                   .rpi-wall-filters {
-                   margin-top: 40px;
-                        margin-bottom: 15px;
-                    }
                     .rpi-wall-filters button,.rpi-wall-paging button{
                         /*color: var(--buttonTextInitialColor);*/
                         /*background-color: var(--buttonInitialColor);*/
