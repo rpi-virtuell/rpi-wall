@@ -188,10 +188,14 @@ body {
     .tabset > label .tab-label{
         display: none;
     }
-    .meta-author{
+    .member .meta-author{
         width: 100%;
     }
-    .meta-author > a{
+    .entry-header .user-matrixId{
+        margin-left: 0 !important;
+
+    }
+    .member .meta-author > a{
         display: block;
         text-align: center;
         font-size: 20px;
@@ -212,6 +216,7 @@ body {
         font-size: 20px;
     }
     .tab-panel .group-post{
-        padding: 4px;
+        margin: 25px 15px;
+        padding: 50px 30px 30px 30px;
     }
 }
