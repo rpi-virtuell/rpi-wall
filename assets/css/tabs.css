@@ -98,6 +98,10 @@ body {
 
 .wall .tab-panels{
     border:0;
+    margin-top: -9px;
+}
+.wall .tab-panel{
+    margin-top: -125px;
 }
 .profile-panel{
     display: grid;
@@ -141,12 +145,16 @@ body {
 
 
 @media only screen and (max-width: 800px) {
+    .wall .tab-panels {
+        margin-top: unset;
+    }
+
     .wall .tabset label{
         height: 63px;
         width:100px;
     }
-    .tabset > label{
-        top: -3px;
+    .wall .tabset > label{
+        top: 0;
     }
     .wall .tabset > input:checked + label:nth-child(2){
         margin-right: -20px;
@@ -177,8 +185,8 @@ body {
         /*margin: 0;*/
         /*padding: 0;*/
     }
-    .tab-panels {
-
+    .wall .tab-panels {
+        margin-top: unset;
         padding-top: 0px;
     }
 
