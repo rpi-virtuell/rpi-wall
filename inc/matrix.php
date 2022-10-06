@@ -115,6 +115,7 @@ class Matrix {
 					$this->send_msg($group,$msg);
 					$msg = get_option('options_matrix_bot_toolbar_tutorial');
 					$this->send_msg($group,$msg);
+					$this->set_topic($group,$group->url);
 
 				}
 
@@ -197,7 +198,7 @@ class Matrix {
 
 	function tests(int $group_id=0){
 
-		if($group_id>0 && get_current_user_id() == 2 && false){
+		if($group_id>0 && get_current_user_id() == 2 && true){
 
 
 			$msg_obj =new \stdClass();
@@ -206,39 +207,47 @@ class Matrix {
 
 
 
-			$group = new Group($group_id);
 
 
-			$check = $this->create_Room($group);
-			if($check instanceof \WP_Error){
-				echo $check->get_error_message();
-			}else{
-				echo 'Erfolg. Matrix Raum Id: '.$check;
-			}
-			$widget_ID = $this -> addToolbar($group);
+			/*
+				$check = $this->create_Room($group);
 
-			$this->set_topic($group,$group->url);
+				if($check instanceof \WP_Error){
+					echo $check->get_error_message();
+				}else{
+					echo 'Erfolg. Matrix Raum Id: '.$check;
+				}
 
-			$msg = str_replace('%postlink%',get_permalink($group_id).'#group', get_option('options_matrix_bot_welcome_message'));
-			$this->send_msg($group,$msg);
-			$msg = get_option('options_matrix_bot_toolbar_tutorial');
-			$this->send_msg($group,$msg);
+				$widget_ID = $this -> addToolbar($group);
 
 
-			$user = wp_get_current_user();
-			$to = $user->user_email;
-			$subject = $msg_obj->subject;
-			$body = $msg_obj->body;
-			$headers = array('Content-Type: text/html; charset=UTF-8');
+				$this->send_msg_obj($group,$msg_obj);
 
-			var_dump(wp_mail( $to, $subject, $body, $headers ));
-
-			//$this->send_msg_obj($group,$msg_obj);
+				$this->set_topic($group,$group->url);
 
 
 
-			var_dump($this->get_MatrixRoom_Members($group));
-			die();
+				$msg = str_replace('%postlink%',get_permalink($group_id).'#group', get_option('options_matrix_bot_welcome_message'));
+				$this->send_msg($group,$msg);
+				$msg = get_option('options_matrix_bot_toolbar_tutorial');
+				$this->send_msg($group,$msg);
+
+
+				$user = wp_get_current_user();
+				$to = $user->user_email;
+				$subject = $msg_obj->subject;
+				$body = $msg_obj->body;
+				$headers = array('Content-Type: text/html; charset=UTF-8');
+
+				wp_mail( $to, $subject, $body, $headers );
+				*/
+
+
+
+
+
+			//var_dump($this->get_MatrixRoom_Members($group));
+			//die();
 
 		}
 
