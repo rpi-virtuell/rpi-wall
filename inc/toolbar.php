@@ -3,6 +3,7 @@
 namespace rpi\Wall;
 
 
+use core_reportbuilder\local\filters\date;
 use RpiWall;
 
 class Toolbar
@@ -41,11 +42,7 @@ class Toolbar
                 </div>
 
                 <div class="toolbar-content">
-                    <div class="toolbar-settings">
-                        <div class="toolbar-edit-button">
-                            <?php RpiWall::modal('edit-buttons', '<span class="dashicons dashicons-admin-generic"></span>', do_shortcode(' [acfe_form name="rpi_wall_group_toolbar_button_form"] ')); ?>
-                        </div>
-                    </div>
+
                     <div class="group-toolbar-grip">
                         <?php
                         $status = $group->get_toolbar_status();
@@ -87,7 +84,24 @@ class Toolbar
                         ?>
 
                     </div>
+                    <div class="toolbar-settings">
+                        <div class="toolbar-setting-buttons">
+
+                            <?php RpiWall::modal('edit-buttons', '<span class="dashicons dashicons-plus"></span>', do_shortcode(' [acfe_form name="rpi_wall_group_toolbar_button_form"] ')); ?>
+                            <a id="btn-open-faq" href="<?php echo home_url('/faqs') ?>"><span>?</span></a>
+                        </div>
+                    </div>
                     <div class="toolbar-details">
+                        <?php $group_goal = get_post_meta($group->ID, "constitution_zielformulierung", true);
+                        if (!empty($group_goal)) {
+                            ?>
+                            <div class="toolbar-group-goal">
+                                <h3>
+                                    Ziel:
+                                </h3>
+                                <?php echo $group_goal ?>
+                            </div>
+                        <?php } ?>
                         <?php
                         $protocols = protocol::get_protocols($group->ID);
                         if (sizeof($protocols) > 0) {
@@ -101,22 +115,12 @@ class Toolbar
 
                                 foreach ($protocols as $protocol) {
                                     ?> <a href="<?php echo $protocol->guid ?>" target="_blank"
-                                          rel="noopener noreferrer"><?php echo $protocol->post_date ?> </a> <?php
+                                          rel="noopener noreferrer"><?php echo date('d.m.Y', strtotime($protocol->post_date)) ?> </a> <?php
                                 }
                                 ?>
                             </div>
                             <?php
                         } ?>
-                        <?php $group_goal = get_post_meta($group->ID, "constitution_zielformulierung", true);
-                        if (!empty($group_goal)) {
-                            ?>
-                            <div class="toolbar-group-goal">
-                                <h3>
-                                    Ziel:
-                                </h3>
-                                <?php echo $group_goal ?>
-                            </div>
-                        <?php } ?>
                     </div>
                 </div>
             </div>

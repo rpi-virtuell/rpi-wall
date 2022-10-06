@@ -34,7 +34,7 @@
     box-shadow: var(--ci-box-shadow);
     border-radius: 3px;
     background-color: var(--ci-tutorial-notification);
-    margin: 15px 0;
+    margin-top: var(--content-vertical-spacing);
     padding: 15px;
 }
 
@@ -439,6 +439,8 @@ article.entry-card.type-wall .plg-wrapper {
     display: grid;
     justify-content: right;
     position: relative;
+    margin-top: var(--content-vertical-spacing);
+
 }
 
 
@@ -583,6 +585,7 @@ article.entry-card.type-wall .plg-wrapper {
 
 .rpi-wall-group-likers, .rpi-wall-group-members {
     display: flex;
+    justify-content: center;
     flex-wrap: wrap;
     list-style: none;
     margin: 0;
@@ -606,11 +609,11 @@ article.entry-card.type-wall .plg-wrapper {
     height: 22px;
 }
 
-.single-wall .rpi-wall-group-members:before {
+.single-wall .pending .rpi-wall-group-members:before{
     content: 'beigetreten';
 }
 
-.single-wall .rpi-wall-group-likers:before {
+.single-wall .pending .rpi-wall-group-likers:before, .single-wall .ready .rpi-wall-group-likers:before{
     content: 'interessiert';
 }
 
@@ -619,37 +622,47 @@ article.entry-card.type-wall .plg-wrapper {
 }
 
 .like-group-box .group-member.my_avatar img {
-    border-style: dotted;
-    border-color: red;
+    border: 2px solid var(--ci-accent-color);
 }
 
 .like-btn-wrapper {
-    display: grid;
     border: 1px solid orangered;
     border-radius: 50%;
-    grid-template-columns: 1fr auto;
     max-height: 90px;
-    padding: 25px 7px;
     box-shadow: 1px 2px 9px 1px #aaaaaa;
 }
 
+
 .like-btn-wrapper.founded {
     box-shadow: none;
-    background-color: #C8B6EC;
-    border-color: #C8B6EC;
+    background-color: var(--ci-group-founded);
+    border-color: var(--ci-group-founded);
 }
 
-.like-btn-wrapper .closed {
+.like-btn-wrapper.ready {
     box-shadow: none;
-    background-color: #ccc;
-    border-color: #ccc;
+    background-color: var(--ci-group-ready);
+    border-color: var(--ci-group-ready);
+}
+
+.like-btn-wrapper.closed {
+    box-shadow: none;
+}
+
+.like-btn-wrapper:hover{
+    background-color: var(--ci-accent-color);
+    border-color: var(--ci-accent-color);
 }
 
 .like-btn-wrapper .rpi-wall-like-button {
-    max-height: 36px;
-    height: auto;
+
+    display: flex;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
     background: transparent;
 }
+
 
 .like-btn-wrapper .rpi-wall-like-button svg {
     min-width: 36px;
@@ -659,9 +672,10 @@ article.entry-card.type-wall .plg-wrapper {
 }
 
 .like-group-box .rpi-wall-counter {
-    padding: 0 10px;
-    font-size: 23px;
-    text-align: right;
+    padding: 25px 10px;
+    font-size: 25px;
+    color: black;
+    font-weight: bold;
 }
 
 .group-member img {
@@ -784,18 +798,20 @@ article.entry-card.type-wall .plg-wrapper {
     position: relative;
     height: 60px;
 }
-.toolbar-edit-button{
-    margin: 10px;
-    width: 75px;
+.toolbar-setting-buttons{
     position: absolute;
     right: 0;
+
+    display: grid;
+    grid-template-columns: repeat(1, 1fr 1fr);
+    grid-gap: 5px;
 }
 .toolbar-edit-button span {
     padding-top: 3px;
 }
 .toolbar-details{
     display: grid;
-    grid-template: "protocol goals";
+    grid-template: "goals protocol";
     grid-template-columns: 50% 50%;
 }
 
@@ -803,12 +819,12 @@ article.entry-card.type-wall .plg-wrapper {
     grid-area: protocol;
     display: grid;
     padding: 10px;
-    border-right: #aaaaaa solid 1px;
+    border-left: #aaaaaa solid 1px;
 }
 .toolbar-group-goal{
     grid-area: goals;
     padding: 10px;
-    border-left: #aaaaaa solid 1px;
+    border-right: #aaaaaa solid 1px;
 }
 
 .rpi-wall-filters button,.rpi-wall-paging button{
@@ -938,6 +954,14 @@ body.toolbar #wpadminbar{
     padding: 10px 40px;
     border-radius: 5px;
 }
+
+@media only screen and (max-width: 600px) {
+
+.modal-wrapper{
+    padding: unset;
+}
+}
+
 .modal-wrapper .acf-fields > .acf-field{
     border-top: 0;
 }
@@ -953,4 +977,28 @@ body.toolbar #wpadminbar{
     background-color: white;
     padding: 5px 13px;
     color: #999;
+}
+#btn-open-modal-edit-buttons ,#btn-open-faq{
+    background-color: lightgrey;
+    box-shadow: none;
+    color: black;
+    border-radius: 5px;
+
+    display: inline-flex;
+    justify-content: center;
+    height: 40px;
+    width: 40px;
+    text-align: center;
+}
+#btn-open-modal-edit-buttons:hover ,#btn-open-faq:hover{
+    background-color: #aaaaaa;
+}
+#btn-open-modal-edit-buttons{
+    position: unset;
+}
+
+#btn-open-faq span{
+    margin: auto;
+    font-weight: bold;
+    font-size: large;
 }

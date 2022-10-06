@@ -820,14 +820,14 @@ class Group extends \stdClass
             <?php if (is_user_logged_in() && $this->is_not_founded() && !$this->has_member(get_current_user_id())): ?>
                 <button class="rpi-wall-like-button" id="btn-like-group-<?php the_ID(); ?>">
                     <?php echo (in_array(get_current_user_id(), $this->get_likers_Ids())) ? Shortcodes::$group_sub_icon : Shortcodes::$group_add_icon; ?>
+                    <span class="rpi-wall-counter"><?php echo $amount; ?></span>
                 </button>
             <?php else: ?>
                 <button class="rpi-wall-like-button">
                     <?php echo Shortcodes::$group_icon; ?>
+                    <span class="rpi-wall-counter"><?php echo $amount; ?></span>
                 </button>
             <?php endif; ?>
-            <span class="rpi-wall-counter"><?php echo $amount; ?></span>
-
         </div>
         <?php
     }

@@ -332,7 +332,7 @@ class RpiWall
             <?php $protocols = Wall\protocol::get_protocols($group->ID);
             if (sizeof($protocols) > 0) {
                 ?>
-                <h5>Veröffentlichte Protokolle:</h5>
+                <h5>Ergebnisse der Treffen:</h5>
                 <div>
                     <?php foreach ($protocols as $protocol) {
                         $protocol_result = get_field("rpi_wall_protocol_result", $protocol->ID);
@@ -340,11 +340,8 @@ class RpiWall
                         if (!empty($protocol_result) && $publish_result) {
                             ?>
                             <details class="constituted-post-protocol">
-                                <summary><h5><?php echo $protocol->post_date ?></h5></summary> <?php
+                                <summary><h5><?php echo date('d.m.Y',strtotime($protocol->post_date) ) ?></h5></summary> <?php
                                 ?>
-                                <h5>
-                                    Ergebnis des Treffens:
-                                </h5>
                                 <p><?php echo $protocol_result ?></p>
                             </details> <?php
                         }
