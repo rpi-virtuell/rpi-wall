@@ -10,6 +10,8 @@ class protocol {
 
 			add_filter( 'acf/load_field/name=rpi_wall_protocol_leader', [ $this, 'acf_load_member' ] );
 			add_filter( 'acf/load_field/name=teilnehmende', [ $this, 'acf_load_member' ] );
+			add_filter( 'acf/load_field/name=gruppenname', [ $this, 'acf_load_groupname' ] );
+			add_filter( 'acf/load_field/name=date_of_meeting', [ $this, 'acf_load_date_of_meeting' ] );
 			add_filter( 'acf/load_field/name=group_ID', [ $this, 'acf_load_goupid' ] );
 			add_filter( 'acf/load_field/name=rpi_wall_protocol_groupid', [ $this, 'acf_load_goupid' ] );
 			add_filter( 'acf/load_field/name=autor', [ $this, 'acf_load_autor' ] );
@@ -67,8 +69,19 @@ class protocol {
 					return $group;
 				}
 			}
-		}elseif(get_the_ID()){
-			return new Group(get_the_ID());
+		}elseif(get_the_ID()>0){
+
+			if('wall'===get_post_type()){
+				return new Group(get_the_ID());
+			}elseif ('protokoll'=== get_post_type()){
+
+				$group_id = get_post_meta(get_the_ID(),'rpi_wall_protocol_groupid', true);
+				if(intval($group_id)>0){
+					return new Group( $group_id );
+				}
+			}
+
+
 		}
 		return false;
 	}
@@ -87,11 +100,30 @@ class protocol {
 
 		return $field;
 	}
+	static function acf_load_groupname($field){
+		if($group = self::get_group()){
+
+			$field['default_value'] = $group->post->post_title;
+
+
+		}
+
+		return $field;
+	}
 
 	static function acf_load_goupid($field){
 		if($group = self::get_group()){
 
 			$field['default_value'] =$group->ID;
+
+		}
+		return $field;
+
+	}
+	static function acf_load_date_of_meeting($field){
+		if($group = self::get_group()){
+
+			$field['default_value'] = get_post_meta($group->ID,'date_of_meeting', true);
 			return $field;
 		}
 
