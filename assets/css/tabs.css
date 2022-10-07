@@ -48,7 +48,7 @@ body {
     font-weight: 600;
     border-radius: 5px 5px 0 0;
     border-bottom: 0;
-    background-color: lightgrey;
+    background-color: var(--ci-tab-background);
 }
 
 
@@ -64,12 +64,12 @@ body {
 }
 
 .tabset > input:focus + label {
-    background-color: #aaaaaa;
+    background-color: var(--ci-tab-background-darker);
 }
 .tabset > label:hover
  {
     color: #000;
-    background-color: #aaaaaa;
+    background-color: var(--ci-tab-background-darker);
 
 }
 
@@ -98,9 +98,6 @@ body {
 
 .wall .tab-panels{
     border:0;
-    margin-top: -9px;
-}
-.wall .tab-panel{
     margin-top: -125px;
 }
 .profile-panel{
@@ -116,64 +113,105 @@ body {
     display: none;
 }
 
-@media only screen and (min-width: 800px) {
+.wall .tabset > input:checked + label:nth-child(2){
+    position: relative;
+    top: -125px;
+    margin-right: -20px;
+    box-shadow: 2px 0px 5px #999999;
+    z-index: 2;
+    height: 92px;
+}
+.wall .tabset > input:checked + label:nth-child(4){
+    position: relative;
+    top: -125px;
+    margin-left: -20px;
+    box-shadow: -2px 0px 5px #999999;
+    z-index: 2;
+    height: 92px;
+}
+
+@media only screen and (min-width: 1000px) {
 
 
     .wall .tabset > label{
         width:150px;
         height: 85px;
     }
-    .wall .tabset > input:checked + label:nth-child(2){
-        position: relative;
-        top: -125px;
-        margin-right: -20px;
-        box-shadow: 2px 0px 5px #999999;
-        z-index: 2;
-        height: 92px;
-    }
-    .wall .tabset > input:checked + label:nth-child(4){
-        position: relative;
-        top: -125px;
-        margin-left: -20px;
-        box-shadow: -2px 0px 5px #999999;
-        z-index: 2;
-        height: 92px;
-    }
+
 
 }
 
 
 
-@media only screen and (max-width: 800px) {
-    .wall .tab-panels {
-        margin-top: unset;
+@media only screen and (max-width: 1000px) {
+
+    .wall .tab-panels{
+        margin-top: -115px;
     }
 
     .wall .tabset > label{
-        top: 0;
-        height: 63px;
-        width:100px;
+        top: -125px;
+        height: 90px;
+        width:125px;
     }
+
     .wall .tabset > input:checked + label:nth-child(2){
-        margin-right: -20px;
-        box-shadow: 2px 0px 5px #999999;
-        z-index: 2;
-        height: 70px;
-        position: relative;
+        top: -125px;
+        height: 95px;
     }
     .wall .tabset > input:checked + label:nth-child(4){
-        margin-left: -20px;
-        box-shadow: -2px 0px 5px #999999;
-        z-index: 2;
-        height: 70px;
-        position: relative;
+        top: -125px;
+        height: 95px;
     }
 
 }
 
+@media only screen and (max-width: 690px) {
 
+    .wall .tab-panels {
+        margin-top: -90px;
+        padding-top: 0px;
+    }
+
+    .wall .tabset > label{
+        top: -100px;
+        height: 80px;
+        width:110px;
+    }
+
+    .wall .tabset > input:checked + label:nth-child(2){
+        top: -100px;
+        height: 85px;
+    }
+    .wall .tabset > input:checked + label:nth-child(4){
+        top: -100px;
+        height: 85px;
+    }
+
+
+}
 
 @media only screen and (max-width: 600px) {
+
+    .wall .tab-panels {
+        margin-top: unset;
+        padding-top: 0px;
+    }
+
+    .wall .tabset > label{
+        top: -10px;
+        height: 70px;
+        width:90px;
+    }
+
+    .wall .tabset > input:checked + label:nth-child(2){
+        top: -10px;
+        height: 75px;
+    }
+    .wall .tabset > input:checked + label:nth-child(4){
+        top: -10px;
+        height: 75px;
+    }
 
     .single-wall  .tabset {
         margin-top: -80px;
@@ -182,10 +220,6 @@ body {
     article.type-member{
         /*margin: 0;*/
         /*padding: 0;*/
-    }
-    .wall .tab-panels {
-        margin-top: unset;
-        padding-top: 0px;
     }
 
     .tab-panel h2{

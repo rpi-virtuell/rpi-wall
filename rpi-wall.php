@@ -221,7 +221,7 @@ class RpiWall
         // Pinboard Carddisplay
 
 
-        add_action('blocksy:loop:card:start', [$this, 'display_cards_status_triangle']);
+//        add_action('blocksy:loop:card:start', [$this, 'display_cards_status_triangle']);
         add_action('blocksy:loop:card:start', [$this, 'display_cards_pin_icon']);
 
         add_action('blocksy:loop:card:end', [$this, 'display_cards_group_info']);
