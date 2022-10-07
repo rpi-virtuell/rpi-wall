@@ -188,7 +188,9 @@ jQuery(document).ready($ => {
                     function (response) {
                         const data = JSON.parse(response);
                         if (data.success) {
-                            $(msg).find('.entry-title').removeClass('unread')
+                            $('.focused').removeClass('focused');
+                            $(msg).find('.entry-title').removeClass('unread');
+                            $(msg).addClass('focused');
                             if (data.content) {
                                 $('#member-message-detail-title').html(data.title);
                                 $('#member-message-detail-content').html(data.content);

@@ -76,7 +76,7 @@ body {
 .tabset > label:hover::after,
 .tabset > input:focus + label::after,
 .tabset > input:checked + label::after {
-    background: #2189F2;
+    background: var(--ci-accent-color);
 }
 
 .tabset > input:checked + label {

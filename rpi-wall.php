@@ -110,7 +110,39 @@ class RpiWall
                     }
                 }
                 if (get_post_type() === 'protokoll') {
-                    RpiWall::modal('protocol', 'Bearbeiten', do_shortcode('[acfe_form name="edit-protocol"]'));
+
+                    global $post;
+                    if (is_user_logged_in())
+                    {
+                        $member = new Wall\Member(get_current_user_id());
+                        $groupId = get_post_meta(get_the_ID(), 'rpi_wall_protocol_groupid', true);
+                        if ($member->is_in_group($groupId) || current_user_can('manage_options'))
+                        {
+                            RpiWall::modal('protocol', 'Bearbeiten', do_shortcode('[acfe_form name="edit-protocol"]'));
+                        }else{
+                            ob_start();
+                            ?>
+                            <div class="ct-container rpi-wall-tutorial-header">
+                                <span> Nur Gruppenmitglieder können dieses Protokoll sehen </span>
+                            </div>
+                            <?php
+                            add_filter('the_content' , function(){
+                                return ob_get_clean();
+                            });
+                        }
+                    }
+                    else{
+                        ob_start();
+                        ?>
+                        <div class="ct-container rpi-wall-tutorial-header">
+                            <span> Nur Gruppenmitglieder können dieses Protokoll sehen </span>
+                        </div>
+                        <?php
+                        add_filter('the_content' , function(){
+                            return ob_get_clean();
+                        });
+                    }
+
                 }
                 if (is_post_type_archive('member')) {
                     if (!is_user_logged_in()) {
