@@ -246,7 +246,7 @@ article.founded label[for="tab-group"]{
     grid-area: detail-view;
     border: 1px solid grey;
     border-radius: 3px;
-    text-align: center;
+    padding: 10px;
 }
 
 .member-message-detail div {
@@ -262,15 +262,20 @@ article.founded label[for="tab-group"]{
 }
 
 .message-entry {
-    border: 1px solid grey;
     border-radius: 3px;
     margin: 5px;
     padding: 5px;
+    background-color: lightgrey;
 }
-
 .message-entry:hover {
-    border-color: var(--ci-basis);
-    color: var(--ci-basis);
+    color: black;
+    background-color: #aaaaaa;
+    cursor: pointer;
+}
+.message-entry.focused{
+    font-weight: bold;
+    background-color: var(--ci-accent-color);
+    color: black;
 }
 
 .message-entry .unread {
