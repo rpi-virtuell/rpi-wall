@@ -124,9 +124,9 @@ class protocol {
 		if($group = self::get_group()){
 
 			$field['default_value'] = get_post_meta($group->ID,'date_of_meeting', true);
-			return $field;
-		}
 
+		}
+		return $field;
 
 	}
 	static function acf_load_autor($field){
