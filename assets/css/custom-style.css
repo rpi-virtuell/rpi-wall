@@ -17,10 +17,14 @@
 
     --ci-box-shadow: 2px 2px 7px #444;
     --ci-tutorial-notification: var(--paletteColor5);
+    --ci-tab-background: var(--paletteColor5);
+    --ci-tab-background-darker: #94989e;
+    
     --ci-accent-color:var(--paletteColor2);
 
-    --ci-secondary-button:#686868;
-    --ci-secondary-button-hover: var(--palleteColor6);
+    --ci-button-color:var(--paletteColor7);
+    --ci-button-color-hover:var(--paletteColor4);
+
 }
 
 [data-vertical-spacing*="top"] {
@@ -39,6 +43,7 @@
 }
 
 .pin-title-icon {
+    margin-bottom: unset !important;
 }
 
 .pin-title-icon.pin svg{
@@ -158,27 +163,33 @@ article.founded label[for="tab-group"]{
 .watch-btn-wrapper {
     position: relative;
     display: flex;
-    height: 27px;
-    justify-content: right;
-    margin-right: -29px;
-    margin-top: -27px;
+    width: fit-content;
+    float: right;
+    background-color: var(--ci-tab-background);
+    border-radius: 20px;
+    padding: 5px;
+    margin-left: 10px;
 }
 
 .watch-btn-wrapper .rpi-wall-watch-button {
     border-radius: 50%;
-    background-color: #fff;
+    background-color: white;
     height: 32px;
     padding: 5px;
 }
+.watch-btn-wrapper .rpi-wall-watch-button:hover{
+    background-color: var(--ci-tab-background-darker);
+}
 
 .watch-btn-wrapper .rpi-wall-watch-button.watching {
-    background-color: yellow;
+    background-color: var(--ci-accent-color);
 }
 
 .watch-btn-wrapper span {
     display: inline-flex;
     padding: 4px;
-    color: green;
+    color: black;
+    font-weight: bold;
 }
 
 #comments {
@@ -264,16 +275,15 @@ article.founded label[for="tab-group"]{
 .message-entry {
     border-radius: 3px;
     margin: 5px;
-    padding: 5px;
-    background-color: lightgrey;
+    padding: 10px;
+    background-color: var(--ci-tab-background);
+    color: black;
 }
 .message-entry:hover {
-    color: black;
-    background-color: #aaaaaa;
+    background-color: var(--ci-tab-background-darker);
     cursor: pointer;
 }
 .message-entry.focused{
-    font-weight: bold;
     background-color: var(--ci-accent-color);
     color: black;
 }
@@ -289,6 +299,11 @@ article.founded label[for="tab-group"]{
 .single-wall article.wall{
     margin-top:120px;
 }
+
+.wall .entry-title{
+    margin-top: 20px!important;
+}
+
 @media only screen and (max-width: 600px) {
     .member-message-grid {
         display: unset;
@@ -371,6 +386,13 @@ article.founded label[for="tab-group"]{
     margin: -7px 5px;
 }
 
+.gruppe-liker {
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    padding: 10px 20px;
+    background: var(--ci-tab-background);
+}
+
 .gruppe-footer {
     margin-top: 20px;
     display: grid;
@@ -404,7 +426,7 @@ article.founded label[for="tab-group"]{
 
 .card_plg_info {
     height: 60px;
-    border-top: 1px dotted #aaaaaa;
+    border-top: 1px dotted var(--ci-tab-background-darker);
     padding-top: 10px;
     max-width: 100%;
     /*overflow: hidden;*/
@@ -581,20 +603,23 @@ article.entry-card.type-wall .plg-wrapper {
 
 }
 
-.like-group-box {
+article:not(.founded) .like-group-box {
     display: grid;
     column-gap: 4px;
-    grid-template-columns: minmax(48px, 96px)  minmax(20%, 80%)  auto;
+    grid-template-columns: minmax(48px, 96px) minmax(20%, 80%) auto;
+}
 
+.gruppe-liker .rpi-wall-group-likers, .gruppe-liker .rpi-wall-group-members
+{
+    justify-content: center;
 }
 
 .rpi-wall-group-likers, .rpi-wall-group-members {
     display: flex;
-    justify-content: center;
     flex-wrap: wrap;
     list-style: none;
     margin: 0;
-    padding: 0;
+    padding: 0 5px;
     position: relative;
     overflow: hidden;
 }
@@ -631,32 +656,32 @@ article.entry-card.type-wall .plg-wrapper {
 }
 
 .like-btn-wrapper {
-    border: 1px solid orangered;
+    border: 2px solid var(--ci-button-color);
+    background-color: white;
     border-radius: 50%;
-    max-height: 90px;
-    box-shadow: 1px 2px 9px 1px #aaaaaa;
+    box-shadow: 1px 2px 9px 1px var(--ci-tab-background-darker);
+    margin: auto;
+    height: 90px;
+    width: 90px;
 }
 
 
 .like-btn-wrapper.founded {
-    box-shadow: none;
     background-color: var(--ci-group-founded);
     border-color: var(--ci-group-founded);
 }
 
 .like-btn-wrapper.ready {
-    box-shadow: none;
     background-color: var(--ci-group-ready);
     border-color: var(--ci-group-ready);
 }
 
 .like-btn-wrapper.closed {
-    box-shadow: none;
 }
 
 .like-btn-wrapper:hover{
-    background-color: var(--ci-accent-color);
-    border-color: var(--ci-accent-color);
+    background-color: var(--ci-button-color-hover);
+    border-color: var(--ci-button-color-hover);
 }
 
 .like-btn-wrapper .rpi-wall-like-button {
@@ -685,11 +710,14 @@ article.entry-card.type-wall .plg-wrapper {
 
 .group-member img {
     border-radius: 50%;
-    border: 1px solid #bbb;
-    box-shadow: 3px 1px 9px #555;
+    border: 2px solid var(--ci-tab-background);
     background-color: white;
     margin-top: 7px;
     margin-bottom: 7px;
+}
+
+.group-member.my_avatar img{
+    border: 2px solid var(--ci-accent-color);
 }
 
 .group-member {
@@ -698,8 +726,8 @@ article.entry-card.type-wall .plg-wrapper {
 }
 
 .gruppe.pending .gruppe-header {
-    border-top: 5px solid orangered;
-    border-bottom: 5px solid orangered;
+    border-top: 5px solid var(--ci-button-color);
+    border-bottom: 5px solid var(--ci-button-color);
 }
 
 .member-card-name {
@@ -711,7 +739,7 @@ article.entry-card.type-wall .plg-wrapper {
 .member-card-head {
     text-align: center;
     padding-bottom: 10px;
-    border-bottom: 1px dotted #aaaaaa;
+    border-bottom: 1px dotted var(--ci-tab-background-darker);
 }
 
 .member-card-head img {
@@ -824,12 +852,12 @@ article.entry-card.type-wall .plg-wrapper {
     grid-area: protocol;
     display: grid;
     padding: 10px;
-    border-left: #aaaaaa solid 1px;
+    border-left: var(--ci-tab-background-darker) solid 1px;
 }
 .toolbar-group-goal{
     grid-area: goals;
     padding: 10px;
-    border-right: #aaaaaa solid 1px;
+    border-right: var(--ci-tab-background-darker) solid 1px;
 }
 
 .rpi-wall-filters button,.rpi-wall-paging button{
@@ -870,7 +898,7 @@ article.entry-card.type-wall .plg-wrapper {
     border-color: #2189F2;
     padding: 5px;
     border: 1px solid var(--ci-success-color);
-    background-color: var(--ci-tutorial-notification);
+    background-color: var(--ci-tab-background);
 }
 .rpi-wall-filter .fs-dropdown {
     box-shadow: 2px 2px 5px #777;
@@ -885,7 +913,7 @@ article.entry-card.type-wall .plg-wrapper {
 
 }
 .rpi-wall-filter.container{
-    background:var(--ci-tutorial-notification);
+    background:var(--ci-tab-background);
     padding: 30px;
     border-radius: 0 5px 5px;
 
@@ -984,7 +1012,7 @@ body.toolbar #wpadminbar{
     color: #999;
 }
 #btn-open-modal-edit-buttons ,#btn-open-faq{
-    background-color: lightgrey;
+    background-color: var(--ci-tutorial-notification);
     box-shadow: none;
     color: black;
     border-radius: 5px;
@@ -996,7 +1024,7 @@ body.toolbar #wpadminbar{
     text-align: center;
 }
 #btn-open-modal-edit-buttons:hover ,#btn-open-faq:hover{
-    background-color: #aaaaaa;
+    background-color: var(--ci-tab-background-darker);
 }
 #btn-open-modal-edit-buttons{
     position: unset;
