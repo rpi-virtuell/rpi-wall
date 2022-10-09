@@ -805,7 +805,8 @@ Du kannst die eingebundene Toolbar direkt aus diesem Chatfenster nutzen. Lies da
                         'maxlength' => '',
                         'rows' => 10,
                         'max_rows' => '',
-                    ),array(
+                    )
+                    ,array(
                         'key' => 'field_rpi_matrix_bot_toolbar_tutorial',
                         'label' => 'Matrix Bot Toolbar Tutorial',
                         'name' => 'matrix_bot_toolbar_tutorial',
@@ -826,9 +827,11 @@ Du kannst die eingebundene Toolbar direkt aus diesem Chatfenster nutzen. Lies da
                         'default_value' => '<strong>Toolbar nutzen</strong><br>
 Du kannst die eingebundene Toolbar direkt aus diesem Chatfenster nutzen: 
 Klicke in der oberen rechten Ecke auf das Infosymbol <strong>(i)</strong>  
-und anchließend weiter unten auf "Toolbar", um diese dauerhaft anzuzeigen: 
+und anchließend weiter unten auf "Toolbar", um diese dauerhaft anzuzeigen(Siehe Abbildung im Anhang) 
 <a href="https://dev-dibes.rpi-virtuell.de/wp-content/uploads/2022/09/toolbar.png"></a>
-',
+Du kannst in der Toolbar Werkzeuge hinzufügen, in dem du auf das [+] und dann auf "Werkzeug hinzufügen" klickst. In dem sich öffnenden Formular 
+gibst du jeweils links die Beschriftung des Buttons ein und rechts daneben die URL zu dem Werkzeug,
+welches beim Klick auf den Button geöffnet werden soll. Zum Beispiel: https://cloud.rpi-virtuell.de/index.php/s/YGDbNxERATo8WjA',
                         'placeholder' => '',
                         'prepend' => '',
                         'append' => '',
@@ -836,6 +839,78 @@ und anchließend weiter unten auf "Toolbar", um diese dauerhaft anzuzeigen:
                         'rows' => 10,
                         'max_rows' => '',
                     ),
+                    array(
+		                'key' => 'field_rpi_matrix_bot_planung_tutorial',
+		                'label' => 'Matrix Bot Planungsbogen Tutorial',
+		                'name' => 'matrix_bot_planung_tutorial',
+		                'prefix' => 'acf',
+		                'type' => 'acfe_code_editor',
+		                'instructions' => 'Tutorial Nachricht für den Planungsbogen',
+		                'required' => 0,
+		                'conditional_logic' => 0,
+		                'wrapper' => array(
+			                'width' => '',
+			                'class' => '',
+			                'id' => '',
+		                ),
+		                'frontend_admin_display_mode' => 'edit',
+		                'mode' => 'text/html',
+		                'indent_unit'=> 4,
+		                'readonly' => 0,
+		                'default_value' => '<strong>Planungsbogen ausfüllen</strong><br/>Im ersten, konstituierenden 
+Treffen legt eine PLG das übergeordnetes Gesamtziel fest, das die Gruppe mit Ihrer gemeinsamen Arbeit verfolgt
+und an dem sich dann auch die weiteren Treffen ausrichten sollen. Gebt der Gruppe einen Namen, der zu der 
+Zielformulierung passt. <br/>Anwesende, Gruppename und Zielformulierung trägt <strong>eine</strong> Person der Gruppe in den Planungsbogen ein: 
+Klicke dazu auf den Button "Planungsbogen" in der Toolbar.',
+		                'placeholder' => '',
+		                'prepend' => '',
+		                'append' => '',
+		                'maxlength' => '',
+		                'rows' => 10,
+		                'max_rows' => '',
+	                ),
+	                array(
+		                'key' => 'field_rpi_matrix_bot_protocol_tutorial',
+		                'label' => 'Matrix Bot Arbeitsstrukturbogen Tutorial',
+		                'name' => 'matrix_bot_protocol_tutorial',
+		                'prefix' => 'acf',
+		                'type' => 'acfe_code_editor',
+		                'instructions' => 'Tutorial Nachricht für den Planungsbogen',
+		                'required' => 0,
+		                'conditional_logic' => 0,
+		                'wrapper' => array(
+			                'width' => '',
+			                'class' => '',
+			                'id' => '',
+		                ),
+		                'frontend_admin_display_mode' => 'edit',
+		                'mode' => 'text/html',
+		                'indent_unit'=> 4,
+		                'readonly' => 0,
+		                'default_value' => '<strong>Wie geht es weiter?</strong><br/>
+Die Planung ist geschafft. <strong>Vereinbart den nächsten gemeinsamen Termin</strong>. Für alle folgenden Treffen 
+bekommt ihr ein weiteres Unterstützungswerkzeug. Das findet ihr ebenfalls in der Toolbar über den Button "Arbeitsstrukturbogen".     
+
+<br/><strong>Arbeiten mit dem Arbeitsstrukturbogen</strong><br/>Jedes Treffen hat eine 
+festgelegte Struktur, die dabei hilft, effizient zusammenzuarbeiten, das Ziel im Auge zu behalten und erfolgreich zu
+Ergebnissen zu kommen. Diese umfasst vier Abschnitte: 
+Teilziele, Reflexion, Absprachen und Ergebnisse.<br/>
+Im Abschnitt (Teilziel) legt ihr unter "Ziel des Treffens" ein Teilziel/-schritt fest, das auf dem Weg zum Gesamtziel 
+(Planungsbogen) liegt. Davon abhängig ergeben sich Tagesordnungspunkte. 
+<br/>
+Am Ende Eures Treffens werden erst die Abschnitte "Reflexion", "Absprachen" ausgefüllt und "Ergebnisse teilen" ausgefüllt.
+Formuliert ihr im letzten Abschnitt in wenigen Worten, wo ihr dem Gesamtziel näher gekommen seid.
+<br/>
+Bitte beachte, dass immer <strong>nur eine</strong> Person den Bogen ausfüllen kann. 
+<br/> 
+',
+		                'placeholder' => '',
+		                'prepend' => '',
+		                'append' => '',
+		                'maxlength' => '',
+		                'rows' => 10,
+		                'max_rows' => '',
+	                ),
                     array(
                         'key' => 'field_rpi_toolbar',
                         'label' => 'Toolbar',
@@ -1042,7 +1117,7 @@ und anchließend weiter unten auf "Toolbar", um diese dauerhaft anzuzeigen:
                                     'label' => 'RPI Gruppen Erstellung möglich Header',
                                     'name' => 'rpi_wall_ready_header',
                                     'type' => 'text',
-                                    'instructions' => '',
+                                    'instructions' => 'options_rpi_wall_ready_header',
                                     'required' => 0,
                                     'conditional_logic' => 0,
                                     'wrapper' => array(
@@ -1052,7 +1127,7 @@ und anchließend weiter unten auf "Toolbar", um diese dauerhaft anzuzeigen:
                                     ),
                                     'frontend_admin_display_mode' => 'edit',
                                     'readonly' => 0,
-                                    'default_value' => 'Professionellen Lerngemeinschaft (PLG)',
+                                    'default_value' => 'Die Gründung einer Gruppe ist jetzt möglich.',
                                     'placeholder' => '',
                                     'prepend' => '',
                                     'append' => '',
@@ -1063,7 +1138,7 @@ und anchließend weiter unten auf "Toolbar", um diese dauerhaft anzuzeigen:
                                     'label' => 'RPI Gruppen Erstellung möglich Notice',
                                     'name' => 'rpi_wall_ready_notice',
                                     'type' => 'text',
-                                    'instructions' => '',
+                                    'instructions' => 'options_rpi_wall_ready_notice',
                                     'required' => 0,
                                     'conditional_logic' => 0,
                                     'wrapper' => array(
@@ -1084,7 +1159,7 @@ und anchließend weiter unten auf "Toolbar", um diese dauerhaft anzuzeigen:
                                     'label' => 'Gründungsphase Header',
                                     'name' => 'rpi_wall_pending_header',
                                     'type' => 'text',
-                                    'instructions' => '',
+                                    'instructions' => 'options_rpi_wall_pending_header',
                                     'required' => 0,
                                     'conditional_logic' => 0,
                                     'wrapper' => array(
@@ -1105,7 +1180,7 @@ und anchließend weiter unten auf "Toolbar", um diese dauerhaft anzuzeigen:
                                     'label' => 'Gründungsphase notice',
                                     'name' => 'rpi_wall_pending_notice',
                                     'type' => 'text',
-                                    'instructions' => '',
+                                    'instructions' => 'options_rpi_wall_pending_notice',
                                     'required' => 0,
                                     'conditional_logic' => 0,
                                     'wrapper' => array(
@@ -1126,7 +1201,7 @@ und anchließend weiter unten auf "Toolbar", um diese dauerhaft anzuzeigen:
                                     'label' => 'Gruppe gegründet Header',
                                     'name' => 'rpi_wall_ready_notice',
                                     'type' => 'text',
-                                    'instructions' => '',
+                                    'instructions' => 'options_rpi_wall_founded_header',
                                     'required' => 0,
                                     'conditional_logic' => 0,
                                     'wrapper' => array(
@@ -1136,7 +1211,7 @@ und anchließend weiter unten auf "Toolbar", um diese dauerhaft anzuzeigen:
                                     ),
                                     'frontend_admin_display_mode' => 'edit',
                                     'readonly' => 0,
-                                    'default_value' => 'Professionelle Lerngemeinschaft (PLG) zu diesem Kontext',
+                                    'default_value' => 'Professionelle Lerngemeinschaft (PLG) gegründet am:',
                                     'placeholder' => '',
                                     'prepend' => '',
                                     'append' => '',
@@ -1147,7 +1222,7 @@ und anchließend weiter unten auf "Toolbar", um diese dauerhaft anzuzeigen:
                                     'label' => 'Gruppe gegründet Notice',
                                     'name' => 'rpi_wall_founded_notice',
                                     'type' => 'text',
-                                    'instructions' => '',
+                                    'instructions' => 'options_rpi_wall_founded_notice',
                                     'required' => 0,
                                     'conditional_logic' => 0,
                                     'wrapper' => array(
@@ -1157,7 +1232,7 @@ und anchließend weiter unten auf "Toolbar", um diese dauerhaft anzuzeigen:
                                     ),
                                     'frontend_admin_display_mode' => 'edit',
                                     'readonly' => 0,
-                                    'default_value' => 'Zu diesem Pinwandeintrag hat sich eine PLG gegründet.',
+                                    'default_value' => '',
                                     'placeholder' => '',
                                     'prepend' => '',
                                     'append' => '',
@@ -1168,7 +1243,7 @@ und anchließend weiter unten auf "Toolbar", um diese dauerhaft anzuzeigen:
                                     'label' => 'Gruppe geschlossen Header',
                                     'name' => 'rpi_wall_closed_header',
                                     'type' => 'text',
-                                    'instructions' => '',
+                                    'instructions' => 'options_rpi_wall_closed_header',
                                     'required' => 0,
                                     'conditional_logic' => 0,
                                     'wrapper' => array(
@@ -1178,7 +1253,7 @@ und anchließend weiter unten auf "Toolbar", um diese dauerhaft anzuzeigen:
                                     ),
                                     'frontend_admin_display_mode' => 'edit',
                                     'readonly' => 0,
-                                    'default_value' => 'Professionelle Lerngemeinschaft (PLG) zu diesem Kontext',
+                                    'default_value' => 'Professionelle Lerngemeinschaft (PLG) - Arbeitsphase abgeschlossen',
                                     'placeholder' => '',
                                     'prepend' => '',
                                     'append' => '',
@@ -1187,9 +1262,9 @@ und anchließend weiter unten auf "Toolbar", um diese dauerhaft anzuzeigen:
                                 array(
                                     'key' => 'field_rpi_wall_closed_notice',
                                     'label' => 'Gruppe geschlossen Notice',
-                                    'name' => 'rpi_wall_closed_header',
+                                    'name' => 'rpi_wall_closed_notice',
                                     'type' => 'text',
-                                    'instructions' => '',
+                                    'instructions' => 'options_rpi_wall_closed_notice',
                                     'required' => 0,
                                     'conditional_logic' => 0,
                                     'wrapper' => array(
@@ -1210,7 +1285,7 @@ und anchließend weiter unten auf "Toolbar", um diese dauerhaft anzuzeigen:
                                     'label' => 'Keine Gruppe gegründet Header',
                                     'name' => 'rpi_wall_not_founded_header',
                                     'type' => 'text',
-                                    'instructions' => '',
+                                    'instructions' => 'options_rpi_wall_not_founded_header',
                                     'required' => 0,
                                     'conditional_logic' => 0,
                                     'wrapper' => array(
@@ -1220,7 +1295,7 @@ und anchließend weiter unten auf "Toolbar", um diese dauerhaft anzuzeigen:
                                     ),
                                     'frontend_admin_display_mode' => 'edit',
                                     'readonly' => 0,
-                                    'default_value' => 'Interessiert an einer Professionellen Lerngemeinschaft (PLG) zu diesem Kontext?',
+                                    'default_value' => 'Interessiert an einer Professionellen Lerngemeinschaft (PLG)?',
                                     'placeholder' => '',
                                     'prepend' => '',
                                     'append' => '',
@@ -1231,7 +1306,7 @@ und anchließend weiter unten auf "Toolbar", um diese dauerhaft anzuzeigen:
                                     'label' => 'Keine Gruppe gegründet Notice',
                                     'name' => 'rpi_wall_not_founded_notice',
                                     'type' => 'text',
-                                    'instructions' => '',
+                                    'instructions' => 'options_rpi_wall_not_founded_notice',
                                     'required' => 0,
                                     'conditional_logic' => 0,
                                     'wrapper' => array(
@@ -1241,7 +1316,7 @@ und anchließend weiter unten auf "Toolbar", um diese dauerhaft anzuzeigen:
                                     ),
                                     'frontend_admin_display_mode' => 'edit',
                                     'readonly' => 0,
-                                    'default_value' => 'Wenn du zu den Interessierten gehörst, wirst du automatisch benachrichtigt, sobald sich genügend Interessenten gefunden haben.',
+                                    'default_value' => 'Klicke auf (+) und du wirst du automatisch benachrichtigt, sobald sich genügend Interessenten gefunden haben.',
                                     'placeholder' => '',
                                     'prepend' => '',
                                     'append' => '',

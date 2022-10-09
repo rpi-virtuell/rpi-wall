@@ -43,11 +43,11 @@ class Group extends \stdClass
 
         }
 
-        $matrixTitle = substr(preg_replace('/[^a-zA-ZüäößÜÄÖ -]*/i', '', $this->post->post_title), 0, 40);
+        $matrixTitle = substr(preg_replace('/[^0-9a-zA-ZüäößÜÄÖ -]*/i', '', $this->post->post_title), 0, 40);
 
         $this->group_status = $this->get('rpi_wall_group_status');
         $this->slug = 'dibes_plg_' . $this->ID;
-        $this->title = 'PLG ' . $matrixTitle;
+        $this->title = 'PLG zu ' . $matrixTitle;
         $this->channel_url = "https://{$this->matrix_server_home}/#/room/#{$this->slug}:rpi-virtuell.de";
         $this->pending_days = get_option('options_rpi_wall_pl_group_pending_days', 7);
         $this->group_member_min = get_option('options_rpi_group_min_required_members', 3);
@@ -789,6 +789,28 @@ class Group extends \stdClass
         return $hash;
 
     }
+
+    public function get_founding_date(){
+
+	    $prefix = 'Konstitutierendes Treffen in Planung.';
+	    $date = get_post_meta($this->ID,'constitution_date_of_meeting', true);
+
+	    if(empty($date)) {
+	        $date = get_post_meta( $this->ID, 'date_of_meeting', true );
+	        if ( ! empty( $date ) ) {
+		        $date   = date( 'j.m.y', strtotime( $date ) );
+		        $prefix = 'Konstitutierendes Treffen am ';
+	        }
+        }else{
+		    $date = get_post_meta($this->ID,'constitution_date_of_meeting', true);
+		    $prefix = 'Gegründet am ';
+	    }
+        if(!empty($date)){
+            $date = date('j.m.Y',strtotime($date));
+        }
+        return $prefix.$date;
+
+    }
 	static function display_watcher_area(){
 		if(is_user_logged_in() && 'wall' === get_post_type()){
             $member = new Member();
@@ -814,21 +836,18 @@ class Group extends \stdClass
     public function display_liker_button()
     {
         $amount = $this->is_founded() || $this->is_pending() ? $this->get_members_amount() : $this->get_likers_amount();
-
+        //!$this->has_member(get_current_user_id())
         ?>
-        <div class="like-btn-wrapper <?php echo $this->get_status(); ?>">
-            <?php if (is_user_logged_in() && $this->is_not_founded() && !$this->has_member(get_current_user_id())): ?>
-                <button class="rpi-wall-like-button" id="btn-like-group-<?php the_ID(); ?>">
-                    <?php echo (in_array(get_current_user_id(), $this->get_likers_Ids())) ? Shortcodes::$group_sub_icon : Shortcodes::$group_add_icon; ?>
-                    <span class="rpi-wall-counter"><?php echo $amount; ?></span>
-                </button>
-            <?php else: ?>
-                <button class="rpi-wall-like-button">
-                    <?php echo Shortcodes::$group_icon; ?>
-                    <span class="rpi-wall-counter"><?php echo $amount; ?></span>
-                </button>
+
+            <?php if (is_user_logged_in() && $this->is_not_founded()  ): ?>
+                <div class="like-btn-wrapper <?php echo $this->get_status(); ?>">
+                    <button class="rpi-wall-like-button" id="btn-like-group-<?php the_ID(); ?>">
+                        <?php echo (in_array(get_current_user_id(), $this->get_likers_Ids())) ? Shortcodes::$group_sub_icon : Shortcodes::$group_add_icon; ?>
+                        <span class="rpi-wall-counter"><?php echo $amount; ?></span>
+                    </button>
+                </div>
             <?php endif; ?>
-        </div>
+
         <?php
     }
 
@@ -900,17 +919,19 @@ class Group extends \stdClass
 
     public function display()
     {
-
+        $headline = '';
+	    $stats = '';
+        $notice='';
 
         switch ($status = $this->get_status()) {
             case'ready':
-                $headline = get_option('options_rpi_wall_ready_header', 'Professionellen Lerngemeinschaft (PLG)');
-                $notice = get_option('options_rpi_wall_ready_notice', 'Mit Klick auf "Gruppe Gründen" werden alle interessierten angeschrieben und haben eine Woche Zeit, der PLG beizutreten.');
+                $headline = get_option('options_rpi_wall_ready_header', 'Die Gründung einer Gruppe ist jetzt möglich.');
+                $notice = get_option('options_rpi_wall_ready_notice', 'Mit Klick auf "Gruppe Gründen" werden alle Interessierten aufgefordert, der Professionellen Lerngemeinschaft (PLG) beizutreten.');
                 $button = $this->get_startlink();
                 $stats = $this->get_likers_amount() . ' Interessierte.';
                 break;
             case'pending':
-                $headline = get_option('options_rpi_wall_pending_header', 'Wir suchen noch Leute für eine Professionellen Lerngemeinschaft (PLG) zu diesem Kontext');
+                $headline = get_option('options_rpi_wall_pending_header', 'Wir suchen noch Leute für eine Professionellen Lerngemeinschaft (PLG)');
                 if (!$this->has_member(get_current_user_id())) {
                     $notice = get_option('options_rpi_wall_pending_notice', 'Die Gruppe befindet sich in der Gründungsphase. Möchtest du dabei sein?');
                 }
@@ -919,19 +940,19 @@ class Group extends \stdClass
                 $stats = 'Noch ' . $this->get_pending_time() . ' um beizutreten.';
                 break;
             case'founded':
-                $headline = get_option('options_rpi_wall_founded_header', 'Professionelle Lerngemeinschaft (PLG) zu diesem Kontext');
-                $notice = get_option('options_rpi_wall_founded_notice', 'Zu diesem Pinwandeintrag hat sich eine PLG gegründet.');
+                $headline = get_option('options_rpi_wall_founded_header', 'Professionelle Lerngemeinschaft (PLG)').'. ' . $this->get_founding_date();
+                //$notice = get_option('options_rpi_wall_founded_notice', '');
                 $button = $this->get_current_users_requestlink('Beitritt anfragen');
-                $stats = $this->get_members_amount() . ' Mitglieder.';
+                //$stats = $this->get_members_amount() . ' Mitglieder.';
                 break;
             case'closed':
-                $headline = get_option('options_rpi_wall_closed_header', 'Professionelle Lerngemeinschaft (PLG) zu diesem Kontext');
+                $headline = get_option('options_rpi_wall_closed_header', 'Professionelle Lerngemeinschaft (PLG) - Arbeitsphase abgeschlossen');
                 $notice = get_option('options_rpi_wall_closed_notice', '');
-                $stats = 'Gruppe geschlossen';
+                $stats = '';
                 break;
             default:
-                $headline = get_option('options_rpi_wall_not_founded_header', 'Interessiert an einer Professionellen Lerngemeinschaft (PLG) zu diesem Kontext?');
-                $notice = get_option('options_rpi_wall_not_founded_notice', 'Wenn du zu den Interessierten gehörst, wirst du automatisch benachrichtigt, sobald sich genügend Interessenten gefunden haben.');
+                $headline = get_option('options_rpi_wall_not_founded_header', 'Interessiert an einer Professionellen Lerngemeinschaft (PLG)?');
+                $notice = get_option('options_rpi_wall_not_founded_notice', 'Klicke auf (+) und du wirst du automatisch benachrichtigt, sobald sich genügend Interessenten gefunden haben.');
                 $stats = $this->get_likers_amount() . ' von mindestens ' . $this->group_member_min . ' sind interessiert';
 
         }
