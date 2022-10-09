@@ -890,16 +890,16 @@ Klicke dazu auf den Button "Planungsbogen" in der Toolbar.',
 		                'default_value' => '<strong>Wie geht es weiter?</strong><br/>
 Die Planung ist geschafft. <strong>Vereinbart den nächsten gemeinsamen Termin</strong>. Für alle folgenden Treffen 
 bekommt ihr ein weiteres Unterstützungswerkzeug. Das findet ihr ebenfalls in der Toolbar über den Button "Arbeitsstrukturbogen".     
-
+<br/>
 <br/><strong>Arbeiten mit dem Arbeitsstrukturbogen</strong><br/>Jedes Treffen hat eine 
 festgelegte Struktur, die dabei hilft, effizient zusammenzuarbeiten, das Ziel im Auge zu behalten und erfolgreich zu
 Ergebnissen zu kommen. Diese umfasst vier Abschnitte: 
-Teilziele, Reflexion, Absprachen und Ergebnisse.<br/>
+Teilziel, Reflexion, Absprachen und Ergebnisse.<br/>
 Im Abschnitt (Teilziel) legt ihr unter "Ziel des Treffens" ein Teilziel/-schritt fest, das auf dem Weg zum Gesamtziel 
-(Planungsbogen) liegt. Davon abhängig ergeben sich Tagesordnungspunkte. 
-<br/>
-Am Ende Eures Treffens werden erst die Abschnitte "Reflexion", "Absprachen" ausgefüllt und "Ergebnisse teilen" ausgefüllt.
-Formuliert ihr im letzten Abschnitt in wenigen Worten, wo ihr dem Gesamtziel näher gekommen seid.
+(Planungsbogen) liegt. Davon abhängig ergeben sich Tagesordnungspunkte. Bestimmt vorab eine Person, 
+die die Leitung/Moderation des Treffens hat.<br/>
+Am Ende Eures Treffens werden erst die Abschnitte "Reflexion", "Absprachen" ausgefüllt und "Ergebnisse" ausgefüllt.
+Formuliert im letzten Abschnitt in wenigen Worten, wo ihr dem Gesamtziel näher gekommen seid.
 <br/>
 Bitte beachte, dass immer <strong>nur eine</strong> Person den Bogen ausfüllen kann. 
 <br/> 
