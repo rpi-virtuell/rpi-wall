@@ -38,8 +38,13 @@ class RpiWallAjaxHandler
         add_action('wp_ajax_rpi_tab_messages_content', [$this, 'ajax_tab_messages_content']);
         add_action('wp_ajax_nopriv_rpi_tab_messages_content', [$this, 'ajax_tab_messages_content']);
 
+
+        add_action('wp_ajax_rpi_tab_logout_content', [$this, 'ajax_tab_logout_content']);
+        add_action('wp_ajax_nopriv_rpi_tab_logout_content', [$this, 'ajax_tab_logout_content']);
+
         add_action('wp_ajax_rpi_wall_close_pin_group', [$this, 'ajax_close_pin_group']);
         add_action('wp_ajax_nopriv_rpi_wall_close_pin_group', [$this, 'ajax_close_pin_group']);
+
 
 
     }
@@ -116,6 +121,13 @@ class RpiWallAjaxHandler
 
     }
 
+	public function ajax_tab_logout_content(){
+
+		  wp_redirect(  str_replace('amp;','', wp_logout_url( ) ));
+
+		  echo '';
+
+	}
     public function ajax_mark_and_display_message()
     {
         $response = ['success' => false];

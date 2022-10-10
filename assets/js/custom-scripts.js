@@ -110,11 +110,6 @@ jQuery(document).ready($ => {
 
         var action = "rpi_tab_" + hash + "_content";
 
-        if (action === 'rpi_tab_logout_content'){
-            location.href = "/wp-login.php?action=logout";
-            console.log(location.href);
-            return;
-        }
 
         $.post(
             wall.ajaxurl,
@@ -128,6 +123,12 @@ jQuery(document).ready($ => {
                 add_watch_button_click_event();
             }
         )
+
+        if (action === 'rpi_tab_logout_content'){
+
+            setTimeout(()=>{location.href= '/';}, 1000);
+            return;
+        }
     }
 
     function rpi_wall_print_content(response, hash) {
