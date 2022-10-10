@@ -18,7 +18,7 @@
     --ci-box-shadow: 2px 2px 7px #444;
     --ci-tutorial-notification: var(--paletteColor5);
     --ci-tab-background: var(--paletteColor5);
-    --ci-tab-background-darker: #94989e;
+    --ci-tab-background-darker: #a7abab;
     
     --ci-accent-color:var(--paletteColor2);
 
@@ -212,11 +212,29 @@ article.founded label[for="tab-group"]{
     margin-left: 20px;
 }
 
-.single-member .entry-header .user-matrixId {
+.single-member .entry-header .user-matrixId{
     margin-top: -30px;
     max-width: 500px;
     text-align: center;
+    border-radius: 15px;
+    background-color: var(--ci-tab-background);
 }
+
+.single-member .entry-header .user-matrixId summary{
+    padding: 10px;
+}
+.single-member .entry-header .user-matrixId summary:hover{
+    border-radius: 15px;
+    background-color: var(--ci-tab-background-darker);
+    color: black;
+}
+
+.single-member .entry-header .user-matrixId svg{
+    padding: 3px;
+    background-color: white;
+    border-radius: 5px;
+}
+
 
 .member-tags {
     display: flex;
@@ -791,6 +809,7 @@ article:not(.founded) .like-group-box {
 .group-tab-matrix-detail{
     text-align: center;
     margin-bottom: 25px;
+    margin-top: 15px;
 }
 
 .toolbar-header{
