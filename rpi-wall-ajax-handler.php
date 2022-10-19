@@ -125,7 +125,8 @@ class RpiWallAjaxHandler
 
 		  wp_redirect(  str_replace('amp;','', wp_logout_url( ) ));
 
-		  echo '';
+		  echo str_replace('amp;','', wp_logout_url( ) );
+		  die();
 
 	}
     public function ajax_mark_and_display_message()
