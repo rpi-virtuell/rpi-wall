@@ -556,6 +556,10 @@ article.entry-card.type-wall .plg-wrapper {
     box-shadow: 1px 1px 2px #bbbbbb;
     cursor: pointer;
 }
+.constituted-post-protocol > summary:hover{
+    background-color: var(--ci-tab-background-darker);
+}
+
 .constituted-post-protocol summary h5{
     margin-bottom: unset;
 }
