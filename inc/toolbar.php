@@ -109,7 +109,7 @@ class Toolbar
 
                             <div class="toolbar-protocols">
                                 <h3>
-                                    Protokolle:
+                                    Arbeitsstrukturbogen:
                                 </h3>
                                 <?php
 
