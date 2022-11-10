@@ -19,7 +19,7 @@
     --ci-tutorial-notification: var(--paletteColor5);
     --ci-tab-background: var(--paletteColor5);
     --ci-tab-background-darker: #a7abab;
-    
+
     --ci-accent-color:var(--paletteColor2);
 
     --ci-button-color:var(--paletteColor7);
@@ -769,6 +769,7 @@ article:not(.founded) .like-group-box {
 }
 .member-card-tags{
     margin-top: 10px;
+    font-size: 13px;
 }
 .member-card-tags p{
     margin-bottom: 5px;

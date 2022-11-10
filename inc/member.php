@@ -750,23 +750,26 @@ class Member extends \stdClass
 
 		if (is_a($this->user, 'WP_User') && $this->user->ID > 0) {
 
-	        $member = get_posts(array(
+	        $members = get_posts(array(
 		        'post_status' => 'any',
 		        'post_type' => 'member',
 		        'author' => $this->user->ID
 	        ));
-	        if (is_array($member) && !empty(reset($member))) {
-		        return $this->user;
+
+	        if (is_array($members) && count ($members)>0) {
+
+				return reset($members);
+
 	        } else {
 
-				$member = wp_insert_post( array(
-			        'post_title'  => $this->user->display_name,
+				$member_id = wp_insert_post( array(
+					'post_title'  => $this->user->user_login,
 			        'post_status' => 'publish',
 			        'post_author' => $this->user->ID,
 			        'post_type'   => 'member'
 		        ) );
 
-		        return get_post($member);
+		        return get_post($member_id);
 	        }
 
 

@@ -55,7 +55,8 @@ class RpiWall
         add_action('wp_enqueue_scripts', [$this, 'custom_style_and_scripts']);
 
         add_action('pre_get_posts', [$this, 'facetwp_injection']);
-        add_action('pre_get_posts', [$this, 'query_tags']);
+        //add_action('pre_get_posts', [$this, 'query_tags']);
+        add_action('pre_get_posts', [$this, 'query_member']);
 
         /**** beobachte beiträge filtern ****/
 	    add_filter( 'facetwp_facet_display_value', function( $label, $params ) {
@@ -329,6 +330,32 @@ class RpiWall
 	    if (is_tax('wall-tag') && is_post_type_archive('wall')) {
 		    //$query->set('post_type','wall');
 
+	    }
+
+    }
+
+    public function query_member(&$query)
+    {
+
+	    if (is_post_type_archive('member')) {
+
+		    $meta_query = array(
+			    'relation' => 'OR',
+			    array(
+				    'key'       => 'hideme',
+				    'compare'   => "!=",
+                    'value'     => true
+			    ),
+                array(
+				    'key'       => 'hideme',
+				    'compare'   => "NOT EXISTS",
+
+			    ),
+		    );
+            $query->set( 'meta_query',   $meta_query);
+
+		    $query->set( 'orderby',    'post_title');
+		    $query->set( 'order',      'ASC'       );
 	    }
 
     }

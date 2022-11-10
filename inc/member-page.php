@@ -158,14 +158,15 @@ class MemberPage
                                 [basic-user-avatars]
                             </div>
                             <div class="tags-selector">
-                                <strong>Welche Perspektiven passen zu dir am ehesten?</strong>
+                                <strong>Darstellung auf der Netzwerkübersicht</strong>
                                 [acfe_form name="member-taxonomy"]
                             </div>
                         </div>
                         <div>
                             [acfe_form name="user-profile"]
+                            <div><br>&nbsp;<!-- Empty Spacer --><hr><br></div>
                         </div>
-                        <div><!-- Empty Spacer --></div>
+                            <div><!-- Empty Spacer --></div>
                         <div>
                         <strong>Welche Emails sollen zu dir gesendet werden?</strong>
                             [acfe_form name="user_email_settings"]
