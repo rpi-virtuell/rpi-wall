@@ -2,6 +2,7 @@
 
 namespace rpi\Wall;
 
+use core_reportbuilder\local\filters\date;
 use  rpi\Wall;
 use WP_Post;
 
@@ -19,6 +20,8 @@ class RPIWallInstaller
         add_filter('author_link', array($this, 'change_author_link_to_user_profile'), 10, 3);
         add_action('save_post_wall', array($this, 'update_taxonomy_of_member_on_pin_save'), 10, 3);
         add_action('before_delete_post', array($this, 'delete_member_taxonomy_on_pin_deletion'), 10, 2);
+        add_filter('manage_posts_columns', array($this, 'add_new_termin_columns'),10, 2);
+        add_action('manage_termin_posts_custom_column', array($this, 'display_termin_date_column'), 10, 2);
         add_filter('manage_posts_columns', array($this, 'add_new_message_columns'), 10, 2);
         add_action('manage_message_posts_custom_column', array($this, 'display_message_recipients_column'), 10, 2);
         add_filter('notify_post_author', array($this, 'prefix_filter_sent_comment_notification'), 10, 2);
@@ -82,6 +85,20 @@ class RPIWallInstaller
             $role->add_cap('delete_published_member');
             $role->add_cap('delete_member');
 
+            $role->add_cap('edit_events');
+            $role->add_cap('edit_others_events');
+            $role->add_cap('read_private_events');
+            $role->add_cap('publish_posts');
+            $role->add_cap('read_event');
+            $role->add_cap('delete_others_events');
+            $role->add_cap('edit_published_event');
+            $role->add_cap('delete_published_events');
+            $role->add_cap('delete_event');
+
+            $role->add_cap('manage_termin_event');
+            $role->add_cap('edit_termin_event');
+            $role->add_cap('delete_termin_event');
+            $role->add_cap('assign_termin_event');
         }
         /// Author capabilities
 
@@ -103,6 +120,7 @@ class RPIWallInstaller
             $role->add_cap('assign_badge');
 
             $role->add_cap('assign_schooltype');
+
         }
     }
 
@@ -180,7 +198,7 @@ class RPIWallInstaller
             "description" => "",
             "public" => true,
             "publicly_queryable" => true,
-            "show_ui" => true, // TODO: MIGHT CHANGE LATER WIP
+            "show_ui" => true,
             "show_in_rest" => true,
             "rest_base" => "",
             "rest_controller_class" => "WP_REST_Posts_Controller",
@@ -257,6 +275,81 @@ class RPIWallInstaller
 
         register_post_type("message", $args);
 
+        /**
+         * Post Type: Termine.
+         */
+
+        $labels = [
+            "name" => __("Termine", "blocksy"),
+            "singular_name" => __("Termine", "blocksy"),
+        ];
+
+        $args = [
+            "label" => __("Termine", "blocksy"),
+            "labels" => $labels,
+            "description" => "",
+            "public" => true,
+            "publicly_queryable" => true,
+            "show_ui" => true,
+            "show_in_rest" => true,
+            "rest_base" => "",
+            "rest_controller_class" => "WP_REST_Posts_Controller",
+            "rest_namespace" => "wp/v2",
+            "has_archive" => true,
+            "show_in_menu" => true,
+            "show_in_nav_menus" => true,
+            "delete_with_user" => false,
+            "exclude_from_search" => false,
+            'capability_type' => 'event',
+            'capabilities' => array(
+                'edit_posts' => 'edit_events',
+                'edit_others_posts' => 'edit_others_events',
+                'read_private_posts' => 'read_private_events',
+                'publish_posts' => 'publish_posts',
+                'read_post' => 'read_event',
+                'delete_others_posts' => 'delete_others_events',
+                'edit_published_posts' => 'edit_published_event',
+                'delete_published_posts' => 'delete_published_events',
+                'delete_posts' => 'delete_event',
+            ),
+            "map_meta_cap" => true,
+            "hierarchical" => false,
+            "can_export" => false,
+            "rewrite" => ["slug" => "termin", "with_front" => true],
+            "query_var" => true,
+            "supports" => ["title", "editor"],
+            "menu_icon" => "dashicons-calendar-alt",
+            "taxonomies" => ["termin_event"],
+            "show_in_graphql" => false,
+        ];
+
+        register_post_type("termin", $args);
+
+    }
+    public function  add_new_termin_columns($columns, $post_type)
+    {
+        if ($post_type == 'termin'){
+            $columns['termine_date'] = 'Termindatum';
+            $columns['category'] = 'Ereignis';
+        }
+        return$columns;
+    }
+
+    public function display_termin_date_column($name, $post_id){
+        switch ($name)
+        {
+            case 'category':
+                $termin_event = get_the_terms($post_id, 'termin_event');
+                if (!empty($termin_event) && is_array($termin_event))
+                {
+                    echo reset($termin_event)->name;
+                }
+                break;
+            case 'termine_date':
+                echo date('d.m.Y H:i', strtotime(get_post_meta($post_id,'termin_date', true))) .
+                    ' - ' .
+                    date('H:i', strtotime(get_post_meta($post_id, 'termin_enddate',true))) ;
+        }
     }
 
     /**
@@ -511,6 +604,45 @@ class RPIWallInstaller
             ),
         ];
         register_taxonomy("profession", ["member"], $args);
+        /**
+         * Taxonomy: Event.
+         */
+
+        $labels = [
+            "name" => __("Ereignisse", "blocksy"),
+            "singular_name" => __("Ereignis", "blocksy"),
+        ];
+
+
+        $args = [
+            "label" => __("Ereignis", "blocksy"),
+            "labels" => $labels,
+            "public" => true,
+            "publicly_queryable" => true,
+            "hierarchical" => true,
+            "show_ui" => true,
+            "show_in_menu" => true,
+            "show_in_nav_menus" => true,
+            "query_var" => true,
+            "rewrite" => ['slug' => 'termin_event', 'with_front' => true, 'hierarchical' => true,],
+            "show_admin_column" => false,
+            "show_in_rest" => true,
+            "show_tagcloud" => false,
+            "rest_base" => "termin_event",
+            "rest_controller_class" => "WP_REST_Terms_Controller",
+            "rest_namespace" => "wp/v2",
+            "show_in_quick_edit" => false,
+            "sort" => false,
+            "show_in_graphql" => false,
+            "capabilities" => array(
+                'manage_terms' => 'manage_termin_event',
+                'edit_terms' => 'edit_termin_event',
+                'delete_terms' => 'delete_termin_event',
+                'assign_terms' => 'assign_termin_event'
+            ),
+        ];
+        register_taxonomy("termin_event", ["termin"], $args);
+
     }
 
     function register_custom_fields()
@@ -726,7 +858,6 @@ class RPIWallInstaller
                     ),
                     array(
                         'key' => 'field_rpi_matrix_server_home',
-                        // TODO: ggf muss dieses und server base angepasst werden
                         'label' => 'Matrix Heimat Server',
                         'name' => 'matrix_server_home',
                         'type' => 'text',

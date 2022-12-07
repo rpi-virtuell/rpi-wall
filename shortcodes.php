@@ -40,6 +40,9 @@ class Shortcodes
         add_shortcode('my_comments', array($this, 'get_user_comments'));
         add_shortcode('rpi_wall_filter', array($this, 'get_wall_filter'));
 
+        add_shortcode('wall_termine', array($this, 'display_termine'));
+        add_shortcode('wall_termine_widget', array($this, 'display_termine_widget'));
+
         add_action('wp_head', array($this, 'init'));
 
     }
@@ -327,6 +330,42 @@ class Shortcodes
         return ob_get_clean();
     }
 
+    public function display_termine($atts){
+        ob_start();
+        $args= [
+                'post_status' => 'any',
+                'post_type' =>  'termin',
+                'numberposts' => -1,
+                'meta_key' => 'termin_date',
+                'meta_value' => false,
+                'meta_compare' => '!=',
+                'orderby' => 'meta_value',
+                'order' => 'ASC',
+                ];
+        $termine = get_posts($args);
+
+
+
+
+        foreach ($termine as $termin)
+            {
+                var_dump(get_post_meta($termin->ID, 'termin_date',true));
+            }
+
+        return ob_get_clean();
+    }
+
+    public function display_termine_widget($atts){
+        ob_start();
+        $args= [
+                'post_status' => 'any',
+                'post_type' =>  'termine',
+                'numberposts' => -1,
+                ];
+        $termine = get_posts($args);
+
+        return ob_get_clean();
+    }
 
     static function display_user($user_id, $size)
     {
