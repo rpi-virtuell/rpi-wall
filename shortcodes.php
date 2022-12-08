@@ -2,6 +2,8 @@
 
 namespace rpi\Wall;
 
+
+
 class Shortcodes
 {
 
@@ -342,15 +344,214 @@ class Shortcodes
                 'orderby' => 'meta_value',
                 'order' => 'ASC',
                 ];
-        $termine = get_posts($args);
+        $posts = get_posts($args);
+        
+        $startDate = date(DATE_ATOM);
+
+ ?>
+            <div class="dibes-termin-content">
+                <?php
+
+                $lastPost = end($posts);
+
+                $datesTillLastPost = new \DatePeriod(
+                    new \DateTime(date("Y-m-d", strtotime($startDate))),
+                    new \DateInterval('P1D'),
+                    new \DateTime(get_post_meta($lastPost->ID, 'termin_date', true))
+                );
+                $newWeek = true;
+                $newMonth = true;
+
+                foreach ($datesTillLastPost
+
+                         as $date) {
+
+                    if ($newMonth) {
+
+                        ?>
+                        <div class="dibes-termin-month">
+                        <div class="dibes-list-month">
+                            <h4>
+                                <?php
+                                $newMonth = false;
+                                echo Shortcodes::getMonat($date->format(DATE_ATOM)) . ' - ' . $date->format('Y');
+                                ?>
+                            </h4>
+                        </div>
+                        <div class="dibes-termin-month">
+                        <div class="dibes-termin-week-header">
+                            <div class="dibes-termin-Mon non-mobile">
+                            <span>
+                                Montag
+                            </span>
+                            </div>
+                            <div class="dibes-termin-Tue non-mobile">
+                            <span>
+                                Dienstag
+                            </span>
+                            </div>
+                            <div class="dibes-termin-Wen non-mobile">
+                            <span>
+                                Mittwoch
+                            </span>
+                            </div>
+                            <div class="dibes-termin-Thu non-mobile">
+                            <span>
+                                Donnerstag
+                            </span>
+                            </div>
+                            <div class="dibes-termin-Fri non-mobile">
+                            <span>
+                                Freitag
+                            </span>
+                            </div>
+                            <div class="dibes-termin-Sat non-mobile">
+                            <span>
+                                Samstag
+                            </span>
+                            </div>
+                            <div class="dibes-termin-Sun non-mobile">
+                            <span>
+                                Sonntag
+                            </span>
+                            </div>
+
+                        </div>
+                        <div class="dibes-termin-week"> <?php
+                        $newWeek = false;
+                        $whileDate = strtotime('Monday');
+                        while (date('D', $whileDate) != $date->format('D')) {
+                            ?>
+                            <div class="dibes-termin-spacer dibes-termin-<?php echo date('D', $whileDate); ?>"></div>  <?php
+                            $whileDate = strtotime(date('D', $whileDate) . '+1 days');
+                        }
+                    }
+
+                if ($newWeek) {
+                    ?>
+                    <div class="dibes-termin-week"> <?php
+                    $newWeek = false;
+                }
+                    //Search for post with $data as termin_date
+
+                    $postIds = array_column($posts, 'termin_date', 'ID');
+
+                    foreach ($postIds as $key => $value) {
+                        if (date("Y-m-d", strtotime($value)) != $date->format("Y-m-d"))
+                            unset($postIds[$key]);
+                    }
+                    if (!empty($postIds)) {
+
+                        ?>
+                        <div class="dibes-termin-box dibes-termin-filled  dibes-termin-<?php echo $date->format('D'); ?>">
+                            <div class="dibes-termin-date">
+                                <div class="dibes-termin-day">
+                                    <?php echo $date->format('j') . '. '; ?>
+                                </div>
+                            </div>
+                            <div class="dibes-termin-details">
+                                <div class="dibes-termin-details-header">
+                                    <?php
+                                    $timestamp = $date->format(DATE_ATOM);
+                                    echo Shortcodes::getWochentag($timestamp) . ' ' . $date->format('j') . '. ' . Shortcodes::getMonat($timestamp);
+                                    ?>
+                                    <?php
+                                    $first = true;
+                                    foreach ($postIds
+
+                                    as $postId => $termin) {
+                                    $terminPost = get_post($postId);
+                                    if ($first) {
+                                        echo '<br>';
+                                    echo date('H:i', strtotime(get_post_meta($postId, 'termin_date', true))) . ' - ' . date('H:i', strtotime(get_post_meta($postId, 'termin_enddate', true)))
+                                    ?> </div> <?php
+                                $first = false;
+                                   }
+                                   else {
+                                       ?>
+                                       <div class="dibes-termin-details-header">
+                                           <?php echo date('H:i', strtotime(get_post_meta($postId, 'termin_date', true))) . ' - ' . date('H:i', strtotime(get_post_meta($postId, 'termin_enddate', true))) ?>
+                                       </div>
+                                       <?php
+                                   }
+                                    ?>
 
 
+                                <div class="dibes-termin-thumbnail"
+                                     style="background-image: url('<?php echo get_the_post_thumbnail_url($postId) ?>')">
+                                    <div class="dibes-termin-post-details">
+
+                                        <h5>
+                                            <a class="dibes-termin-title"
+                                               href="<?php echo get_post_permalink($postId) ?>">
+                                                <?php echo $terminPost->post_title; ?>
+                                            </a>
+                                        </h5>
+                                        <p>
+                                            <?php echo $terminPost->post_excerpt; ?>
+                                        </p>
+                                        <?php if (time() >= strtotime(get_post_meta($postId, 'termin_date', true)) && time() <= strtotime(get_post_meta($postId, 'termin_enddate', true))) { ?>
+                                            <div class="wp-block-group dibes-meeting-button"
+                                                 onclick="location.href='<?php echo !empty(get_post_meta($postId, "dibes_custom_zoom_link", true)) ? get_post_meta($postId, "dibes_custom_zoom_link", true) : get_option('options_dibes_zoom_link') ?>'">
+                                                🔴 Zur Live Veranstaltung 🔴
+                                            </div>
+                                        <?php } else { ?>
+                                            <div class="wp-block-group dibes-meeting-button"
+                                                 onclick="location.href='<?php echo get_post_permalink($postId) ?>'">
+                                                👉 Mehr zur Veranstaltung 👈
+                                            </div>
+                                        <?php } ?>
+                                    </div>
+                                </div>
+                                <?php
+                                }
+                                ?>
+                            </div>
+                        </div>
+                        <?php
+
+                    } else {
+
+                        ?>
+                        <div class="dibes-termin-box dibes-termin-empty dibes-termin-<?php echo $date->format('D'); ?>">
+                            <div class="dibes-termin-date">
+                                <div class="dibes-termin-day">
+                                    <?php echo $date->format('j') . '. '; ?>
+                                </div>
+                            </div>
+                        </div>
+                        <?php
+
+                    }
+                if ($date->format('D') === 'Sun') {
+                    ?> </div> <?php
+                    $newWeek = true;
+                }
+
+                    if ($date->format('t') === $date->format('d')) {
+                        if (!$newWeek) {
+
+                            $whileDate = $date->format('D');
+                            while ($whileDate != date('D', strtotime('Monday'))) {
+                                ?>
+                                <div class="dibes-termin-spacer dibes-termin-<?php echo $whileDate; ?>"></div>  <?php
+                                $whileDate = date('D', strtotime($whileDate . '+1 days'));
+                            }
+
+                            ?> </div> <?php
+                            ?> </div> <?php
+                        }
+                        ?> </div> <?php
+                        $newMonth = true;
+                        $newWeek = true;
+                    }
+
+                }
+                ?>
+            </div>
+            <?php
 
 
-        foreach ($termine as $termin)
-            {
-                var_dump(get_post_meta($termin->ID, 'termin_date',true));
-            }
 
         return ob_get_clean();
     }
@@ -365,6 +566,47 @@ class Shortcodes
         $termine = get_posts($args);
 
         return ob_get_clean();
+    }
+
+
+     static function getWochentag(string $date): string
+    {
+        $wochentag = array(
+            'Mon' => 'Montag',
+            'Tue' => 'Dienstag',
+            'Wed' => 'Mittwoch',
+            'Thu' => 'Donnerstag',
+            'Fri' => 'Freitag',
+            'Sat' => 'Samstag',
+            'Sun' => 'Sonntag',
+        );
+        return $wochentag[date('D', strtotime($date))];
+    }
+
+    /**
+     * @param string $date
+     * @return string
+     */
+    static function getMonat(string $date): string
+    {
+        $monat = array(
+            'Jan' => 'Januar',
+            'Feb' => 'Februar',
+            'Mar' => 'März',
+            'Apr' => 'April',
+            'May' => 'Mai',
+            'Jun' => 'Juni',
+            'Jul' => 'Juli',
+            'Aug' => 'August',
+            'Sep' => 'September',
+            'Oct' => 'Oktober',
+            'Nov' => 'November',
+            'Dec' => 'Dezember',
+        );
+        if (!empty($date))
+            return $monat[date('M', strtotime($date))];
+        else
+            return '';
     }
 
     static function display_user($user_id, $size)

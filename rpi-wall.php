@@ -696,6 +696,8 @@ class RpiWall
         wp_enqueue_style('rpi-wall-style', plugin_dir_url(__FILE__) . 'assets/css/custom-style.css');
         wp_enqueue_style('rpi-wall-style-modal-norm', plugin_dir_url(__FILE__) . 'assets/css/normalize.min.css');
         wp_enqueue_style('rpi-wall-style-modal-anim', plugin_dir_url(__FILE__) . 'assets/css/animate.min.css');
+        wp_enqueue_style('rpi-wall-style-termin-calender', plugin_dir_url(__FILE__) . 'assets/css/termin-calender.css');
+        wp_enqueue_script('rpi-wall-script-termin-calender', plugin_dir_url(__FILE__) . 'assets/js/termin-calender.js', array('jquery'));
         wp_enqueue_script('rpi-wall-style-modal', plugin_dir_url(__FILE__) . 'assets/js/animatedModal.js', array('jquery'));
         wp_enqueue_script('rpi-wall-script', plugin_dir_url(__FILE__) . 'assets/js/custom-scripts.js', array('jquery'), false, true);
         wp_localize_script('rpi-wall-script', 'wall', array('ajaxurl' => admin_url('admin-ajax.php')));

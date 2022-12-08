@@ -1,0 +1,289 @@
+.dibes-tutorial-link {
+    margin-bottom: 15px !important;
+    text-align: center;
+}
+
+.dibes-filter-container {
+    display: flex;
+}
+
+.dibes-filter-container div {
+    width: 33%;
+    margin: 0 5px;
+}
+
+.dibes-view-select-container {
+    display: flex;
+    align-items: center;
+    margin: auto;
+    width: fit-content;
+}
+
+.dibes-view-select-container label {
+    margin: 0 !important;
+}
+
+.dibes-select-label {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+}
+
+
+.dibes-view-select-input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.dibes-view-select-input:hover + .dibes-view-icon {
+    filter: brightness(.9) contrast(1.2);
+}
+
+.dibes-view-select-input:checked + .dibes-view-icon {
+    background: #ff8103 !important;
+}
+
+.dibes-view-icon {
+    padding: 15px;
+    background-color: var(--ci-group-founded);
+    box-shadow: 0 4px 24px #0000000a;
+    margin: 0 5px;
+    border-radius: 22px;
+    color: white;
+    font-weight: bold;;
+}
+
+.dibes-tutorial-link {
+    text-align: center;
+    margin-top: 15px;
+    width: 100%;
+}
+
+/*Main View*/
+
+.dibes-termin-month {
+    padding: 5px;
+    border-radius: 3px;
+    margin-top: 15px;
+    box-shadow: 0 4px 24px #0000000a;
+}
+
+.dibes-termin-month h4 {
+    text-align: center;
+}
+
+.dibes-termin-week-header {
+    background-color: var(--ci-group-founded);
+    color: white;
+    font-weight: bold;
+    font-size: medium;
+    border-radius: 3px;
+}
+
+.dibes-termin-week-header div {
+    padding: 10px;
+    border-left: 2px var(--ci-button-color) solid;
+    border-right: 2px var(--ci-button-color-hover) solid;
+}
+
+.dibes-termin-week-header .dibes-termin-Sun {
+    border-right: unset;
+}
+
+.dibes-termin-week-header .dibes-termin-Mon {
+    border-left: unset;
+}
+
+.dibes-termin-box {
+    box-shadow: 0 4px 24px #0000000a;
+    padding: 15px 5px;
+    border-radius: 3px;
+    background: #29333c;
+}
+
+.dibes-termin-box .dibes-termin-day{
+    color: white;
+}
+.dibes-termin-filled{
+    background: var(--ci-button-color);
+}
+
+.dibes-termin-filled .dibes-termin-day {
+    font-weight: bold;
+}
+
+.dibes-termin-filled:hover, .dibes-termin-filled:hover dibes-termin-filled:not(div, a, img) {
+    background: var(--ci-button-color-hover) !important;
+    cursor: pointer;
+}
+
+.dibes-termin-week {
+    display: grid;
+    grid-template-areas: 'Mon Tue Wen Thu Fri Sat Sun';
+    grid-template-columns: repeat(7, 1fr);
+    grid-gap: 5px;
+    margin: 5px 0;
+
+}
+
+.dibes-termin-week, .dibes-termin-week-header {
+    display: grid;
+    grid-template-areas: 'Mon Tue Wen Thu Fri Sat Sun';
+    grid-template-columns: repeat(7, 1fr);
+}
+
+
+.dibes-termin-week {
+    text-align: center;
+    min-width: 50px;
+    min-height: 50px;
+}
+
+.dibes-termin-week-header div[class^=dibes-termin-]:after {
+    display: none;
+}
+
+.dibes-termin-week-header div {
+    text-align: center;
+}
+
+@media only screen and (max-width: 600px) {
+
+    .dibes-filter-container {
+        display: unset !important;
+    }
+
+    .dibes-view-select-container {
+        display: unset !important;
+    }
+
+    .dibes-view-select-container label {
+        margin: 15px 0 !important;
+    }
+
+    .dibes-submit-button {
+        margin-top: 20px !important;
+    }
+
+    .dibes-termin-details {
+        left: 10%;
+        right: 10%;
+    }
+
+    .non-mobile span {
+        display: none;
+    }
+
+    .dibes-termin-week-header .dibes-termin-Mon:after {
+        display: unset !important;
+        content: 'Mo';
+    }
+
+    .dibes-termin-week-header .dibes-termin-Tue:after {
+        display: unset !important;
+        content: 'Di'
+    }
+
+    .dibes-termin-week-header .dibes-termin-Wen:after {
+        display: unset !important;
+        content: 'Mi';
+    }
+
+    .dibes-termin-week-header .dibes-termin-Thu:after {
+        display: unset !important;
+        content: 'Do';
+    }
+
+    .dibes-termin-week-header .dibes-termin-Fri:after {
+        display: unset !important;
+        content: 'Fr'
+    }
+
+    .dibes-termin-week-header .dibes-termin-Sat:after {
+        display: unset !important;
+        content: 'Sa'
+    }
+
+    .dibes-termin-week-header .dibes-termin-Sun:after {
+        display: unset !important;
+        content: 'So';
+    }
+}
+
+.dibes-termin-Mon {
+    grid-area: Mon;
+}
+
+.dibes-termin-Tue {
+    grid-area: Tue;
+}
+
+.dibes-termin-Wen {
+    grid-area: Wen;
+}
+
+.dibes-termin-Thu {
+    grid-area: Thu;
+}
+
+.dibes-termin-Fri {
+    grid-area: Fri;
+}
+
+.dibes-termin-Sat {
+    grid-area: Sat;
+}
+
+.dibes-termin-Sun {
+    grid-area: Sun;
+}
+
+.dibes-termin-details {
+    display: none;
+    position: absolute;
+    background: lightgrey;
+    border-radius: 3px;
+    cursor: default;
+    z-index: 100;
+    max-width: 500px;
+}
+
+.dibes-termin-thumbnail {
+    background-size: cover;
+    background-repeat: no-repeat;
+    padding: 20px;
+    background-position: center;
+}
+.dibes-termin-thumbnail div{
+    margin-bottom: 10px;
+}
+
+.dibes-termin-title {
+    font-weight: bold;
+    font-size: large;
+}
+
+.dibes-meeting-button {
+    background: var(--ci-button-color);
+    font-weight: bold;
+    font-size: medium;
+    border-radius: 22px;
+    padding: 5px;
+    margin-top: 10px;
+    color: white;
+    text-align: center;
+}
+
+.dibes-meeting-button:hover {
+    filter: brightness(.9) contrast(1.2);
+    cursor: pointer;
+}
+
+.dibes-termin-focused {
+    display: block !important;
+}
+
+.dibes-termin-focused {
+
+}
