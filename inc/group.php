@@ -994,11 +994,11 @@ class Group extends \stdClass
         switch ($status = $this->get_status()) {
             case'ready':
                 $notice = get_option('options_rpi_wall_ready_card_notice', 'Gruppe gründen: ');
-                $stats = $this->get_likers_amount() . ' Interessierte';
+                $stats = '<br>'.$this->get_likers_amount() . ' Interessierte';
                 break;
             case'pending':
                 $notice = get_option('options_rpi_wall_pending_card_notice', 'Beitrittsphase.');
-                $stats = $this->get_likers_amount() . ' beigetreten, ' . $this->get_members_amount() . ' interessiert';
+                $stats = $this->get_members_amount() . ' sind beigetreten, ' ;
                 break;
             case'founded':
                 $notice = get_option('options_rpi_wall_founded_card_notice');
@@ -1011,8 +1011,12 @@ class Group extends \stdClass
                 $notice = get_option('options_rpi_wall_closed_card_notice', 'PLG beendet');
                 break;
             default:
+	            $i = $this->get_likers_amount();
+                if($i>0) {
+	                $stats = 'Gruppe: ' . $i . ' Interessierte';
+                }
                 $notice = '';
-                $stats = ($i = $this->get_likers_amount()) > 0 ? $i . ' interessiert' : '';
+
         }
 
 
@@ -1031,6 +1035,7 @@ class Group extends \stdClass
             }
         }
 
+        echo '<div class="ct-ghost"></div>';
         echo '<div class="card_plg_info ' . strval($status) . '">';
         echo '<div class="plg-wrapper">';
         echo '<div class="plg plg-' . $status . '">

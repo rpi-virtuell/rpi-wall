@@ -236,6 +236,7 @@ class RpiWall
 
 //        add_action('blocksy:loop:card:start', [$this, 'display_cards_status_triangle']);
         add_action('blocksy:loop:card:start', [$this, 'display_cards_pin_icon']);
+        add_action('blocksy:loop:card:start', [$this, 'display_cards_watch_icon']);
 
         add_action('blocksy:loop:card:end', [$this, 'display_cards_group_info']);
 
@@ -564,10 +565,14 @@ class RpiWall
             echo '<a href="' . get_post_permalink() . '#pin' . '" class="pin-title-icon pin">' . Wall\Shortcodes::$pin_icon . '</a>';
             $group = new Wall\Group(get_the_ID());
             $status = $group->get_status();
-            if ($status) {
+            if ($status || $group->get_likers_amount()>0) {
                 echo '<a href="' . get_post_permalink() . '#group' . '" class="pin-title-icon group">' . Wall\Shortcodes::$group_icon . '</a>';
             }
         }
+    }
+
+    function display_cards_watch_icon(){
+	    Wall\Group::display_watcher_area();
     }
 
     /**

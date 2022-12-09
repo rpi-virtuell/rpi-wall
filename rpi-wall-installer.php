@@ -75,15 +75,33 @@ class RPIWallInstaller
             $role->add_cap('delete_schooltype');
             $role->add_cap('assign_schooltype');
 
-            $role->add_cap('edit_member');
-            $role->add_cap('edit_others_member');
-            $role->add_cap('read_private_member');
-            $role->add_cap('publish_member');
-            $role->add_cap('read_member');
-            $role->add_cap('delete_others_member');
-            $role->add_cap('edit_published_member');
-            $role->add_cap('delete_published_member');
-            $role->add_cap('delete_member');
+			/*
+	        if($roleslug === 'editor'){
+		        $role->remove_cap('edit_member');
+		        $role->remove_cap('edit_members');
+		        $role->remove_cap('edit_others_members');
+		        $role->remove_cap('read_private_members');
+		        $role->remove_cap('publish_members');
+		        $role->remove_cap('read_members');
+		        $role->remove_cap('delete_others_members');
+		        $role->remove_cap('edit_published_members');
+		        $role->remove_cap('delete_published_members');
+		        $role->remove_cap('delete_members');
+	        }
+			*/
+			if($roleslug === 'administrator'){
+
+				$role->add_cap('edit_member');
+				$role->add_cap('edit_members');
+				$role->add_cap('edit_others_members');
+				$role->add_cap('read_private_members');
+				$role->add_cap('publish_members');
+				$role->add_cap('read_members');
+				$role->add_cap('delete_others_members');
+				$role->add_cap('edit_published_members');
+				$role->add_cap('delete_published_members');
+				$role->add_cap('delete_members');
+			}
 
             $role->add_cap('edit_events');
             $role->add_cap('edit_others_events');
@@ -208,17 +226,18 @@ class RPIWallInstaller
             "show_in_nav_menus" => true,
             "delete_with_user" => true,
             "exclude_from_search" => false,
-            'capability_type' => 'member',
+            'capability_type' => ['members','member'],
             'capabilities' => array(
-                'edit_posts' => 'edit_member',
-                'edit_others_posts' => 'edit_others_member',
-                'read_private_posts' => 'read_private_member',
-                'publish_posts' => 'publish_member',
+                'edit_post' => 'edit_member',
+                'edit_posts' => 'edit_members',
+                'edit_others_posts' => 'edit_others_members',
+                'edit_published_posts' => 'edit_published_members',
+                'read_private_posts' => 'read_private_members',
+                'publish_posts' => 'publish_members',
                 'read_post' => 'read_member',
-                'delete_others_posts' => 'delete_others_member',
-                'edit_published_posts' => 'edit_published_member',
-                'delete_published_posts' => 'delete_published_member',
-                'delete_posts' => 'delete_member',
+                'delete_others_posts' => 'delete_others_members',
+                'delete_published_posts' => 'delete_published_members',
+                'delete_posts' => 'delete_members',
             ),
             "map_meta_cap" => true,
             "hierarchical" => false,
@@ -587,21 +606,23 @@ class RPIWallInstaller
             "show_in_nav_menus" => true,
             "query_var" => true,
             "rewrite" => ['slug' => 'profession', 'with_front' => true, 'hierarchical' => true,],
-            "show_admin_column" => false,
+            "show_admin_column" => true,
             "show_in_rest" => true,
             "show_tagcloud" => false,
             "rest_base" => "profession",
             "rest_controller_class" => "WP_REST_Terms_Controller",
             "rest_namespace" => "wp/v2",
-            "show_in_quick_edit" => false,
+            "show_in_quick_edit" => true,
             "sort" => false,
             "show_in_graphql" => false,
+            /*
             "capabilities" => array(
-                'manage_terms' => 'manage_profession',
-                'edit_terms' => 'edit_profession',
-                'delete_terms' => 'delete_profession',
-                'assign_terms' => 'assign_profession'
+                'manage_terms' => 'manage_professions',
+                'edit_terms' => 'edit_professions',
+                'delete_terms' => 'delete_professions',
+                'assign_terms' => 'assign_professions'
             ),
+            */
         ];
         register_taxonomy("profession", ["member"], $args);
         /**
@@ -1587,6 +1608,9 @@ Bitte beachte, dass immer <strong>nur eine</strong> Person den Bogen ausfüllen 
     public function sync_user_member_relation($user_login, $user)
     {
         if (is_a($user, 'WP_User')) {
+			if(in_array($user->user_login, ['wpadmin', 'admin'] )){
+				return;
+			}
             $member = get_posts(array(
                 'post_status' => 'any',
                 'post_type' => 'member',
