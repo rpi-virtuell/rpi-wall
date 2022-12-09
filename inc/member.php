@@ -552,10 +552,7 @@ class Member extends \stdClass
 		        die();
 
 	        }
-
-
-
-	        return false;
+            return false;
         }
     }
 

@@ -99,7 +99,7 @@
     box-shadow: 0 4px 24px #0000000a;
     padding: 15px 5px;
     border-radius: 3px;
-    background: #29333c;
+    background: var(--ci-tab-background-darker);
 }
 
 .dibes-termin-box .dibes-termin-day{
@@ -247,6 +247,14 @@
     cursor: default;
     z-index: 100;
     max-width: 500px;
+    box-shadow: var(--ci-box-shadow);
+}
+
+.dibes-termin-details-header{
+    padding: 15px;
+    font-weight: bold;
+    background-color: var(--ci-basis);
+    color: white;
 }
 
 .dibes-termin-thumbnail {

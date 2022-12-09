@@ -338,7 +338,15 @@ class MemberPage
         ob_start();
         if ($messages) {
             ?>
-            <div id="member-message-button" class="button hidden">Zurück</div>
+            <?php
+            if (false) {
+                ?>
+                <div id="member-mark-all-read-button" class="button"
+                     title="Alle Nachrichten als gelesen markieren"> <?php echo \rpi\Wall\Shortcodes::$mail_read_icon ?></div>
+                <?php
+            }
+            ?>
+            <div id="member-message-button" class="button hidden" style="font-weight: bold">Zurück</div>
             <div class="member-message-grid message-list">
                 <div class="member-message-list">
                     <?php
