@@ -266,7 +266,7 @@ jQuery(document).ready($ => {
                 $('button.facetwp-reset.facetwp-hide-empty').hide();
                 $('.ct-container.rpi-wall-filters summary.button').removeClass('active');
             }
-        },500);
+        },100);
 
     });
 

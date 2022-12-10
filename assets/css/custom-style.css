@@ -996,6 +996,7 @@ article:not(.founded) .like-group-box {
     background: var(--ci-sub-box-font-color);
     padding: 5px 10px 2px;
     border: 1px solid var(--ci-success-color);
+    font-size: 15px;
 }
 
 .rpi-wall-filter  .facetwp-type-radio .facetwp-radio {
