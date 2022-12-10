@@ -67,7 +67,7 @@ class RpiWall
 
 		    }
 		    return $label;
-	    }, 10, 2 );
+	    }, 99, 2 );
 
 	    add_filter( 'facetwp_facet_filter_posts', function( $return, $params ) {
             global $wp_query;
@@ -185,6 +185,18 @@ class RpiWall
             echo '<div class="rpi-wall-paging">';
             //echo facetwp_display('facet','paging');
 		    echo '</div>';
+	    });
+
+        /* is public hint */
+	    add_action('blocksy:comments:title:after', function () {
+            if(is_singular('wall')){
+                if(get_post_meta(get_the_ID(),'public', true)){
+	                echo '<div class="pin_is_public_message">';
+                    echo 'Dieser Pin ist öffentlich und damit auch alle Kommentare';
+	                echo '</div>';
+                }
+            }
+
 	    });
 
         add_filter('acf/load_field/name=matrixid', ['rpi\Wall\Member', 'set_default_matrixId']);
@@ -545,6 +557,10 @@ class RpiWall
         if ('wall' === get_post_type()) {
             $group = new Wall\Group(get_the_ID());
             $classes[] = $group->get_status();
+            if($is_public = get_post_meta(get_the_ID(),'public', true)){
+	            $classes[] = 'is_public_pin';
+            };
+
         }
 
         return $classes;
@@ -568,6 +584,7 @@ class RpiWall
             if ($status || $group->get_likers_amount()>0) {
                 echo '<a href="' . get_post_permalink() . '#group' . '" class="pin-title-icon group">' . Wall\Shortcodes::$group_icon . '</a>';
             }
+
         }
     }
 

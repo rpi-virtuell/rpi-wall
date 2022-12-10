@@ -45,9 +45,8 @@
 .pin-title-icon {
     margin-bottom: unset !important;
 }
-
 .pin-title-icon.pin svg {
-    background: var(--ci-accent-color);
+    background: var(--ci-tab-background-darker);
     fill: black;
     margin-right: 10px;
     border-radius: 0 0 5px 5px;
@@ -57,6 +56,9 @@
     width: 50px;
     height: 40px;
     padding: 7px;
+}
+.entry-card.wall.is_public_pin .pin-title-icon.pin svg{
+    background: var(--ci-accent-color);
 }
 
 .pin-title-icon.group svg {
@@ -71,6 +73,11 @@
     height: 40px;
     padding: 7px;
 
+}
+
+.pin_is_public_message{
+    font-size: x-small;
+    font-weight: lighter;
 }
 
 /*Kommentar Überschrift ausblenden*/
@@ -925,12 +932,22 @@ article:not(.founded) .like-group-box {
     padding: 10px;
     border-right: var(--ci-tab-background-darker) solid 1px;
 }
+.rpi-wall-filters .facetwp-selections ul{
+    display: block;
+    padding: 0;
+    margin-left: auto;
+    margin-right: auto;
+}
+.ct-container.rpi-wall-filters summary.button.active::after{
+    content: 'gesetzt!';
+    margin-left: 10px;
+}
 
 .rpi-wall-filters button, .rpi-wall-paging button {
-    /*color: var(--buttonTextInitialColor);*/
-    /*background-color: var(--buttonInitialColor);*/
+    color: var(--buttonTextInitialColor);
+    background-color: var(--buttonInitialColor);
     border: var(--button-border);
-    box-shadow: 1px 1px 1px 2px #aaa;
+    /*box-shadow: 1px 1px 1px 2px #aaa;*/
     display: var(--display, inline-flex);
     align-items: center;
     justify-content: center;
@@ -940,6 +957,8 @@ article:not(.founded) .like-group-box {
     user-select: none;
     text-align: center;
     border-radius: var(--buttonBorderRadius, 3px);
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .rpi-wall-filters button:hover, .rpi-wall-paging button:hover {
@@ -967,8 +986,23 @@ article:not(.founded) .like-group-box {
     border-color: #2189F2;
     padding: 5px;
     border: 1px solid var(--ci-success-color);
-    background-color: var(--ci-tab-background);
+    background: var(--ci-sub-box-font-color);
 }
+
+.rpi-wall-filter .facetwp-facet input, .rpi-wall-filter .facetwp-facet select {
+    background: var(--ci-sub-box-font-color);
+}
+.rpi-wall-filter  .facetwp-type-radio{
+    background: var(--ci-sub-box-font-color);
+    padding: 5px 10px 2px;
+    border: 1px solid var(--ci-success-color);
+}
+
+.rpi-wall-filter  .facetwp-type-radio .facetwp-radio {
+    margin-right: 10px;
+
+}
+
 
 .rpi-wall-filter .fs-dropdown {
     box-shadow: 2px 2px 5px #777;
@@ -1002,6 +1036,7 @@ article:not(.founded) .like-group-box {
 
 .rpi-wall-filter .facetwp-facet {
     margin-bottom: 5px;
+    display: flex;
 }
 
 .rpi-wall-filter .facetwp-date.facetwp-date-min.ready.fdate-alt-input, .rpi-wall-filter .facetwp-date.facetwp-date-max.ready.fdate-alt-input {

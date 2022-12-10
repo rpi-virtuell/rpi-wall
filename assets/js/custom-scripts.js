@@ -257,6 +257,18 @@ jQuery(document).ready($ => {
         }
     });
 
+    $(document).on('facetwp-loaded', e=>{
+        setTimeout(e=>{
+            if($('.facetwp-selections').html().length>0){
+                $('button.facetwp-reset.facetwp-hide-empty').show();
+                $('.ct-container.rpi-wall-filters summary.button').addClass('active');
+            }else{
+                $('button.facetwp-reset.facetwp-hide-empty').hide();
+                $('.ct-container.rpi-wall-filters summary.button').removeClass('active');
+            }
+        },500);
+
+    });
 
 })
 

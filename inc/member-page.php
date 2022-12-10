@@ -114,7 +114,7 @@ class MemberPage
     {
         $tags = '<div class="member-tags">
             <div class="cats"> 
-                [my_tags content="badge"]
+                <!--[my_tags content="badge"]-->
                 [my_tags content="schooltype"]
                 [my_tags content="profession"]
             </div>

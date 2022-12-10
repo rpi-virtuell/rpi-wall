@@ -173,8 +173,12 @@ class Shortcodes
 
                         </div>
                         <div>
-                            <?php echo facetwp_display( 'selections' ); ?>
-                            <?php echo facetwp_display('facet','reset'); ?>
+                            <?php
+
+                                echo facetwp_display( 'selections' );
+                                echo facetwp_display('facet','reset');
+
+                             ?>
                         </div>
                     </div>
 
@@ -348,7 +352,7 @@ class Shortcodes
                 'order' => 'ASC',
                 ];
         $posts = get_posts($args);
-        
+
         $startDate = date(DATE_ATOM);
 
  ?>
