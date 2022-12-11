@@ -12,6 +12,7 @@ use Aryess\PhpMatrixSdk\MatrixClient;
 use Aryess\PhpMatrixSdk\Room;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\RequestOptions;
 use rpi\Wall;
 
@@ -28,7 +29,6 @@ class Matrix {
 
 
 		$this->token = get_option('options_matrix_bot_token');
-		$this->token = "syt_cnBpLXdhbGwtYm90_meZpGbTJUOxoVTQEkEYL_1LWFkV";
 
 		$this->homeserver = get_option('options_matrix_server_home');
 
@@ -36,7 +36,13 @@ class Matrix {
 		$this->domain = get_option('options_matrix_server_base','rpi-virtuell.de');
 
 
-		$this->client = new MatrixCustomClient('https://'.$this->homeserver, $this->token);
+		//var_dump($this);
+		try {
+			$this->client = new MatrixCustomClient('https://'.$this->homeserver, $this->token);
+		}catch (\Exception $exception ){
+			echo $exception->getMessage();
+		}
+
 	}
 
 	function set_topic( Wall\Group $group, string $topic ){
@@ -116,8 +122,9 @@ class Matrix {
 					$msg = get_option('options_matrix_bot_toolbar_tutorial');
 					$this->send_msg($group,$msg);
 					$this->set_topic($group,$group->url);
-
+					$this->addRoomToSpace($room->room_id);
 				}
+
 
 				return $room->room_id;
 
@@ -168,6 +175,17 @@ class Matrix {
 			);
 
 			return $room->sendStateEvent('im.vector.modular.widgets', $content, $this->stateKey($room_id));
+
+
+	}
+
+	function addRoomToSpace($room_id){
+
+			$content = array(
+				'via'  =>  [$this->domain],
+			);
+			$plg_space_room = get_option('options_matrix_plg_space_room', '!WQMdgHoIuSFUVKVaBB:rpi-virtuell.de');
+			return $this->client->api()->sendStateEvent( $room_id,'m.space.child',$content,$plg_space_room,time());
 
 
 	}

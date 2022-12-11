@@ -754,14 +754,17 @@ class Member extends \stdClass
 	public function setup($user_id)
     {
 
-		if ($user_id > 0 && is_a($this->user, 'WP_User') && intval($this->user->ID) === $user_id) {
+	    /**
+	     * @todo Member werden aus irgendwelchen Gründen dupliziert
+	     */
+		if (false && $user_id > 0 && is_a($this->user, 'WP_User') && intval($this->user->ID) === $user_id) {
 
 			if(in_array($this->user->user_login, ['wpadmin', 'admin'] )){
 				return;
 			}
 
 	        $members = get_posts(array(
-		        'post_status' => 'any',
+		        'post_status' => ['publish','trash'],
 		        'post_type' => 'member',
 		        'author' => $user_id
 	        ));
@@ -770,8 +773,13 @@ class Member extends \stdClass
 				return reset($members);
 
 	        } else {
+		        $members = get_posts(array(
+			        'post_status' => ['publish','trash'],
+			        'post_type' => 'member',
+			        'post_name' => $this->user->user_login
+		        ));
 
-				$member_id = wp_insert_post( array(
+		        $member_id = wp_insert_post( array(
 					'post_title'  => $this->user->user_login,
 			        'post_status' => 'publish',
 			        'post_author' => $user_id,

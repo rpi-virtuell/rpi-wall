@@ -47,7 +47,7 @@ class Group extends \stdClass
 
         $this->group_status = $this->get('rpi_wall_group_status');
         $this->slug = 'dibes_plg_' . $this->ID;
-        $this->title = 'PLG zu ' . $matrixTitle;
+        $this->title = '' . $matrixTitle;
         $this->channel_url = "https://{$this->matrix_server_home}/#/room/#{$this->slug}:rpi-virtuell.de";
         $this->pending_days = get_option('options_rpi_wall_pl_group_pending_days', 7);
         $this->group_member_min = get_option('options_rpi_group_min_required_members', 3);
