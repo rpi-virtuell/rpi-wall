@@ -61,25 +61,34 @@ class Member extends \stdClass
 
         }
 
-        $this->name = $this->user->display_name;
+		if(is_a($this->user,'WP_User')){
+			$this->name = $this->user->display_name;
 
 
 
-        $posts = get_posts(array(
-            'post_status' => 'any',
-            'post_type' => 'member',
-            'author' => $this->ID
-        ));
+			$posts = get_posts(array(
+				'post_status' => 'any',
+				'post_type' => 'member',
+				'author' => $this->ID
+			));
 
 
-        if (count($posts) > 0) {
-            $this->post = reset($posts);
-        } else {
-            $this->post = $this->setup();
-        }
+			if (count($posts) > 0) {
+				if(count ($posts)>1){
+					for($i=0;$i<count ($posts);$i++){
+						if($i>0){
+							wp_delete_post($posts[$i]->ID, true);
+						}
+					}
+				}
+				$this->post = reset($posts);
+			} else {
+				$this->post = $this->setup($this->ID);
+			}
 
-	    $this->url = $this->get_member_profile_permalink();
-	    $this->link = $this->get_link();
+			$this->url = $this->get_member_profile_permalink();
+			$this->link = $this->get_link();
+		}
 
 
     }
@@ -742,19 +751,22 @@ class Member extends \stdClass
 	 * creates a not existing  "member" CPT
 	 * @return array|void|\WP_Post|null
 	 */
-	public function setup()
+	public function setup($user_id)
     {
 
-		if (is_a($this->user, 'WP_User') && $this->user->ID > 0) {
+		if ($user_id > 0 && is_a($this->user, 'WP_User') && intval($this->user->ID) === $user_id) {
+
+			if(in_array($this->user->user_login, ['wpadmin', 'admin'] )){
+				return;
+			}
 
 	        $members = get_posts(array(
 		        'post_status' => 'any',
 		        'post_type' => 'member',
-		        'author' => $this->user->ID
+		        'author' => $user_id
 	        ));
 
 	        if (is_array($members) && count ($members)>0) {
-
 				return reset($members);
 
 	        } else {
@@ -762,7 +774,7 @@ class Member extends \stdClass
 				$member_id = wp_insert_post( array(
 					'post_title'  => $this->user->user_login,
 			        'post_status' => 'publish',
-			        'post_author' => $this->user->ID,
+			        'post_author' => $user_id,
 			        'post_type'   => 'member'
 		        ) );
 

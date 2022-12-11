@@ -22,6 +22,9 @@ class MemberPage
     public function init()
     {
 
+        if(!is_user_logged_in()){
+            wp_redirect(wp_login_url(home_url().$_SERVER['REQUEST_URI']));
+        }
 
         if (is_singular('member')) {
 

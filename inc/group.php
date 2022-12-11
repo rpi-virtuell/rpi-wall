@@ -882,19 +882,35 @@ class Group extends \stdClass
             $out .= '<ul class="rpi-wall-group-' . $type . 's">';
         }
         $zIndex = count($ids);
-        foreach ($ids as $user_id) {
-            $class = '';
-            $member = new Member($user_id);
-            if ($user_id == get_current_user_id()) {
-                $class = ' my_avatar';
-            }
+	    if(true || is_user_logged_in()) { //falls der Datenschützer die User Bilder untersagt, true aus der Bedingung entfernen
+            foreach ($ids as $user_id) {
 
-            $out .= '<li class="group-member' . $class . '" title="' . $member->name . '" style="z-index:' . $zIndex . '">';
-            $out .= '<a href ="' . $member->get_member_profile_permalink() . '">';
-            $out .= get_avatar($user_id, $size);
-            $out .= '</a>';
-            $out .= '</li>';
+		        $class  = '';
+	            if(is_user_logged_in()) {
+		            $member = new Member( $user_id );
+		            if ( $user_id == get_current_user_id() ) {
+			            $class = ' my_avatar';
+		            }
+	            }else{
+		            $member = new \stdClass();
+		            $member->name='Mitglied';
+	            }
+
+		        $out .= '<li class="group-member' . $class . '" title="' . $member->name . '" style="z-index:' . $zIndex . '">';
+                if(is_user_logged_in()){
+	                $out .= '<a href ="' . $member->get_member_profile_permalink() . '">';
+                }
+
+		        $out .= get_avatar( $user_id, $size );
+	            if(is_user_logged_in()) {
+		            $out .= '</a>';
+	            }
+
+		        $out .= '</li>';
+	        }
             $zIndex++;
+        }else{
+		    $out = 'Gruppe: '.$zIndex .' Mitglieder';
         }
         if (!wp_doing_ajax()) {
             $out .= '</ul>';
@@ -905,7 +921,8 @@ class Group extends \stdClass
 
     public function display_group_box($size = 96)
     {
-        ob_start()
+        ob_start();
+        if(is_user_logged_in()){
         ?>
         <div id="like-group-<?php the_ID(); ?>" class="like-group-box">
             <?php $this->display_liker_button() ?>
@@ -913,6 +930,13 @@ class Group extends \stdClass
             <?php echo $this->display_liker($size); ?>
         </div>
         <?php
+        }else{
+            ?>
+            <div>
+                <a href="account-modal" style="display: inline-block; text-decoration: underline;" data-id="account" data-state="out" class="ct-header-account">Melde dich an</a>, um die Mitglieder dieser Gruppe zu sehen.
+            </div>
+            <?php
+        }
         $out = ob_get_clean();
         return $out;
     }

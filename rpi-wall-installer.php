@@ -1616,6 +1616,7 @@ Bitte beachte, dass immer <strong>nur eine</strong> Person den Bogen ausfüllen 
                 'post_type' => 'member',
                 'author' => $user->ID
             ));
+
             if (is_array($member) && !empty(reset($member))) {
                 return;
             } else {
