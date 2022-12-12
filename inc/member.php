@@ -34,7 +34,7 @@ class Member extends \stdClass
                 $this->ID = $user;
             }
 
-            $this->user = get_userdata($this->ID);
+			$this->user = get_userdata($this->ID);
 
             if (!$this->user) {
 
@@ -64,8 +64,6 @@ class Member extends \stdClass
 		if(is_a($this->user,'WP_User')){
 			$this->name = $this->user->display_name;
 
-
-
 			$posts = get_posts(array(
 				'post_status' => 'any',
 				'post_type' => 'member',
@@ -75,6 +73,7 @@ class Member extends \stdClass
 
 			if (count($posts) > 0) {
 				if(count ($posts)>1){
+					//remove member duplicates
 					for($i=0;$i<count ($posts);$i++){
 						if($i>0){
 							wp_delete_post($posts[$i]->ID, true);
@@ -83,11 +82,14 @@ class Member extends \stdClass
 				}
 				$this->post = reset($posts);
 			} else {
+				//create member post
 				$this->post = $this->setup($this->ID);
 			}
+			if($this->post){
+				$this->url = $this->get_member_profile_permalink();
+				$this->link = $this->get_link();
+			}
 
-			$this->url = $this->get_member_profile_permalink();
-			$this->link = $this->get_link();
 		}
 
 
@@ -757,27 +759,21 @@ class Member extends \stdClass
 	    /**
 	     * @todo Member werden aus irgendwelchen Gründen dupliziert
 	     */
-		if (false && $user_id > 0 && is_a($this->user, 'WP_User') && intval($this->user->ID) === $user_id) {
+		if ( $user_id>0 ) {
+			global $wpdb;
 
-			if(in_array($this->user->user_login, ['wpadmin', 'admin'] )){
-				return;
-			}
-
-	        $members = get_posts(array(
-		        'post_status' => ['publish','trash'],
-		        'post_type' => 'member',
-		        'author' => $user_id
-	        ));
-
-	        if (is_array($members) && count ($members)>0) {
+			$members = get_posts(array(
+				'post_status' => ['publish','trash'],
+				'post_type' => 'member',
+				'author__in' => [$user_id]
+			));
+			if(count($members)>0){
 				return reset($members);
+			}
+			if(in_array($this->user->user_login, ['wpadmin', 'admin'] )){
+				return false;
+			} else {
 
-	        } else {
-		        $members = get_posts(array(
-			        'post_status' => ['publish','trash'],
-			        'post_type' => 'member',
-			        'post_name' => $this->user->user_login
-		        ));
 
 		        $member_id = wp_insert_post( array(
 					'post_title'  => $this->user->user_login,

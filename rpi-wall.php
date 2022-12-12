@@ -347,10 +347,10 @@ class RpiWall
 
     }
 
-    public function query_member(&$query)
+    public function query_member(WP_Query &$query)
     {
 
-	    if (is_post_type_archive('member')) {
+	    if (!is_admin() && $query->is_main_query() && $query->is_archive) {
 
 		    $meta_query = array(
 			    'relation' => 'OR',
@@ -367,6 +367,7 @@ class RpiWall
 		    );
             $query->set( 'meta_query',   $meta_query);
 
+		    $query->set( 'post_type',    'member');
 		    $query->set( 'orderby',    'post_title');
 		    $query->set( 'order',      'ASC'       );
 	    }
