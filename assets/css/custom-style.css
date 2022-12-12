@@ -300,6 +300,13 @@ article.founded label[for="tab-group"] {
     grid-gap: 15px;
     grid-template-columns: 50% 50%;
 }
+.member-message-button-bar{
+    width: 50%;
+}
+#member-mark-all-read-button{
+position: absolute;
+
+}
 
 .member-message-list {
     grid-area: list;

@@ -123,7 +123,26 @@ jQuery(document).ready($ => {
                 'filter': filter
             },
             function (response) {
-                rpi_wall_print_content(response, hash)
+
+                rpi_wall_print_content(response, hash);
+
+
+                $('#member-mark-all-read-button').on('click', e => {
+                    $.post(
+                        wall.ajaxurl,
+                        {
+                            'action': 'rpi_ajax_mark_all_messages_read',
+                        },
+                        function (response) {
+
+                            response = JSON.parse(response);
+                            if (response.success) {
+                                location.reload();
+                            }
+                        }
+                    )
+                })
+
                 add_watch_button_click_event();
             }
         )

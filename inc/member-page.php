@@ -318,6 +318,12 @@ class MemberPage
 
         $paged = $_POST['paged'];
 
+        if ($read_messages = get_user_meta($user->ID, 'rpi_read_messages', true)) {
+            $read_messages = unserialize($read_messages);
+        } else {
+            $read_messages = array();
+        }
+
         $args = [
             'post_type' => 'message',
             'posts_per_page' => $this->messages_per_page,
@@ -331,33 +337,29 @@ class MemberPage
                 ]
             ]
         ];
+        if ($_POST['filter'] == 'unread')
+        {
+            $args['post__not_in'] = array_keys($read_messages);
+        }
         $wp_query = new \WP_Query($args);
         $messages = $wp_query->get_posts();
-        if ($read_messages = get_user_meta($user->ID, 'rpi_read_messages', true)) {
-            $read_messages = unserialize($read_messages);
-        } else {
-            $read_messages = array();
-        }
+
         ob_start();
         if ($messages) {
             ?>
-            [link1] [link2] [link3]
-            <?php
-            if (false) {
-                ?>
+            <div class="member-message-button-bar">
+                <a class="button" href="#messages">Alle</a>
+                <a class="button" href="#messages_unread">Ungelesen</a>
                 <div id="member-mark-all-read-button" class="button"
                      title="Alle Nachrichten als gelesen markieren"> <?php echo \rpi\Wall\Shortcodes::$mail_read_icon ?></div>
-                <?php
-            }
-            ?>
+            </div>
             <div id="member-message-button" class="button hidden" style="font-weight: bold">Zurück</div>
             <div class="member-message-grid message-list">
                 <div class="member-message-list">
                     <?php
                     foreach ($messages as $post):
                         setup_postdata($post);
-                        if($_POST['filter'] != 'unread' && !isset($read_messages[$post->ID]))
-                        {
+
                         ?>
                         <div class="message-entry" id="message-<?php echo $post->ID ?>">
                             <div class="entry-title <?php echo $read_messages[$post->ID] ? '' : 'unread' ?>">
@@ -366,7 +368,6 @@ class MemberPage
                             </div>
                         </div>
                             <?php
-                        }
                     endforeach;
                     ?>
                 </div>
