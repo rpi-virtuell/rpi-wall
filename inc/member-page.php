@@ -341,6 +341,7 @@ class MemberPage
         ob_start();
         if ($messages) {
             ?>
+            [link1] [link2] [link3]
             <?php
             if (false) {
                 ?>

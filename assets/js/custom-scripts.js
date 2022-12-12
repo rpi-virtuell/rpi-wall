@@ -109,14 +109,18 @@ jQuery(document).ready($ => {
     function rpi_wall_send_post(hash, paged=1) {
 
         var action = "rpi_tab_" + hash + "_content";
-
+        var filter = 'all';
+        if(location.hash.indexOf('unread')>0 && hash == 'message'){
+            filter = 'unread';
+        }
 
         $.post(
             wall.ajaxurl,
             {
                 'action': action,
                 'user_ID': rpi_wall.user_ID,
-                'paged': paged
+                'paged': paged,
+                'filter': filter
             },
             function (response) {
                 rpi_wall_print_content(response, hash)
@@ -132,8 +136,6 @@ jQuery(document).ready($ => {
     }
 
     function rpi_wall_print_content(response, hash) {
-
-        console.log(hash);
 
         if(!response || response == ''){
             return;
@@ -153,12 +155,21 @@ jQuery(document).ready($ => {
                 //link zerstören
                 const match = href.match(/paged=(\d*)/);
                 const page = match ? match[1] : 1;
+                var filter = '';
+                if(location.hash.indexOf('unread')>0){
+                    filter = 'unread';
+                }
+
                 const data = {
                     'action': action,
+                    'filter':filter,
                     'user_ID': rpi_wall.user_ID,
                     'paged': page
                 };
-                $(elem).attr('href', '#'+hash+'_page' + page);
+                if(filter!=='')
+                    filter = '_'+filter;
+                
+                $(elem).attr('href', '#'+hash+filter+'_page' + page);
                 $(elem).unbind();
 
                 $(elem).on('click', e => {
