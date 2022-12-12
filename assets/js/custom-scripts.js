@@ -109,8 +109,8 @@ jQuery(document).ready($ => {
     function rpi_wall_send_post(hash, paged=1) {
 
         var action = "rpi_tab_" + hash + "_content";
-        var filter = 'all';
-        if(location.hash.indexOf('unread')>0 && hash == 'message'){
+        var filter = '';
+        if(location.hash.indexOf('unread')>0 && hash == 'messages'){
             filter = 'unread';
         }
 
@@ -168,7 +168,7 @@ jQuery(document).ready($ => {
                 };
                 if(filter!=='')
                     filter = '_'+filter;
-                
+
                 $(elem).attr('href', '#'+hash+filter+'_page' + page);
                 $(elem).unbind();
 

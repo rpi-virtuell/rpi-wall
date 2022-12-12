@@ -17,6 +17,9 @@ class RpiWallAjaxHandler
         add_action('wp_ajax_rpi_wall_toggle_watch', [$this, 'ajax_toggle_group_watch']);
         add_action('wp_ajax_nopriv_rpi_wall_toggle_watch', [$this, 'ajax_toggle_group_watch']);
 
+        add_action('wp_ajax_rpi_ajax_mark_all_read_and_display_message', [$this, 'ajax_mark_all_read_and_display_message']);
+        add_action('wp_ajax_nopriv_rpi_ajax_mark_all_read_and_display_message', [$this, 'ajax_mark_all_read_and_display_message']);
+
         add_action('wp_ajax_rpi_mark_and_display_message', [$this, 'ajax_mark_and_display_message']);
         add_action('wp_ajax_nopriv_rpi_mark_and_display_message', [$this, 'ajax_mark_and_display_message']);
 
@@ -129,6 +132,47 @@ class RpiWallAjaxHandler
 		  die();
 
 	}
+
+    public function ajax_mark_all_read_and_display_message(){
+
+		$response = ['success' => false];
+
+	    $member = new Member();
+	    $message = get_post($_POST['message_id']);
+	    $args = [
+		    'post_type' => 'message',
+		    'numberposts' => -1,
+		    'meta_query' => [
+			    [
+				    'key' => 'rpi_wall_message_recipient',
+				    'value' => get_current_user_id(),
+				    'compare' => '=',
+				    'type' => 'NUMERIC'
+			    ]
+		    ]
+	    ];
+	    $wp_query = new \WP_Query($args);
+		$messages = $wp_query->get_posts();
+
+	    $readed = [];
+
+		foreach ($messages as $message){
+			$readed[] =$message->ID;
+		}
+	    update_user_meta($member->ID, 'rpi_read_messages', $readed);
+
+	    $message_count = 0;
+	    $response = [
+		    'success' => true,
+		    'message_id' => $_POST['message_id'],
+		    'title' => $message->post_title,
+		    'content' => $message->post_content,
+		    'message_count' => $message_count
+	    ];
+
+	    echo json_encode($response);
+	    die();
+    }
     public function ajax_mark_and_display_message()
     {
         $response = ['success' => false];
