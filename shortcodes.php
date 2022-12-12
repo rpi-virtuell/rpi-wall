@@ -730,7 +730,16 @@ class Shortcodes
                 <div class="ghost"></div>
                 <div>
                     <?php if (is_user_logged_in() && 'pending' !== $plg->get_status() && $plg->has_member(get_current_user_id())):
-                        ?><a href="<?php echo $plg->get_matrix_link(); ?>"  target="_blank" rel="noopener noreferrer">Matrix Raum</a>
+                     $next_meeting = get_post_meta($plg->ID, 'date_of_meeting', true);
+                     if (!empty($next_meeting) && current_time('timestamp') < strtotime($next_meeting)) { ?>
+                        <p>
+                        Nächster Termin: <?php echo date('D d.n.Y', strtotime($next_meeting)) ?>
+                        um <?php echo date('H:i', strtotime($next_meeting)) ?> Uhr
+                        </p>
+                    <?php } ?>
+
+
+                    <a href="<?php echo $plg->get_matrix_link(); ?>"  target="_blank" rel="noopener noreferrer">Matrix Raum</a>
                     <?php endif; ?>
                 </div>
                 <div>
