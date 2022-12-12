@@ -302,10 +302,14 @@ article.founded label[for="tab-group"] {
 }
 .member-message-button-bar{
     width: 50%;
+    position: relative;
 }
 #member-mark-all-read-button{
 position: absolute;
-
+    right: 0;
+}
+.button.message-button-active{
+    background-color: var(--ci-button-color-hover);
 }
 
 .member-message-list {
@@ -366,6 +370,10 @@ position: absolute;
 }
 
 @media only screen and (max-width: 600px) {
+    .member-message-button-bar{
+        width: unset;
+    }
+
     .member-message-grid {
         display: unset;
     }

@@ -345,14 +345,18 @@ class MemberPage
         $messages = $wp_query->get_posts();
 
         ob_start();
+
+        ?>
+        <div class="member-message-button-bar">
+            <a class="button <?php echo $_POST['filter']!='unread'? 'message-button-active' : '' ?>" href="#messages">Alle</a>
+            <a class="button <?php echo $_POST['filter']=='unread'? 'message-button-active' : '' ?> " href="#messages_unread">Ungelesen</a>
+            <div id="member-mark-all-read-button" class="button"
+                 title="Alle Nachrichten als gelesen markieren"> <?php echo \rpi\Wall\Shortcodes::$mail_read_icon ?></div>
+        </div>
+        <?php
         if ($messages) {
             ?>
-            <div class="member-message-button-bar">
-                <a class="button" href="#messages">Alle</a>
-                <a class="button" href="#messages_unread">Ungelesen</a>
-                <div id="member-mark-all-read-button" class="button"
-                     title="Alle Nachrichten als gelesen markieren"> <?php echo \rpi\Wall\Shortcodes::$mail_read_icon ?></div>
-            </div>
+
             <div id="member-message-button" class="button hidden" style="font-weight: bold">Zurück</div>
             <div class="member-message-grid message-list">
                 <div class="member-message-list">
@@ -379,8 +383,9 @@ class MemberPage
             <?php
         } else {
             ?>
+            <br>
             <div>
-                Du hast noch keine Benachrichtigungen erhalten
+                Du hast noch keine ungelesenen Benachrichtigungen erhalten
             </div>
             <?php
         }
