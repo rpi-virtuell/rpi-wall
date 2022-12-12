@@ -17,8 +17,8 @@ class RpiWallAjaxHandler
         add_action('wp_ajax_rpi_wall_toggle_watch', [$this, 'ajax_toggle_group_watch']);
         add_action('wp_ajax_nopriv_rpi_wall_toggle_watch', [$this, 'ajax_toggle_group_watch']);
 
-        add_action('wp_ajax_rpi_ajax_mark_all_read_and_display_message', [$this, 'ajax_mark_all_read_and_display_message']);
-        add_action('wp_ajax_nopriv_rpi_ajax_mark_all_read_and_display_message', [$this, 'ajax_mark_all_read_and_display_message']);
+        add_action('wp_ajax_rpi_ajax_mark_all_messages_read', [$this, 'ajax_mark_all_messages_read']);
+        add_action('wp_ajax_nopriv_rpi_ajax_mark_all_messages_read', [$this, 'ajax_mark_all_messages_read']);
 
         add_action('wp_ajax_rpi_mark_and_display_message', [$this, 'ajax_mark_and_display_message']);
         add_action('wp_ajax_nopriv_rpi_mark_and_display_message', [$this, 'ajax_mark_and_display_message']);
@@ -133,12 +133,9 @@ class RpiWallAjaxHandler
 
 	}
 
-    public function ajax_mark_all_read_and_display_message(){
+    public function ajax_mark_all_messages_read(){
 
-		$response = ['success' => false];
-
-	    $member = new Member();
-	    $message = get_post($_POST['message_id']);
+		$member = new Member();
 	    $args = [
 		    'post_type' => 'message',
 		    'numberposts' => -1,
@@ -157,20 +154,13 @@ class RpiWallAjaxHandler
 	    $readed = [];
 
 		foreach ($messages as $message){
-			$readed[] =$message->ID;
+			$readed[$message->ID] = true;
 		}
 	    update_user_meta($member->ID, 'rpi_read_messages', $readed);
 
-	    $message_count = 0;
-	    $response = [
-		    'success' => true,
-		    'message_id' => $_POST['message_id'],
-		    'title' => $message->post_title,
-		    'content' => $message->post_content,
-		    'message_count' => $message_count
-	    ];
+	    $response = ['success' => true];
+		echo json_encode($response);
 
-	    echo json_encode($response);
 	    die();
     }
     public function ajax_mark_and_display_message()
