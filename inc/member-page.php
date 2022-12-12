@@ -355,6 +355,8 @@ class MemberPage
                     <?php
                     foreach ($messages as $post):
                         setup_postdata($post);
+                        if($_POST['filter'] != 'unread' && !isset($read_messages[$post->ID]))
+                        {
                         ?>
                         <div class="message-entry" id="message-<?php echo $post->ID ?>">
                             <div class="entry-title <?php echo $read_messages[$post->ID] ? '' : 'unread' ?>">
@@ -362,7 +364,8 @@ class MemberPage
                                 : <?php echo $post->post_title; ?>
                             </div>
                         </div>
-                    <?php
+                            <?php
+                        }
                     endforeach;
                     ?>
                 </div>
