@@ -138,11 +138,11 @@ class RpiWallAjaxHandler
 		$member = new Member();
 	    $args = [
 		    'post_type' => 'message',
-		    'numberposts' => -1,
+		    'posts_per_page' => -1,
 		    'meta_query' => [
 			    [
 				    'key' => 'rpi_wall_message_recipient',
-				    'value' => get_current_user_id(),
+				    'value' => $member->ID,
 				    'compare' => '=',
 				    'type' => 'NUMERIC'
 			    ]
@@ -156,8 +156,8 @@ class RpiWallAjaxHandler
 		foreach ($messages as $message){
 			$readed[$message->ID] = true;
 		}
-	    update_user_meta($member->ID, 'rpi_read_messages', $readed);
-
+		update_user_meta($member->ID, 'rpi_read_messages', serialize($readed));
+	    update_user_meta($member->ID, 'rpi_wall_unread_messages_count', 0);
 	    $response = ['success' => true];
 		echo json_encode($response);
 
