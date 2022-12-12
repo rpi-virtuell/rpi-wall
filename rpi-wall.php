@@ -349,8 +349,14 @@ class RpiWall
 
     public function query_member(WP_Query &$query)
     {
+        if(is_tax('wall-tag') && !isset($_GET['wall-tag'])){
+	        $term = get_queried_object();
 
-	    if (!is_admin() && $query->is_main_query() && $query->is_archive) {
+            wp_redirect(home_url().'/member?wall-tag='.$term->name);
+        }
+
+	    if (!is_admin() && $query->is_main_query() && is_post_type_archive('member')) {
+
 
 		    $meta_query = array(
 			    'relation' => 'OR',

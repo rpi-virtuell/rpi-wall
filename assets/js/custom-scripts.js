@@ -17,7 +17,7 @@ jQuery(document).ready($ => {
                         const data = JSON.parse(response);
                         if (data.success) {
                             if (data.is_member) {
-                                jQuery('#like-group-' + id + ' .rpi-wall-like-button').html(wallIcons.group);
+                                jQuery('#like-group-' + id + ' .rpi-wall-like-button').html(wallIcons.group_sub);
                             } else {
                                 if (data.is_liker) {
                                     jQuery('#like-group-' + id + ' .rpi-wall-like-button').html(wallIcons.group_sub);

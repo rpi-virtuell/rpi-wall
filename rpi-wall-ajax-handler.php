@@ -55,24 +55,37 @@ class RpiWallAjaxHandler
     public function ajax_toggle_group_like()
     {
         $response = ['success' => false];
+
         if (isset($_POST['group_id']) && is_user_logged_in()) {
-            $group = new Group($_POST['group_id']);
+			$group = new Group($_POST['group_id']);
             if ($group && $group->is_not_founded()) {
 
                 $member = new Member();
-                if ($member->is_in_group($group->ID)) {
-                    echo json_encode($response);
-                    die();
-                }
+
+	            $is_member= false;
 
                 if ($group->is_pending()) {
-                    $member->join_group($group->ID);
-                    $is_member = $member->is_in_group($group->ID);
-                    $amount = $group->get_members_amount();
-                    $is_liker = true;
+
+					if($is_member = $member->is_in_group($group->ID)){
+						$member->leave_group($group->ID);
+						$is_liker = false;
+						$is_member = false;
+					}else{
+						$member->join_group($group->ID);
+						$is_liker = true;
+						$is_member = true;
+					}
+	                $amount = $group->get_members_amount();
+
                 } else {
 
-                    $action = $member->toggle_like_group($group->ID);
+	                if ($member->is_in_group($group->ID)) {
+		                echo json_encode($response);
+		                die();
+	                }
+
+
+	                $action = $member->toggle_like_group($group->ID);
                     if ($action == 'like') {
                         new Message($group, 'liked');
                     }

@@ -842,7 +842,7 @@ class Group extends \stdClass
             <?php if (is_user_logged_in() && $this->is_not_founded()  ): ?>
                 <div class="like-btn-wrapper <?php echo $this->get_status(); ?>">
                     <button class="rpi-wall-like-button" id="btn-like-group-<?php the_ID(); ?>">
-                        <?php echo (in_array(get_current_user_id(), $this->get_likers_Ids())) ? Shortcodes::$group_sub_icon : Shortcodes::$group_add_icon; ?>
+                        <?php echo (in_array(get_current_user_id(), $this->get_likers_Ids())||in_array(get_current_user_id(), $this->get_memberIds())) ? Shortcodes::$group_sub_icon : Shortcodes::$group_add_icon; ?>
                         <span class="rpi-wall-counter"><?php echo $amount; ?></span>
                     </button>
                 </div>
