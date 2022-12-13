@@ -48,6 +48,8 @@ class Shortcodes
         add_shortcode('wall_termine', array($this, 'display_termine'));
         add_shortcode('wall_termine_widget', array($this, 'display_termine_widget'));
 
+        add_shortcode('wall_termine_join_button', array($this, 'display_termine_join_button'));
+
         add_action('wp_head', array($this, 'init'));
 
     }
@@ -489,17 +491,14 @@ class Shortcodes
                                     <div class="dibes-termin-post-details">
 
                                         <h5>
-                                            <a class="dibes-termin-title"
-                                               href="<?php echo get_post_permalink($postId) ?>">
-                                                <?php echo $terminPost->post_title; ?>
-                                            </a>
+                                             <?php echo $terminPost->post_title; ?>
                                         </h5>
                                         <p>
                                             <?php echo $terminPost->post_excerpt; ?>
                                         </p>
                                         <?php if (time() >= strtotime(get_post_meta($postId, 'termin_date', true)) && time() <= strtotime(get_post_meta($postId, 'termin_enddate', true))) { ?>
                                             <div class="wp-block-group dibes-meeting-button"
-                                                 onclick="location.href='<?php echo !empty(get_option("option_online_meeting_link")) ? get_post_meta($postId, "dibes_custom_zoom_link", true) : get_option('options_dibes_zoom_link') ?>'">
+                                                 onclick="location.href='<?php echo !empty(get_option("options_online_meeting_link")) ? get_post_meta($postId, "dibes_custom_zoom_link", true) : get_option('options_dibes_zoom_link') ?>'">
                                                 🔴 Zur Live Veranstaltung 🔴
                                             </div>
                                         <?php } else { ?>
@@ -579,15 +578,26 @@ class Shortcodes
     }
 
     public function display_termine_widget($atts){
-        ob_start();
-        $args= [
-                'post_status' => 'any',
-                'post_type' =>  'termine',
-                'numberposts' => -1,
-                ];
-        $termine = get_posts($args);
+        //TODO: ADD termine Widget
+    }
 
+    public function display_termine_join_button($atts){
+
+        ob_start();
+        if (false){
+
+        ?>
+        <div id="termine-join-button" class="button">
+        Zum Treffen
+        </div>
+        <?php
+        }else{
+            ?>
+            <a class="button" href="<?php echo get_option("options_online_meeting_link") ?>"> Zum Treffen</a>
+            <?php
+        }
         return ob_get_clean();
+
     }
 
 

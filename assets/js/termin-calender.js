@@ -14,5 +14,20 @@ jQuery(document).ready($ => {
         });
     })
 
+    $('#termine-join-button').on('click', e => {
+        $.post(
+            wall.ajaxurl,
+            {
+                'action': 'rpi_ajax_termin_log_participant_and_redirect',
+            },
+            function (response) {
+
+                response = JSON.parse(response);
+                if (response.success) {
+                    location.href = response.redirect_link;
+                }
+            }
+        )
+    })
 
 })

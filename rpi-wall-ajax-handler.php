@@ -23,6 +23,9 @@ class RpiWallAjaxHandler
         add_action('wp_ajax_rpi_mark_and_display_message', [$this, 'ajax_mark_and_display_message']);
         add_action('wp_ajax_nopriv_rpi_mark_and_display_message', [$this, 'ajax_mark_and_display_message']);
 
+        add_action('wp_ajax_rpi_ajax_termin_log_participant_and_redirect', [$this, 'ajax_termin_log_participant_and_redirect']);
+        add_action('wp_ajax_nopriv_rpi_ajax_termin_log_participant_and_redirect', [$this, 'ajax_termin_log_participant_and_redirect']);
+
         add_action('wp_ajax_rpi_tab_bio_content', [$this, 'ajax_rpi_tab_bio_content']);
         add_action('wp_ajax_nopriv_rpi_tab_bio_content', [$this, 'ajax_rpi_tab_bio_content']);
 
@@ -202,6 +205,17 @@ class RpiWallAjaxHandler
                 'message_count' => $message_count
             ];
         }
+        echo json_encode($response);
+        die();
+
+    }
+
+    public function ajax_termin_log_participant_and_redirect(){
+        $response = ['success' => false];
+        $response['redirect_link'] = get_option("options_online_meeting_link");
+
+        file_put_contents(date('Y_m_d').'_meeting_attendance',$_SERVER['REMOTE_ADDR'].'_'.wp_get_current_user()->display_name);
+
         echo json_encode($response);
         die();
 
