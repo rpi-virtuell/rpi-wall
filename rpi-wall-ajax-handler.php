@@ -214,7 +214,17 @@ class RpiWallAjaxHandler
         $response = ['success' => false];
         $response['redirect_link'] = get_option("options_online_meeting_link");
 
-        file_put_contents(date('Y_m_d').'_meeting_attendance',$_SERVER['REMOTE_ADDR'].'_'.wp_get_current_user()->display_name);
+        if (is_user_logged_in()) {
+            $content = time() . ' ' . $_SERVER['REMOTE_ADDR'] . ' ' . wp_get_current_user()->ID . "\n";
+        } else {
+            $content = time() . ' ' . $_SERVER['REMOTE_ADDR'] . ' ' . 'UNKNOWN_USER' . "\n";
+        }
+
+        if (!file_exists(WP_CONTENT_DIR . '/uploads/meetings/')) {
+            mkdir(WP_CONTENT_DIR . '/uploads/meetings/');
+        }
+        file_put_contents(WP_CONTENT_DIR . '/uploads/meetings/' . date('Y_m_d') . '_meeting_attendance.log', $content, FILE_APPEND);
+        $response['success'] = true;
 
         echo json_encode($response);
         die();

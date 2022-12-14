@@ -514,10 +514,10 @@ class Shortcodes
                                             if (is_a($post_term,'WP_Term'))
                                                 {
                                             ?>
-                                            <div class="wp-block-group dibes-meeting-button"
-                                                 onclick="location.href='<?php echo $term_pages[$post_term->term_id] ?>'">
+                                            <a class="wp-block-group dibes-meeting-button"
+                                                 href="<?php echo $term_pages[$post_term->term_id] ?>"  target="_blank">
                                                 👉 Mehr zur Veranstaltung 👈
-                                            </div>
+                                            </a>
                                         <?php
                                                 }
 
@@ -584,18 +584,11 @@ class Shortcodes
     public function display_termine_join_button($atts){
 
         ob_start();
-        if (false){
-
         ?>
         <div id="termine-join-button" class="button">
         Zum Treffen
         </div>
         <?php
-        }else{
-            ?>
-            <a class="button" href="<?php echo get_option("options_online_meeting_link") ?>"> Zum Treffen</a>
-            <?php
-        }
         return ob_get_clean();
 
     }
