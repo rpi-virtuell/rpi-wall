@@ -54,8 +54,9 @@ class RpiWall
 
         add_action('wp_enqueue_scripts', [$this, 'custom_style_and_scripts']);
 
-        add_action('pre_get_posts', [$this, 'facetwp_injection']);
+        add_action('facetwp_query_args', [$this, 'facetwp_injection'], 10, 2);
         //add_action('pre_get_posts', [$this, 'query_tags']);
+
         add_action('pre_get_posts', [$this, 'query_member']);
 
         /**** beobachte beiträge filtern ****/
@@ -180,11 +181,14 @@ class RpiWall
 
         });
 
-        /* pager für fcetwp kolliedirt miot blocksy pager */
+        /* facetwp paging needs to disable blocksy pager!!! */
 	    add_action('blocksy:loop:after', function () {
             echo '<div class="rpi-wall-paging">';
-            //echo facetwp_display('facet','paging');
-		    echo '</div>';
+            //count pin items
+		    echo facetwp_display('facet','pagecount');
+		    //enable pager
+            echo facetwp_display('facet','paging');
+            echo '</div>';
 	    });
 
         /* is public hint */
@@ -309,7 +313,7 @@ class RpiWall
 
         }, 10, 1);
 
-        $this->installer = new Wall\RPIWallInstaller();
+	    $this->installer = new Wall\RPIWallInstaller();
 
         add_action('init', function (){
 	        if(get_current_user_id()==2 && is_singular('wall')){
@@ -328,12 +332,24 @@ class RpiWall
         }
     }
 
-    public function facetwp_injection(WP_Query &$query){
+	/**
+     * Legt die Anzahl der Pinwand Posts fest
+	 * @param $query_args
+	 * @param $class
+	 *
+	 * @return mixed
+	 */
+    public function facetwp_injection($query_args, $class){
 
-        if($query->is_post_type_archive('wall')){
-	       // $query->set('post_type', ['wall','member']);
+        if('wall'=== $query_args['post_type']){
+	        $blocksy = get_option('theme_mods_blocksy');
+	        if($blocksy){
+		        $posts_per_page = $blocksy['wall_archive_archive_per_page'];
+		        $query_args['posts_per_page'] = $posts_per_page;
+	        }
         }
 
+        return $query_args;
     }
 
     public function query_tags(&$query)

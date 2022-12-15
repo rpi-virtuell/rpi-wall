@@ -296,6 +296,12 @@ jQuery(document).ready($ => {
                 $('button.facetwp-reset.facetwp-hide-empty').hide();
                 $('.ct-container.rpi-wall-filters summary.button').removeClass('active');
             }
+
+            //remove load more button if last page has loaded
+            if(FWP.settings.pager.page  == FWP.settings.pager.total_pages ){
+                $('.facetwp-facet-paging').remove();
+            }
+
         },100);
 
     });
