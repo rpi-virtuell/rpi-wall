@@ -583,8 +583,11 @@ article.entry-card.type-wall .plg-wrapper {
 .group-post .entry-meta svg {
     max-width: 18px;
     height: 15px;
-
 }
+.group-post .next-meeting hr{
+    background-color: #ddd;
+}
+
 
 .group-post-wrapper .content {
     padding-bottom: 20px;
