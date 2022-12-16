@@ -1072,6 +1072,10 @@ article:not(.founded) .like-group-box {
     padding-top: 20px;
 }
 
+.facetwp-facet.facetwp-facet-pagecount.facetwp-type-pager {
+    color: var(--ci-tutorial-notification);
+}
+
 @media only screen and (max-width: 600px) {
 
     .rpi-wall-filter.grid {
