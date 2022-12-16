@@ -289,6 +289,13 @@ jQuery(document).ready($ => {
 
     $(document).on('facetwp-loaded', e=>{
         setTimeout(e=>{
+            //remove load more button if last page has loaded
+            if(FWP.settings.pager.page  == FWP.settings.pager.total_pages ){
+                $('.facetwp-facet-paging').hide();
+            }else{
+                $('.facetwp-facet-paging').show();
+            }
+
             if($('.facetwp-selections').html().length>0){
                 $('button.facetwp-reset.facetwp-hide-empty').show();
                 $('.ct-container.rpi-wall-filters summary.button').addClass('active');
@@ -297,10 +304,7 @@ jQuery(document).ready($ => {
                 $('.ct-container.rpi-wall-filters summary.button').removeClass('active');
             }
 
-            //remove load more button if last page has loaded
-            if(FWP.settings.pager.page  == FWP.settings.pager.total_pages ){
-                $('.facetwp-facet-paging').remove();
-            }
+
 
         },100);
 
