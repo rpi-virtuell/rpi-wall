@@ -511,16 +511,20 @@ class Shortcodes
                                                 }
                                             $post_term = wp_get_post_terms($postId,'termin_event');
                                             $post_term = reset($post_term);
-                                            if (is_a($post_term,'WP_Term'))
-                                                {
                                             ?>
                                             <a class="wp-block-group dibes-meeting-button"
-                                                 href="<?php echo $term_pages[$post_term->term_id] ?>"  target="_blank">
+                                                 href="
+                                                 <?php
+                                                  if (is_a($post_term,'WP_Term')){
+                                                      echo $term_pages[$post_term->term_id];
+                                                  }
+                                                  else{
+                                                      echo  get_permalink($postId);
+                                                  }
+                                                  ?>"  target="_blank">
                                                 👉 Mehr zur Veranstaltung 👈
                                             </a>
                                         <?php
-                                                }
-
                                         } ?>
                                     </div>
                                 </div>

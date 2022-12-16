@@ -38,6 +38,7 @@ require_once("inc/toolbar.php");
 
 use rpi\Wall;
 use rpi\Wall\Message;
+use rpi\Wall\Shortcodes;
 
 
 class RpiWall
@@ -93,6 +94,24 @@ class RpiWall
 
 	    add_filter('body_class', [$this, 'add_group_status_class']);
         add_action('post_class', [$this, 'add_group_status_class']);
+
+
+        add_action('blocksy:hero:title:before' ,function() {
+           if (get_post_type() === 'termin'){
+               ?>
+               <div class="termin-date">
+
+                   <?php
+                   $timestamp = date(DATE_ATOM, strtotime(get_post_meta(get_the_ID(), 'termin_date', true)));
+                   echo Shortcodes::getWochentag($timestamp) . ' ' . date('j',strtotime(get_post_meta(get_the_ID(), 'termin_date', true))) . '. ' . Shortcodes::getMonat($timestamp);
+                   echo "<br>";
+                   echo date('H:i', strtotime(get_post_meta(get_the_ID(), 'termin_date', true))) . ' - ' . date('H:i', strtotime(get_post_meta(get_the_ID(), 'termin_enddate', true)))
+
+                   ?>
+               </div>
+               <?php
+           }
+    });
 
         add_action('blocksy:content:top', function () {
             if ((is_post_type_archive('wall') || is_tax() && current_user_can('publish_walls'))) {

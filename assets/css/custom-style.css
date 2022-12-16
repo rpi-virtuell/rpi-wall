@@ -1067,6 +1067,15 @@ article:not(.founded) .like-group-box {
     display: none;
 }
 
+.termin-date {
+    background-color: var(--ci-basis);
+    color: var(--ci-sub-box-font-color);
+    padding: 40px;
+    margin: -40px -40px 0;
+    font-size: 28px;
+    font-weight: bold;
+    border: 2px solid;
+}
 .rpi-wall-paging {
     text-align: center;
     padding-top: 20px;
