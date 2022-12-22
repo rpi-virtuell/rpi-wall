@@ -515,7 +515,7 @@ class Member extends \stdClass
      *
      * @return bool|void
      */
-    public function init_handle_request()
+    static function init_handle_request()
     {
 
         if (isset($_REQUEST['action']) && isset($_REQUEST['hash']) && isset($_REQUEST['new_group_member'])) {
@@ -572,7 +572,7 @@ class Member extends \stdClass
      *
      * @return bool|void
      */
-    public function init_cronjob()
+    static function init_cronjob()
     {
 
 	    $daySeconds = 86400;
