@@ -204,6 +204,13 @@ jQuery(document).ready($ => {
         })
     }
 
+/*'var src = jQuery(".ct-button.message-bell img").attr("src"); ' .
+                 'if(mc>0) ' .
+                 '  src = src.replace("bell.png", "bell_red.png");' .
+                 'else ' .
+                 '  src = src.replace("bell_red.png", "bell.png");' .
+                 'jQuery(".ct-button.message-bell img").attr("src", src);' .
+                 */
 
     function mark_and_display_message() {
 
@@ -231,9 +238,12 @@ jQuery(document).ready($ => {
                                 if (data.message_count !== "0")
                                 {
                                     $('#message-count').html(data.message_count);
+                                    $(".ct-button.message-bell img").attr("src",rpi_wall_bell_red);
+
                                 }else
                                 {
                                     $('#message-count').html("");
+                                    $(".ct-button.message-bell img").attr("src",rpi_wall_bell);
                                 }
                             }
                         }

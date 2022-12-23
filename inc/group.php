@@ -303,7 +303,7 @@ class Group extends \stdClass
 
         if ($this->group_status = 'pending') {
 
-            return $this->get_countdown(strval($this->get('rpi_wall_group_status_timestamp')));
+            return $this->get_countdown(intval($this->get('rpi_wall_group_status_timestamp')));
         }
 
         return '';

@@ -7,15 +7,13 @@
  * registers the activation and deactivation functions, and defines a function
  * that starts the plugin.
  *
- * @link              https://github.com/johappel
- * @since             1.0.0
  * @package           Rpi_Wall
  *
  * @wordpress-plugin
  * Plugin Name:       rpi Pinnwand
  * Plugin URI:        https://github.com/rpi-virtuell/rpi-wall/
  * Description:       Wordpress Pinnwand Plugin entwickelt für das Projekt DiBeS
- * Version:           1.0.0
+ * Version:           1.1.0
  * Author:            Joachim Happel
  * Author URI:        https://github.com/johappel
  * License:           GPL-2.0+
@@ -795,7 +793,7 @@ class RpiWall
         if (is_user_logged_in()) {
             $member = new Wall\Member();
             $message_count = $member->get_unread_messages_count();
-
+/*
             echo '<script>' .
                  'var mc='.$message_count.'; ' .
                  'var src = jQuery(".ct-button.message-bell img").attr("src"); ' .
@@ -805,8 +803,21 @@ class RpiWall
                  '  src = src.replace("bell_red.png", "bell.png");' .
                  'jQuery(".ct-button.message-bell img").attr("src", src);' .
                  '</script>';
+*/
 
-
+	        ?>
+            <script>
+                var rpi_wall_bell = '<?php echo plugin_dir_url(__FILE__).'/assets/img/bell.png' ?>';
+                var rpi_wall_bell_red = '<?php echo plugin_dir_url(__FILE__).'/assets/img/bell_red.png' ?>';
+                var rpi_wall_message_btn = jQuery(".ct-button.message-bell");
+                var rpi_wall_message_count= <?php echo $message_count; ?>;
+                if(rpi_wall_message_count>0){
+                    rpi_wall_message_btn.html('<div><img src="'+rpi_wall_bell_red+'"></div><div id="message-count">'+rpi_wall_message_count+'</div>');
+                }else{
+                    rpi_wall_message_btn.html('<div><img src="'+rpi_wall_bell+'"></div><div id="message-count"></div>');
+                }
+            </script>
+            <?php
 
 
             if ($message_count == "0") {
