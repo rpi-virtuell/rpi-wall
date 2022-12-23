@@ -12,8 +12,8 @@
  * @wordpress-plugin
  * Plugin Name:       rpi Pinnwand
  * Plugin URI:        https://github.com/rpi-virtuell/rpi-wall/
- * Description:       Wordpress Pinnwand Plugin entwickelt für das Projekt DiBeS
- * Version:           1.1.0
+ * Description:       Wordpress Pinnwand PLG Plugin entwickelt für das Projekt Schule Evangelisch Digital des Comenius-Institutes
+ * Version:           1.1.1
  * Author:            Joachim Happel
  * Author URI:        https://github.com/johappel
  * License:           GPL-2.0+
