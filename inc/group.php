@@ -46,7 +46,7 @@ class Group extends \stdClass
         $matrixTitle = substr(preg_replace('/[^0-9a-zA-ZüäößÜÄÖ -]*/i', '', $this->post->post_title), 0, 40);
 
         $this->group_status = $this->get('rpi_wall_group_status');
-        $this->slug = 'dibes_plg_' . $this->ID;
+        $this->slug = $this->get_matrix_channel(true);
         $this->title = '' . $matrixTitle;
         $this->channel_url = "https://{$this->matrix_server_home}/#/room/#{$this->slug}:rpi-virtuell.de";
         $this->pending_days = get_option('options_rpi_wall_pl_group_pending_days', 7);
@@ -317,14 +317,14 @@ class Group extends \stdClass
      */
     public function get_matrix_link(string $context = 'html')
     {
+
         switch ($context) {
-            case '___html':
-                return '<a href="' . $this->channel_url . '">#' . $this->slug . ':rpi-virtuell.de</a>';
-                break;
             case 'matrix':
                 return "#{$this->slug}:rpi-virtuell.de";
                 break;
             case 'html':
+	            return KONTO_SERVER.'?action=mredirect&url='.$this->channel_url;
+	            break;
             case 'email':
                 return $this->channel_url;
                 break;
@@ -617,9 +617,13 @@ class Group extends \stdClass
         return $this->get('rpi_wall_group_room_id');
     }
 
-    protected function get_matrix_channel()
+    protected function get_matrix_channel($local_slug = false)
     {
-        return $this->get('rpi_wall_group_channel');
+        $ch  = $this->get('rpi_wall_group_channel');
+        if($local_slug){
+	        $ch = substr($ch, 1, strpos($ch, ':')-1);
+        }
+        return $ch;
     }
 
     protected function get_joined_member_matrixId($member)

@@ -13,7 +13,7 @@
  * Plugin Name:       rpi Pinnwand
  * Plugin URI:        https://github.com/rpi-virtuell/rpi-wall/
  * Description:       Wordpress Pinnwand PLG Plugin entwickelt für das Projekt Schule Evangelisch Digital des Comenius-Institutes
- * Version:           1.1.1
+ * Version:           1.1.2
  * Author:            Joachim Happel
  * Author URI:        https://github.com/johappel
  * License:           GPL-2.0+
@@ -33,6 +33,16 @@ require_once("inc/message.php");
 require_once("inc/protocol.php");
 require_once("inc/matrix.php");
 require_once("inc/toolbar.php");
+
+if (!defined('KONTO_SERVER')) {
+	if (getenv('KONTO_SERVER'))
+		// env var is set in apache2.conf
+		define('KONTO_SERVER', getenv('KONTO_SERVER'));
+	else
+		// .htaccess Eintrag fehlt: SetEnv KONTO_SERVER "https://my-wordpress-website.com"
+		wp_die('Environmental Var KONTO_SERVER is not defined');
+}
+
 
 use rpi\Wall;
 use rpi\Wall\Message;

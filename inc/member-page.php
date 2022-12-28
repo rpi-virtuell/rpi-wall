@@ -7,6 +7,7 @@ class MemberPage
     public \rpi\Wall\Member $member;
     public $is_member_page = false;
     public $posts_per_page = 6;
+    public $matrix_home = 'matrix.rpi-virtuell.de';
 
 
     public function __construct()
@@ -61,17 +62,16 @@ class MemberPage
 
             $matrix_id = get_field('matrixid', 'user_' . $this->member->ID);
             if ($matrix_id) {
-                $base_rpi = 'https://matrix.rpi-virtuell.de/#/user/';
+                $base_rpi = 'https://'.$this->matrix_home.'/#/user/';
                 $base_app = 'https://matrix.to/#/';
                 ?>
                 <details class="user-matrixId" style="margin-left: 100px;margin-top: -10px;">
                     <summary style="cursor:pointer"><strong><?php echo \rpi\Wall\Shortcodes::$element_icon ?> Kontakt
                             via Matrix: <?php echo $matrix_id; ?></strong></summary>
                     <br>
-                    <a class="button button-primary" href="<?php echo $base_rpi . $matrix_id; ?>" target="_blank">im
+                    <a class="button button-primary" href="<?php echo KONTO_SERVER ?>?action=mredirect&url=<?php echo $base_rpi.$matrix_id; ?>" target="_blank">im
                         Browser matrix.rpi-virtuell.de</a>
-                    <a class="button button-secondary" href="<?php echo $base_app . $matrix_id; ?>" target="_blank">über
-                        die Element App</a>
+                    <a class="button button-secondary" href="<?php echo $base_app . $matrix_id; ?>" target="_blank">über die Element App</a>
 
                     <br>
                     <br>

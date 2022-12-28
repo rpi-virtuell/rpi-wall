@@ -61,6 +61,7 @@ class Matrix {
 		$room_id = $this->getRoomId($group);
 		$room = new Room($this->client,$room_id);
 		$room->sendHtml('<strong>'.$msg->subject.'</strong><br>'.$msg->body);
+
 	}
 
 	/**
@@ -91,24 +92,49 @@ class Matrix {
 	function create_Room( Wall\Group $group){
 
 		if(!empty($room_id = $group->get_matrix_room_id())){
-			return $room_id;
+
+
+			try{
+
+				$feedback = $this->client->api()->joinRoom($room_id);
+				return $room_id;
+
+			}catch (\Exception $e){
+				if(404 === $e->getCode()){
+
+					## Der Raum wurde offenbar gelöscht
+					## Ersatzslug wählen anlegen
+					$str = $this->randomString();
+
+					$group->slug = str_replace('plg',$str,$group->slug);
+
+				}
+			}
 		}
 
+
 		$room_alias = '#'.$group->slug.':rpi-virtuell.de';
+
+
 		try {
 
 			$room_id = $this->client->api()->getRoomId($room_alias);
 
 		}catch (\Exception $e ){
 
+
 			$room_id = ($e->getCode());
 
 		}
+
+
+
 		if(is_int($room_id) && $room_id === 404) {
 
 			try {
 
 				$room = (object) $this->client->api()->createRoom( $group->slug, $group->title, true );
+
 
 				if ( $room && isset( $room->room_id ) ) {
 
@@ -143,7 +169,7 @@ class Matrix {
 
 	function getRoomId(Group $group){
 
-		$room_id = get_post_meta($this->ID, 'rpi_wall_group_room_id', true);
+		$room_id = get_post_meta($group->ID, 'rpi_wall_group_room_id', true);
 		if(!$room_id){
 			$room_alias = '#'.$group->slug.':rpi-virtuell.de';
 			try {
@@ -216,7 +242,7 @@ class Matrix {
 
 	function tests(int $group_id=0){
 
-		if($group_id>0 && get_current_user_id() == 2 && true){
+		if(false && $group_id>0 && get_current_user_id() == 2){
 
 
 			$msg_obj =new \stdClass();
@@ -224,58 +250,70 @@ class Matrix {
 			$msg_obj->body = 'Du kannst die eingebundene Toolbar direkt aus diesem Chatfenster nutzen: Klicke in der oberen rechten Ecke auf das Infosymbol <strong>(i)</strong>  und anchließend weiter unten auf "Toolbar", um diese dauerhaft anzuzeigen: <a href="https://dev-dibes.rpi-virtuell.de/wp-content/uploads/2022/09/toolbar.png"></a>' ;
 
 
+						$group = new \rpi\Wall\Group($group_id);
+
+						$roomid = $this->create_Room($group);
+
+						if($roomid instanceof \WP_Error){
+							echo $roomid->get_error_message();
+						}else{
+							echo 'Erfolg. Matrix Raum Id: '.$roomid;
+						}
 
 
 
-			/*
-				$check = $this->create_Room($group);
-
-				if($check instanceof \WP_Error){
-					echo $check->get_error_message();
-				}else{
-					echo 'Erfolg. Matrix Raum Id: '.$check;
-				}
-
-				$widget_ID = $this -> addToolbar($group);
-
-
-				$this->send_msg_obj($group,$msg_obj);
-
-				$this->set_topic($group,$group->url);
+						$widget_ID = $this -> addToolbar($group);
 
 
 
-				$msg = str_replace('%postlink%',get_permalink($group_id).'#group', get_option('options_matrix_bot_welcome_message'));
-				$this->send_msg($group,$msg);
-				$msg = get_option('options_matrix_bot_toolbar_tutorial');
-				$this->send_msg($group,$msg);
+
+						$ret = $this->send_msg_obj($group,$msg_obj);
+
+						$this->set_topic($group,$group->url);
 
 
-				$user = wp_get_current_user();
-				$to = $user->user_email;
-				$subject = $msg_obj->subject;
-				$body = $msg_obj->body;
-				$headers = array('Content-Type: text/html; charset=UTF-8');
 
-				wp_mail( $to, $subject, $body, $headers );
-				*/
+						$msg = str_replace('%postlink%',get_permalink($group_id).'#group', get_option('options_matrix_bot_welcome_message'));
+						$this->send_msg($group,$msg);
+						$msg = get_option('options_matrix_bot_toolbar_tutorial');
+						$this->send_msg($group,$msg);
+
+						/*
+
+													$user = wp_get_current_user();
+													$to = $user->user_email;
+													$subject = $msg_obj->subject;
+													$body = $msg_obj->body;
+													$headers = array('Content-Type: text/html; charset=UTF-8');
+
+													wp_mail( $to, $subject, $body, $headers );
+													*/
 
 
 
 
 
 			//var_dump($this->get_MatrixRoom_Members($group));
-			//die();
+
 
 		}
 
+	}
+	private function randomString()
+	{
+		$characters = 'abcdefghijklmnopqrstuvwxyz1234567890';
+		$randstring = '';
+		for ($i = 0; $i < 6; $i++) {
+			$randstring .= $characters[rand(0, strlen($characters))];
+		}
+		return $randstring;
 	}
 
 }
 
 add_action('init', function (){
 	$matrix = new Matrix();
-	$matrix->tests(7159);
+	$matrix->tests(7703);
 });
 
 use Aryess\PhpMatrixSdk\MatrixHttpApi;
