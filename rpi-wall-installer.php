@@ -1064,6 +1064,39 @@ Bitte beachte, dass immer <strong>nur eine</strong> Person den Bogen ausfüllen 
 		                'max_rows' => '',
 	                ),
                     array(
+                        'key' => 'field_rpi_matrix_bot_review',
+                        'label' => 'Matrix Bot Abschlusssitzung',
+                        'name' => 'matrix_bot_protocol_tutorial',
+                        'prefix' => 'acf',
+                        'type' => 'acfe_code_editor',
+                        'instructions' => 'Abschlussnachricht nach der Abschlusssitzung und schließen der Gruppe',
+                        'required' => 0,
+                        'conditional_logic' => 0,
+                        'wrapper' => array(
+                            'width' => '',
+                            'class' => '',
+                            'id' => '',
+                        ),
+                        'frontend_admin_display_mode' => 'edit',
+                        'mode' => 'text/html',
+                        'indent_unit'=> 4,
+                        'readonly' => 0,
+                        'default_value' => '<strong>Die Abschlusssitzungsbogen wurde abgespeichert </strong><br/>
+Durch das Abspeichern des Abschlusssitzungsbogens wurde die PLG geschlossen.
+<strong>Was bedeutet das?</strong><br/>
+Durch das Schließen der PLG gilt das Unternehmen der PLG als beendet. Das bedeutet, dass es nicht mehr möglich ist neue
+Arbeitssturkturbögen zu erstellen.
+Die Kommentare und Matrixchat sowie die Toolbar sind weiterhin verwendbar.
+<br/> 
+',
+                        'placeholder' => '',
+                        'prepend' => '',
+                        'append' => '',
+                        'maxlength' => '',
+                        'rows' => 10,
+                        'max_rows' => '',
+                    ),
+                    array(
                         'key' => 'field_rpi_toolbar',
                         'label' => 'Toolbar',
                         'name' => '',

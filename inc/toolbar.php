@@ -54,6 +54,10 @@ class Toolbar
                             case 'meeting_planned':
                                 RpiWall::modal('planningForm', 'Planungsbogen', do_shortcode('[acfe_form name="constitution"]'));
                                 break;
+                            case 'closed':
+                                RpiWall::modal('edit-planningForm', 'Planungsbogen', do_shortcode('[acfe_form name="edit-constitution"]'));
+
+                                break;
                             default:
                                 RpiWall::modal('planningDate', 'Planungstermin setzen ', do_shortcode('[acfe_form name="constitution_date"]'));
                                 if (!$group->get_toolbar_buttons())
@@ -86,9 +90,13 @@ class Toolbar
                     </div>
                     <div class="toolbar-settings">
                         <div class="toolbar-setting-buttons">
-
-                            <?php RpiWall::modal('edit-buttons', '<span class="dashicons dashicons-plus"></span>', do_shortcode(' [acfe_form name="rpi_wall_group_toolbar_button_form"] ')); ?>
-                            <a id="btn-open-faq" href="<?php echo home_url('/faqs') ?>"><span>?</span></a>
+                            <div title="Weitere Buttons hinzufügen">
+                                <?php RpiWall::modal('edit-buttons', '<span class="dashicons dashicons-plus"></span>', do_shortcode(' [acfe_form name="rpi_wall_group_toolbar_button_form"] ')); ?>
+                            </div>
+                            <a id="btn-open-faq" title="FAQ" href="<?php echo home_url('/faqs') ?>"><span>?</span></a>
+                            <div title="PLG Schließen">
+                                <?php RpiWall::modal('close-plg', '<span class="dashicons dashicons-exit"></span>', do_shortcode(' [acfe_form name="review"]')); ?>
+                            </div>
                         </div>
                     </div>
                     <div class="toolbar-details">
