@@ -10,6 +10,7 @@
 
     /* Group Status Colors */
 
+    --ci-group-closed: var(--ci-tab-background-darker);
     --ci-group-pending: var(--paletteColor7);
     --ci-group-ready: var(--paletteColor6);
     --ci-group-founded: var(--paletteColor4);
@@ -148,6 +149,10 @@ article.pending .pin-title-icon.group svg, .group-post-wrapper.pending .pin-titl
     background: var(--ci-group-pending);
 }
 
+article.closed .pin-title-icon.group svg, .group-post-wrapper.closed .pin-title-icon.group svg {
+    background: var(--ci-group-closed);
+}
+
 article.founded .pin-title-icon.group svg, .group-post-wrapper.founded .pin-title-icon.group svg {
     background: var(--ci-group-founded);
     fill: white;
@@ -168,6 +173,10 @@ article.pending label[for="tab-group"] {
 
 article.founded label[for="tab-group"] {
     border-bottom: 10px solid var(--ci-group-founded);
+}
+
+article.closed label[for="tab-group"] {
+    border-bottom: 10px solid var(--ci-group-closed);
 }
 
 .tabset > input:checked + label[for="tab-group"] {
@@ -755,6 +764,8 @@ article:not(.founded) .like-group-box {
 }
 
 .like-btn-wrapper.closed {
+    background-color: var(--ci-group-closed);
+    border-color: var(--ci-group-closed);
 }
 
 .like-btn-wrapper:hover {

@@ -46,6 +46,7 @@ class Toolbar
                     <div class="group-toolbar-grip">
                         <?php
                         $status = $group->get_toolbar_status();
+                        var_dump($status);
                         switch ($status) {
                             case 'constituted':
                                 RpiWall::modal('edit-planningForm', 'Planungsbogen', do_shortcode('[acfe_form name="edit-constitution"]'));
