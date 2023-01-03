@@ -1036,7 +1036,6 @@ class Group extends \stdClass
 
                 break;
             case'closed':
-                $notice = get_option('options_rpi_wall_closed_card_notice', 'PLG beendet');
                 break;
             default:
 	            $i = $this->get_likers_amount();

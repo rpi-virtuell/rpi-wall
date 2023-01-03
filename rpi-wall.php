@@ -264,7 +264,9 @@ class RpiWall
         }, 10, 2);
 
         add_action('acfe/form/submit/form=review', function ($form, $post_id){
-           Wall\Toolbar::update_toolbar_status($form, $post_id, 'closed');
+            Wall\Toolbar::update_toolbar_status($form, $post_id, 'closed');
+            $group = new Wall\Group($post_id);
+           $group->set_status('closed');
         }, 10 , 2);
 
         // Pin Display

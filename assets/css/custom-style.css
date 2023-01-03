@@ -691,7 +691,7 @@ article.entry-card.type-wall .plg-wrapper {
 
 }
 
-article:not(.founded) .like-group-box {
+article:not(.founded):not(.closed) .like-group-box {
     display: grid;
     column-gap: 4px;
     grid-template-columns: minmax(48px, 96px) minmax(20%, 80%) auto;

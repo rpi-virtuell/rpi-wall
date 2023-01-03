@@ -34,7 +34,7 @@ class Toolbar
                         <h4><a href="<?php echo get_permalink() ?>" target="_blank"
                                rel="noopener noreferrer"><?php echo $group->title ?></a></h4>
                     <?php } ?>
-                    <?php if (!empty($next_meeting)) { ?>
+                    <?php if (!empty($next_meeting) && $group->get_status() != 'closed') { ?>
                         Nächster Termin: <?php echo date('D d.n.Y', strtotime($next_meeting)) ?>
                         um <?php echo date('H:i', strtotime($next_meeting)) ?> Uhr
 
@@ -46,7 +46,6 @@ class Toolbar
                     <div class="group-toolbar-grip">
                         <?php
                         $status = $group->get_toolbar_status();
-                        var_dump($status);
                         switch ($status) {
                             case 'constituted':
                                 RpiWall::modal('edit-planningForm', 'Planungsbogen', do_shortcode('[acfe_form name="edit-constitution"]'));
@@ -57,7 +56,6 @@ class Toolbar
                                 break;
                             case 'closed':
                                 RpiWall::modal('edit-planningForm', 'Planungsbogen', do_shortcode('[acfe_form name="edit-constitution"]'));
-
                                 break;
                             default:
                                 RpiWall::modal('planningDate', 'Planungstermin setzen ', do_shortcode('[acfe_form name="constitution_date"]'));
@@ -95,9 +93,11 @@ class Toolbar
                                 <?php RpiWall::modal('edit-buttons', '<span class="dashicons dashicons-plus"></span>', do_shortcode(' [acfe_form name="rpi_wall_group_toolbar_button_form"] ')); ?>
                             </div>
                             <a id="btn-open-faq" title="FAQ" href="<?php echo home_url('/faqs') ?>"><span>?</span></a>
-                            <div title="PLG Schließen">
-                                <?php RpiWall::modal('close-plg', '<span class="dashicons dashicons-exit"></span>', do_shortcode(' [acfe_form name="review"]')); ?>
-                            </div>
+                            <?php if ($group->get_status() != 'closed') { ?>
+                                <div title="PLG Schließen">
+                                    <?php RpiWall::modal('close-plg', '<span class="dashicons dashicons-exit"></span>', do_shortcode(' [acfe_form name="review"]')); ?>
+                                </div>
+                            <?php } ?>
                         </div>
                     </div>
                     <div class="toolbar-details">
