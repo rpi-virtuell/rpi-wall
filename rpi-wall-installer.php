@@ -980,7 +980,7 @@ Du kannst die eingebundene Toolbar direkt aus diesem Chatfenster nutzen. Lies da
 Du kannst die eingebundene Toolbar direkt aus diesem Chatfenster nutzen: 
 Klicke in der oberen rechten Ecke auf das Infosymbol <strong>(i)</strong>  
 und anchließend weiter unten auf "Toolbar", um diese dauerhaft anzuzeigen(Siehe Abbildung im Anhang) 
-<a href="https://dev-dibes.rpi-virtuell.de/wp-content/uploads/2022/09/toolbar.png"></a>
+<a href="https://schule-evangelisch-digital.de/wp-content/uploads/2022/09/toolbar.png"></a>
 Du kannst in der Toolbar Werkzeuge hinzufügen, in dem du auf das [+] und dann auf "Werkzeug hinzufügen" klickst. In dem sich öffnenden Formular 
 gibst du jeweils links die Beschriftung des Buttons ein und rechts daneben die URL zu dem Werkzeug,
 welches beim Klick auf den Button geöffnet werden soll. Zum Beispiel: https://cloud.rpi-virtuell.de/index.php/s/YGDbNxERATo8WjA',

@@ -247,7 +247,7 @@ class Matrix {
 
 			$msg_obj =new \stdClass();
 			$msg_obj->subject = 'Toolbar nutzen';
-			$msg_obj->body = 'Du kannst die eingebundene Toolbar direkt aus diesem Chatfenster nutzen: Klicke in der oberen rechten Ecke auf das Infosymbol <strong>(i)</strong>  und anchließend weiter unten auf "Toolbar", um diese dauerhaft anzuzeigen: <a href="https://dev-dibes.rpi-virtuell.de/wp-content/uploads/2022/09/toolbar.png"></a>' ;
+			$msg_obj->body = 'Du kannst die eingebundene Toolbar direkt aus diesem Chatfenster nutzen: Klicke in der oberen rechten Ecke auf das Infosymbol <strong>(i)</strong>  und anchließend weiter unten auf "Toolbar", um diese dauerhaft anzuzeigen: <a href="https://schule-evangelisch-digital.de/wp-content/uploads/2022/09/toolbar.png"></a>' ;
 
 
 						$group = new \rpi\Wall\Group($group_id);
