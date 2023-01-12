@@ -20,7 +20,7 @@ class RPIWallInstaller
         add_filter('author_link', array($this, 'change_author_link_to_user_profile'), 10, 3);
         add_action('save_post_wall', array($this, 'update_taxonomy_of_member_on_pin_save'), 10, 3);
         add_action('before_delete_post', array($this, 'delete_member_taxonomy_on_pin_deletion'), 10, 2);
-        add_filter('manage_posts_columns', array($this, 'add_new_termin_columns'),10, 2);
+        add_filter('manage_posts_columns', array($this, 'add_new_termin_columns'), 10, 2);
         add_action('manage_termin_posts_custom_column', array($this, 'display_termin_date_column'), 10, 2);
         add_filter('manage_posts_columns', array($this, 'add_new_message_columns'), 10, 2);
         add_action('manage_message_posts_custom_column', array($this, 'display_message_recipients_column'), 10, 2);
@@ -34,7 +34,7 @@ class RPIWallInstaller
      * @param int $comment_ID
      * @return false
      */
-    public function prefix_filter_sent_comment_notification( bool $maybe_notify, int $comment_ID): bool
+    public function prefix_filter_sent_comment_notification(bool $maybe_notify, int $comment_ID): bool
     {
         return false;
     }
@@ -75,33 +75,33 @@ class RPIWallInstaller
             $role->add_cap('delete_schooltype');
             $role->add_cap('assign_schooltype');
 
-			/*
-	        if($roleslug === 'editor'){
-		        $role->remove_cap('edit_member');
-		        $role->remove_cap('edit_members');
-		        $role->remove_cap('edit_others_members');
-		        $role->remove_cap('read_private_members');
-		        $role->remove_cap('publish_members');
-		        $role->remove_cap('read_members');
-		        $role->remove_cap('delete_others_members');
-		        $role->remove_cap('edit_published_members');
-		        $role->remove_cap('delete_published_members');
-		        $role->remove_cap('delete_members');
-	        }
-			*/
-			if($roleslug === 'administrator'){
+            /*
+            if($roleslug === 'editor'){
+                $role->remove_cap('edit_member');
+                $role->remove_cap('edit_members');
+                $role->remove_cap('edit_others_members');
+                $role->remove_cap('read_private_members');
+                $role->remove_cap('publish_members');
+                $role->remove_cap('read_members');
+                $role->remove_cap('delete_others_members');
+                $role->remove_cap('edit_published_members');
+                $role->remove_cap('delete_published_members');
+                $role->remove_cap('delete_members');
+            }
+            */
+            if ($roleslug === 'administrator') {
 
-				$role->add_cap('edit_member');
-				$role->add_cap('edit_members');
-				$role->add_cap('edit_others_members');
-				$role->add_cap('read_private_members');
-				$role->add_cap('publish_members');
-				$role->add_cap('read_members');
-				$role->add_cap('delete_others_members');
-				$role->add_cap('edit_published_members');
-				$role->add_cap('delete_published_members');
-				$role->add_cap('delete_members');
-			}
+                $role->add_cap('edit_member');
+                $role->add_cap('edit_members');
+                $role->add_cap('edit_others_members');
+                $role->add_cap('read_private_members');
+                $role->add_cap('publish_members');
+                $role->add_cap('read_members');
+                $role->add_cap('delete_others_members');
+                $role->add_cap('edit_published_members');
+                $role->add_cap('delete_published_members');
+                $role->add_cap('delete_members');
+            }
 
             $role->add_cap('edit_events');
             $role->add_cap('edit_others_events');
@@ -130,7 +130,7 @@ class RPIWallInstaller
             $role->add_cap('delete_walls');
 
             $role->add_cap('edit_wall_tags');
-	        $role->add_cap('assign_wall_tags');
+            $role->add_cap('assign_wall_tags');
             $role->add_cap('manage_wall_tags');
 
             $role->add_cap('assign_wall_cat');
@@ -226,7 +226,7 @@ class RPIWallInstaller
             "show_in_nav_menus" => true,
             "delete_with_user" => true,
             "exclude_from_search" => false,
-            'capability_type' => ['members','member'],
+            'capability_type' => ['members', 'member'],
             'capabilities' => array(
                 'edit_post' => 'edit_member',
                 'edit_posts' => 'edit_members',
@@ -345,29 +345,29 @@ class RPIWallInstaller
         register_post_type("termin", $args);
 
     }
-    public function  add_new_termin_columns($columns, $post_type)
+
+    public function add_new_termin_columns($columns, $post_type)
     {
-        if ($post_type == 'termin'){
+        if ($post_type == 'termin') {
             $columns['termine_date'] = 'Termindatum';
             $columns['category'] = 'Ereignis';
         }
-        return$columns;
+        return $columns;
     }
 
-    public function display_termin_date_column($name, $post_id){
-        switch ($name)
-        {
+    public function display_termin_date_column($name, $post_id)
+    {
+        switch ($name) {
             case 'category':
                 $termin_event = get_the_terms($post_id, 'termin_event');
-                if (!empty($termin_event) && is_array($termin_event))
-                {
+                if (!empty($termin_event) && is_array($termin_event)) {
                     echo reset($termin_event)->name;
                 }
                 break;
             case 'termine_date':
-                echo date('d.m.Y H:i', strtotime(get_post_meta($post_id,'termin_date', true))) .
+                echo date('d.m.Y H:i', strtotime(get_post_meta($post_id, 'termin_date', true))) .
                     ' - ' .
-                    date('H:i', strtotime(get_post_meta($post_id, 'termin_enddate',true))) ;
+                    date('H:i', strtotime(get_post_meta($post_id, 'termin_enddate', true)));
         }
     }
 
@@ -673,151 +673,152 @@ class RPIWallInstaller
             acf_add_local_field_group(array(
                 'key' => 'group_rpi_wall_settings',
                 'title' => 'RPI Wall Einstellungen',
-                'fields' => array(
+                'fields' =>
                     array(
-                        'key' => 'field_rpi_wall_general_settings',
-                        'label' => 'Allgemein',
-                        'name' => '',
-                        'type' => 'tab',
-                        'instructions' => '',
-                        'required' => 0,
-                        'conditional_logic' => 0,
-                        'wrapper' => array(
-                            'width' => '',
-                            'class' => '',
-                            'id' => '',
+                        array(
+                            'key' => 'field_rpi_wall_general_settings',
+                            'label' => 'Allgemein',
+                            'name' => '',
+                            'type' => 'tab',
+                            'instructions' => '',
+                            'required' => 0,
+                            'conditional_logic' => 0,
+                            'wrapper' => array(
+                                'width' => '',
+                                'class' => '',
+                                'id' => '',
+                            ),
+                            'placement' => 'top',
+                            'endpoint' => 0,
                         ),
-                        'placement' => 'top',
-                        'endpoint' => 0,
-                    ),
-                    array(
-                        'key' => 'field_rpi_group_min_required_members',
-                        'label' => 'Niedrigste Menge an Mitgliedern',
-                        'name' => 'rpi_group_min_required_members',
-                        'type' => 'number',
-                        'instructions' => '',
-                        'required' => 0,
-                        'conditional_logic' => 0,
-                        'wrapper' => array(
-                            'width' => '',
-                            'class' => '',
-                            'id' => '',
+                        array(
+                            'key' => 'field_rpi_group_min_required_members',
+                            'label' => 'Niedrigste Menge an Mitgliedern',
+                            'name' => 'rpi_group_min_required_members',
+                            'type' => 'number',
+                            'instructions' => '',
+                            'required' => 0,
+                            'conditional_logic' => 0,
+                            'wrapper' => array(
+                                'width' => '',
+                                'class' => '',
+                                'id' => '',
+                            ),
+                            'default_value' => '',
+                            'placeholder' => '',
+                            'prepend' => '',
+                            'append' => '',
+                            'min' => '',
+                            'max' => '',
+                            'step' => '',
                         ),
-                        'default_value' => '',
-                        'placeholder' => '',
-                        'prepend' => '',
-                        'append' => '',
-                        'min' => '',
-                        'max' => '',
-                        'step' => '',
-                    ),
-                    array(
-                        'key' => 'field_rpi_wall_pl_group_pending_days',
-                        'label' => 'Zeitlimit für die Erstellung einer Gruppe',
-                        'name' => 'rpi_wall_pl_group_pending_days',
-                        'type' => 'number',
-                        'instructions' => '',
-                        'required' => 0,
-                        'conditional_logic' => 0,
-                        'wrapper' => array(
-                            'width' => '',
-                            'class' => '',
-                            'id' => '',
+                        array(
+                            'key' => 'field_rpi_wall_pl_group_pending_days',
+                            'label' => 'Zeitlimit für die Erstellung einer Gruppe',
+                            'name' => 'rpi_wall_pl_group_pending_days',
+                            'type' => 'number',
+                            'instructions' => '',
+                            'required' => 0,
+                            'conditional_logic' => 0,
+                            'wrapper' => array(
+                                'width' => '',
+                                'class' => '',
+                                'id' => '',
+                            ),
+                            'default_value' => '',
+                            'placeholder' => '',
+                            'prepend' => '',
+                            'append' => '',
+                            'min' => '',
+                            'max' => '',
+                            'step' => '',
                         ),
-                        'default_value' => '',
-                        'placeholder' => '',
-                        'prepend' => '',
-                        'append' => '',
-                        'min' => '',
-                        'max' => '',
-                        'step' => '',
-                    ),
 
-                    array(
-                        'key' => 'field_rpi_wall_message_template_settings',
-                        'label' => 'Nachrichten',
-                        'name' => '',
-                        'type' => 'tab',
-                        'instructions' => '',
-                        'required' => 0,
-                        'conditional_logic' => 0,
-                        'wrapper' => array(
-                            'width' => '',
-                            'class' => '',
-                            'id' => '',
+                        array(
+                            'key' => 'field_rpi_wall_message_template_settings',
+                            'label' => 'Nachrichten',
+                            'name' => '',
+                            'type' => 'tab',
+                            'instructions' => '',
+                            'required' => 0,
+                            'conditional_logic' => 0,
+                            'wrapper' => array(
+                                'width' => '',
+                                'class' => '',
+                                'id' => '',
+                            ),
+                            'placement' => 'top',
+                            'endpoint' => 0,
                         ),
-                        'placement' => 'top',
-                        'endpoint' => 0,
-                    ),
 
-                    array(
-                        'key' => 'field_rpi_moderation_email',
-                        'label' => 'Email der Moderation',
-                        'name' => 'moderation_email',
-                        'type' => 'email',
-                        'instructions' => '',
-                        'required' => 0,
-                        'conditional_logic' => 0,
-                        'wrapper' => array(
-                            'width' => '',
-                            'class' => '',
-                            'id' => '',
+                        array(
+                            'key' => 'field_rpi_moderation_email',
+                            'label' => 'Email der Moderation',
+                            'name' => 'moderation_email',
+                            'type' => 'email',
+                            'instructions' => '',
+                            'required' => 0,
+                            'conditional_logic' => 0,
+                            'wrapper' => array(
+                                'width' => '',
+                                'class' => '',
+                                'id' => '',
+                            ),
+                            'default_value' => '',
+                            'placeholder' => '',
+                            'prepend' => '',
+                            'append' => '',
                         ),
-                        'default_value' => '',
-                        'placeholder' => '',
-                        'prepend' => '',
-                        'append' => '',
-                    ),
-                    array(
-                        'key' => 'field_rpi_allowed_moderators',
-                        'label' => 'Organisationsmitglieder (Moderatoren)',
-                        'name' => 'allowed_moderators',
-                        'type' => 'user',
-                        'instructions' => '',
-                        'required' => 0,
-                        'conditional_logic' => 0,
-                        'wrapper' => array(
-                            'width' => '',
-                            'class' => '',
-                            'id' => '',
+                        array(
+                            'key' => 'field_rpi_allowed_moderators',
+                            'label' => 'Organisationsmitglieder (Moderatoren)',
+                            'name' => 'allowed_moderators',
+                            'type' => 'user',
+                            'instructions' => '',
+                            'required' => 0,
+                            'conditional_logic' => 0,
+                            'wrapper' => array(
+                                'width' => '',
+                                'class' => '',
+                                'id' => '',
+                            ),
+                            'frontend_admin_display_mode' => 'edit',
+                            'only_front' => 0,
+                            'role' => '',
+                            'allow_null' => 0,
+                            'multiple' => 1,
+                            'return_format' => 'array',
+                            'acfe_bidirectional' => array(
+                                'acfe_bidirectional_enabled' => '0',
+                            ),
                         ),
-                        'frontend_admin_display_mode' => 'edit',
-                        'only_front' => 0,
-                        'role' => '',
-                        'allow_null' => 0,
-                        'multiple' => 1,
-                        'return_format' => 'array',
-                        'acfe_bidirectional' => array(
-                            'acfe_bidirectional_enabled' => '0',
+                        array(
+                            'key' => 'field_rpi_wall_memberpage_posts_per_page',
+                            'label' => 'Menge der angezeigten Nachrichten',
+                            'name' => 'rpi_wall_memberpage_posts_per_page',
+                            'type' => 'number',
+                            'instructions' => '',
+                            'required' => 0,
+                            'conditional_logic' => 0,
+                            'wrapper' => array(
+                                'width' => '',
+                                'class' => '',
+                                'id' => '',
+                            ),
+                            'default_value' => '6',
+                            'placeholder' => '',
+                            'prepend' => '',
+                            'append' => '',
+                            'min' => '',
+                            'max' => '',
+                            'step' => '',
                         ),
-                    ),
-                    array(
-                        'key' => 'field_rpi_wall_memberpage_posts_per_page',
-                        'label' => 'Menge der angezeigten Nachrichten',
-                        'name' => 'rpi_wall_memberpage_posts_per_page',
-                        'type' => 'number',
-                        'instructions' => '',
-                        'required' => 0,
-                        'conditional_logic' => 0,
-                        'wrapper' => array(
-                            'width' => '',
-                            'class' => '',
-                            'id' => '',
-                        ),
-                        'default_value' => '6',
-                        'placeholder' => '',
-                        'prepend' => '',
-                        'append' => '',
-                        'min' => '',
-                        'max' => '',
-                        'step' => '',
-                    ),
-                    array(
-                        'key' => 'field_rpi_message_templates',
-                        'label' => '',
-                        'name' => 'rpi_message_templates',
-                        'type' => 'group',
-                        'instructions' => 'Mögliche Variablen
+                        array(
+                            'key' => 'field_rpi_message_templates',
+                            'label' => '',
+                            'name' => 'rpi_message_templates',
+                            'type' => 'group',
+                            'instructions' => 'Mögliche Variablen
                                     %grouptitle%
                                     %posttitle%
                                     %postlink%
@@ -826,118 +827,118 @@ class RPIWallInstaller
                                     %memberamount%
                                     %channellink%
                                     %likeramount%',
-                        'required' => 0,
-                        'conditional_logic' => 0,
-                        'wrapper' => array(
-                            'width' => '',
-                            'class' => '',
-                            'id' => '',
+                            'required' => 0,
+                            'conditional_logic' => 0,
+                            'wrapper' => array(
+                                'width' => '',
+                                'class' => '',
+                                'id' => '',
+                            ),
+                            'frontend_admin_display_mode' => 'edit',
+                            'only_front' => 0,
+                            'layout' => 'block',
+                            'acfe_seamless_style' => 0,
+                            'acfe_group_modal' => 0,
+                            'sub_fields' => $this->prepare_field_type_template_arrays(),
                         ),
-                        'frontend_admin_display_mode' => 'edit',
-                        'only_front' => 0,
-                        'layout' => 'block',
-                        'acfe_seamless_style' => 0,
-                        'acfe_group_modal' => 0,
-                        'sub_fields' => $this->prepare_field_type_template_arrays(),
-                    ),
-                    array(
-                        'key' => 'field_rpi_matrix_settings',
-                        'label' => 'Matrix',
-                        'name' => '',
-                        'type' => 'tab',
-                        'instructions' => '',
-                        'required' => 0,
-                        'conditional_logic' => 0,
-                        'wrapper' => array(
-                            'width' => '',
-                            'class' => '',
-                            'id' => '',
+                        array(
+                            'key' => 'field_rpi_matrix_settings',
+                            'label' => 'Matrix',
+                            'name' => '',
+                            'type' => 'tab',
+                            'instructions' => '',
+                            'required' => 0,
+                            'conditional_logic' => 0,
+                            'wrapper' => array(
+                                'width' => '',
+                                'class' => '',
+                                'id' => '',
+                            ),
+                            'placement' => 'top',
+                            'endpoint' => 0,
                         ),
-                        'placement' => 'top',
-                        'endpoint' => 0,
-                    ),
-                    array(
-                        'key' => 'field_rpi_matrix_bot_token',
-                        'label' => 'Bot Token',
-                        'name' => 'matrix_bot_token',
-                        'type' => 'text',
-                        'instructions' => '',
-                        'required' => 0,
-                        'conditional_logic' => 0,
-                        'wrapper' => array(
-                            'width' => '',
-                            'class' => '',
-                            'id' => '',
+                        array(
+                            'key' => 'field_rpi_matrix_bot_token',
+                            'label' => 'Bot Token',
+                            'name' => 'matrix_bot_token',
+                            'type' => 'text',
+                            'instructions' => '',
+                            'required' => 0,
+                            'conditional_logic' => 0,
+                            'wrapper' => array(
+                                'width' => '',
+                                'class' => '',
+                                'id' => '',
+                            ),
+                            'frontend_admin_display_mode' => 'edit',
+                            'readonly' => 0,
+                            'default_value' => '',
+                            'placeholder' => '',
+                            'prepend' => '',
+                            'append' => '',
+                            'maxlength' => '',
                         ),
-                        'frontend_admin_display_mode' => 'edit',
-                        'readonly' => 0,
-                        'default_value' => '',
-                        'placeholder' => '',
-                        'prepend' => '',
-                        'append' => '',
-                        'maxlength' => '',
-                    ),
-                    array(
-                        'key' => 'field_rpi_matrix_server_home',
-                        'label' => 'Matrix Heimat Server',
-                        'name' => 'matrix_server_home',
-                        'type' => 'text',
-                        'instructions' => 'Name des Matrix Servers',
-                        'required' => 0,
-                        'conditional_logic' => 0,
-                        'wrapper' => array(
-                            'width' => '',
-                            'class' => '',
-                            'id' => '',
+                        array(
+                            'key' => 'field_rpi_matrix_server_home',
+                            'label' => 'Matrix Heimat Server',
+                            'name' => 'matrix_server_home',
+                            'type' => 'text',
+                            'instructions' => 'Name des Matrix Servers',
+                            'required' => 0,
+                            'conditional_logic' => 0,
+                            'wrapper' => array(
+                                'width' => '',
+                                'class' => '',
+                                'id' => '',
+                            ),
+                            'frontend_admin_display_mode' => 'edit',
+                            'readonly' => 0,
+                            'default_value' => '',
+                            'placeholder' => 'example.com',
+                            'prepend' => '',
+                            'append' => '',
+                            'maxlength' => '',
                         ),
-                        'frontend_admin_display_mode' => 'edit',
-                        'readonly' => 0,
-                        'default_value' => '',
-                        'placeholder' => 'example.com',
-                        'prepend' => '',
-                        'append' => '',
-                        'maxlength' => '',
-                    ),
-                    array(
-                        'key' => 'field_rpi_matrix_server_base',
-                        'label' => 'Matrix Server Domain',
-                        'name' => 'matrix_server_base',
-                        'type' => 'text',
-                        'instructions' => 'Name der Base Domain',
-                        'required' => 0,
-                        'conditional_logic' => 0,
-                        'wrapper' => array(
-                            'width' => '',
-                            'class' => '',
-                            'id' => '',
+                        array(
+                            'key' => 'field_rpi_matrix_server_base',
+                            'label' => 'Matrix Server Domain',
+                            'name' => 'matrix_server_base',
+                            'type' => 'text',
+                            'instructions' => 'Name der Base Domain',
+                            'required' => 0,
+                            'conditional_logic' => 0,
+                            'wrapper' => array(
+                                'width' => '',
+                                'class' => '',
+                                'id' => '',
+                            ),
+                            'frontend_admin_display_mode' => 'edit',
+                            'readonly' => 0,
+                            'default_value' => '',
+                            'placeholder' => 'Base-Server.de',
+                            'prepend' => '',
+                            'append' => '',
+                            'maxlength' => '',
                         ),
-                        'frontend_admin_display_mode' => 'edit',
-                        'readonly' => 0,
-                        'default_value' => '',
-                        'placeholder' => 'Base-Server.de',
-                        'prepend' => '',
-                        'append' => '',
-                        'maxlength' => '',
-                    ),
-                    array(
-                        'key' => 'field_rpi_matrix_bot_welcome_message',
-                        'label' => 'Matrix Bot Willkommens Nachricht',
-                        'name' => 'matrix_bot_welcome_message',
-                        'prefix' => 'acf',
-                        'type' => 'acfe_code_editor',
-                        'instructions' => 'Willkommensnachricht des Bots beim erstellen des Raums',
-                        'required' => 0,
-                        'conditional_logic' => 0,
-                        'wrapper' => array(
-                            'width' => '',
-                            'class' => '',
-                            'id' => '',
-                        ),
-                        'frontend_admin_display_mode' => 'edit',
-                        'mode' => 'text/html',
-                        'indent_unit'=> 4,
-                        'readonly' => 0,
-                        'default_value' => '<strong>Willkommen Chatraum unserer Lerngemeinschaft</strong>
+                        array(
+                            'key' => 'field_rpi_matrix_bot_welcome_message',
+                            'label' => 'Matrix Bot Willkommens Nachricht',
+                            'name' => 'matrix_bot_welcome_message',
+                            'prefix' => 'acf',
+                            'type' => 'acfe_code_editor',
+                            'instructions' => 'Willkommensnachricht des Bots beim erstellen des Raums',
+                            'required' => 0,
+                            'conditional_logic' => 0,
+                            'wrapper' => array(
+                                'width' => '',
+                                'class' => '',
+                                'id' => '',
+                            ),
+                            'frontend_admin_display_mode' => 'edit',
+                            'mode' => 'text/html',
+                            'indent_unit' => 4,
+                            'readonly' => 0,
+                            'default_value' => '<strong>Willkommen Chatraum unserer Lerngemeinschaft</strong>
 der auch über den <a href="%postlink%">Pinwandeintrag</a> erreichbar ist.
 Schreibt den anderen durch ein kurzes "Hallo" in diesen Chat und wenn ihr möchtet, auch etwas über euch selbst und was dazu bewegt hat, dieser Gemeinschaft beizutreten.<br>
 <br>
@@ -951,14 +952,14 @@ Du kannst die eingebundene Toolbar direkt aus diesem Chatfenster nutzen. Lies da
 	<li>Beim ersten Treffen verabredet ihr mit Hilfe eines Planungsbogens Ziele und Vorgehensweisen dieser Gruppe fest.</li>
 	<li>Für allen weiteren Treffen steht euch je ein Arbeitssturkturbogen zur Verfügung, der effektiv hilft, das angestrebte Ziel zu erreichen.</li>
 </ul>Viel Erfolg!',
-                        'placeholder' => '',
-                        'prepend' => '',
-                        'append' => '',
-                        'maxlength' => '',
-                        'rows' => 10,
-                        'max_rows' => '',
-                    )
-                    ,array(
+                            'placeholder' => '',
+                            'prepend' => '',
+                            'append' => '',
+                            'maxlength' => '',
+                            'rows' => 10,
+                            'max_rows' => '',
+                        )
+                    , array(
                         'key' => 'field_rpi_matrix_bot_toolbar_tutorial',
                         'label' => 'Matrix Bot Toolbar Tutorial',
                         'name' => 'matrix_bot_toolbar_tutorial',
@@ -974,7 +975,7 @@ Du kannst die eingebundene Toolbar direkt aus diesem Chatfenster nutzen. Lies da
                         ),
                         'frontend_admin_display_mode' => 'edit',
                         'mode' => 'text/html',
-                        'indent_unit'=> 4,
+                        'indent_unit' => 4,
                         'readonly' => 0,
                         'default_value' => '<strong>Toolbar nutzen</strong><br>
 Du kannst die eingebundene Toolbar direkt aus diesem Chatfenster nutzen: 
@@ -991,55 +992,55 @@ welches beim Klick auf den Button geöffnet werden soll. Zum Beispiel: https://c
                         'rows' => 10,
                         'max_rows' => '',
                     ),
-                    array(
-		                'key' => 'field_rpi_matrix_bot_planung_tutorial',
-		                'label' => 'Matrix Bot Planungsbogen Tutorial',
-		                'name' => 'matrix_bot_planung_tutorial',
-		                'prefix' => 'acf',
-		                'type' => 'acfe_code_editor',
-		                'instructions' => 'Tutorial Nachricht für den Planungsbogen',
-		                'required' => 0,
-		                'conditional_logic' => 0,
-		                'wrapper' => array(
-			                'width' => '',
-			                'class' => '',
-			                'id' => '',
-		                ),
-		                'frontend_admin_display_mode' => 'edit',
-		                'mode' => 'text/html',
-		                'indent_unit'=> 4,
-		                'readonly' => 0,
-		                'default_value' => '<strong>Planungsbogen ausfüllen</strong><br/>Im ersten, konstituierenden 
+                        array(
+                            'key' => 'field_rpi_matrix_bot_planung_tutorial',
+                            'label' => 'Matrix Bot Planungsbogen Tutorial',
+                            'name' => 'matrix_bot_planung_tutorial',
+                            'prefix' => 'acf',
+                            'type' => 'acfe_code_editor',
+                            'instructions' => 'Tutorial Nachricht für den Planungsbogen',
+                            'required' => 0,
+                            'conditional_logic' => 0,
+                            'wrapper' => array(
+                                'width' => '',
+                                'class' => '',
+                                'id' => '',
+                            ),
+                            'frontend_admin_display_mode' => 'edit',
+                            'mode' => 'text/html',
+                            'indent_unit' => 4,
+                            'readonly' => 0,
+                            'default_value' => '<strong>Planungsbogen ausfüllen</strong><br/>Im ersten, konstituierenden 
 Treffen legt eine PLG das übergeordnetes Gesamtziel fest, das die Gruppe mit Ihrer gemeinsamen Arbeit verfolgt
 und an dem sich dann auch die weiteren Treffen ausrichten sollen. Gebt der Gruppe einen Namen, der zu der 
 Zielformulierung passt. <br/>Anwesende, Gruppename und Zielformulierung trägt <strong>eine</strong> Person der Gruppe in den Planungsbogen ein: 
 Klicke dazu auf den Button "Planungsbogen" in der Toolbar.',
-		                'placeholder' => '',
-		                'prepend' => '',
-		                'append' => '',
-		                'maxlength' => '',
-		                'rows' => 10,
-		                'max_rows' => '',
-	                ),
-	                array(
-		                'key' => 'field_rpi_matrix_bot_protocol_tutorial',
-		                'label' => 'Matrix Bot Arbeitsstrukturbogen Tutorial',
-		                'name' => 'matrix_bot_protocol_tutorial',
-		                'prefix' => 'acf',
-		                'type' => 'acfe_code_editor',
-		                'instructions' => 'Tutorial Nachricht für den Planungsbogen',
-		                'required' => 0,
-		                'conditional_logic' => 0,
-		                'wrapper' => array(
-			                'width' => '',
-			                'class' => '',
-			                'id' => '',
-		                ),
-		                'frontend_admin_display_mode' => 'edit',
-		                'mode' => 'text/html',
-		                'indent_unit'=> 4,
-		                'readonly' => 0,
-		                'default_value' => '<strong>Wie geht es weiter?</strong><br/>
+                            'placeholder' => '',
+                            'prepend' => '',
+                            'append' => '',
+                            'maxlength' => '',
+                            'rows' => 10,
+                            'max_rows' => '',
+                        ),
+                        array(
+                            'key' => 'field_rpi_matrix_bot_protocol_tutorial',
+                            'label' => 'Matrix Bot Arbeitsstrukturbogen Tutorial',
+                            'name' => 'matrix_bot_protocol_tutorial',
+                            'prefix' => 'acf',
+                            'type' => 'acfe_code_editor',
+                            'instructions' => 'Tutorial Nachricht für den Planungsbogen',
+                            'required' => 0,
+                            'conditional_logic' => 0,
+                            'wrapper' => array(
+                                'width' => '',
+                                'class' => '',
+                                'id' => '',
+                            ),
+                            'frontend_admin_display_mode' => 'edit',
+                            'mode' => 'text/html',
+                            'indent_unit' => 4,
+                            'readonly' => 0,
+                            'default_value' => '<strong>Wie geht es weiter?</strong><br/>
 Die Planung ist geschafft. <strong>Vereinbart den nächsten gemeinsamen Termin</strong>. Für alle folgenden Treffen 
 bekommt ihr ein weiteres Unterstützungswerkzeug. Das findet ihr ebenfalls in der Toolbar über den Button "Arbeitsstrukturbogen".     
 <br/>
@@ -1056,32 +1057,32 @@ Formuliert im letzten Abschnitt in wenigen Worten, wo ihr dem Gesamtziel näher 
 Bitte beachte, dass immer <strong>nur eine</strong> Person den Bogen ausfüllen kann. 
 <br/> 
 ',
-		                'placeholder' => '',
-		                'prepend' => '',
-		                'append' => '',
-		                'maxlength' => '',
-		                'rows' => 10,
-		                'max_rows' => '',
-	                ),
-                    array(
-                        'key' => 'field_rpi_matrix_bot_review',
-                        'label' => 'Matrix Bot Abschlusssitzung',
-                        'name' => 'matrix_bot_protocol_tutorial',
-                        'prefix' => 'acf',
-                        'type' => 'acfe_code_editor',
-                        'instructions' => 'Abschlussnachricht nach der Abschlusssitzung und schließen der Gruppe',
-                        'required' => 0,
-                        'conditional_logic' => 0,
-                        'wrapper' => array(
-                            'width' => '',
-                            'class' => '',
-                            'id' => '',
+                            'placeholder' => '',
+                            'prepend' => '',
+                            'append' => '',
+                            'maxlength' => '',
+                            'rows' => 10,
+                            'max_rows' => '',
                         ),
-                        'frontend_admin_display_mode' => 'edit',
-                        'mode' => 'text/html',
-                        'indent_unit'=> 4,
-                        'readonly' => 0,
-                        'default_value' => '<strong>Die Abschlusssitzungsbogen wurde abgespeichert </strong><br/>
+                        array(
+                            'key' => 'field_rpi_matrix_bot_review',
+                            'label' => 'Matrix Bot Abschlusssitzung',
+                            'name' => 'matrix_bot_protocol_tutorial',
+                            'prefix' => 'acf',
+                            'type' => 'acfe_code_editor',
+                            'instructions' => 'Abschlussnachricht nach der Abschlusssitzung und schließen der Gruppe',
+                            'required' => 0,
+                            'conditional_logic' => 0,
+                            'wrapper' => array(
+                                'width' => '',
+                                'class' => '',
+                                'id' => '',
+                            ),
+                            'frontend_admin_display_mode' => 'edit',
+                            'mode' => 'text/html',
+                            'indent_unit' => 4,
+                            'readonly' => 0,
+                            'default_value' => '<strong>Die Abschlusssitzungsbogen wurde abgespeichert </strong><br/>
 Durch das Abspeichern des Abschlusssitzungsbogens wurde die PLG geschlossen.
 <strong>Was bedeutet das?</strong><br/>
 Durch das Schließen der PLG gilt das Unternehmen der PLG als beendet. Das bedeutet, dass es nicht mehr möglich ist neue
@@ -1089,112 +1090,471 @@ Arbeitssturkturbögen zu erstellen.
 Die Kommentare und Matrixchat sowie die Toolbar sind weiterhin verwendbar.
 <br/> 
 ',
-                        'placeholder' => '',
-                        'prepend' => '',
-                        'append' => '',
-                        'maxlength' => '',
-                        'rows' => 10,
-                        'max_rows' => '',
-                    ),
-                    array(
-                        'key' => 'field_rpi_toolbar',
-                        'label' => 'Toolbar',
-                        'name' => '',
-                        'type' => 'tab',
-                        'instructions' => '',
-                        'required' => 0,
-                        'conditional_logic' => 0,
-                        'wrapper' => array(
-                            'width' => '',
-                            'class' => '',
-                            'id' => '',
+                            'placeholder' => '',
+                            'prepend' => '',
+                            'append' => '',
+                            'maxlength' => '',
+                            'rows' => 10,
+                            'max_rows' => '',
                         ),
-                        'placement' => 'top',
-                        'endpoint' => 0,
-                    ),
-                    array(
-                        'key' => 'field_rpi_toolbar_kickoff_template',
-                        'label' => 'Kickoff Template Link',
-                        'name' => 'toolbar_kickoff_template',
-                        'type' => 'text',
-                        'instructions' => 'Link zum Kickoff Template',
-                        'required' => 0,
-                        'conditional_logic' => 0,
-                        'wrapper' => array(
-                            'width' => '',
-                            'class' => '',
-                            'id' => '',
+                        array(
+                            'key' => 'field_rpi_toolbar',
+                            'label' => 'Toolbar',
+                            'name' => '',
+                            'type' => 'tab',
+                            'instructions' => '',
+                            'required' => 0,
+                            'conditional_logic' => 0,
+                            'wrapper' => array(
+                                'width' => '',
+                                'class' => '',
+                                'id' => '',
+                            ),
+                            'placement' => 'top',
+                            'endpoint' => 0,
                         ),
-                        'frontend_admin_display_mode' => 'edit',
-                        'readonly' => 0,
-                        'default_value' => '',
-                        'placeholder' => 'Base-Server.de',
-                        'prepend' => '',
-                        'append' => '',
-                        'maxlength' => '',
-                    ),
-                    array(
-                        'key' => 'field_rpi_toolbar_protocol_template',
-                        'label' => 'Protocol Template Link',
-                        'name' => 'toolbar_protocol_template',
-                        'type' => 'text',
-                        'instructions' => 'Link zum Protokoll Template',
-                        'required' => 0,
-                        'conditional_logic' => 0,
-                        'wrapper' => array(
-                            'width' => '',
-                            'class' => '',
-                            'id' => '',
+                        array(
+                            'key' => 'field_rpi_toolbar_kickoff_template',
+                            'label' => 'Kickoff Template Link',
+                            'name' => 'toolbar_kickoff_template',
+                            'type' => 'text',
+                            'instructions' => 'Link zum Kickoff Template',
+                            'required' => 0,
+                            'conditional_logic' => 0,
+                            'wrapper' => array(
+                                'width' => '',
+                                'class' => '',
+                                'id' => '',
+                            ),
+                            'frontend_admin_display_mode' => 'edit',
+                            'readonly' => 0,
+                            'default_value' => '',
+                            'placeholder' => 'Base-Server.de',
+                            'prepend' => '',
+                            'append' => '',
+                            'maxlength' => '',
                         ),
-                        'frontend_admin_display_mode' => 'edit',
-                        'readonly' => 0,
-                        'default_value' => '',
-                        'placeholder' => 'Base-Server.de',
-                        'prepend' => '',
-                        'append' => '',
-                        'maxlength' => '',
-                    ),
-                    array(
-                        'key' => 'field_rpi_text_labels',
-                        'label' => 'Text Label',
-                        'name' => '',
-                        'type' => 'tab',
-                        'instructions' => '',
-                        'required' => 0,
-                        'conditional_logic' => 0,
-                        'wrapper' => array(
-                            'width' => '',
-                            'class' => '',
-                            'id' => '',
+                        array(
+                            'key' => 'field_rpi_toolbar_protocol_template',
+                            'label' => 'Protocol Template Link',
+                            'name' => 'toolbar_protocol_template',
+                            'type' => 'text',
+                            'instructions' => 'Link zum Protokoll Template',
+                            'required' => 0,
+                            'conditional_logic' => 0,
+                            'wrapper' => array(
+                                'width' => '',
+                                'class' => '',
+                                'id' => '',
+                            ),
+                            'frontend_admin_display_mode' => 'edit',
+                            'readonly' => 0,
+                            'default_value' => '',
+                            'placeholder' => 'Base-Server.de',
+                            'prepend' => '',
+                            'append' => '',
+                            'maxlength' => '',
                         ),
-                        'placement' => 'top',
-                        'endpoint' => 0,
-                    ),
-                    array(
-                        'key' => 'field_rpi_label_general_textfields_group',
-                        'label' => '',
-                        'name' => 'rpi_label_general_textfields_group',
-                        'type' => 'group',
-                        'instructions' => 'Diese Felder werden für unterschiedliche Textbereiche in Bereichen der Pinnwand angezeigt',
-                        'required' => 0,
-                        'conditional_logic' => 0,
-                        'wrapper' => array(
-                            'width' => '',
-                            'class' => '',
-                            'id' => '',
+                        array(
+                            'key' => 'field_rpi_text_labels',
+                            'label' => 'Text Label',
+                            'name' => '',
+                            'type' => 'tab',
+                            'instructions' => '',
+                            'required' => 0,
+                            'conditional_logic' => 0,
+                            'wrapper' => array(
+                                'width' => '',
+                                'class' => '',
+                                'id' => '',
+                            ),
+                            'placement' => 'top',
+                            'endpoint' => 0,
                         ),
-                        'frontend_admin_display_mode' => 'edit',
-                        'only_front' => 0,
-                        'layout' => 'block',
-                        'acfe_seamless_style' => 0,
-                        'acfe_group_modal' => 0,
-                        'sub_fields' =>
-                            array(
+                        array(
+                            'key' => 'field_rpi_label_general_textfields_group',
+                            'label' => '',
+                            'name' => 'rpi_label_general_textfields_group',
+                            'type' => 'group',
+                            'instructions' => 'Diese Felder werden für unterschiedliche Textbereiche in Bereichen der Pinnwand angezeigt',
+                            'required' => 0,
+                            'conditional_logic' => 0,
+                            'wrapper' => array(
+                                'width' => '',
+                                'class' => '',
+                                'id' => '',
+                            ),
+                            'frontend_admin_display_mode' => 'edit',
+                            'only_front' => 0,
+                            'layout' => 'block',
+                            'acfe_seamless_style' => 0,
+                            'acfe_group_modal' => 0,
+                            'sub_fields' =>
                                 array(
-                                    'key' => 'field_rpi_wall_main_header',
-                                    'label' => 'Pinnwand Header Einleitung',
-                                    'name' => 'rpi_wall_main_header',
-                                    'type' => 'textarea',
+                                    array(
+                                        'key' => 'field_rpi_wall_main_header',
+                                        'label' => 'Pinnwand Header Einleitung',
+                                        'name' => 'rpi_wall_main_header',
+                                        'type' => 'textarea',
+                                        'instructions' => '',
+                                        'required' => 0,
+                                        'conditional_logic' => 0,
+                                        'wrapper' => array(
+                                            'width' => '',
+                                            'class' => '',
+                                            'id' => '',
+                                        ),
+                                        'frontend_admin_display_mode' => 'edit',
+                                        'readonly' => 0,
+                                        'default_value' => 'Willkommen auf der Pinnwand! Hier kannst du eigene Fragestellungen einbringen und findest spannende Impulse zu verschiedenen Themen. Außerdem kannst dich an Fragen durch Kommentare beteiligen oder Professionelle Lerngruppen (PLG´s) zum intensiveren Austausch zu einem Thema finden.',
+                                        'placeholder' => '',
+                                        'prepend' => '',
+                                        'append' => '',
+                                        'maxlength' => '',
+                                    ),
+                                    array(
+                                        'key' => 'field_rpi_member_main_header',
+                                        'label' => 'Netzwerk (Member) Header Einleitung',
+                                        'name' => 'rpi_member_main_header',
+                                        'type' => 'textarea',
+                                        'instructions' => '',
+                                        'required' => 0,
+                                        'conditional_logic' => 0,
+                                        'wrapper' => array(
+                                            'width' => '',
+                                            'class' => '',
+                                            'id' => '',
+                                        ),
+                                        'frontend_admin_display_mode' => 'edit',
+                                        'readonly' => 0,
+                                        'default_value' => 'Unser Netzwerk lebt von allen, die gute Fragen stellen, Erfahrungen teilen, Kompetenzen einbringen und Perspektiven eröffnen.  Stell dich mit ein paar Worten und einem Avatarbild vor. Mit jeder Aktivität im Netzwerk wächst auch dein Profil.',
+                                        'placeholder' => '',
+                                        'prepend' => '',
+                                        'append' => '',
+                                        'maxlength' => '',
+                                    ),
+                                ),
+                        ),
+                        array(
+                            'key' => 'field_rpi_label_member_profile_textfields_group',
+                            'label' => '',
+                            'name' => 'rpi_label_member_profile_textfields_group',
+                            'type' => 'group',
+                            'instructions' => 'Diese Felder werden im Profil Bereich der User angezeigt',
+                            'required' => 0,
+                            'conditional_logic' => 0,
+                            'wrapper' => array(
+                                'width' => '',
+                                'class' => '',
+                                'id' => '',
+                            ),
+                            'frontend_admin_display_mode' => 'edit',
+                            'only_front' => 0,
+                            'layout' => 'block',
+                            'acfe_seamless_style' => 0,
+                            'acfe_group_modal' => 0,
+                            'sub_fields' =>
+                                array(
+                                    array(
+                                        'key' => 'field_rpi_member_bio_default_text',
+                                        'label' => 'Der Default Text der Bio eines Users',
+                                        'name' => 'rpi_member_bio_default_text',
+                                        'type' => 'textarea',
+                                        'instructions' => '',
+                                        'required' => 0,
+                                        'conditional_logic' => 0,
+                                        'wrapper' => array(
+                                            'width' => '',
+                                            'class' => '',
+                                            'id' => '',
+                                        ),
+                                        'frontend_admin_display_mode' => 'edit',
+                                        'readonly' => 0,
+                                        'default_value' => 'Hier wurde noch keine Bio festgelegt.',
+                                        'placeholder' => '',
+                                        'prepend' => '',
+                                        'append' => '',
+                                        'maxlength' => '',
+                                    ),
+                                ),
+                        ),
+                        array(
+                            'key' => 'field_rpi_label_group',
+                            'label' => '',
+                            'name' => 'rpi_label_group',
+                            'type' => 'group',
+                            'instructions' => 'Diese Labels werden angezeigt in der Detail Ansicht eines Pins und ändern sich mit den unterschiedlichen Stadien des Pins',
+                            'required' => 0,
+                            'conditional_logic' => 0,
+                            'wrapper' => array(
+                                'width' => '',
+                                'class' => '',
+                                'id' => '',
+                            ),
+                            'frontend_admin_display_mode' => 'edit',
+                            'only_front' => 0,
+                            'layout' => 'block',
+                            'acfe_seamless_style' => 0,
+                            'acfe_group_modal' => 0,
+                            'sub_fields' =>
+                                array(
+                                    array(
+                                        'key' => 'field_rpi_wall_ready_header',
+                                        'label' => 'RPI Gruppen Erstellung möglich Header',
+                                        'name' => 'rpi_wall_ready_header',
+                                        'type' => 'text',
+                                        'instructions' => 'options_rpi_wall_ready_header',
+                                        'required' => 0,
+                                        'conditional_logic' => 0,
+                                        'wrapper' => array(
+                                            'width' => '',
+                                            'class' => '',
+                                            'id' => '',
+                                        ),
+                                        'frontend_admin_display_mode' => 'edit',
+                                        'readonly' => 0,
+                                        'default_value' => 'Die Gründung einer Gruppe ist jetzt möglich.',
+                                        'placeholder' => '',
+                                        'prepend' => '',
+                                        'append' => '',
+                                        'maxlength' => '150',
+                                    ),
+                                    array(
+                                        'key' => 'field_rpi_wall_ready_notice',
+                                        'label' => 'RPI Gruppen Erstellung möglich Notice',
+                                        'name' => 'rpi_wall_ready_notice',
+                                        'type' => 'text',
+                                        'instructions' => 'options_rpi_wall_ready_notice',
+                                        'required' => 0,
+                                        'conditional_logic' => 0,
+                                        'wrapper' => array(
+                                            'width' => '',
+                                            'class' => '',
+                                            'id' => '',
+                                        ),
+                                        'frontend_admin_display_mode' => 'edit',
+                                        'readonly' => 0,
+                                        'default_value' => 'Mit Klick auf "Gruppe Gründen" werden alle interessierten angeschrieben und haben eine Woche Zeit, der PLG beizutreten.',
+                                        'placeholder' => '',
+                                        'prepend' => '',
+                                        'append' => '',
+                                        'maxlength' => '150',
+                                    ),
+                                    array(
+                                        'key' => 'field_rpi_wall_pending_header',
+                                        'label' => 'Gründungsphase Header',
+                                        'name' => 'rpi_wall_pending_header',
+                                        'type' => 'text',
+                                        'instructions' => 'options_rpi_wall_pending_header',
+                                        'required' => 0,
+                                        'conditional_logic' => 0,
+                                        'wrapper' => array(
+                                            'width' => '',
+                                            'class' => '',
+                                            'id' => '',
+                                        ),
+                                        'frontend_admin_display_mode' => 'edit',
+                                        'readonly' => 0,
+                                        'default_value' => 'Wir suchen noch Leute für eine Professionellen Lerngemeinschaft (PLG) zu diesem Kontext',
+                                        'placeholder' => '',
+                                        'prepend' => '',
+                                        'append' => '',
+                                        'maxlength' => '150',
+                                    ),
+                                    array(
+                                        'key' => 'field_rpi_wall_pending_notice',
+                                        'label' => 'Gründungsphase notice',
+                                        'name' => 'rpi_wall_pending_notice',
+                                        'type' => 'text',
+                                        'instructions' => 'options_rpi_wall_pending_notice',
+                                        'required' => 0,
+                                        'conditional_logic' => 0,
+                                        'wrapper' => array(
+                                            'width' => '',
+                                            'class' => '',
+                                            'id' => '',
+                                        ),
+                                        'frontend_admin_display_mode' => 'edit',
+                                        'readonly' => 0,
+                                        'default_value' => 'Die Gruppe befindet sich in der Gründungsphase. Möchtest du dabei sein?',
+                                        'placeholder' => '',
+                                        'prepend' => '',
+                                        'append' => '',
+                                        'maxlength' => '150',
+                                    ),
+                                    array(
+                                        'key' => 'field_rpi_wall_founded_header',
+                                        'label' => 'Gruppe gegründet Header',
+                                        'name' => 'rpi_wall_ready_notice',
+                                        'type' => 'text',
+                                        'instructions' => 'options_rpi_wall_founded_header',
+                                        'required' => 0,
+                                        'conditional_logic' => 0,
+                                        'wrapper' => array(
+                                            'width' => '',
+                                            'class' => '',
+                                            'id' => '',
+                                        ),
+                                        'frontend_admin_display_mode' => 'edit',
+                                        'readonly' => 0,
+                                        'default_value' => 'Professionelle Lerngemeinschaft (PLG) gegründet am:',
+                                        'placeholder' => '',
+                                        'prepend' => '',
+                                        'append' => '',
+                                        'maxlength' => '150',
+                                    ),
+                                    array(
+                                        'key' => 'field_rpi_wall_founded_notice',
+                                        'label' => 'Gruppe gegründet Notice',
+                                        'name' => 'rpi_wall_founded_notice',
+                                        'type' => 'text',
+                                        'instructions' => 'options_rpi_wall_founded_notice',
+                                        'required' => 0,
+                                        'conditional_logic' => 0,
+                                        'wrapper' => array(
+                                            'width' => '',
+                                            'class' => '',
+                                            'id' => '',
+                                        ),
+                                        'frontend_admin_display_mode' => 'edit',
+                                        'readonly' => 0,
+                                        'default_value' => '',
+                                        'placeholder' => '',
+                                        'prepend' => '',
+                                        'append' => '',
+                                        'maxlength' => '150',
+                                    ),
+                                    array(
+                                        'key' => 'field_rpi_wall_closed_header',
+                                        'label' => 'Gruppe geschlossen Header',
+                                        'name' => 'rpi_wall_closed_header',
+                                        'type' => 'text',
+                                        'instructions' => 'options_rpi_wall_closed_header',
+                                        'required' => 0,
+                                        'conditional_logic' => 0,
+                                        'wrapper' => array(
+                                            'width' => '',
+                                            'class' => '',
+                                            'id' => '',
+                                        ),
+                                        'frontend_admin_display_mode' => 'edit',
+                                        'readonly' => 0,
+                                        'default_value' => 'Professionelle Lerngemeinschaft (PLG) - Arbeitsphase abgeschlossen',
+                                        'placeholder' => '',
+                                        'prepend' => '',
+                                        'append' => '',
+                                        'maxlength' => '150',
+                                    ),
+                                    array(
+                                        'key' => 'field_rpi_wall_closed_notice',
+                                        'label' => 'Gruppe geschlossen Notice',
+                                        'name' => 'rpi_wall_closed_notice',
+                                        'type' => 'text',
+                                        'instructions' => 'options_rpi_wall_closed_notice',
+                                        'required' => 0,
+                                        'conditional_logic' => 0,
+                                        'wrapper' => array(
+                                            'width' => '',
+                                            'class' => '',
+                                            'id' => '',
+                                        ),
+                                        'frontend_admin_display_mode' => 'edit',
+                                        'readonly' => 0,
+                                        'default_value' => '',
+                                        'placeholder' => '',
+                                        'prepend' => '',
+                                        'append' => '',
+                                        'maxlength' => '150',
+                                    ),
+                                    array(
+                                        'key' => 'field_rpi_wall_not_founded_header',
+                                        'label' => 'Keine Gruppe gegründet Header',
+                                        'name' => 'rpi_wall_not_founded_header',
+                                        'type' => 'text',
+                                        'instructions' => 'options_rpi_wall_not_founded_header',
+                                        'required' => 0,
+                                        'conditional_logic' => 0,
+                                        'wrapper' => array(
+                                            'width' => '',
+                                            'class' => '',
+                                            'id' => '',
+                                        ),
+                                        'frontend_admin_display_mode' => 'edit',
+                                        'readonly' => 0,
+                                        'default_value' => 'Interessiert an einer Professionellen Lerngemeinschaft (PLG)?',
+                                        'placeholder' => '',
+                                        'prepend' => '',
+                                        'append' => '',
+                                        'maxlength' => '150',
+                                    ),
+                                    array(
+                                        'key' => 'field_rpi_wall_not_founded_notice',
+                                        'label' => 'Keine Gruppe gegründet Notice',
+                                        'name' => 'rpi_wall_not_founded_notice',
+                                        'type' => 'text',
+                                        'instructions' => 'options_rpi_wall_not_founded_notice',
+                                        'required' => 0,
+                                        'conditional_logic' => 0,
+                                        'wrapper' => array(
+                                            'width' => '',
+                                            'class' => '',
+                                            'id' => '',
+                                        ),
+                                        'frontend_admin_display_mode' => 'edit',
+                                        'readonly' => 0,
+                                        'default_value' => 'Klicke auf (+) und du wirst du automatisch benachrichtigt, sobald sich genügend Interessenten gefunden haben.',
+                                        'placeholder' => '',
+                                        'prepend' => '',
+                                        'append' => '',
+                                        'maxlength' => '150',
+                                    ),
+                                ),
+                        ),
+                        array(
+                            'key' => 'field_rpi_termine',
+                            'label' => 'Termine',
+                            'name' => '',
+                            'type' => 'tab',
+                            'instructions' => '',
+                            'required' => 0,
+                            'conditional_logic' => 0,
+                            'wrapper' => array(
+                                'width' => '',
+                                'class' => '',
+                                'id' => '',
+                            ),
+                            'placement' => 'top',
+                            'endpoint' => 0,
+                        ),
+                        array(
+                            'key' => 'field_ereignis_seiten_relation',
+                            'label' => 'Ereignis Seiten Relation',
+                            'name' => 'ereignis_seiten_relation',
+                            'aria-label' => '',
+                            'type' => 'repeater',
+                            'instructions' => '',
+                            'required' => 0,
+                            'conditional_logic' => 0,
+                            'wrapper' => array(
+                                'width' => '',
+                                'class' => '',
+                                'id' => '',
+                            ),
+                            'acfe_repeater_stylised_button' => 0,
+                            'layout' => 'row',
+                            'pagination' => 0,
+                            'min' => 0,
+                            'max' => 0,
+                            'collapsed' => '',
+                            'button_label' => 'Eintrag hinzufügen',
+                            'rows_per_page' => 20,
+                            'sub_fields' => array(
+                                array(
+                                    'key' => 'field_ereignis',
+                                    'label' => 'Ereignis',
+                                    'name' => 'ereignis',
+                                    'aria-label' => '',
+                                    'type' => 'acfe_taxonomy_terms',
                                     'instructions' => '',
                                     'required' => 0,
                                     'conditional_logic' => 0,
@@ -1203,19 +1563,35 @@ Die Kommentare und Matrixchat sowie die Toolbar sind weiterhin verwendbar.
                                         'class' => '',
                                         'id' => '',
                                     ),
-                                    'frontend_admin_display_mode' => 'edit',
-                                    'readonly' => 0,
-                                    'default_value' => 'Willkommen auf der Pinnwand! Hier kannst du eigene Fragestellungen einbringen und findest spannende Impulse zu verschiedenen Themen. Außerdem kannst dich an Fragen durch Kommentare beteiligen oder Professionelle Lerngruppen (PLG´s) zum intensiveren Austausch zu einem Thema finden.',
+                                    'taxonomy' => array(
+                                        0 => 'termin_event',
+                                    ),
+                                    'allow_terms' => '',
+                                    'allow_level' => '',
+                                    'field_type' => 'select',
+                                    'default_value' => array(),
+                                    'return_format' => 'id',
+                                    'ui' => 0,
+                                    'allow_null' => 0,
+                                    'multiple' => 0,
+                                    'save_terms' => 0,
+                                    'load_terms' => 0,
+                                    'choices' => array(),
+                                    'ajax' => 0,
                                     'placeholder' => '',
-                                    'prepend' => '',
-                                    'append' => '',
-                                    'maxlength' => '',
+                                    'search_placeholder' => '',
+                                    'layout' => '',
+                                    'toggle' => 0,
+                                    'allow_custom' => 0,
+                                    'other_choice' => 0,
+                                    'parent_repeater' => 'field_ereignis_seiten_relation',
                                 ),
                                 array(
-                                    'key' => 'field_rpi_member_main_header',
-                                    'label' => 'Netzwerk (Member) Header Einleitung',
-                                    'name' => 'rpi_member_main_header',
-                                    'type' => 'textarea',
+                                    'key' => 'field_zielseite',
+                                    'label' => 'Zielseite',
+                                    'name' => 'zielseite',
+                                    'aria-label' => '',
+                                    'type' => 'page_link',
                                     'instructions' => '',
                                     'required' => 0,
                                     'conditional_logic' => 0,
@@ -1224,294 +1600,35 @@ Die Kommentare und Matrixchat sowie die Toolbar sind weiterhin verwendbar.
                                         'class' => '',
                                         'id' => '',
                                     ),
-                                    'frontend_admin_display_mode' => 'edit',
-                                    'readonly' => 0,
-                                    'default_value' => 'Unser Netzwerk lebt von allen, die gute Fragen stellen, Erfahrungen teilen, Kompetenzen einbringen und Perspektiven eröffnen.  Stell dich mit ein paar Worten und einem Avatarbild vor. Mit jeder Aktivität im Netzwerk wächst auch dein Profil.',
-                                    'placeholder' => '',
-                                    'prepend' => '',
-                                    'append' => '',
-                                    'maxlength' => '',
+                                    'post_type' => array(
+                                        0 => 'page',
+                                    ),
+                                    'taxonomy' => '',
+                                    'allow_archives' => 1,
+                                    'multiple' => 0,
+                                    'allow_null' => 0,
+                                    'parent_repeater' => 'field_ereignis_seiten_relation',
                                 ),
                             ),
-                    ),
-                    array(
-                        'key' => 'field_rpi_label_member_profile_textfields_group',
-                        'label' => '',
-                        'name' => 'rpi_label_member_profile_textfields_group',
-                        'type' => 'group',
-                        'instructions' => 'Diese Felder werden im Profil Bereich der User angezeigt',
-                        'required' => 0,
-                        'conditional_logic' => 0,
-                        'wrapper' => array(
-                            'width' => '',
-                            'class' => '',
-                            'id' => '',
                         ),
-                        'frontend_admin_display_mode' => 'edit',
-                        'only_front' => 0,
-                        'layout' => 'block',
-                        'acfe_seamless_style' => 0,
-                        'acfe_group_modal' => 0,
-                        'sub_fields' =>
-                            array(
-                                array(
-                                    'key' => 'field_rpi_member_bio_default_text',
-                                    'label' => 'Der Default Text der Bio eines Users',
-                                    'name' => 'rpi_member_bio_default_text',
-                                    'type' => 'textarea',
-                                    'instructions' => '',
-                                    'required' => 0,
-                                    'conditional_logic' => 0,
-                                    'wrapper' => array(
-                                        'width' => '',
-                                        'class' => '',
-                                        'id' => '',
-                                    ),
-                                    'frontend_admin_display_mode' => 'edit',
-                                    'readonly' => 0,
-                                    'default_value' => 'Hier wurde noch keine Bio festgelegt.',
-                                    'placeholder' => '',
-                                    'prepend' => '',
-                                    'append' => '',
-                                    'maxlength' => '',
-                                ),
+                        array(
+                            'key' => 'field_online_meeting_link',
+                            'label' => 'Online Meeting Link',
+                            'name' => 'online_meeting_link',
+                            'aria-label' => '',
+                            'type' => 'url',
+                            'instructions' => '',
+                            'required' => 0,
+                            'conditional_logic' => 0,
+                            'wrapper' => array(
+                                'width' => '',
+                                'class' => '',
+                                'id' => '',
                             ),
-                    ),
-                    array(
-                        'key' => 'field_rpi_label_group',
-                        'label' => '',
-                        'name' => 'rpi_label_group',
-                        'type' => 'group',
-                        'instructions' => 'Diese Labels werden angezeigt in der Detail Ansicht eines Pins und ändern sich mit den unterschiedlichen Stadien des Pins',
-                        'required' => 0,
-                        'conditional_logic' => 0,
-                        'wrapper' => array(
-                            'width' => '',
-                            'class' => '',
-                            'id' => '',
+                            'default_value' => '',
+                            'placeholder' => '',
                         ),
-                        'frontend_admin_display_mode' => 'edit',
-                        'only_front' => 0,
-                        'layout' => 'block',
-                        'acfe_seamless_style' => 0,
-                        'acfe_group_modal' => 0,
-                        'sub_fields' =>
-                            array(
-                                array(
-                                    'key' => 'field_rpi_wall_ready_header',
-                                    'label' => 'RPI Gruppen Erstellung möglich Header',
-                                    'name' => 'rpi_wall_ready_header',
-                                    'type' => 'text',
-                                    'instructions' => 'options_rpi_wall_ready_header',
-                                    'required' => 0,
-                                    'conditional_logic' => 0,
-                                    'wrapper' => array(
-                                        'width' => '',
-                                        'class' => '',
-                                        'id' => '',
-                                    ),
-                                    'frontend_admin_display_mode' => 'edit',
-                                    'readonly' => 0,
-                                    'default_value' => 'Die Gründung einer Gruppe ist jetzt möglich.',
-                                    'placeholder' => '',
-                                    'prepend' => '',
-                                    'append' => '',
-                                    'maxlength' => '150',
-                                ),
-                                array(
-                                    'key' => 'field_rpi_wall_ready_notice',
-                                    'label' => 'RPI Gruppen Erstellung möglich Notice',
-                                    'name' => 'rpi_wall_ready_notice',
-                                    'type' => 'text',
-                                    'instructions' => 'options_rpi_wall_ready_notice',
-                                    'required' => 0,
-                                    'conditional_logic' => 0,
-                                    'wrapper' => array(
-                                        'width' => '',
-                                        'class' => '',
-                                        'id' => '',
-                                    ),
-                                    'frontend_admin_display_mode' => 'edit',
-                                    'readonly' => 0,
-                                    'default_value' => 'Mit Klick auf "Gruppe Gründen" werden alle interessierten angeschrieben und haben eine Woche Zeit, der PLG beizutreten.',
-                                    'placeholder' => '',
-                                    'prepend' => '',
-                                    'append' => '',
-                                    'maxlength' => '150',
-                                ),
-                                array(
-                                    'key' => 'field_rpi_wall_pending_header',
-                                    'label' => 'Gründungsphase Header',
-                                    'name' => 'rpi_wall_pending_header',
-                                    'type' => 'text',
-                                    'instructions' => 'options_rpi_wall_pending_header',
-                                    'required' => 0,
-                                    'conditional_logic' => 0,
-                                    'wrapper' => array(
-                                        'width' => '',
-                                        'class' => '',
-                                        'id' => '',
-                                    ),
-                                    'frontend_admin_display_mode' => 'edit',
-                                    'readonly' => 0,
-                                    'default_value' => 'Wir suchen noch Leute für eine Professionellen Lerngemeinschaft (PLG) zu diesem Kontext',
-                                    'placeholder' => '',
-                                    'prepend' => '',
-                                    'append' => '',
-                                    'maxlength' => '150',
-                                ),
-                                array(
-                                    'key' => 'field_rpi_wall_pending_notice',
-                                    'label' => 'Gründungsphase notice',
-                                    'name' => 'rpi_wall_pending_notice',
-                                    'type' => 'text',
-                                    'instructions' => 'options_rpi_wall_pending_notice',
-                                    'required' => 0,
-                                    'conditional_logic' => 0,
-                                    'wrapper' => array(
-                                        'width' => '',
-                                        'class' => '',
-                                        'id' => '',
-                                    ),
-                                    'frontend_admin_display_mode' => 'edit',
-                                    'readonly' => 0,
-                                    'default_value' => 'Die Gruppe befindet sich in der Gründungsphase. Möchtest du dabei sein?',
-                                    'placeholder' => '',
-                                    'prepend' => '',
-                                    'append' => '',
-                                    'maxlength' => '150',
-                                ),
-                                array(
-                                    'key' => 'field_rpi_wall_founded_header',
-                                    'label' => 'Gruppe gegründet Header',
-                                    'name' => 'rpi_wall_ready_notice',
-                                    'type' => 'text',
-                                    'instructions' => 'options_rpi_wall_founded_header',
-                                    'required' => 0,
-                                    'conditional_logic' => 0,
-                                    'wrapper' => array(
-                                        'width' => '',
-                                        'class' => '',
-                                        'id' => '',
-                                    ),
-                                    'frontend_admin_display_mode' => 'edit',
-                                    'readonly' => 0,
-                                    'default_value' => 'Professionelle Lerngemeinschaft (PLG) gegründet am:',
-                                    'placeholder' => '',
-                                    'prepend' => '',
-                                    'append' => '',
-                                    'maxlength' => '150',
-                                ),
-                                array(
-                                    'key' => 'field_rpi_wall_founded_notice',
-                                    'label' => 'Gruppe gegründet Notice',
-                                    'name' => 'rpi_wall_founded_notice',
-                                    'type' => 'text',
-                                    'instructions' => 'options_rpi_wall_founded_notice',
-                                    'required' => 0,
-                                    'conditional_logic' => 0,
-                                    'wrapper' => array(
-                                        'width' => '',
-                                        'class' => '',
-                                        'id' => '',
-                                    ),
-                                    'frontend_admin_display_mode' => 'edit',
-                                    'readonly' => 0,
-                                    'default_value' => '',
-                                    'placeholder' => '',
-                                    'prepend' => '',
-                                    'append' => '',
-                                    'maxlength' => '150',
-                                ),
-                                array(
-                                    'key' => 'field_rpi_wall_closed_header',
-                                    'label' => 'Gruppe geschlossen Header',
-                                    'name' => 'rpi_wall_closed_header',
-                                    'type' => 'text',
-                                    'instructions' => 'options_rpi_wall_closed_header',
-                                    'required' => 0,
-                                    'conditional_logic' => 0,
-                                    'wrapper' => array(
-                                        'width' => '',
-                                        'class' => '',
-                                        'id' => '',
-                                    ),
-                                    'frontend_admin_display_mode' => 'edit',
-                                    'readonly' => 0,
-                                    'default_value' => 'Professionelle Lerngemeinschaft (PLG) - Arbeitsphase abgeschlossen',
-                                    'placeholder' => '',
-                                    'prepend' => '',
-                                    'append' => '',
-                                    'maxlength' => '150',
-                                ),
-                                array(
-                                    'key' => 'field_rpi_wall_closed_notice',
-                                    'label' => 'Gruppe geschlossen Notice',
-                                    'name' => 'rpi_wall_closed_notice',
-                                    'type' => 'text',
-                                    'instructions' => 'options_rpi_wall_closed_notice',
-                                    'required' => 0,
-                                    'conditional_logic' => 0,
-                                    'wrapper' => array(
-                                        'width' => '',
-                                        'class' => '',
-                                        'id' => '',
-                                    ),
-                                    'frontend_admin_display_mode' => 'edit',
-                                    'readonly' => 0,
-                                    'default_value' => '',
-                                    'placeholder' => '',
-                                    'prepend' => '',
-                                    'append' => '',
-                                    'maxlength' => '150',
-                                ),
-                                array(
-                                    'key' => 'field_rpi_wall_not_founded_header',
-                                    'label' => 'Keine Gruppe gegründet Header',
-                                    'name' => 'rpi_wall_not_founded_header',
-                                    'type' => 'text',
-                                    'instructions' => 'options_rpi_wall_not_founded_header',
-                                    'required' => 0,
-                                    'conditional_logic' => 0,
-                                    'wrapper' => array(
-                                        'width' => '',
-                                        'class' => '',
-                                        'id' => '',
-                                    ),
-                                    'frontend_admin_display_mode' => 'edit',
-                                    'readonly' => 0,
-                                    'default_value' => 'Interessiert an einer Professionellen Lerngemeinschaft (PLG)?',
-                                    'placeholder' => '',
-                                    'prepend' => '',
-                                    'append' => '',
-                                    'maxlength' => '150',
-                                ),
-                                array(
-                                    'key' => 'field_rpi_wall_not_founded_notice',
-                                    'label' => 'Keine Gruppe gegründet Notice',
-                                    'name' => 'rpi_wall_not_founded_notice',
-                                    'type' => 'text',
-                                    'instructions' => 'options_rpi_wall_not_founded_notice',
-                                    'required' => 0,
-                                    'conditional_logic' => 0,
-                                    'wrapper' => array(
-                                        'width' => '',
-                                        'class' => '',
-                                        'id' => '',
-                                    ),
-                                    'frontend_admin_display_mode' => 'edit',
-                                    'readonly' => 0,
-                                    'default_value' => 'Klicke auf (+) und du wirst du automatisch benachrichtigt, sobald sich genügend Interessenten gefunden haben.',
-                                    'placeholder' => '',
-                                    'prepend' => '',
-                                    'append' => '',
-                                    'maxlength' => '150',
-                                ),
-                            ),
                     ),
-
-                ),
-
                 'location' => array(
                     array(
                         array(
@@ -1641,9 +1758,9 @@ Die Kommentare und Matrixchat sowie die Toolbar sind weiterhin verwendbar.
     public function sync_user_member_relation($user_login, $user)
     {
         if (is_a($user, 'WP_User')) {
-			if(in_array($user->user_login, ['wpadmin', 'admin'] )){
-				return;
-			}
+            if (in_array($user->user_login, ['wpadmin', 'admin'])) {
+                return;
+            }
             $member = get_posts(array(
                 'post_status' => 'any',
                 'post_type' => 'member',
@@ -1653,7 +1770,7 @@ Die Kommentare und Matrixchat sowie die Toolbar sind weiterhin verwendbar.
             if (is_array($member) && !empty(reset($member))) {
                 return;
             } else {
-				$member = wp_insert_post(array(
+                $member = wp_insert_post(array(
                     'post_title' => $user->display_name,
                     'post_status' => 'publish',
                     'post_author' => $user->ID,
@@ -1681,36 +1798,6 @@ Die Kommentare und Matrixchat sowie die Toolbar sind weiterhin verwendbar.
     public function update_taxonomy_of_member_on_pin_save(int $post_ID, WP_Post $post, bool $update = false)
     {
         $this->sync_taxonomies_of_pin_members($post_ID, $post, false);
-    }
-
-    public function delete_member_taxonomy_on_pin_deletion(int $postid, WP_Post $post)
-    {
-        $this->sync_taxonomies_of_pin_members($postid, $post, true);
-    }
-
-    function sync_taxonomies_of_members(int $post_ID, WP_Post $post, bool $delete)
-    {
-
-        if ($post->post_type === 'member') {
-            $member = new Member($post->post_author);
-
-            $taxonomies = get_object_taxonomies('wall');
-            $pin_ids = $member->get_assigned_group_Ids();
-
-            foreach ($taxonomies as $taxonomy) {
-                $term_ids = [];
-
-                foreach ($pin_ids as $post_id) {
-                    $terms = wp_get_post_terms($post_id, $taxonomy);
-                    foreach ($terms as $term) {
-                        if ($term instanceof \WP_Term && !in_array($term->term_id, $term_ids)) {
-                            $term_ids[] = $term->term_id;
-                        }
-                    }
-                }
-                wp_set_post_terms($member->post->ID, $term_ids, $taxonomy);
-            }
-        }
     }
 
     function sync_taxonomies_of_pin_members(int $post_ID, WP_Post $post, bool $delete)
@@ -1748,24 +1835,54 @@ Die Kommentare und Matrixchat sowie die Toolbar sind weiterhin verwendbar.
         }
     }
 
-	function alter_wall_query(\WP_Query $query)
+    public function delete_member_taxonomy_on_pin_deletion(int $postid, WP_Post $post)
+    {
+        $this->sync_taxonomies_of_pin_members($postid, $post, true);
+    }
+
+    function sync_taxonomies_of_members(int $post_ID, WP_Post $post, bool $delete)
     {
 
-	    $is_main_query = false;
+        if ($post->post_type === 'member') {
+            $member = new Member($post->post_author);
 
-        if (empty($_GET['widgetId']) && $query->is_main_query() &&  ($query->is_post_type_archive('wall') || $query->get('post_type') === 'wall')) {
+            $taxonomies = get_object_taxonomies('wall');
+            $pin_ids = $member->get_assigned_group_Ids();
+
+            foreach ($taxonomies as $taxonomy) {
+                $term_ids = [];
+
+                foreach ($pin_ids as $post_id) {
+                    $terms = wp_get_post_terms($post_id, $taxonomy);
+                    foreach ($terms as $term) {
+                        if ($term instanceof \WP_Term && !in_array($term->term_id, $term_ids)) {
+                            $term_ids[] = $term->term_id;
+                        }
+                    }
+                }
+                wp_set_post_terms($member->post->ID, $term_ids, $taxonomy);
+            }
+        }
+    }
+
+    function alter_wall_query(\WP_Query $query)
+    {
+
+        $is_main_query = false;
+
+        if (empty($_GET['widgetId']) && $query->is_main_query() && ($query->is_post_type_archive('wall') || $query->get('post_type') === 'wall')) {
 
             //TODO: Check wether given widgetID is valid
 
-	        if(!is_user_logged_in()){
-		        $query->set('meta_query', array(
-			        array(
-				        'key' => 'public',
-				        'compare' => '=',
-				        'value' => '1'
-			        )
-		        ));
-	        }
+            if (!is_user_logged_in()) {
+                $query->set('meta_query', array(
+                    array(
+                        'key' => 'public',
+                        'compare' => '=',
+                        'value' => '1'
+                    )
+                ));
+            }
 
         }
     }
