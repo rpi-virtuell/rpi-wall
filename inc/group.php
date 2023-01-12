@@ -619,7 +619,11 @@ class Group extends \stdClass
 
     protected function get_matrix_channel($local_slug = false)
     {
+
         $ch  = $this->get('rpi_wall_group_channel');
+        if(!$ch){
+            return 'dibes_plg_' . $this->ID;
+        }
         if($local_slug){
 	        $ch = substr($ch, 1, strpos($ch, ':')-1);
         }

@@ -16,6 +16,7 @@ use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\RequestOptions;
 use rpi\Wall;
 
+
 class Matrix {
 
 	public \Aryess\PhpMatrixSdk\MatrixClient $client;
@@ -25,8 +26,6 @@ class Matrix {
 	protected $token;
 
 	function __construct() {
-
-
 
 		$this->token = get_option('options_matrix_bot_token');
 
@@ -42,6 +41,7 @@ class Matrix {
 		}catch (\Exception $exception ){
 			echo $exception->getMessage();
 		}
+
 
 	}
 
@@ -242,7 +242,7 @@ class Matrix {
 
 	function tests(int $group_id=0){
 
-		if(false && $group_id>0 && get_current_user_id() == 2){
+		if( $group_id>0 && get_current_user_id() == 2){
 
 
 			$msg_obj =new \stdClass();
@@ -250,47 +250,44 @@ class Matrix {
 			$msg_obj->body = 'Du kannst die eingebundene Toolbar direkt aus diesem Chatfenster nutzen: Klicke in der oberen rechten Ecke auf das Infosymbol <strong>(i)</strong>  und anchließend weiter unten auf "Toolbar", um diese dauerhaft anzuzeigen: <a href="https://schule-evangelisch-digital.de/wp-content/uploads/2022/09/toolbar.png"></a>' ;
 
 
-						$group = new \rpi\Wall\Group($group_id);
+			$group = new \rpi\Wall\Group($group_id);
 
-						$roomid = $this->create_Room($group);
+			$roomid = $this->create_Room($group);
 
-						if($roomid instanceof \WP_Error){
-							echo $roomid->get_error_message();
-						}else{
-							echo 'Erfolg. Matrix Raum Id: '.$roomid;
-						}
-
-
-
-						$widget_ID = $this -> addToolbar($group);
+			if($roomid instanceof \WP_Error){
+				echo $roomid->get_error_message();
+			}else{
+				echo 'Erfolg. Matrix Raum Id: '.$roomid;
+			}
 
 
-
-
-						$ret = $this->send_msg_obj($group,$msg_obj);
-
-						$this->set_topic($group,$group->url);
+			/*
+			$widget_ID = $this -> addToolbar($group);
 
 
 
-						$msg = str_replace('%postlink%',get_permalink($group_id).'#group', get_option('options_matrix_bot_welcome_message'));
-						$this->send_msg($group,$msg);
-						$msg = get_option('options_matrix_bot_toolbar_tutorial');
-						$this->send_msg($group,$msg);
 
-						/*
+			$ret = $this->send_msg_obj($group,$msg_obj);
 
-													$user = wp_get_current_user();
-													$to = $user->user_email;
-													$subject = $msg_obj->subject;
-													$body = $msg_obj->body;
-													$headers = array('Content-Type: text/html; charset=UTF-8');
-
-													wp_mail( $to, $subject, $body, $headers );
-													*/
+			$this->set_topic($group,$group->url);
 
 
 
+			$msg = str_replace('%postlink%',get_permalink($group_id).'#group', get_option('options_matrix_bot_welcome_message'));
+			$this->send_msg($group,$msg);
+			$msg = get_option('options_matrix_bot_toolbar_tutorial');
+			$this->send_msg($group,$msg);
+			*/
+			/*
+
+			$user = wp_get_current_user();
+			$to = $user->user_email;
+			$subject = $msg_obj->subject;
+			$body = $msg_obj->body;
+			$headers = array('Content-Type: text/html; charset=UTF-8');
+
+			wp_mail( $to, $subject, $body, $headers );
+			*/
 
 
 			//var_dump($this->get_MatrixRoom_Members($group));
@@ -310,11 +307,6 @@ class Matrix {
 	}
 
 }
-
-add_action('init', function (){
-	$matrix = new Matrix();
-	$matrix->tests(7703);
-});
 
 use Aryess\PhpMatrixSdk\MatrixHttpApi;
 
@@ -418,3 +410,9 @@ class MatrixCustomClient extends MatrixClient{
 		}
 	}
 }
+/*
+add_action('init', function (){
+	$matrix = new Matrix();
+	$matrix->tests(13);
+});
+*/
