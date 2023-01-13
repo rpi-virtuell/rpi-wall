@@ -44,6 +44,7 @@ class Shortcodes
         add_shortcode('my_posts', [$this, 'get_user_posts']);
         add_shortcode('my_comments', array($this, 'get_user_comments'));
         add_shortcode('rpi_wall_filter', array($this, 'get_wall_filter'));
+        add_shortcode('rpi_member_filter', array($this, 'get_member_filter'));
 
         add_shortcode('wall_termine', array($this, 'display_termine'));
         add_shortcode('wall_termine_widget', array($this, 'display_termine_widget'));
@@ -193,6 +194,41 @@ class Shortcodes
         return ob_get_clean();
     }
 
+    public function get_member_filter($atts){
+
+        ob_start();
+        if(is_archive() || is_tax('schoolform') || is_tax('profession')){
+            ?>
+
+                <details class="rpi-wall-filter tags">
+
+                    <summary class="button">Filter</summary>
+                    <div class="rpi-wall-filter container">
+                        <div class="rpi-wall-filter grid">
+                            <div>
+                                <?php //echo facetwp_display('facet','suche'); ?>
+                                <?php echo facetwp_display('facet','schoolform'); ?>
+                            </div>
+                            <div>
+                                <?php echo facetwp_display('facet','profession'); ?>
+                            </div>
+                        </div>
+                        <div>
+                            <?php
+                                echo facetwp_display( 'selections' );
+                                echo facetwp_display('facet','reset');
+                             ?>
+                        </div>
+                    </div>
+
+
+                </details>
+
+            <?php
+
+        }
+        return ob_get_clean();
+    }
 
     public function get_user_profile_tags($atts)
     {

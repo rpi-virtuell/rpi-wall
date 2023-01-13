@@ -48,16 +48,36 @@ class Toolbar
                         $status = $group->get_toolbar_status();
                         switch ($status) {
                             case 'constituted':
+                                ?>
+                                <div class="toolbar-status">
+                                    Arbeitsstrukturbögen können genutzt werden, um den Fortschritt während eines Meetings
+                                    festzuhalten und zu veröffentlichen
+                                </div>
+                                <?php
                                 RpiWall::modal('edit-planningForm', 'Planungsbogen', do_shortcode('[acfe_form name="edit-constitution"]'));
                                 RpiWall::modal('protocolForm', 'Arbeitsstrukturbogen', do_shortcode('[acfe_form name="create-protocol"]'));
                                 break;
                             case 'meeting_planned':
+                                ?>
+                                <div class="toolbar-status">
+                                    Ein Planungstermin wurde festgelegt der Planungsbogen kann nun genutzt werden.
+                                </div>
+                                <?php
                                 RpiWall::modal('planningForm', 'Planungsbogen', do_shortcode('[acfe_form name="constitution"]'));
                                 break;
                             case 'closed':
-                                RpiWall::modal('edit-planningForm', 'Planungsbogen', do_shortcode('[acfe_form name="edit-constitution"]'));
+                                ?>
+                                <div class="toolbar-status">
+                                    Die verbindliche Arbeitsphase der PLG wurde beendet.
+                                </div>
+                                <?php
                                 break;
                             default:
+                                ?>
+                                <div class="toolbar-status">
+                                    Ein Planungstermin muss festgelegt werden, um mehr Toolbar funktionen freizuschalten.
+                                </div>
+                                <?php
                                 RpiWall::modal('planningDate', 'Planungstermin setzen ', do_shortcode('[acfe_form name="constitution_date"]'));
                                 if (!$group->get_toolbar_buttons())
                                 {
@@ -118,7 +138,7 @@ class Toolbar
 
                             <div class="toolbar-protocols">
                                 <h3>
-                                    Arbeitsstrukturbogen:
+                                    Arbeitstreffen:
                                 </h3>
                                 <?php
 

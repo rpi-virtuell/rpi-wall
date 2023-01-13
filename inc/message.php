@@ -40,6 +40,13 @@ class Message
                     'Mitglieder der Gruppe finden unten auf der Seite  den Link zu einer geschützten Raum ' .
                     'und zu weiteren hilfreichen Kooperationswerkzeugen.'
             ],
+
+        'closed' =>
+            [
+                'subject' => '[%grouptitle%] - Verbindliche Phase abgeschlossen',
+                'body' =>'%actorname% (%actorlink%) hat die verbindliche Arbeitphase des Pinwandeintrags %postlink% beendet.'
+            ],
+
         'create' =>
             [
                 'subject' => '[Pinwandeintrag]: %posttitle%',
@@ -93,12 +100,13 @@ class Message
                     'Der Gründungsvorgang wurde zurückgesetzt. Wenn sich mehr Interessierte finden, kann der Gründungsprozess erneut gestartet werden.'
             ],
 
+
     ];
-    protected $events = ['create','creator', 'ready', 'liked', 'joined', 'pending', 'founded', 'requested', 'comment', 'reset'];
+    protected $events = ['create','creator', 'ready', 'closed','liked', 'joined', 'pending', 'founded', 'requested', 'comment', 'reset'];
 
     /**
      * @param Group|Int $group
-     * @param string $event ['create','pending','founded','liked','minimum_likers_met','comment','reset']
+     * @param string $event ['create','pending','founded','closed','liked','minimum_likers_met','comment','reset']
      * @param array $to :   ['orga','watch','group'] welche Zielgruppe soll benachrichtigt werden
      * @param int $actor_id handelnder User z.B. Kommentarschreiber
      */

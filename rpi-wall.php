@@ -206,6 +206,14 @@ class RpiWall
                 <?php
             endif;
 
+            if(is_post_type_archive('member')):
+                ?>
+                <div class="ct-container rpi-wall-filters">
+                    <?php echo do_shortcode('[rpi_member_filter]'); ?>
+                </div>
+            <?php
+            endif;
+
         });
 
         /* facetwp paging needs to disable blocksy pager!!! */
@@ -267,6 +275,8 @@ class RpiWall
             Wall\Toolbar::update_toolbar_status($form, $post_id, 'closed');
             $group = new Wall\Group($post_id);
            $group->set_status('closed');
+            $matrix = new Wall\Matrix();
+            $matrix->send_msg(new Wall\Group($post_id),get_option('options_matrix_bot_review'));
         }, 10 , 2);
 
         // Pin Display
