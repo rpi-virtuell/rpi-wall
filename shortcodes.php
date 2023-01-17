@@ -205,6 +205,9 @@ class Shortcodes
                     <summary class="button">Filter</summary>
                     <div class="rpi-wall-filter container">
                         <div class="rpi-wall-filter grid">
+                       <div>
+                                <?php echo facetwp_display('facet','suchen'); ?>
+                                </div>
                             <div>
                                 <?php //echo facetwp_display('facet','suche'); ?>
                                 <?php echo facetwp_display('facet','schoolform'); ?>
@@ -213,7 +216,7 @@ class Shortcodes
                                 <?php echo facetwp_display('facet','profession'); ?>
                             </div>
                             <div>
-                                <?php echo facetwp_display('facet','wall_tag'); ?>
+                                <?php echo facetwp_display('facet','wall_tags'); ?>
                             </div>
                         </div>
                         <div>
