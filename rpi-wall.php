@@ -382,14 +382,22 @@ class RpiWall
 	 *
 	 * @return mixed
 	 */
-    public function facetwp_injection($query_args, $class){
-
-        if('wall'=== $query_args['post_type']){
-	        $blocksy = get_option('theme_mods_blocksy');
-	        if($blocksy){
-		        $posts_per_page = $blocksy['wall_archive_archive_per_page'];
-		        $query_args['posts_per_page'] = $posts_per_page;
-	        }
+    public function facetwp_injection($query_args, $class)
+    {
+        // Blocksy Pager muss ausgeschaltet sein!
+        if ('wall' === $query_args['post_type']) {
+            $blocksy = get_option('theme_mods_blocksy');
+            if ($blocksy) {
+                $posts_per_page = $blocksy['wall_archive_archive_per_page'];
+                $query_args['posts_per_page'] = $posts_per_page;
+            }
+        }
+        if ('member' === $query_args['post_type']) {
+            $blocksy = get_option('theme_mods_blocksy');
+            if ($blocksy) {
+                $posts_per_page = $blocksy['member_archive_archive_per_page'];
+                $query_args['posts_per_page'] = $posts_per_page;
+            }
         }
 
         return $query_args;

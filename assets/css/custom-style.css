@@ -102,6 +102,10 @@ article.entry-card {
     position: relative;
 }
 
+article.entry-card.member h4{
+    font-size: 20px;
+}
+
 /*
 .rpi-wall-group-status-triangle {
     position: absolute;

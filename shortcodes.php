@@ -212,6 +212,9 @@ class Shortcodes
                             <div>
                                 <?php echo facetwp_display('facet','profession'); ?>
                             </div>
+                            <div>
+                                <?php echo facetwp_display('facet','wall_tag'); ?>
+                            </div>
                         </div>
                         <div>
                             <?php
