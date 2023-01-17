@@ -313,7 +313,11 @@ jQuery(document).ready($ => {
                 $('button.facetwp-reset.facetwp-hide-empty').hide();
                 $('.ct-container.rpi-wall-filters summary.button').removeClass('active');
             }
-
+            //remove result page content from facetwp-template if no results
+            if(FWP.settings.pager.total_pages === 0){
+                $('.entries.facetwp-template').html('');
+                $('.facetwp-facet-paging').hide();
+            }
 
 
         },100);
