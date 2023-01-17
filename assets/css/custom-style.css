@@ -163,6 +163,10 @@ article.founded .pin-title-icon.group svg, .group-post-wrapper.founded .pin-titl
     margin-top: -8px;
 }
 
+article:not(.is_public_pin) label[for="tab-pin"]{
+    border-bottom: 10px solid var(--ci-group-closed);
+}
+
 article.ready label[for="tab-group"] {
     border-bottom: 10px solid var(--ci-group-ready);
 }

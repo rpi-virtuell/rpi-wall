@@ -97,9 +97,9 @@ class MemberPage
 
 
             $tabs->addTab(['label' => 'Über mich', 'name' => 'bio', 'content' => '<div id ="rpi_tab_bio_content"></div>', 'icon' => \rpi\Wall\Shortcodes::$user_icon, 'checked' => true]);
-            $tabs->addTab(['label' => 'Gruppen', 'name' => 'groups', 'content' => '<div id ="rpi_tab_groups_content"></div>', 'icon' => \rpi\Wall\Shortcodes::$group_icon]);
-            $tabs->addTab(['label' => 'Abonnements', 'name' => 'watch', 'content' => '<div id ="rpi_tab_watch_content"></div>', 'icon' => \rpi\Wall\Shortcodes::$watch_icon, 'permission' => 'self']);
+            $tabs->addTab(['label' => 'Beiträge', 'name' => 'created', 'content' => '<div id ="rpi_tab_created_content"></div>', 'icon' => \rpi\Wall\Shortcodes::$pin_icon]);
             $tabs->addTab(['label' => 'Kommentare', 'name' => 'comments', 'content' => '<div id ="rpi_tab_comments_content"></div>', 'icon' => \rpi\Wall\Shortcodes::$comment_icon]);
+            $tabs->addTab(['label' => 'Gruppen', 'name' => 'groups', 'content' => '<div id ="rpi_tab_groups_content"></div>', 'icon' => \rpi\Wall\Shortcodes::$group_icon]);
             $tabs->addTab(['label' => 'Benachrichtigungen', 'name' => 'messages', 'content' => '<div id="rpi_tab_messages_content"></div>', 'icon' => \rpi\Wall\Shortcodes::$mail_icon, 'permission' => 'self']);
             $tabs->addTab(['label' => 'Einstellungen', 'name' => 'profile', 'content' => $this->get_profile(get_the_ID()) . '<div id="rpi_tab_profile_content"></div>', 'icon' => \rpi\Wall\Shortcodes::$gear_icon, 'permission' => 'self']);
             $tabs->addTab(['label' => 'Abmelden', 'name' => 'logout', 'content' => '', 'icon' => \rpi\Wall\Shortcodes::$logout_icon, 'permission' => 'self']);
@@ -109,7 +109,6 @@ class MemberPage
 
             $tabs->display();
         }
-
 
     }
 
@@ -217,7 +216,7 @@ class MemberPage
         return $out;
     }
 
-    public function watches()
+    public function created()
     {
 
         $out = '';
@@ -228,7 +227,8 @@ class MemberPage
         ];
 
         $member = new \rpi\Wall\Member($_POST['user_ID']);
-        $query = $member->get_query_watched_groups($args);
+        $query = $member->get_query_created_pins($args);
+
         if ($query && $query->have_posts()) {
             $out .= '<div class="group-posts">';
 
@@ -241,7 +241,7 @@ class MemberPage
 
         } else {
             $out .= '<div>';
-            $out .= 'Du beobachtest noch keine Gruppe';
+            $out .= 'Du hast noch keine Gruppe erstellt';
             $out .= '</div>';
         }
         if ($query->max_num_pages > 1) {

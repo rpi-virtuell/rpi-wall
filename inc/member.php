@@ -421,6 +421,20 @@ class Member extends \stdClass
 
     }
 
+    public function get_query_created_pins($args = array())
+    {
+        $args = wp_parse_args($args,
+            [
+                'post_type' => 'wall',
+                'author' => $this->ID
+            ]);
+
+        $query = new \WP_Query($args);
+        return $query;
+
+    }
+
+
     public function get_query_pending_groups($stati = array('pending'))
     {
         if (!empty($postids = $this->get_assigned_group_Ids())) {

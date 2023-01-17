@@ -38,8 +38,8 @@ class RpiWallAjaxHandler
         add_action('wp_ajax_rpi_tab_groups_content', [$this, 'ajax_tab_groups_content']);
         add_action('wp_ajax_nopriv_rpi_tab_groups_content', [$this, 'ajax_tab_groups_content']);
 
-        add_action('wp_ajax_rpi_tab_watch_content', [$this, 'ajax_tab_watches_content']);
-        add_action('wp_ajax_nopriv_rpi_tab_watch_content', [$this, 'ajax_tab_watches_content']);
+        add_action('wp_ajax_rpi_tab_created_content', [$this, 'ajax_tab_created_content']);
+        add_action('wp_ajax_nopriv_rpi_tab_created_content', [$this, 'ajax_tab_created_content']);
 
         add_action('wp_ajax_rpi_tab_messages_content', [$this, 'ajax_tab_messages_content']);
         add_action('wp_ajax_nopriv_rpi_tab_messages_content', [$this, 'ajax_tab_messages_content']);
@@ -261,11 +261,11 @@ class RpiWallAjaxHandler
         die();
     }
 
-    public function ajax_tab_watches_content()
+    public function ajax_tab_created_content()
     {
 
         $member_page = new MemberPage();
-        echo $member_page->watches();
+        echo $member_page->created();
         die();
     }
 
