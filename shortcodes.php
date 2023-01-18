@@ -50,6 +50,7 @@ class Shortcodes
         add_shortcode('wall_termine_widget', array($this, 'display_termine_widget'));
 
         add_shortcode('wall_termine_join_button', array($this, 'display_termine_join_button'));
+        add_shortcode('wall_termin_event_timer', array($this, 'display_termin_event_timer'));
 
         add_action('wp_head', array($this, 'init'));
 
@@ -636,6 +637,51 @@ class Shortcodes
         </div>
         <?php
         return ob_get_clean();
+
+    }
+
+    public function display_termin_event_timer($atts){
+
+        $args =[
+                'post_type' => 'termin',
+                'meta_key'=>'termin_date',
+                                'numberposts'=> 1,
+                                'orderby' => 'meta_value',
+                                'order' => 'ASC',
+                                'meta_query'=>
+                                [
+                                        'key' => 'termin_date',
+                                        'compare' => '>=',
+                                        'value' => date('Y-m-d h:i:s'),
+                                ]
+                ];
+
+        $termine = get_posts($args) ;
+        $next_termin = reset($termine);
+        if (is_a($next_termin,'WP_Post'))
+            {
+                  ob_start();
+        ?>
+        <div class="termin-event-timer">
+        <div class="termin-event-name">
+        <h3><?php echo  $next_termin->post_title ?></h3>
+        Dieses Treffen findet heute um: <?php echo date('H:i',strtotime(get_post_meta($next_termin->ID, 'termin_date', true)) ).' Uhr' ?> statt.
+        </div>
+        <div class="termin-event-details">
+        </div>
+        <div class="termin-event-countdown">
+        <ul>
+        <li><span id="termin-countdown-hours"></span>Stunden</li>
+        <li><span id="termin-countdown-minutes"></span>Minuten</li>
+        </ul>
+        </div>
+        <div id="termine-join-button" class="button">
+        Zum Treffen
+        </div>
+        </div>
+        <?php
+        return ob_get_clean();
+            }
 
     }
 
