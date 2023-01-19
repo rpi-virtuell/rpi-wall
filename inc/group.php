@@ -258,6 +258,12 @@ class Group extends \stdClass
     {
         update_post_meta($this->ID, 'rpi_wall_group_status_timestamp', time());
     }
+	protected function end_status_time()
+	{
+        $daySeconds = 86400;
+		$pending_add = $daySeconds * floatval(get_option('options_rpi_wall_pl_group_pending_days'));
+		update_post_meta($this->ID, 'rpi_wall_group_status_timestamp', time()-$pending_add-10);
+	}
 
     /**
      * remove members and status
