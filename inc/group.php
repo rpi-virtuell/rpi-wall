@@ -177,6 +177,13 @@ class Group extends \stdClass
                 die();
             }
 
+            // Wenn der Gründungsprozess vorzeitig beendet werden soll
+            if ('plgforcefound' == $_REQUEST['action'] && $_REQUEST['hash'] == $group->get_hash('forcefound'))
+            {
+                    $group->end_status_time();
+                    wp_redirect(get_permalink($_REQUEST['new_plg_group']).'#group');
+                    die();
+            }
         }
     }
 
@@ -733,6 +740,12 @@ class Group extends \stdClass
         return '<a class="button" href="' . get_home_url() . '?action=plgstart&hash=' . $this->get_hash('start') . '&new_plg_group=' . $this->ID . '">' . $label . '</a>';
     }
 
+    public function get_force_end_link($label = 'Beitrittsphase beenden'){
+
+        return '<a class="button" href="' . get_home_url() . '?action=plgforcefound&hash=' . $this->get_hash('forcefound') . '&new_plg_group=' . $this->ID . '">' . $label . '</a>';
+
+    }
+
     public function get_current_users_joinlink($label = 'Gruppe beitreten')
     {
         if (!is_user_logged_in()) {
@@ -995,13 +1008,22 @@ class Group extends \stdClass
                 $stats = $this->get_likers_amount() . ' Interessierte.';
                 break;
             case'pending':
-                $headline = get_option('options_rpi_wall_pending_header', 'Wir suchen noch Leute für eine Professionellen Lerngemeinschaft (PLG)');
-                if (!$this->has_member(get_current_user_id())) {
-                    $notice = get_option('options_rpi_wall_pending_notice', 'Die Gruppe befindet sich in der Gründungsphase. Möchtest du dabei sein?');
+
+                if ($this->get_founder_id() === get_current_user_id() && $this->get_members_amount() >= get_option('options_rpi_group_min_required_members'))
+                {
+                    $headline =get_option('options_rpi_wall_pending_header', 'Wir suchen noch Leute für eine Professionellen Lerngemeinschaft (PLG)');
+                    $notice=get_option('options_rpi_wall_founder_notice', 'Als Gruppengründer:in kannst du die Beitrittsphase beenden und die Gruppe sofort einrichten.');
+                    $button = $this->get_force_end_link();
+                }
+                else{
+                    $headline = get_option('options_rpi_wall_pending_header', 'Wir suchen noch Leute für eine Professionellen Lerngemeinschaft (PLG)');
+                    if (!$this->has_member(get_current_user_id())) {
+                        $notice = get_option('options_rpi_wall_pending_notice', 'Die Gruppe befindet sich in der Gründungsphase. Möchtest du dabei sein?');
+                    }
+                    $button = $this->get_current_users_joinlink();
+                    $stats = 'Noch ' . $this->get_pending_time() . ' um beizutreten.';
                 }
 
-                $button = $this->get_current_users_joinlink();
-                $stats = 'Noch ' . $this->get_pending_time() . ' um beizutreten.';
                 break;
             case'founded':
                 $headline = get_option('options_rpi_wall_founded_header', 'Professionelle Lerngemeinschaft (PLG)').'. ' . $this->get_founding_date();
