@@ -319,6 +319,14 @@ class Group extends \stdClass
     {
 
         switch ($context) {
+            case 'toolbar':
+                $matrix = new Matrix();
+                //check room exits otherwise create new
+	            $roomid = $matrix->create_Room($this);
+                $room_slug = $this->get_matrix_channel();
+
+                return  "https://{$this->matrix_server_home}/#/room/{$room_slug}";
+                break;
             case 'matrix':
                 return "#{$this->slug}:rpi-virtuell.de";
                 break;

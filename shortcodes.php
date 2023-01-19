@@ -789,6 +789,7 @@ class Shortcodes
         $plg = new Group($post->ID);
         $plg->get_comment_likes_amount();
         $status = $plg->get_status();
+
         ?>
         <div class="group-post">
             <div class="group-post-wrapper <?php echo $status ?>">
@@ -835,9 +836,7 @@ class Shortcodes
                             </div>
 
                     <?php } ?>
-
-
-                    <a href="<?php echo $plg->get_matrix_link(); ?>"  target="_blank" rel="noopener noreferrer">Matrix Raum</a>
+                    <a href="<?php echo $plg->get_matrix_link('toolbar'); ?>"  target="_blank" rel="noopener noreferrer">Matrix Raum</a>
                     <?php endif; ?>
                 </div>
                 <div>

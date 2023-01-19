@@ -43,6 +43,7 @@ class Matrix {
 		}
 
 
+
 	}
 
 	function set_topic( Wall\Group $group, string $topic ){
@@ -91,8 +92,9 @@ class Matrix {
 
 	function create_Room( Wall\Group $group){
 
-		if(!empty($room_id = $group->get_matrix_room_id())){
 
+
+		if(!empty($room_id = $group->get_matrix_room_id())){
 
 			try{
 
@@ -242,7 +244,7 @@ class Matrix {
 
 	function tests(int $group_id=0){
 
-		if( $group_id>0 && get_current_user_id() == 2){
+		if( $group_id>0 && get_current_user_id() == 2 && false ){
 
 
 			$msg_obj =new \stdClass();
