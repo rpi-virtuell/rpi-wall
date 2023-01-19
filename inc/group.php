@@ -1008,8 +1008,7 @@ class Group extends \stdClass
                 $stats = $this->get_likers_amount() . ' Interessierte.';
                 break;
             case'pending':
-
-                if ($this->get_founder_id() === get_current_user_id() && $this->get_members_amount() >= get_option('options_rpi_group_min_required_members'))
+                if (intval($this->get_founder_id()) === get_current_user_id() && $this->get_members_amount() >= intval(get_option('options_rpi_group_min_required_members')))
                 {
                     $headline =get_option('options_rpi_wall_pending_header', 'Wir suchen noch Leute für eine Professionellen Lerngemeinschaft (PLG)');
                     $notice=get_option('options_rpi_wall_founder_notice', 'Als Gruppengründer:in kannst du die Beitrittsphase beenden und die Gruppe sofort einrichten.');
