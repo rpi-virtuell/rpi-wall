@@ -1383,6 +1383,28 @@ Die Kommentare und Matrixchat sowie die Toolbar sind weiterhin verwendbar.
                                         'maxlength' => '150',
                                     ),
                                     array(
+                                        'key' => 'field_rpi_wall_founder_notice',
+                                        'label' => 'Gründungsphase Gründer notice',
+                                        'name' => 'rpi_wall_founder_notice',
+                                        'type' => 'text',
+                                        'instructions' => 'options_rpi_wall_founder_notice',
+                                        'required' => 0,
+                                        'conditional_logic' => 0,
+                                        'wrapper' => array(
+                                            'width' => '',
+                                            'class' => '',
+                                            'id' => '',
+                                        ),
+                                        'frontend_admin_display_mode' => 'edit',
+                                        'readonly' => 0,
+                                        'default_value' => 'Als Gruppengründer:in kannst du die Beitrittsphase beenden und die Gruppe sofort einrichten.',
+                                        'placeholder' => '',
+                                        'prepend' => '',
+                                        'append' => '',
+                                        'maxlength' => '150',
+                                    ),
+
+                                    array(
                                         'key' => 'field_rpi_wall_founded_header',
                                         'label' => 'Gruppe gegründet Header',
                                         'name' => 'rpi_wall_ready_notice',
