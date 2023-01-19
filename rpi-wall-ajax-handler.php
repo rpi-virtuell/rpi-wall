@@ -211,19 +211,79 @@ class RpiWallAjaxHandler
     }
 
     public function ajax_termin_log_participant_and_redirect(){
-        $response = ['success' => false];
-        $response['redirect_link'] = get_option("options_online_meeting_link");
 
+	    $response = ['success' => false];
+	    $response['redirect_link'] = get_option("options_online_meeting_link");
+
+	    if(isset($_REQUEST['post_id'])){
+
+			$next_termin = get_post($_REQUEST['post_id']);
+		}else{
+			$args =[
+				'post_type' => 'termin',
+				'meta_key'=>'termin_date',
+				'numberposts'=> 1,
+				'orderby' => 'meta_value',
+				'order' => 'ASC',
+				'meta_query'=>
+					[
+						'key' => 'termin_date',
+						'compare' => '>=',
+						'value' => date('Y-m-d h:i:s', time()-7200),
+					]
+			];
+
+			$termine = get_posts($args) ;
+			$next_termin = reset($termine);
+
+		}
+
+		$termin_id = 0;
+
+	    if(is_a($next_termin,'WP_Post')){
+		    $termin_id = $next_termin->ID;
+		    $member = array();
+		    $guests = array();
+
+		    $participants = get_post_meta($termin_id, 'rpi_wall_termin_participant');
+			foreach ($participants as $participant){
+				$member[]=intval($participant);
+			}
+		    $participants = get_post_meta($termin_id, 'rpi_wall_termin_guest');
+		    foreach ($participants as $participant){
+			    $guests[]=$participant;
+		    }
+
+
+			if (is_user_logged_in()) {
+				if ( !in_array(get_current_user_id(), $member) ){
+					add_post_meta( $termin_id, 'rpi_wall_termin_participant', get_current_user_id(), false);
+				}
+		    }else{
+
+			    $ip = $_SERVER['REMOTE_ADDR'];
+				if ( !in_array($ip, $guests) ){
+					add_post_meta( $termin_id, 'rpi_wall_termin_guest',  $ip, false);
+				}
+
+		    }
+
+
+	    }
+
+
+        /*
         if (is_user_logged_in()) {
-            $content = time() . ' ' . $_SERVER['REMOTE_ADDR'] . ' ' . wp_get_current_user()->ID . "\n";
+            $content = time() . ' ' . $_SERVER['REMOTE_ADDR'] . ' ' . 'ID:'. $termin_id . '  ' .wp_get_current_user()->ID . "\n";
         } else {
-            $content = time() . ' ' . $_SERVER['REMOTE_ADDR'] . ' ' . 'UNKNOWN_USER' . "\n";
+            $content = time() . ' ' . $_SERVER['REMOTE_ADDR'] . ' ' . 'ID:'. $termin_id . '  ' . 'UNKNOWN_USER' . "\n";
         }
 
         if (!file_exists(WP_CONTENT_DIR . '/uploads/meetings/')) {
             mkdir(WP_CONTENT_DIR . '/uploads/meetings/');
         }
         file_put_contents(WP_CONTENT_DIR . '/uploads/meetings/' . date('Y_m_d') . '_meeting_attendance.log', $content, FILE_APPEND);
+		*/
         $response['success'] = true;
 
         echo json_encode($response);
