@@ -64,6 +64,15 @@ class Message
 		                  'geschützten digitalen Raum, in dem speziell für deine PLG Unterstützungsinstrumente und auf Wunsch auch Begleitung bereit stehen.<br><br>Viel Erfolg!'
 
 	        ],
+        'founder' =>
+	        [
+		        'subject' => '[Prof. Lerngemeinschaft]: %posttitle%',
+		        'body' => 'Hallo %actorlink%!<br><br>Du hast Interesse an einer professionellen Lerngemeinschaft zu diesem Pin: %postlink%.<br>'.
+		                  '. Du kannst die Gründungsphase vorzeitig beenden, sobald die Mindestzahl an Teilnehmenden erreicht ist'.
+		                  'Interessierte können noch solange dazukommen, bis sich die Gruppe auf einen Termin für das erste Treffen geeinigt hat'.
+		                  '<br><br>Viel Erfolg!'
+
+	        ],
         'liked' =>
             [
                 'subject' => '[%grouptitle%] Interesse bekundet',

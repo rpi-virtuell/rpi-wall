@@ -169,6 +169,7 @@ class Group extends \stdClass
         //Member möchte einer Gruppe beitreten
         if (!is_admin() && isset($_REQUEST['action']) && isset($_REQUEST['hash']) && isset($_REQUEST['new_plg_group'])) {
             $group = new Group($_REQUEST['new_plg_group']);
+            //wenn der Gruppe Gründen Button gedrückt wurde
             if ('plgstart' == $_REQUEST['action'] && $_REQUEST['hash'] == $group->get_hash('start')) {
 
                 $group->start_pending();
@@ -648,9 +649,17 @@ class Group extends \stdClass
     {
         $this->set_status('pending');
         new Message($this, 'pending');
-        $starter = new Member();
-        $starter->join_group($this->ID);
+	    $founder = new Member();
+	    $founder->join_group($this->ID);
+        $this->set_group_founder($founder);
         do_action('rpi_wall_pl_group_pending', $this);
+
+    }
+
+    protected function set_group_founder($member){
+
+        update_post_meta($this->ID, 'rpi_wall_group_founder', $member->ID );
+	    new Message($this, 'founder');
 
     }
 
@@ -733,6 +742,9 @@ class Group extends \stdClass
     {
         if (!is_user_logged_in()) {
             return $this->get_blocksy_login_button($label);
+        }
+        if(empty($this->get_toolbar_status())){
+	        $label = 'Beitritt noch möglich';
         }
         $member = new Member();
         if (!$this->has_member($member)) {

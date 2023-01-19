@@ -333,6 +333,12 @@ class Member extends \stdClass
         if ($this->is_in_group($groupId) || $this->ID < 1) {
             return false;
         }
+		if(empty($plg->get_toolbar_status())){
+
+			$this->join_group($groupId);
+			return $groupId;
+
+		}
 
 	    $this->like_group($groupId);
 
@@ -552,6 +558,7 @@ class Member extends \stdClass
             } elseif ('plgrequest' == $_REQUEST['action']) {
 
                 $member = new Member(intval($_REQUEST['new_group_member']));
+
                 $groupId = $member->validate_and_request($_REQUEST['hash']);
 
                 if ($groupId) {
