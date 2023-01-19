@@ -111,16 +111,16 @@ class Message
 
 
     ];
-    protected $events = ['create','creator', 'ready', 'closed','liked', 'joined', 'pending', 'founded', 'requested', 'comment', 'reset'];
+    protected $events = ['create','creator', 'ready', 'closed','liked', 'joined', 'pending', 'founded', 'requested', 'comment', 'reset', 'founder'];
 
     /**
      * @param Group|Int $group
-     * @param string $event ['create','pending','founded','closed','liked','minimum_likers_met','comment','reset']
+     * @param string $event ['create','pending','founded','closed','liked','minimum_likers_met','comment','reset','founder']
      * @param array $to :   ['orga','watch','group'] welche Zielgruppe soll benachrichtigt werden
      * @param int $actor_id handelnder User z.B. Kommentarschreiber
      */
 
-    public function __construct($group, $event = 'pending', $user_ids = null, $actor = 0, $search_replace = array('search' => [], 'replace' => []))
+    public function __construct($group, $event = 'pending', array $user_ids = null, int $actor = 0, $search_replace = array('search' => [], 'replace' => []))
     {
 		if(!$group instanceof Group){
 			$group = new Group($group);

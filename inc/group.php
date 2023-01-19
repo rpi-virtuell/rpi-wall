@@ -665,7 +665,7 @@ class Group extends \stdClass
     protected function set_founder($member){
 
         update_post_meta($this->ID, 'rpi_wall_group_founder', $member->ID );
-	    new Message($this, 'founder');
+	    new Message($this, 'founder', array($member->ID));
 
     }
 	protected function get_founder_id(){
