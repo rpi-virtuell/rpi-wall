@@ -651,17 +651,23 @@ class Group extends \stdClass
         new Message($this, 'pending');
 	    $founder = new Member();
 	    $founder->join_group($this->ID);
-        $this->set_group_founder($founder);
+        $this->set_founder($founder);
         do_action('rpi_wall_pl_group_pending', $this);
 
     }
 
-    protected function set_group_founder($member){
+    protected function set_founder($member){
 
         update_post_meta($this->ID, 'rpi_wall_group_founder', $member->ID );
 	    new Message($this, 'founder');
 
     }
+	protected function get_founder_id(){
+
+		return get_post_meta($this->ID, 'rpi_wall_group_founder', true );
+
+
+	}
 
     protected function create_room()
     {
