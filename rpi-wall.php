@@ -31,6 +31,7 @@ require_once( "inc/tabs.php" );
 require_once( "inc/member-page.php" );
 require_once( "inc/message.php" );
 require_once( "inc/protocol.php" );
+require_once( "inc/termin.php" );
 require_once( "inc/matrix.php" );
 require_once( "inc/toolbar.php" );
 
