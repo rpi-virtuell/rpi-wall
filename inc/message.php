@@ -67,9 +67,10 @@ class Message
         'founder' =>
 	        [
 		        'subject' => '[Prof. Lerngemeinschaft]: %posttitle%',
-		        'body' => 'Hallo %actorlink%!<br><br>Du hast Interesse an einer professionellen Lerngemeinschaft zu diesem Pin: %postlink%.<br>'.
-		                  '. Du kannst die Gründungsphase vorzeitig beenden, sobald die Mindestzahl an Teilnehmenden erreicht ist'.
-		                  'Interessierte können noch solange dazukommen, bis sich die Gruppe auf einen Termin für das erste Treffen geeinigt hat'.
+		        'body' => 'Hallo %actorlink%!<br><br>Als Gründer:in kannst du '.
+		                  'die Beitrittsphase vorzeitig beenden, sobald die Mindestzahl an Teilnehmenden erreicht ist. '.
+		                  'Interessierte können auch danach noch solange beitreten, bis sich die Gruppe auf einen Termin ' .
+		                  'für das erste Treffen geeinigt und diesen eingetragen hat.'.
 		                  '<br><br>Viel Erfolg!'
 
 	        ],
