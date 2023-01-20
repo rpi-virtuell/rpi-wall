@@ -156,59 +156,61 @@ class Shortcodes
     }
 
     /**
-    * [rpi_wall_filter}
-    *
-    * @param $atts
-    *
-    * @return false|string
-    */
-    public function get_wall_filter($atts){
+     * [rpi_wall_filter}
+     *
+     * @param $atts
+     *
+     * @return false|string
+     */
+    public function get_wall_filter($atts)
+    {
 
         ob_start();
-        if(is_archive() || is_tax('wall-cat') || is_tax('wall-tag')){
+        if (is_archive() || is_tax('wall-cat') || is_tax('wall-tag')) {
             ?>
 
-                <details class="rpi-wall-filter tags">
+            <details class="rpi-wall-filter tags">
 
-                    <summary class="button">Filter</summary>
-                    <div class="rpi-wall-filter container">
-                        <div class="rpi-wall-filter grid">
-                            <div>
-                                <?php //echo facetwp_display('facet','suche'); ?>
-                                <?php echo facetwp_display('facet','suchen'); ?>
-                            </div>
-                            <div>
-                                <?php echo facetwp_display('facet','wall_tags'); ?>
-                            </div>
-
-                            <div>
-                                <?php echo facetwp_display('facet','wall_cats'); ?>
-                            </div>
-                            <div>
-                                <?php echo facetwp_display('facet','sortieren'); ?>
-                            </div>
-                            <div>
-                                <?php echo facetwp_display('facet','zeitraum'); ?>
-                            </div>
-                            <div>
-
-                                <?php echo facetwp_display('facet','beobachtet'); ?>
-                            </div>
-
-
+                <summary class="button">Filter</summary>
+                <div class="rpi-wall-filter container">
+                    <div class="rpi-wall-filter grid">
+                        <div>
+                            <?php //echo facetwp_display('facet','suche');
+                            ?>
+                            <?php echo facetwp_display('facet', 'suchen'); ?>
                         </div>
                         <div>
-                            <?php
-
-                                echo facetwp_display( 'selections' );
-                                echo facetwp_display('facet','reset');
-
-                             ?>
+                            <?php echo facetwp_display('facet', 'wall_tags'); ?>
                         </div>
+
+                        <div>
+                            <?php echo facetwp_display('facet', 'wall_cats'); ?>
+                        </div>
+                        <div>
+                            <?php echo facetwp_display('facet', 'sortieren'); ?>
+                        </div>
+                        <div>
+                            <?php echo facetwp_display('facet', 'zeitraum'); ?>
+                        </div>
+                        <div>
+
+                            <?php echo facetwp_display('facet', 'beobachtet'); ?>
+                        </div>
+
+
                     </div>
+                    <div>
+                        <?php
+
+                        echo facetwp_display('selections');
+                        echo facetwp_display('facet', 'reset');
+
+                        ?>
+                    </div>
+                </div>
 
 
-                </details>
+            </details>
 
             <?php
 
@@ -216,41 +218,43 @@ class Shortcodes
         return ob_get_clean();
     }
 
-    public function get_member_filter($atts){
+    public function get_member_filter($atts)
+    {
 
         ob_start();
-        if(is_archive() || is_tax('schoolform') || is_tax('profession')){
+        if (is_archive() || is_tax('schoolform') || is_tax('profession')) {
             ?>
 
-                <details class="rpi-wall-filter tags">
+            <details class="rpi-wall-filter tags">
 
-                    <summary class="button">Filter</summary>
-                    <div class="rpi-wall-filter container">
-                        <div class="rpi-wall-filter grid">
-                       <div>
-                                <?php echo facetwp_display('facet','suchen'); ?>
-                                </div>
-                            <div>
-                                <?php //echo facetwp_display('facet','suche'); ?>
-                                <?php echo facetwp_display('facet','schoolform'); ?>
-                            </div>
-                            <div>
-                                <?php echo facetwp_display('facet','profession'); ?>
-                            </div>
-                            <div>
-                                <?php echo facetwp_display('facet','wall_tags'); ?>
-                            </div>
+                <summary class="button">Filter</summary>
+                <div class="rpi-wall-filter container">
+                    <div class="rpi-wall-filter grid">
+                        <div>
+                            <?php echo facetwp_display('facet', 'suchen'); ?>
                         </div>
                         <div>
-                            <?php
-                                echo facetwp_display( 'selections' );
-                                echo facetwp_display('facet','reset');
-                             ?>
+                            <?php //echo facetwp_display('facet','suche');
+                            ?>
+                            <?php echo facetwp_display('facet', 'schoolform'); ?>
+                        </div>
+                        <div>
+                            <?php echo facetwp_display('facet', 'profession'); ?>
+                        </div>
+                        <div>
+                            <?php echo facetwp_display('facet', 'wall_tags'); ?>
                         </div>
                     </div>
+                    <div>
+                        <?php
+                        echo facetwp_display('selections');
+                        echo facetwp_display('facet', 'reset');
+                        ?>
+                    </div>
+                </div>
 
 
-                </details>
+            </details>
 
             <?php
 
@@ -270,9 +274,9 @@ class Shortcodes
 
 
                 $terms = wp_get_post_terms($member->post->ID, $atts['content']);
-                if($terms && count($terms)>0){
+                if ($terms && count($terms) > 0) {
                     $tax = get_taxonomy($atts['content']);
-                    $out .= '<h4>'.$tax->label.'</h4>';
+                    $out .= '<h4>' . $tax->label . '</h4>';
                 }
                 $out .= '<ul class="rpi-wall-term-' . $atts['content'] . '">';
                 foreach ($terms as $term) {
@@ -353,7 +357,8 @@ class Shortcodes
     public function get_user_groups($atts)
     {
         ob_start();
-?><div class="group-posts"><?php
+        ?>
+        <div class="group-posts"><?php
         $member = new Member($this->user);
 
 
@@ -379,24 +384,26 @@ class Shortcodes
         ?>
         <div class="group-post">
             <div class="group-post-wrapper <?php echo $status ?>">
-            <a href="<?php the_permalink($post->ID);?>#pin"  class="pin-title-icon pin"><?php echo Shortcodes::$pin_icon ?></a>
-            <?php
-            if ($status) { ?>
-                <a href="<?php the_permalink($post->ID) ?>#group" class="pin-title-icon group"> <?php echo Shortcodes::$group_icon ?> </a>
-            <?php
-            }
-            ?>
+                <a href="<?php the_permalink($post->ID); ?>#pin"
+                   class="pin-title-icon pin"><?php echo Shortcodes::$pin_icon ?></a>
                 <?php
-                    Group::display_watcher_area();
+                if ($status) { ?>
+                    <a href="<?php the_permalink($post->ID) ?>#group"
+                       class="pin-title-icon group"> <?php echo Shortcodes::$group_icon ?> </a>
+                    <?php
+                }
+                ?>
+                <?php
+                Group::display_watcher_area();
                 ?>
                 <div class="entry-title">
                     <span>Pinname:</span>
-                    <a href="<?php the_permalink()?>#pin">
+                    <a href="<?php the_permalink() ?>#pin">
                         <h3><?php echo $post->post_title; ?></h3>
                     </a>
-                    <?php if (!empty(get_field("constitution_gruppenname"))) {?>
+                    <?php if (!empty(get_field("constitution_gruppenname"))) { ?>
                         <span>Gruppenname:</span>
-                        <a href="<?php the_permalink()?>#group">
+                        <a href="<?php the_permalink() ?>#group">
                             <h4><?php echo get_field("constitution_gruppenname"); ?></h4>
                         </a>
                     <?php } ?>
@@ -412,21 +419,26 @@ class Shortcodes
                 <div class="ghost"></div>
                 <div>
                     <?php if (is_user_logged_in() && 'pending' !== $plg->get_status() && $plg->has_member(get_current_user_id())):
-                     $next_meeting = get_post_meta($plg->ID, 'date_of_meeting', true);
-                     if (!empty($next_meeting) ) { ?>
-                        <div class="next-meeting">
-                        <h4>Nächster Termin:</h4>
-                         <?php echo date('D d.n.Y', strtotime($next_meeting)) ?> -
-                        <?php echo date('H:i', strtotime($next_meeting)) ?> Uhr
-                        <hr>
+                        $next_meeting = get_post_meta($plg->ID, 'date_of_meeting', true);
+                        if (!empty($next_meeting)) { ?>
+                            <div class="next-meeting">
+                                <h4>Nächster Termin:</h4>
+                                <?php echo date('D d.n.Y', strtotime($next_meeting)) ?> -
+                                <?php echo date('H:i', strtotime($next_meeting)) ?> Uhr
+                                <hr>
                             </div>
 
-                    <?php } ?>
-                    <a href="<?php echo $plg->get_matrix_link('toolbar'); ?>"  target="_blank" rel="noopener noreferrer">Matrix Raum</a>
+                        <?php } ?>
+                        <a href="<?php echo $plg->get_matrix_link('toolbar'); ?>" target="_blank"
+                           rel="noopener noreferrer">Matrix Raum</a>
                     <?php endif; ?>
                 </div>
                 <div>
-                    <?php $mn = $plg->get_members_amount(); ?><?php if ($mn > 0) {echo $mn . ' Mitglied';} ?><?php if ($mn > 1) {echo 'er';} ?>
+                    <?php $mn = $plg->get_members_amount(); ?><?php if ($mn > 0) {
+                        echo $mn . ' Mitglied';
+                    } ?><?php if ($mn > 1) {
+                        echo 'er';
+                    } ?>
                     <?php if ($plg->is_not_founded()): ?>
                         <?php
                         $in = $plg->get_likers_amount();
@@ -451,8 +463,9 @@ class Shortcodes
     {
         $member = new Member($user_id);
         ?>
-        <span class="user-name"><a
+        <span class="user-name">
                     <a href="<?php echo $member->get_member_profile_permalink() ?>"><?php echo $member->name; ?></a>
+        </span>
         <?php
     }
 
@@ -483,17 +496,19 @@ class Shortcodes
     public function get_user_likes($atts)
     {
         ob_start();
-        ?><div class="group-posts"><?php
-        $member = new Member($this->user);
-
-        $query = $member->get_query_pending_groups();
-        if ($query && $query->have_posts()) {
-            while ($query->have_posts()) {
-                self::display_post($query->the_post());
-            }
-        }
-        wp_reset_query();
         ?>
+        <div class="group-posts">
+            <?php
+            $member = new Member($this->user);
+
+            $query = $member->get_query_pending_groups();
+            if ($query && $query->have_posts()) {
+                while ($query->have_posts()) {
+                    self::display_post($query->the_post());
+                }
+            }
+            wp_reset_query();
+            ?>
         </div>
         <?php
         return ob_get_clean();
@@ -505,259 +520,259 @@ class Shortcodes
         ob_start();
         ?>
         <div class="group-posts">
-        <?php
-        $member = new Member($this->user);
+            <?php
+            $member = new Member($this->user);
 
-        $query = $member->get_query_my_posts();
-        if ($query && $query->have_posts()) {
-            while ($query->have_posts()) {
-                self::display_post($query->the_post());
+            $query = $member->get_query_my_posts();
+            if ($query && $query->have_posts()) {
+                while ($query->have_posts()) {
+                    self::display_post($query->the_post());
+                }
             }
-        }
-        wp_reset_query();
-        ?>
+            wp_reset_query();
+            ?>
         </div>
         <?php
         return ob_get_clean();
     }
 
-    public function display_termine($atts){
+    public function display_termine($atts)
+    {
         ob_start();
-        $args= [
-                'post_status' => 'any',
-                'post_type' =>  'termin',
-                'numberposts' => -1,
-                'meta_key' => 'termin_date',
-                'meta_value' => false,
-                'meta_compare' => '!=',
-                'orderby' => 'meta_value',
-                'order' => 'ASC',
-                ];
+        $args = [
+            'post_status' => 'any',
+            'post_type' => 'termin',
+            'numberposts' => -1,
+            'meta_key' => 'termin_date',
+            'meta_value' => false,
+            'meta_compare' => '!=',
+            'orderby' => 'meta_value',
+            'order' => 'ASC',
+        ];
         $posts = get_posts($args);
 
         $startDate = date(DATE_ATOM);
 
- ?>
-            <div class="dibes-termin-content">
-                <?php
+        ?>
+        <div class="dibes-termin-content">
+            <?php
 
-                $lastPost = end($posts);
+            $lastPost = end($posts);
 
-                $datesTillLastPost = new \DatePeriod(
-                    new \DateTime(date("Y-m-d", strtotime($startDate))),
-                    new \DateInterval('P1D'),
-                    new \DateTime(get_post_meta($lastPost->ID, 'termin_date', true))
-                );
-                $newWeek = true;
-                $newMonth = true;
+            $datesTillLastPost = new \DatePeriod(
+                new \DateTime(date("Y-m-d", strtotime($startDate))),
+                new \DateInterval('P1D'),
+                new \DateTime(get_post_meta($lastPost->ID, 'termin_date', true))
+            );
+            $newWeek = true;
+            $newMonth = true;
 
-                foreach ($datesTillLastPost
+            foreach ($datesTillLastPost
 
-                         as $date) {
+                     as $date) {
 
-                    if ($newMonth) {
+                if ($newMonth) {
 
-                        ?>
-                        <div class="dibes-termin-month">
-                        <div class="dibes-list-month">
-                            <h4>
-                                <?php
-                                $newMonth = false;
-                                echo Shortcodes::getMonat($date->format(DATE_ATOM)) . ' - ' . $date->format('Y');
-                                ?>
-                            </h4>
-                        </div>
-                        <div class="dibes-termin-month">
-                        <div class="dibes-termin-week-header">
-                            <div class="dibes-termin-Mon non-mobile">
+                    ?>
+                    <div class="dibes-termin-month">
+                    <div class="dibes-list-month">
+                        <h4>
+                            <?php
+                            $newMonth = false;
+                            echo Shortcodes::getMonat($date->format(DATE_ATOM)) . ' - ' . $date->format('Y');
+                            ?>
+                        </h4>
+                    </div>
+                    <div class="dibes-termin-month">
+                    <div class="dibes-termin-week-header">
+                        <div class="dibes-termin-Mon non-mobile">
                             <span>
                                 Montag
                             </span>
-                            </div>
-                            <div class="dibes-termin-Tue non-mobile">
+                        </div>
+                        <div class="dibes-termin-Tue non-mobile">
                             <span>
                                 Dienstag
                             </span>
-                            </div>
-                            <div class="dibes-termin-Wen non-mobile">
+                        </div>
+                        <div class="dibes-termin-Wen non-mobile">
                             <span>
                                 Mittwoch
                             </span>
-                            </div>
-                            <div class="dibes-termin-Thu non-mobile">
+                        </div>
+                        <div class="dibes-termin-Thu non-mobile">
                             <span>
                                 Donnerstag
                             </span>
-                            </div>
-                            <div class="dibes-termin-Fri non-mobile">
+                        </div>
+                        <div class="dibes-termin-Fri non-mobile">
                             <span>
                                 Freitag
                             </span>
-                            </div>
-                            <div class="dibes-termin-Sat non-mobile">
+                        </div>
+                        <div class="dibes-termin-Sat non-mobile">
                             <span>
                                 Samstag
                             </span>
-                            </div>
-                            <div class="dibes-termin-Sun non-mobile">
+                        </div>
+                        <div class="dibes-termin-Sun non-mobile">
                             <span>
                                 Sonntag
                             </span>
-                            </div>
-
                         </div>
-                        <div class="dibes-termin-week"> <?php
-                        $newWeek = false;
-                        $whileDate = strtotime('Monday');
-                        while (date('D', $whileDate) != $date->format('D')) {
-                            ?>
-                            <div class="dibes-termin-spacer dibes-termin-<?php echo date('D', $whileDate); ?>"></div>  <?php
-                            $whileDate = strtotime(date('D', $whileDate) . '+1 days');
-                        }
-                    }
 
-                if ($newWeek) {
-                    ?>
+                    </div>
                     <div class="dibes-termin-week"> <?php
                     $newWeek = false;
-                }
-                    //Search for post with $data as termin_date
-
-                    $postIds = array_column($posts, 'termin_date', 'ID');
-
-                    foreach ($postIds as $key => $value) {
-                        if (date("Y-m-d", strtotime($value)) != $date->format("Y-m-d"))
-                            unset($postIds[$key]);
-                    }
-                    if (!empty($postIds)) {
-
+                    $whileDate = strtotime('Monday');
+                    while (date('D', $whileDate) != $date->format('D')) {
                         ?>
-                        <div class="dibes-termin-box dibes-termin-filled  dibes-termin-<?php echo $date->format('D'); ?>">
-                            <div class="dibes-termin-date">
-                                <div class="dibes-termin-day">
-                                    <?php echo $date->format('j') . '. '; ?>
-                                </div>
+                        <div class="dibes-termin-spacer dibes-termin-<?php echo date('D', $whileDate); ?>"></div>  <?php
+                        $whileDate = strtotime(date('D', $whileDate) . '+1 days');
+                    }
+                }
+
+            if ($newWeek) {
+                ?>
+                <div class="dibes-termin-week"> <?php
+                $newWeek = false;
+            }
+                //Search for post with $data as termin_date
+
+                $postIds = array_column($posts, 'termin_date', 'ID');
+
+                foreach ($postIds as $key => $value) {
+                    if (date("Y-m-d", strtotime($value)) != $date->format("Y-m-d"))
+                        unset($postIds[$key]);
+                }
+                if (!empty($postIds)) {
+
+                    ?>
+                    <div class="dibes-termin-box dibes-termin-filled  dibes-termin-<?php echo $date->format('D'); ?>">
+                        <div class="dibes-termin-date">
+                            <div class="dibes-termin-day">
+                                <?php echo $date->format('j') . '. '; ?>
                             </div>
-                            <div class="dibes-termin-details">
+                        </div>
+                        <div class="dibes-termin-details">
+                            <div class="dibes-termin-details-header">
+                                <?php
+                                $timestamp = $date->format(DATE_ATOM);
+                                echo Shortcodes::getWochentag($timestamp) . ' ' . $date->format('j') . '. ' . Shortcodes::getMonat($timestamp);
+                                ?>
+                                <?php
+                                $first = true;
+                                foreach ($postIds
+
+                                as $postId => $termin) {
+                                $terminPost = get_post($postId);
+                                if ($first) {
+                                ?>
+                                <br>
+                                <?php
+                                echo date('H:i', strtotime(get_post_meta($postId, 'termin_date', true))) . ' - ' . date('H:i', strtotime(get_post_meta($postId, 'termin_enddate', true)))
+                                ?> </div> <?php
+                            $first = false;
+                            }
+                            else {
+                                ?>
                                 <div class="dibes-termin-details-header">
-                                    <?php
-                                    $timestamp = $date->format(DATE_ATOM);
-                                    echo Shortcodes::getWochentag($timestamp) . ' ' . $date->format('j') . '. ' . Shortcodes::getMonat($timestamp);
-                                    ?>
-                                    <?php
-                                    $first = true;
-                                    foreach ($postIds
-
-                                    as $postId => $termin) {
-                                    $terminPost = get_post($postId);
-                                    if ($first) {
-                                        echo '<br>';
-                                    echo date('H:i', strtotime(get_post_meta($postId, 'termin_date', true))) . ' - ' . date('H:i', strtotime(get_post_meta($postId, 'termin_enddate', true)))
-                                    ?> </div> <?php
-                                $first = false;
-                                   }
-                                   else {
-                                       ?>
-                                       <div class="dibes-termin-details-header">
-                                           <?php echo date('H:i', strtotime(get_post_meta($postId, 'termin_date', true))) . ' - ' . date('H:i', strtotime(get_post_meta($postId, 'termin_enddate', true))) ?>
-                                       </div>
-                                       <?php
-                                   }
-                                    ?>
-
-
-                                <div class="dibes-termin-thumbnail"
-                                     style="background-image: url('<?php echo get_the_post_thumbnail_url($postId) ?>')">
-                                    <div class="dibes-termin-post-details">
-
-                                        <h5>
-                                             <?php echo $terminPost->post_title; ?>
-                                        </h5>
-                                        <p>
-                                            <?php echo $terminPost->post_excerpt; ?>
-                                        </p>
-                                        <?php if (time() >= strtotime(get_post_meta($postId, 'termin_date', true)) && time() <= strtotime(get_post_meta($postId, 'termin_enddate', true))) { ?>
-                                            <div class="wp-block-group dibes-meeting-button"
-                                                 onclick="location.href='<?php echo !empty(get_option("options_online_meeting_link")) ? get_post_meta($postId, "dibes_custom_zoom_link", true) : get_option('options_dibes_zoom_link') ?>'">
-                                                🔴 Zur Live Veranstaltung 🔴
-                                            </div>
-                                        <?php } else { ?>
-                                        <?php
-                                            if (have_rows('ereignis_seiten_relation','option'))
-                                                {
-                                                    while (have_rows('ereignis_seiten_relation','option')):the_row();
-                                                    $term_pages[get_sub_field('ereignis')] = get_sub_field('zielseite');
-                                                    endwhile;
-                                                }
-                                            $post_term = wp_get_post_terms($postId,'termin_event');
-                                            $post_term = reset($post_term);
-                                            ?>
-                                            <a class="wp-block-group dibes-meeting-button"
-                                                 href="
-                                                 <?php
-                                                  if (is_a($post_term,'WP_Term')){
-                                                      echo $term_pages[$post_term->term_id];
-                                                  }
-                                                  else{
-                                                      echo  get_permalink($postId);
-                                                  }
-                                                  ?>"  target="_blank">
-                                                👉 Mehr zur Veranstaltung 👈
-                                            </a>
-                                        <?php
-                                        } ?>
-                                    </div>
+                                    <?php echo date('H:i', strtotime(get_post_meta($postId, 'termin_date', true))) . ' - ' . date('H:i', strtotime(get_post_meta($postId, 'termin_enddate', true))) ?>
                                 </div>
                                 <?php
-                                }
-                                ?>
-                            </div>
-                        </div>
-                        <?php
+                            }
+                            ?>
 
-                    } else {
 
-                        ?>
-                        <div class="dibes-termin-box dibes-termin-empty dibes-termin-<?php echo $date->format('D'); ?>">
-                            <div class="dibes-termin-date">
-                                <div class="dibes-termin-day">
-                                    <?php echo $date->format('j') . '. '; ?>
+                            <div class="dibes-termin-thumbnail"
+                                 style="background-image: url('<?php echo get_the_post_thumbnail_url($postId) ?>')">
+                                <div class="dibes-termin-post-details">
+
+                                    <h5>
+                                        <?php echo $terminPost->post_title; ?>
+                                    </h5>
+                                    <p>
+                                        <?php echo $terminPost->post_excerpt; ?>
+                                    </p>
+                                    <?php if (time() >= strtotime(get_post_meta($postId, 'termin_date', true)) && time() <= strtotime(get_post_meta($postId, 'termin_enddate', true))) { ?>
+                                        <div class="wp-block-group dibes-meeting-button"
+                                             onclick="location.href='<?php echo !empty(get_option("options_online_meeting_link")) ? get_post_meta($postId, "dibes_custom_zoom_link", true) : get_option('options_dibes_zoom_link') ?>'">
+                                            🔴 Zur Live Veranstaltung 🔴
+                                        </div>
+                                    <?php } else { ?>
+                                        <?php
+                                        if (have_rows('ereignis_seiten_relation', 'option')) {
+                                            while (have_rows('ereignis_seiten_relation', 'option')):the_row();
+                                                $term_pages[get_sub_field('ereignis')] = get_sub_field('zielseite');
+                                            endwhile;
+                                        }
+                                        $post_term = wp_get_post_terms($postId, 'termin_event');
+                                        $post_term = reset($post_term);
+                                        ?>
+                                        <a class="wp-block-group dibes-meeting-button"
+                                           href="
+                                                 <?php
+                                           if (is_a($post_term, 'WP_Term')) {
+                                               echo $term_pages[$post_term->term_id];
+                                           } else {
+                                               echo get_permalink($postId);
+                                           }
+                                           ?>" target="_blank">
+                                            👉 Mehr zur Veranstaltung 👈
+                                        </a>
+                                        <?php
+                                    } ?>
                                 </div>
                             </div>
+                            <?php
+                            }
+                            ?>
                         </div>
-                        <?php
+                    </div>
+                    <?php
 
+                } else {
+
+                    ?>
+                    <div class="dibes-termin-box dibes-termin-empty dibes-termin-<?php echo $date->format('D'); ?>">
+                        <div class="dibes-termin-date">
+                            <div class="dibes-termin-day">
+                                <?php echo $date->format('j') . '. '; ?>
+                            </div>
+                        </div>
+                    </div>
+                    <?php
+
+                }
+            if ($date->format('D') === 'Sun') {
+                ?> </div> <?php
+                $newWeek = true;
+            }
+
+                if ($date->format('t') === $date->format('d')) {
+                    if (!$newWeek) {
+
+                        $whileDate = $date->format('D');
+                        while ($whileDate != date('D', strtotime('Monday'))) {
+                            ?>
+                            <div class="dibes-termin-spacer dibes-termin-<?php echo $whileDate; ?>"></div>  <?php
+                            $whileDate = date('D', strtotime($whileDate . '+1 days'));
+                        }
+
+                        ?> </div> <?php
+                        ?> </div> <?php
                     }
-                if ($date->format('D') === 'Sun') {
-                    ?> </div> <?php
+                    ?>
+                    </div>
+                    <?php
+                    $newMonth = true;
                     $newWeek = true;
                 }
 
-                    if ($date->format('t') === $date->format('d')) {
-                        if (!$newWeek) {
-
-                            $whileDate = $date->format('D');
-                            while ($whileDate != date('D', strtotime('Monday'))) {
-                                ?>
-                                <div class="dibes-termin-spacer dibes-termin-<?php echo $whileDate; ?>"></div>  <?php
-                                $whileDate = date('D', strtotime($whileDate . '+1 days'));
-                            }
-
-                            ?> </div> <?php
-                            ?> </div> <?php
-                        }
-                        ?>
-                        </div>
-                        <?php
-                        $newMonth = true;
-                        $newWeek = true;
-                    }
-
-                }
-                ?>
-            </div>
-            <?php
-
+            }
+            ?>
+        </div>
+        <?php
 
 
         return ob_get_clean();
@@ -789,7 +804,7 @@ class Shortcodes
             return '';
     }
 
-     static function getWochentag(string $date): string
+    static function getWochentag(string $date): string
     {
         $wochentag = array(
             'Mon' => 'Montag',
@@ -803,99 +818,99 @@ class Shortcodes
         return $wochentag[date('D', strtotime($date))];
     }
 
-    public function display_termine_widget($atts){
+    public function display_termine_widget($atts)
+    {
         //TODO: ADD termine Widget
     }
 
-    public function display_termin_event_timer($atts){
+    public function display_termin_event_timer($atts)
+    {
 
-        $args =[
-                'post_type' => 'termin',
-                'meta_key'=>'termin_date',
-                                'numberposts'=> 1,
-                                'orderby' => 'meta_value',
-                                'order' => 'ASC',
-                                'meta_query'=>
-                                [
-                                        'key' => 'termin_date',
-                                        'compare' => '>=',
-                                        'value' => date('Y-m-d h:i:s'),
-                                ]
-                ];
+        $args = [
+            'post_type' => 'termin',
+            'meta_key' => 'termin_date',
+            'numberposts' => 1,
+            'orderby' => 'meta_value',
+            'order' => 'ASC',
+            'meta_query' =>
+                [
+                    'key' => 'termin_date',
+                    'compare' => '>=',
+                    'value' => date('Y-m-d h:i:s'),
+                ]
+        ];
 
-        $termine = get_posts($args) ;
+        $termine = get_posts($args);
         $next_termin = reset($termine);
-        if (is_a($next_termin,'WP_Post'))
-            {
-                $next_termin_timestamp = strtotime(get_post_meta($next_termin->ID, 'termin_date', true));
-                if (date('Y-m-d', $next_termin_timestamp) === date('Y-m-d'))
-                    {
-                                 ob_start();
-        ?>
-        <div class="termin-event-timer">
-            <div class="termin-event-name">
-                <h3><?php echo  $next_termin->post_title ?></h3>
-                Dieses Treffen findet heute um: <?php echo date('H:i', $next_termin_timestamp).' Uhr' ?> statt.
-            </div>
-                <div class="termin-event-countdown">
-                <?php
-                include_once plugin_dir_path(__FILE__).'inc/timer.php';
+        if (is_a($next_termin, 'WP_Post')) {
+            $next_termin_timestamp = strtotime(get_post_meta($next_termin->ID, 'termin_date', true));
+            if (date('Y-m-d', $next_termin_timestamp) === date('Y-m-d')) {
+                ob_start();
                 ?>
-                </div>
-               <?php echo $this->display_termine_join_button(['post_id' => $next_termin->ID]) ?>
+                <div class="termin-event-timer">
+                    <div class="termin-event-name">
+                        <h3><?php echo $next_termin->post_title ?></h3>
+                        Dieses Treffen findet heute um: <?php echo date('H:i', $next_termin_timestamp) . ' Uhr' ?>
+                        statt.
+                    </div>
+                    <div class="termin-event-countdown">
+                        <?php
+                        include_once plugin_dir_path(__FILE__) . 'inc/timer.php';
+                        ?>
+                    </div>
+                    <?php echo $this->display_termine_join_button(['post_id' => $next_termin->ID]) ?>
 
-        </div>
-        <?php
-        return ob_get_clean();
-                    }
+                </div>
+                <?php
+                return ob_get_clean();
             }
+        }
     }
 
-    public function display_termine_join_button($atts){
+    public function display_termine_join_button($atts)
+    {
 
-        if (isset($atts['post_id']))
-            {
-                $post_id = $atts['post_id'];
-            }
-        else{
-            			$args =[
-				'post_type' => 'termin',
-				'meta_key'=>'termin_date',
-				'numberposts'=> 1,
-				'orderby' => 'meta_value',
-				'order' => 'ASC',
-				'meta_query'=>
-					[
-						'key' => 'termin_date',
-						'compare' => '>=',
-						'value' => date('Y-m-d h:i:s', time()-7200),
-					]
-			];
+        if (isset($atts['post_id'])) {
+            $post_id = $atts['post_id'];
+        } else {
+            $args = [
+                'post_type' => 'termin',
+                'meta_key' => 'termin_date',
+                'numberposts' => 1,
+                'orderby' => 'meta_value',
+                'order' => 'ASC',
+                'meta_query' =>
+                    [
+                        'key' => 'termin_date',
+                        'compare' => '>=',
+                        'value' => date('Y-m-d h:i:s', time() - 7200),
+                    ]
+            ];
 
-                    $termin = get_posts($args);
-                    $termin = reset($termin);
-                    if (is_a($termin, 'WP_Post'))
-                        $post_id = $termin->ID;
+            $termin = get_posts($args);
+            $termin = reset($termin);
+            if (is_a($termin, 'WP_Post'))
+                $post_id = $termin->ID;
         }
-        if (isset($post_id))
-            {
-                      ob_start();
-                if (has_term('netzwerktreffen','termin_event', $post_id) && !is_user_logged_in())
-                    {
-                    ?>
-                                         <div class="button" onclick="<?php echo "jQuery('.ct-header-account[href*=account-modal]')[0].click();" ?>">Anmelden, um am Treffen teilzunehmen</div>
-                     <?php
-                    }
-                else{
-                    ?>
-                    <div id="<?php echo $post_id ?>" class="termine-join-button button">
+        if (isset($post_id)) {
+            ob_start();
+            if (has_term('netzwerktreffen', 'termin_event', $post_id) && !is_user_logged_in()) {
+                ?>
+                <div class="button"
+                     onclick="<?php echo "jQuery('.ct-header-account[href*=account-modal]')[0].click();" ?>">Anmelden,
+                    um am Treffen teilzunehmen
+                </div>
+                <?php
+            } else {
+                ?>
+                <div id="<?php echo $post_id ?>" class="termine-join-button button">
                     Zum Treffen
-                    </div>
-                    <?php
+                </div>
+                <?php
 
-                }
- return ob_get_clean();
             }
+            return ob_get_clean();
+        }
     }
 
 }
