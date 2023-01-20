@@ -29,13 +29,9 @@ $next_termin = reset($termine);
 
         // get today's date
         const today = new Date().getTime();
+        const nexttermin = new Date("<?php echo get_post_meta($next_termin->ID, 'termin_date', true)?>").getTime();
         let diff;
-        diff = <?php echo (strtotime(get_post_meta($next_termin->ID, 'termin_date', true)) * 1000)?> - today;
-
-        console.log(<?php echo strtotime(get_post_meta($next_termin->ID, 'termin_date', true))  ?>)
-        console.log(<?php echo $next_termin->ID  ?>)
-        console.log(today)
-        console.log(diff)
+        diff = nexttermin - today;
         // math
 
         let days = Math.floor(diff / (1000 * 60 * 60 * 24));
@@ -58,6 +54,13 @@ $next_termin = reset($termine);
     }, 1000);
 </script>
 <style>
+
+    .termin-event-timer{
+        text-align: center;
+        padding: 15px;
+        border-radius: 15px;
+        background-color: var(--ci-tab-background);
+    }
 
     .container {
         font-family: var(--fontFamily)
@@ -88,6 +91,25 @@ $next_termin = reset($termine);
         padding: 10px;
         width: 125px;
         border-radius: 5px;
+        color: white;
+    }
+
+
+    .days{
+        display: none;
+
+        background-color: var(--ci-basis);
+    }
+    .hours{
+        background-color: var(--ci-accent-color);
+
+    }
+    .minutes{
+        background-color: var(--ci-group-founded);
+    }
+    .seconds{
+        background-color: var(--ci-basis);
+
     }
 
     .numbers {

@@ -14,11 +14,12 @@ jQuery(document).ready($ => {
         });
     })
 
-    $('#termine-join-button').on('click', e => {
+    $('.termine-join-button').on('click', e => {
         $.post(
             wall.ajaxurl,
             {
                 'action': 'rpi_ajax_termin_log_participant_and_redirect',
+                'post_id': e.id
             },
             function (response) {
 

@@ -3,7 +3,6 @@
 namespace rpi\Wall;
 
 
-
 use mod_bigbluebuttonbn\local\helpers\reset;
 
 class Shortcodes
@@ -56,6 +55,29 @@ class Shortcodes
 
     }
 
+    static function display_members(Group $group)
+    {
+        if ($group->get_members_amount() > 0) {
+            foreach ($group->get_memberIds() as $user_id) {
+                self::display_user($user_id);
+            }
+        }
+    }
+
+    static function display_user($user_id, $size)
+    {
+        $member = new Member($user_id);
+
+        ?>
+        <div class="user-grid">
+            <div class="user-avatar"><?php echo get_avatar($member->ID, $size); ?></div>
+            <div class="user-name">
+                <a href="<?php echo $member->get_member_profile_permalink() ?>"><?php echo $member->name; ?></a>
+            </div>
+        </div>
+        <?php
+    }
+
     public function init()
     {
 
@@ -96,7 +118,6 @@ class Shortcodes
     {
         return $this->is_member_page;
     }
-
 
     /**
      * [my_comments]
@@ -329,7 +350,6 @@ class Shortcodes
         return ob_get_clean();
     }
 
-
     public function get_user_groups($atts)
     {
         ob_start();
@@ -347,6 +367,118 @@ class Shortcodes
         wp_reset_query();
         echo '</div>';
         return ob_get_clean();
+    }
+
+    static function display_post($post)
+    {
+        global $post;
+
+        $plg = new Group($post->ID);
+        $plg->get_comment_likes_amount();
+        $status = $plg->get_status();
+
+        ?>
+        <div class="group-post">
+            <div class="group-post-wrapper <?php echo $status ?>">
+            <a href="<?php the_permalink($post->ID);?>#pin"  class="pin-title-icon pin"><?php echo Shortcodes::$pin_icon ?></a>
+            <?php
+            if ($status) { ?>
+                <a href="<?php the_permalink($post->ID) ?>#group" class="pin-title-icon group"> <?php echo Shortcodes::$group_icon ?> </a>
+            <?php
+            }
+            ?>
+                <?php
+                    Group::display_watcher_area();
+                ?>
+                <div class="entry-title">
+                    <span>Pinname:</span>
+                    <a href="<?php the_permalink()?>#pin">
+                        <h3><?php echo $post->post_title; ?></h3>
+                    </a>
+                    <?php if (!empty(get_field("constitution_gruppenname"))) {?>
+                        <span>Gruppenname:</span>
+                        <a href="<?php the_permalink()?>#group">
+                            <h4><?php echo get_field("constitution_gruppenname"); ?></h4>
+                        </a>
+                    <?php } ?>
+                </div>
+
+                <div class="entry-meta"><?php echo self::$user_icon; ?>
+                    <?php echo self::display_user_name($post->post_author); ?>
+                    <?php echo self::$date_icon; ?><?php echo date('d.m.Y', strtotime($post->post_date)); ?>
+                </div>
+                <div class="content">
+                    <?php echo wp_trim_words($post->post_content, 50, '...'); ?>
+                </div>
+                <div class="ghost"></div>
+                <div>
+                    <?php if (is_user_logged_in() && 'pending' !== $plg->get_status() && $plg->has_member(get_current_user_id())):
+                     $next_meeting = get_post_meta($plg->ID, 'date_of_meeting', true);
+                     if (!empty($next_meeting) ) { ?>
+                        <div class="next-meeting">
+                        <h4>Nächster Termin:</h4>
+                         <?php echo date('D d.n.Y', strtotime($next_meeting)) ?> -
+                        <?php echo date('H:i', strtotime($next_meeting)) ?> Uhr
+                        <hr>
+                            </div>
+
+                    <?php } ?>
+                    <a href="<?php echo $plg->get_matrix_link('toolbar'); ?>"  target="_blank" rel="noopener noreferrer">Matrix Raum</a>
+                    <?php endif; ?>
+                </div>
+                <div>
+                    <?php $mn = $plg->get_members_amount(); ?><?php if ($mn > 0) {echo $mn . ' Mitglied';} ?><?php if ($mn > 1) {echo 'er';} ?>
+                    <?php if ($plg->is_not_founded()): ?>
+                        <?php
+                        $in = $plg->get_likers_amount();
+                        if ($in > 0) {
+                            if ($in < 2) {
+                                echo '1 Person interessiert';
+                            } else {
+                                echo $in . ' Personen interessiert';
+                            }
+                        }
+                        echo $plg->is_pending() ? ', Status: Gründungsphase' : ''; ?>
+                    <?php endif; ?>
+                </div>
+                <?php self::display_assignd_user($plg, 24); ?>
+
+            </div>
+        </div>
+        <?php
+    }
+
+    static function display_user_name($user_id)
+    {
+        $member = new Member($user_id);
+        ?>
+        <span class="user-name"><a
+                    <a href="<?php echo $member->get_member_profile_permalink() ?>"><?php echo $member->name; ?></a>
+        <?php
+    }
+
+    static function display_assignd_user(Group $group, $size = 24)
+    {
+        $u = $group->get_liker_and_member_Ids();
+        ?>
+        <div class="user-assignd">
+            <div class="user-members">
+                <?php
+                foreach ($u->members as $user_id) {
+                    self::display_user($user_id, $size);
+                }
+                ?>
+            </div>
+            <div class="user-likers">
+                <?php
+                foreach ($u->likers as $user_id) {
+                    self::display_user($user_id, $size);
+                }
+                ?>
+            </div>
+
+        </div>
+        <?php
     }
 
     public function get_user_likes($atts)
@@ -624,20 +756,86 @@ class Shortcodes
         return ob_get_clean();
     }
 
+    /**
+     * @param string $date
+     * @return string
+     */
+    static function getMonat(string $date): string
+    {
+        $monat = array(
+            'Jan' => 'Januar',
+            'Feb' => 'Februar',
+            'Mar' => 'März',
+            'Apr' => 'April',
+            'May' => 'Mai',
+            'Jun' => 'Juni',
+            'Jul' => 'Juli',
+            'Aug' => 'August',
+            'Sep' => 'September',
+            'Oct' => 'Oktober',
+            'Nov' => 'November',
+            'Dec' => 'Dezember',
+        );
+        if (!empty($date))
+            return $monat[date('M', strtotime($date))];
+        else
+            return '';
+    }
+
+     static function getWochentag(string $date): string
+    {
+        $wochentag = array(
+            'Mon' => 'Montag',
+            'Tue' => 'Dienstag',
+            'Wed' => 'Mittwoch',
+            'Thu' => 'Donnerstag',
+            'Fri' => 'Freitag',
+            'Sat' => 'Samstag',
+            'Sun' => 'Sonntag',
+        );
+        return $wochentag[date('D', strtotime($date))];
+    }
+
     public function display_termine_widget($atts){
         //TODO: ADD termine Widget
     }
 
     public function display_termine_join_button($atts){
 
-        ob_start();
-        ?>
-        <div id="termine-join-button" class="button">
-        Zum Treffen
-        </div>
-        <?php
-        return ob_get_clean();
+        if (isset($atts['post_id']))
+            {
+                $post_id = $atts['post_id'];
+            }
+        else{
+            			$args =[
+				'post_type' => 'termin',
+				'meta_key'=>'termin_date',
+				'numberposts'=> 1,
+				'orderby' => 'meta_value',
+				'order' => 'ASC',
+				'meta_query'=>
+					[
+						'key' => 'termin_date',
+						'compare' => '>=',
+						'value' => date('Y-m-d h:i:s', time()-7200),
+					]
+			];
 
+                    $termin = get_posts($args);
+                    $termin = reset($termin);
+                    if (is_a($termin, 'WP_Post'))
+                        $post_id = $termin->ID;
+        }
+        if (isset($post_id))
+            {
+                ob_start();
+                    ?>
+                    <div id="<?php echo $post_id ?> " class="termine-join-button button">
+                    Zum Treffen
+                    </div>
+                    <?php
+                    return ob_get_clean();
+            }
     }
 
     public function display_termin_event_timer($atts){
@@ -672,191 +870,13 @@ class Shortcodes
                 include_once plugin_dir_path(__FILE__).'inc/timer.php';
                 ?>
                 </div>
-                <div id="termine-join-button" class="button">
-                Zum Treffen
-                </div>
+               <?php echo $this->display_termine_join_button(['post_id' => $next_termin->ID]) ?>
 
         </div>
         <?php
         return ob_get_clean();
             }
 
-    }
-
-
-     static function getWochentag(string $date): string
-    {
-        $wochentag = array(
-            'Mon' => 'Montag',
-            'Tue' => 'Dienstag',
-            'Wed' => 'Mittwoch',
-            'Thu' => 'Donnerstag',
-            'Fri' => 'Freitag',
-            'Sat' => 'Samstag',
-            'Sun' => 'Sonntag',
-        );
-        return $wochentag[date('D', strtotime($date))];
-    }
-
-    /**
-     * @param string $date
-     * @return string
-     */
-    static function getMonat(string $date): string
-    {
-        $monat = array(
-            'Jan' => 'Januar',
-            'Feb' => 'Februar',
-            'Mar' => 'März',
-            'Apr' => 'April',
-            'May' => 'Mai',
-            'Jun' => 'Juni',
-            'Jul' => 'Juli',
-            'Aug' => 'August',
-            'Sep' => 'September',
-            'Oct' => 'Oktober',
-            'Nov' => 'November',
-            'Dec' => 'Dezember',
-        );
-        if (!empty($date))
-            return $monat[date('M', strtotime($date))];
-        else
-            return '';
-    }
-
-    static function display_user($user_id, $size)
-    {
-        $member = new Member($user_id);
-
-        ?>
-        <div class="user-grid">
-            <div class="user-avatar"><?php echo get_avatar($member->ID, $size); ?></div>
-            <div class="user-name">
-                <a href="<?php echo $member->get_member_profile_permalink() ?>"><?php echo $member->name; ?></a>
-            </div>
-        </div>
-        <?php
-    }
-
-    static function display_user_name($user_id)
-    {
-        $member = new Member($user_id);
-        ?>
-        <span class="user-name"><a
-                    <a href="<?php echo $member->get_member_profile_permalink() ?>"><?php echo $member->name; ?></a>
-        <?php
-    }
-
-    static function display_assignd_user(Group $group, $size = 24)
-    {
-        $u = $group->get_liker_and_member_Ids();
-        ?>
-        <div class="user-assignd">
-            <div class="user-members">
-                <?php
-                foreach ($u->members as $user_id) {
-                    self::display_user($user_id, $size);
-                }
-                ?>
-            </div>
-            <div class="user-likers">
-                <?php
-                foreach ($u->likers as $user_id) {
-                    self::display_user($user_id, $size);
-                }
-                ?>
-            </div>
-
-        </div>
-        <?php
-    }
-
-    static function display_members(Group $group)
-    {
-        if ($group->get_members_amount() > 0) {
-            foreach ($group->get_memberIds() as $user_id) {
-                self::display_user($user_id);
-            }
-        }
-    }
-
-    static function display_post($post)
-    {
-        global $post;
-
-        $plg = new Group($post->ID);
-        $plg->get_comment_likes_amount();
-        $status = $plg->get_status();
-
-        ?>
-        <div class="group-post">
-            <div class="group-post-wrapper <?php echo $status ?>">
-            <a href="<?php the_permalink($post->ID);?>#pin"  class="pin-title-icon pin"><?php echo Shortcodes::$pin_icon ?></a>
-            <?php
-            if ($status) { ?>
-                <a href="<?php the_permalink($post->ID) ?>#group" class="pin-title-icon group"> <?php echo Shortcodes::$group_icon ?> </a>
-            <?php
-            }
-            ?>
-                <?php
-                    Group::display_watcher_area();
-                ?>
-                <div class="entry-title">
-                    <span>Pinname:</span>
-                    <a href="<?php the_permalink()?>#pin">
-                        <h3><?php echo $post->post_title; ?></h3>
-                    </a>
-                    <?php if (!empty(get_field("constitution_gruppenname"))) {?>
-                        <span>Gruppenname:</span>
-                        <a href="<?php the_permalink()?>#group">
-                            <h4><?php echo get_field("constitution_gruppenname"); ?></h4>
-                        </a>
-                    <?php } ?>
-                </div>
-
-                <div class="entry-meta"><?php echo self::$user_icon; ?>
-                    <?php echo self::display_user_name($post->post_author); ?>
-                    <?php echo self::$date_icon; ?><?php echo date('d.m.Y', strtotime($post->post_date)); ?>
-                </div>
-                <div class="content">
-                    <?php echo wp_trim_words($post->post_content, 50, '...'); ?>
-                </div>
-                <div class="ghost"></div>
-                <div>
-                    <?php if (is_user_logged_in() && 'pending' !== $plg->get_status() && $plg->has_member(get_current_user_id())):
-                     $next_meeting = get_post_meta($plg->ID, 'date_of_meeting', true);
-                     if (!empty($next_meeting) ) { ?>
-                        <div class="next-meeting">
-                        <h4>Nächster Termin:</h4>
-                         <?php echo date('D d.n.Y', strtotime($next_meeting)) ?> -
-                        <?php echo date('H:i', strtotime($next_meeting)) ?> Uhr
-                        <hr>
-                            </div>
-
-                    <?php } ?>
-                    <a href="<?php echo $plg->get_matrix_link('toolbar'); ?>"  target="_blank" rel="noopener noreferrer">Matrix Raum</a>
-                    <?php endif; ?>
-                </div>
-                <div>
-                    <?php $mn = $plg->get_members_amount(); ?><?php if ($mn > 0) {echo $mn . ' Mitglied';} ?><?php if ($mn > 1) {echo 'er';} ?>
-                    <?php if ($plg->is_not_founded()): ?>
-                        <?php
-                        $in = $plg->get_likers_amount();
-                        if ($in > 0) {
-                            if ($in < 2) {
-                                echo '1 Person interessiert';
-                            } else {
-                                echo $in . ' Personen interessiert';
-                            }
-                        }
-                        echo $plg->is_pending() ? ', Status: Gründungsphase' : ''; ?>
-                    <?php endif; ?>
-                </div>
-                <?php self::display_assignd_user($plg, 24); ?>
-
-            </div>
-        </div>
-        <?php
     }
 
 }
