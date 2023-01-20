@@ -652,7 +652,7 @@ class RPIWallInstaller
             "rest_base" => "termin_event",
             "rest_controller_class" => "WP_REST_Terms_Controller",
             "rest_namespace" => "wp/v2",
-            "show_in_quick_edit" => false,
+            "show_in_quick_edit" => true,
             "sort" => false,
             "show_in_graphql" => false,
             "capabilities" => array(

@@ -338,9 +338,9 @@ class Shortcodes
             endforeach;
             ?>
         </div>
+        <hr>
         <?php
 
-        echo '<hr>';
         echo paginate_links(array(
             'format' => '?paged=%#%',
             'current' => max(1, get_query_var('paged')),
@@ -353,8 +353,7 @@ class Shortcodes
     public function get_user_groups($atts)
     {
         ob_start();
-
-        echo '<div class="group-posts">';
+?><div class="group-posts"><?php
         $member = new Member($this->user);
 
 
@@ -365,7 +364,7 @@ class Shortcodes
             }
         }
         wp_reset_query();
-        echo '</div>';
+        ?></div><?php
         return ob_get_clean();
     }
 
@@ -484,7 +483,7 @@ class Shortcodes
     public function get_user_likes($atts)
     {
         ob_start();
-        echo '<div class="group-posts">';
+        ?><div class="group-posts"><?php
         $member = new Member($this->user);
 
         $query = $member->get_query_pending_groups();
@@ -494,7 +493,9 @@ class Shortcodes
             }
         }
         wp_reset_query();
-        echo '</div>';
+        ?>
+        </div>
+        <?php
         return ob_get_clean();
     }
 
@@ -502,7 +503,9 @@ class Shortcodes
     {
 
         ob_start();
-        echo '<div class="group-posts">';
+        ?>
+        <div class="group-posts">
+        <?php
         $member = new Member($this->user);
 
         $query = $member->get_query_my_posts();
@@ -512,7 +515,9 @@ class Shortcodes
             }
         }
         wp_reset_query();
-        echo '</div>';
+        ?>
+        </div>
+        <?php
         return ob_get_clean();
     }
 
@@ -741,7 +746,9 @@ class Shortcodes
                             ?> </div> <?php
                             ?> </div> <?php
                         }
-                        ?> </div> <?php
+                        ?>
+                        </div>
+                        <?php
                         $newMonth = true;
                         $newWeek = true;
                     }
@@ -800,6 +807,50 @@ class Shortcodes
         //TODO: ADD termine Widget
     }
 
+    public function display_termin_event_timer($atts){
+
+        $args =[
+                'post_type' => 'termin',
+                'meta_key'=>'termin_date',
+                                'numberposts'=> 1,
+                                'orderby' => 'meta_value',
+                                'order' => 'ASC',
+                                'meta_query'=>
+                                [
+                                        'key' => 'termin_date',
+                                        'compare' => '>=',
+                                        'value' => date('Y-m-d h:i:s'),
+                                ]
+                ];
+
+        $termine = get_posts($args) ;
+        $next_termin = reset($termine);
+        if (is_a($next_termin,'WP_Post'))
+            {
+                $next_termin_timestamp = strtotime(get_post_meta($next_termin->ID, 'termin_date', true));
+                if (date('Y-m-d', $next_termin_timestamp) === date('Y-m-d'))
+                    {
+                                 ob_start();
+        ?>
+        <div class="termin-event-timer">
+            <div class="termin-event-name">
+                <h3><?php echo  $next_termin->post_title ?></h3>
+                Dieses Treffen findet heute um: <?php echo date('H:i', $next_termin_timestamp).' Uhr' ?> statt.
+            </div>
+                <div class="termin-event-countdown">
+                <?php
+                include_once plugin_dir_path(__FILE__).'inc/timer.php';
+                ?>
+                </div>
+               <?php echo $this->display_termine_join_button(['post_id' => $next_termin->ID]) ?>
+
+        </div>
+        <?php
+        return ob_get_clean();
+                    }
+            }
+    }
+
     public function display_termine_join_button($atts){
 
         if (isset($atts['post_id']))
@@ -828,55 +879,23 @@ class Shortcodes
         }
         if (isset($post_id))
             {
-                ob_start();
+                      ob_start();
+                if (has_term('netzwerktreffen','termin_event', $post_id) && !is_user_logged_in())
+                    {
                     ?>
-                    <div id="<?php echo $post_id ?> " class="termine-join-button button">
+                                         <div class="button" onclick="<?php echo "jQuery('.ct-header-account[href*=account-modal]')[0].click();" ?>">Anmelden, um am Treffen teilzunehmen</div>
+                     <?php
+                    }
+                else{
+                    ?>
+                    <div id="<?php echo $post_id ?>" class="termine-join-button button">
                     Zum Treffen
                     </div>
                     <?php
-                    return ob_get_clean();
+
+                }
+ return ob_get_clean();
             }
-    }
-
-    public function display_termin_event_timer($atts){
-
-        $args =[
-                'post_type' => 'termin',
-                'meta_key'=>'termin_date',
-                                'numberposts'=> 1,
-                                'orderby' => 'meta_value',
-                                'order' => 'ASC',
-                                'meta_query'=>
-                                [
-                                        'key' => 'termin_date',
-                                        'compare' => '>=',
-                                        'value' => date('Y-m-d h:i:s'),
-                                ]
-                ];
-
-        $termine = get_posts($args) ;
-        $next_termin = reset($termine);
-        if (is_a($next_termin,'WP_Post'))
-            {
-                ob_start();
-        ?>
-        <div class="termin-event-timer">
-            <div class="termin-event-name">
-                <h3><?php echo  $next_termin->post_title ?></h3>
-                Dieses Treffen findet heute um: <?php echo date('H:i',strtotime(get_post_meta($next_termin->ID, 'termin_date', true)) ).' Uhr' ?> statt.
-            </div>
-                <div class="termin-event-countdown">
-                <?php
-                include_once plugin_dir_path(__FILE__).'inc/timer.php';
-                ?>
-                </div>
-               <?php echo $this->display_termine_join_button(['post_id' => $next_termin->ID]) ?>
-
-        </div>
-        <?php
-        return ob_get_clean();
-            }
-
     }
 
 }

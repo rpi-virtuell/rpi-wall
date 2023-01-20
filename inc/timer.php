@@ -62,7 +62,7 @@ $next_termin = reset($termine);
         background-color: var(--ci-tab-background);
     }
 
-    .container {
+    .termin-event-timer .container {
         font-family: var(--fontFamily)
         position: relative;
         margin: auto;
@@ -72,7 +72,7 @@ $next_termin = reset($termine);
 
     }
 
-    h1 {
+    .termin-event-timer h1 {
         text-align: center;
         margin-top: 2em;
         font-size: 1em;
