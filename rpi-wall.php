@@ -496,37 +496,48 @@ class RpiWall
         $currentUser = get_current_user_id();
         if ($group->is_founded() && $currentUser != 0 && ($group->has_member($currentUser) || current_user_can('manage_options'))) {
             ?>
-            <div class="group-tab-matrix-detail">
-                <a class="toolbar-button button" href="<?php echo $group->get_matrix_link() ?>" target="_blank"
-                   rel="noopener noreferrer">Zur Matrix Gruppe</a>
-            </div>
+            <details class="group-tab-matrix-detail">
+                <summary style="cursor:pointer"><strong><?php echo \rpi\Wall\Shortcodes::$element_icon ?> Zur Matrix
+                        Gruppe</strong></summary>
+                <br>
+                <a class="button button-primary" href="<?php echo $group->get_matrix_link() ?>" target="_blank">im
+                    Browser matrix.rpi-virtuell.de</a>
+                <a class="button button-secondary" href="<?php  echo $group->get_matrix_link('client')?>"
+                   target="_blank">über
+                    die Element App</a>
+                <br>
+                <br>
+                <em>Für sichere Kommunikation nutzen wir <b><a
+                                href="https://element.io/personal">Element</a></b>,<br/> den Messenger für die
+                    Matrix mit vielen Features für professionelle Lerngemeinschaften.</em>
+            </details>
             <?php
             Wall\Toolbar::display_toolbar($group, false);
-        }
-        ?>
-        <div class="constituted-post-head">
-            <?php $protocols = Wall\protocol::get_protocols($group->ID);
-            if (sizeof($protocols) > 0) {
-                ?>
-                <h5>Ergebnisse der Treffen:</h5>
-                <div>
-                    <?php foreach ($protocols as $protocol) {
-                        $protocol_result = get_field("rpi_wall_protocol_result", $protocol->ID);
-                        $publish_result = get_field('rpi_wall_protocol_is_public_result', $protocol->ID);
-                        if (!empty($protocol_result) && $publish_result) {
-                            ?>
-                            <details class="constituted-post-protocol">
-                                <summary><h5><?php echo date('d.m.Y', strtotime($protocol->post_date)) ?></h5>
-                                </summary> <?php
+            ?>
+            <div class="constituted-post-head">
+                <?php $protocols = Wall\protocol::get_protocols($group->ID);
+                if (sizeof($protocols) > 0) {
+                    ?>
+                    <h5>Ergebnisse der Treffen:</h5>
+                    <div>
+                        <?php foreach ($protocols as $protocol) {
+                            $protocol_result = get_field("rpi_wall_protocol_result", $protocol->ID);
+                            $publish_result = get_field('rpi_wall_protocol_is_public_result', $protocol->ID);
+                            if (!empty($protocol_result) && $publish_result) {
                                 ?>
-                                <p><?php echo $protocol_result ?></p>
-                            </details> <?php
-                        }
-                    } ?>
-                </div>
-            <?php } ?>
-        </div>
-        <?php
+                                <details class="constituted-post-protocol">
+                                    <summary><h5><?php echo date('d.m.Y', strtotime($protocol->post_date)) ?></h5>
+                                    </summary> <?php
+                                    ?>
+                                    <p><?php echo $protocol_result ?></p>
+                                </details> <?php
+                            }
+                        } ?>
+                    </div>
+                <?php } ?>
+            </div>
+            <?php
+        }
         return ob_get_clean();
     }
 

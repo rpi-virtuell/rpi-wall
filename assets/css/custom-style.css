@@ -895,6 +895,9 @@ article:not(.founded):not(.closed) .like-group-box {
     text-align: center;
     margin-bottom: 25px;
     margin-top: 15px;
+    background-color: var(--ci-tab-background);
+    width: 100%;
+    border-radius: 15px;
 }
 
 .toolbar-header {

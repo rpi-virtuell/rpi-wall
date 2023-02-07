@@ -347,6 +347,10 @@ class Group extends \stdClass
             case 'html':
 	            return KONTO_SERVER.'?action=mredirect&url='.$this->channel_url;
 	            break;
+            case 'client':
+                $room_slug = $this->get_matrix_channel();
+                return 'https://matrix.to/#/'.$room_slug;
+                break;
             case 'email':
                 return $this->channel_url;
                 break;

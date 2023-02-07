@@ -43,48 +43,12 @@ class Toolbar
 
                 <div class="toolbar-content">
 
+                    <?php
+                    Toolbar::print_status_message($group);
+                    ?>
                     <div class="group-toolbar-grip">
                         <?php
-                        $status = $group->get_toolbar_status();
-                        switch ($status) {
-                            case 'constituted':
-                                ?>
-                                <div class="toolbar-status">
-                                    Arbeitsstrukturbögen können genutzt werden, um den Fortschritt während eines Meetings
-                                    festzuhalten und zu veröffentlichen
-                                </div>
-                                <?php
-                                RpiWall::modal('edit-planningForm', 'Planungsbogen', do_shortcode('[acfe_form name="edit-constitution"]'));
-                                RpiWall::modal('protocolForm', 'Arbeitsstrukturbogen', do_shortcode('[acfe_form name="create-protocol"]'));
-                                break;
-                            case 'meeting_planned':
-                                ?>
-                                <div class="toolbar-status">
-                                    Ein Planungstermin wurde festgelegt der Planungsbogen kann nun genutzt werden.
-                                </div>
-                                <?php
-                                RpiWall::modal('planningForm', 'Planungsbogen', do_shortcode('[acfe_form name="constitution"]'));
-                                break;
-                            case 'closed':
-                                ?>
-                                <div class="toolbar-status">
-                                    Die verbindliche Arbeitsphase der PLG wurde beendet.
-                                </div>
-                                <?php
-                                break;
-                            default:
-                                ?>
-                                <div class="toolbar-status">
-                                    Ein Planungstermin muss festgelegt werden, um mehr Toolbar funktionen freizuschalten.
-                                </div>
-                                <?php
-                                RpiWall::modal('planningDate', 'Planungstermin setzen ', do_shortcode('[acfe_form name="constitution_date"]'));
-                                if (!$group->get_toolbar_buttons())
-                                {
-                                    $buttons = array(array('rpi_wall_group_toolbar_button_label' => 'Terminfindung','rpi_wall_group_toolbar_button_url' => 'https://nuudel.digitalcourage.de/'));
-                                }
-                                break;
-                        }
+                       Toolbar::print_status_buttons($group);
                         //TODO: terminfindung button via set_toolbar_buttons hinzufügen
                         if (!isset($buttons))
                         {
@@ -163,6 +127,65 @@ class Toolbar
         }
 
 
+    }
+
+    static function print_status_message( Group $group)
+    {
+        $status = $group->get_toolbar_status();
+        switch ($status) {
+            case 'constituted':
+                ?>
+                <div class="toolbar-status">
+                    Arbeitsstrukturbögen können genutzt werden, um den Fortschritt während eines Meetings
+                    festzuhalten und zu veröffentlichen
+                </div>
+                <?php
+                break;
+            case 'meeting_planned':
+                ?>
+                <div class="toolbar-status">
+                    Ein Planungstermin wurde festgelegt der Planungsbogen kann nun genutzt werden.
+                </div>
+                <?php
+                break;
+            case 'closed':
+                ?>
+                <div class="toolbar-status">
+                    Die verbindliche Arbeitsphase der PLG wurde beendet.
+                </div>
+                <?php
+                break;
+            default:
+                ?>
+                <div class="toolbar-status">
+                    Ein Planungstermin muss festgelegt werden, um mehr Toolbar funktionen freizuschalten.
+                </div>
+                <?php
+                break;
+        }
+
+    }
+
+    static function print_status_buttons(Group $group){
+        $status = $group->get_toolbar_status();
+        switch ($status) {
+            case 'constituted':
+                RpiWall::modal('edit-planningForm', 'Planungsbogen', do_shortcode('[acfe_form name="edit-constitution"]'));
+                RpiWall::modal('protocolForm', 'Arbeitsstrukturbogen', do_shortcode('[acfe_form name="create-protocol"]'));
+                break;
+            case 'meeting_planned':
+                RpiWall::modal('planningForm', 'Planungsbogen', do_shortcode('[acfe_form name="constitution"]'));
+                break;
+            case 'closed':
+                break;
+            default:
+                RpiWall::modal('planningDate', 'Planungstermin setzen ', do_shortcode('[acfe_form name="constitution_date"]'));
+                if (!$group->get_toolbar_buttons())
+                {
+                    $buttons = array(array('rpi_wall_group_toolbar_button_label' => 'Terminfindung','rpi_wall_group_toolbar_button_url' => 'https://nuudel.digitalcourage.de/'));
+                }
+                break;
+        }
     }
 
     static function update_toolbar_status($form, $post_id, $status)
