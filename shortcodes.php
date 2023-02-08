@@ -3,6 +3,7 @@
 namespace rpi\Wall;
 
 
+use core_reportbuilder\local\filters\date;
 use mod_bigbluebuttonbn\local\helpers\reset;
 
 class Shortcodes
@@ -423,7 +424,7 @@ class Shortcodes
                         if (!empty($next_meeting)) { ?>
                             <div class="next-meeting">
                                 <h4>Nächster Termin:</h4>
-                                <?php echo date('D d.n.Y', strtotime($next_meeting)) ?> -
+                                <?php echo date('d.n.Y', strtotime($next_meeting)) ?> -
                                 <?php echo date('H:i', strtotime($next_meeting)) ?> Uhr
                                 <hr>
                             </div>
@@ -844,7 +845,9 @@ class Shortcodes
         $next_termin = reset($termine);
         if (is_a($next_termin, 'WP_Post')) {
             $next_termin_timestamp = strtotime(get_post_meta($next_termin->ID, 'termin_date', true));
-            if (date('Y-m-d', $next_termin_timestamp) === date('Y-m-d')) {
+           $date = new \DateTime(null, new \DateTimeZone('Europe/Berlin'));
+            if (date('Y-m-d', $next_termin_timestamp) === date('Y-m-d') && $next_termin_timestamp > $date->getTimestamp()) {
+                //TODO: Problem mit den Timezones der Timestamps $next_termin_timestamp immer eine stunde vor der current $date time
                 ob_start();
                 ?>
                 <div class="termin-event-timer">

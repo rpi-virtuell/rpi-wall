@@ -489,7 +489,7 @@ class RpiWall
         $group = new Wall\Group(get_the_ID());
         ?>
         <header class="entry-header">
-            <h1 class="page-title"> <?php echo !empty(get_field("constitution_gruppenname")) ? get_field("constitution_gruppenname") : $group->title ?> </h1>
+            <h1 class="page-title"> <?php echo !empty(get_field("constitution_gruppenname")) ? get_field("constitution_gruppenname") : $group->post->post_title?> </h1>
         </header>
         <?php
         $group->display();

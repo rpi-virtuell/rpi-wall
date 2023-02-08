@@ -852,13 +852,7 @@ class Group extends \stdClass
 	    $prefix = 'Konstitutierendes Treffen in Planung.';
 	    $date = get_post_meta($this->ID,'constitution_date_of_meeting', true);
 
-	    if(empty($date)) {
-	        $date = get_post_meta( $this->ID, 'date_of_meeting', true );
-	        if ( ! empty( $date ) ) {
-		        $date   = date( 'j.m.y', strtotime( $date ) );
-		        $prefix = 'Konstitutierendes Treffen am ';
-	        }
-        }else{
+	    if(!empty($date)) {
 		    $date = get_post_meta($this->ID,'constitution_date_of_meeting', true);
 		    $prefix = 'Gegründet am ';
 	    }
