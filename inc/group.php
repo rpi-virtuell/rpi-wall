@@ -111,6 +111,40 @@ class Group extends \stdClass
             do_action('rpi_wall_pl_group_ready', $group);
         }
 
+	    $args = [
+		    'post_type' => 'wall',
+		    'mumberposts' => -1,
+		    'meta_query' => [
+			    'relation' => 'AND',
+			    [
+				    'key' => 'rpi_wall_group_status',
+				    'value' => 'ready',
+				    'compare' => '='
+			    ],
+			    [
+				    'key' => 'rpi_wall_likers_amount',
+				    'value' => get_option('options_rpi_group_min_required_members'),
+				    'compare' => '<',
+				    'type' => 'NUMERIC'
+			    ],
+		    ]
+	    ];
+	    $posts = get_posts($args);
+
+
+	    /**
+	     * check groups with the status ready if they still have enough likers
+	     */
+	    foreach ($posts as $post) {
+		    $group = new Group($post->ID);
+		    $group->set_status('');
+		    //happens when listeners withdraw their interest in a group that already had the status ready
+		    do_action('rpi_wall_pl_group_remove_ready-status', $group);
+            //@todo add Message to event retreat
+		    new Message($group, 'retreat');
+
+	    }
+
 
         // check alle Gruppen, die den status pending haben und die pending time abgelaufen ist
         // wenn genug Mitglieder gejoined: create matrix room

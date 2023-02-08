@@ -19,16 +19,24 @@ class Message
         'ready' =>
             [
                 'subject' => '[%grouptitle%] Gründung möglich',
-                'body' => 'Für den Pinwandeintrag %postlink% ' .
+                'body' => 'Für den Pinnwandeintrag %postlink% ' .
                     'haben sich einige Interessierte gefunden. Die Gründung einer Professionellen Lerngemeinschaft ist jetzt möglich. ' .
                     'Klicke auf dem Beitrag ganz unten auf den Button "Gruppe gründen"'
+
+            ],
+        'retreat' =>
+            [
+                'subject' => '[%grouptitle%] Gründung nicht mehr möglich',
+                'body' => 'Für eine Gruppengründung beim Pinnwandeintrag %postlink% ' .
+                    'stehen nicht mehr genug Interessierte zur Verfügung. Die Gründung einer Professionellen Lerngemeinschaft ist jetzt nicht mehr möglich. ' .
+                    'Du wirst benachrichtigt, sobald sich wieder genug Interessierte gefunden haben.'
 
             ],
         'pending' =>
             [
                 'subject' => '[%grouptitle%] Jetzt beitreten!',
                 'body' => '%actorname% (%actorlink%) hat die Beitrittsphase zur Gründung einer Professionellen Lerngemeinschaft eröffnet.  ' .
-                    'Klicke innerhalb der nächsten %countdown% auf dem Pinwandeintrag %postlink% ' .
+                    'Klicke innerhalb der nächsten %countdown% auf dem Pinnwandeintrag %postlink% ' .
                     'ganz unten auf den Button "Beitreten", um Mitglied der Gruppe zu werden'
 
             ],
@@ -44,18 +52,18 @@ class Message
         'closed' =>
             [
                 'subject' => '[%grouptitle%] - Verbindliche Phase abgeschlossen',
-                'body' =>'%actorname% (%actorlink%) hat die verbindliche Arbeitphase des Pinwandeintrags %postlink% beendet.'
+                'body' =>'%actorname% (%actorlink%) hat die verbindliche Arbeitphase des Pinnwandeintrags %postlink% beendet.'
             ],
 
         'create' =>
             [
-                'subject' => '[Pinwandeintrag]: %posttitle%',
+                'subject' => '[Pinnwandeintrag]: %posttitle%',
                 'body' => '%actorlink% hat folgendes an die Pinnwand gepostet: <br>Titel:  %posttitle%<br>%content%'
 
             ],
         'creator' =>
 	        [
-		        'subject' => '[Pinwandeintrag]: %posttitle%',
+		        'subject' => '[Pinnwandeintrag]: %posttitle%',
 		        'body' => 'Hallo %actorlink%!<br><br>Vielen Dank für deinen Beitrag an der Pinnwand: %postlink%.<br>'.
 		                  'Wie geht es nun weiter? Mitglieder des Netzwerkes können deinen Beitrag lesen und kommentieren. '.
 		                  'Wenn du dir darüberhinaus im Kontext deines Beitrages auch eine professionelle Lerngemeinschaft (PLG) wünscht, '.
@@ -106,17 +114,17 @@ class Message
         'reset' =>
             [
                 'subject' => '[%grouptitle%] zu wenig Intresse',
-                'body' => 'Für den Pinwandeintrag "%posttitle%" (%postlink%) haben sich leider nicht genug Interessierte gefunden, um eine Professionelle Lerngemeinschaft zu etablieren. ' .
+                'body' => 'Für den Pinnwandeintrag "%posttitle%" (%postlink%) haben sich leider nicht genug Interessierte gefunden, um eine Professionelle Lerngemeinschaft zu etablieren. ' .
                     'Der Gründungsvorgang wurde zurückgesetzt. Wenn sich mehr Interessierte finden, kann der Gründungsprozess erneut gestartet werden.'
             ],
 
 
     ];
-    protected $events = ['create','creator', 'ready', 'closed','liked', 'joined', 'pending', 'founded', 'requested', 'comment', 'reset', 'founder'];
+    protected $events = ['create','retreat','creator', 'ready', 'closed','liked', 'joined', 'pending', 'founded', 'requested', 'comment', 'reset', 'founder'];
 
     /**
      * @param Group|Int $group
-     * @param string $event ['create','pending','founded','closed','liked','minimum_likers_met','comment','reset','founder']
+     * @param string $event ['ready','create','retreat','pending','founded','closed','liked','minimum_likers_met','comment','reset','founder']
      * @param array $to :   ['orga','watch','group'] welche Zielgruppe soll benachrichtigt werden
      * @param int|string  $actor_id handelnder User z.B. Kommentarschreiber
      */
