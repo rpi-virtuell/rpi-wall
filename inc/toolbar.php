@@ -35,7 +35,7 @@ class Toolbar
                                rel="noopener noreferrer"><?php echo $group->title ?></a></h4>
                     <?php } ?>
                     <?php if (!empty($next_meeting) && $group->get_status() != 'closed') { ?>
-                        Nächster Termin: <?php echo date('D d.n.Y', strtotime($next_meeting)) ?>
+                        Nächster Termin: <?php echo date('d.n.Y', strtotime($next_meeting)) ?>
                         um <?php echo date('H:i', strtotime($next_meeting)) ?> Uhr
 
                     <?php } ?>
