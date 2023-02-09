@@ -258,6 +258,7 @@ class RpiWallAjaxHandler
 			if (is_user_logged_in()) {
 				if ( !in_array(get_current_user_id(), $member) ){
 					add_post_meta( $termin_id, 'rpi_wall_termin_participant', get_current_user_id(), false);
+					//todo: Message::send_messages(get_current_user_id(), $msg);
 				}
 		    }else{
 
