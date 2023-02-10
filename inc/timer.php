@@ -34,15 +34,17 @@ $next_termin = reset($termine);
         diff = nexttermin - today;
         // math
 
-        let days = Math.floor(diff / (1000 * 60 * 60 * 24));
-        let hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        let minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-        let seconds = Math.floor((diff % (1000 * 60)) / 1000);
+        if (diff > 0 )
+        {
+            let days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            let hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            let minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            let seconds = Math.floor((diff % (1000 * 60)) / 1000);
 
-        // display
-        document.getElementById("timer").innerHTML =
-            "<div class=\"days\"> \
-		  <div class=\"numbers\">" + days + "</div>Tage</div> \
+            // display
+            document.getElementById("timer").innerHTML =
+                "<div class=\"days\"> \
+              <div class=\"numbers\">" + days + "</div>Tage</div> \
 <div class=\"hours\"> \
   <div class=\"numbers\">" + hours + "</div>Stunden</div> \
 <div class=\"minutes\"> \
@@ -51,71 +53,10 @@ $next_termin = reset($termine);
   <div class=\"numbers\">" + seconds + "</div>Sekunden</div> \
 </div>";
 
+        }
+
     }, 1000);
 </script>
-<style>
-
-    .termin-event-timer{
-        text-align: center;
-        padding: 15px;
-        border-radius: 15px;
-        background-color: var(--ci-tab-background);
-    }
-
-    .termin-event-timer .container {
-        font-family: var(--fontFamily)
-        position: relative;
-        margin: auto;
-        overflow: hidden;
-        width: auto;
-        height: 150px;
-
-    }
-
-    .termin-event-timer h1 {
-        text-align: center;
-        margin-top: 2em;
-        font-size: 1em;
-        text-transform: uppercase;
-        letter-spacing: 5px;
-    }
-
-    #timer {
-        text-align: center;
-        text-transform: uppercase;
-        font-size: .7em;
-    }
-
-    .days, .hours, .minutes, .seconds {
-        display: inline-block;
-        padding: 10px;
-        width: 125px;
-        border-radius: 5px;
-        color: white;
-    }
-
-
-    .days{
-        display: none;
-
-        background-color: var(--ci-basis);
-    }
-    .hours{
-        background-color: var(--ci-accent-color);
-
-    }
-    .minutes{
-        background-color: var(--ci-group-founded);
-    }
-    .seconds{
-        background-color: var(--ci-basis);
-
-    }
-
-    .numbers {
-        font-size: 4em;
-    }
-</style>
 <div class="container">
     <div id="timer">
     </div>

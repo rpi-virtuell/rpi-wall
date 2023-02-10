@@ -298,3 +298,79 @@
 
 /* Termin Timer */
 
+
+.termin-event-timer{
+    text-align: center;
+    padding: 15px;
+    border-radius: 15px;
+    background-color: var(--ci-tab-background);
+}
+
+.termin-event-timer .container {
+    font-family: var(--fontFamily);
+    position: relative;
+    margin: auto;
+    overflow: hidden;
+    width: auto;
+    margin-bottom: 15px;
+
+}
+
+.termin-event-timer h1 {
+    text-align: center;
+    margin-top: 2em;
+    font-size: 1em;
+    text-transform: uppercase;
+    letter-spacing: 5px;
+}
+
+#timer {
+    text-align: center;
+    text-transform: uppercase;
+    font-size: .7em;
+}
+
+.days, .hours, .minutes, .seconds {
+    display: inline-block;
+    padding: 10px;
+    width: 125px;
+    border-radius: 5px;
+    color: white;
+}
+
+
+.days{
+    display: none;
+
+    background-color: var(--ci-basis);
+}
+.hours{
+    background-color: var(--ci-accent-color);
+
+}
+.minutes{
+    background-color: var(--ci-group-founded);
+}
+.seconds{
+    background-color: var(--ci-basis);
+
+}
+
+.numbers {
+    font-size: 4em;
+}
+@media only screen and (max-width: 600px) {
+
+    #timer{
+        font-size: .55em;
+    }
+
+    .days, .hours, .minutes, .seconds {
+        width: 75px;
+    }
+    .numbers{
+        font-size: 5em;
+    }
+}
+
+

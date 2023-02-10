@@ -844,17 +844,18 @@ class Shortcodes
         $termine = get_posts($args);
         $next_termin = reset($termine);
         if (is_a($next_termin, 'WP_Post')) {
-            $next_termin_timestamp = strtotime(get_post_meta($next_termin->ID, 'termin_date', true));
-           $date = new \DateTime(null, new \DateTimeZone('Europe/Berlin'));
-            if (date('Y-m-d', $next_termin_timestamp) === date('Y-m-d') && $next_termin_timestamp > $date->getTimestamp()) {
-                //TODO: Problem mit den Timezones der Timestamps $next_termin_timestamp immer eine stunde vor der current $date time
+            $date = new \DateTime(null, new \DateTimeZone('Europe/Berlin'));
+            $termin_date = new \DateTime(get_post_meta($next_termin->ID, 'termin_date', true), new \DateTimeZone('Europe/Berlin'));
+            $current_time = new \DateTime('now', new \DateTimeZone('Europe/Berlin'));
+            $termin_enddate = new \DateTime(date('Y-m-d') . ' ' . get_post_meta($next_termin->ID, 'termin_enddate', true), new \DateTimeZone('Europe/Berlin'));
+
+            if ($termin_date->format('Y-m-d') === $current_time->format('Y-m-d') && $current_time < $termin_enddate) {
                 ob_start();
                 ?>
                 <div class="termin-event-timer">
                     <div class="termin-event-name">
                         <h3><?php echo $next_termin->post_title ?></h3>
-                        Dieses Treffen findet heute um: <?php echo date('H:i', $next_termin_timestamp) . ' Uhr' ?>
-                        statt.
+                        Beginn um <?php echo $termin_date->format('H:i') . ' Uhr' ?>
                     </div>
                     <div class="termin-event-countdown">
                         <?php
@@ -868,6 +869,7 @@ class Shortcodes
                 return ob_get_clean();
             }
         }
+        return null;
     }
 
     public function display_termine_join_button($atts)
@@ -906,9 +908,9 @@ class Shortcodes
                 <?php
             } else {
                 ?>
-                <div id="<?php echo $post_id ?>" class="termine-join-button button">
+                <a id="<?php echo $post_id ?>" class="termine-join-button button" href="<?php echo get_option("options_online_meeting_link") ?>" target="_blank">
                     Zum Treffen
-                </div>
+                </a>
                 <?php
 
             }

@@ -23,10 +23,7 @@ jQuery(document).ready($ => {
             },
             function (response) {
 
-                response = JSON.parse(response);
-                if (response.success) {
-                    location.href = response.redirect_link;
-                }
+
             }
         )
     })

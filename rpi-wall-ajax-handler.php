@@ -52,7 +52,6 @@ class RpiWallAjaxHandler
         add_action('wp_ajax_nopriv_rpi_wall_close_pin_group', [$this, 'ajax_close_pin_group']);
 
 
-
     }
 
     public function ajax_toggle_group_like()
@@ -60,35 +59,35 @@ class RpiWallAjaxHandler
         $response = ['success' => false];
 
         if (isset($_POST['group_id']) && is_user_logged_in()) {
-			$group = new Group($_POST['group_id']);
+            $group = new Group($_POST['group_id']);
             if ($group && $group->is_not_founded()) {
 
                 $member = new Member();
 
-	            $is_member= false;
+                $is_member = false;
 
                 if ($group->is_pending()) {
 
-					if($is_member = $member->is_in_group($group->ID)){
-						$member->leave_group($group->ID);
-						$is_liker = false;
-						$is_member = false;
-					}else{
-						$member->join_group($group->ID);
-						$is_liker = true;
-						$is_member = true;
-					}
-	                $amount = $group->get_members_amount();
+                    if ($is_member = $member->is_in_group($group->ID)) {
+                        $member->leave_group($group->ID);
+                        $is_liker = false;
+                        $is_member = false;
+                    } else {
+                        $member->join_group($group->ID);
+                        $is_liker = true;
+                        $is_member = true;
+                    }
+                    $amount = $group->get_members_amount();
 
                 } else {
 
-	                if ($member->is_in_group($group->ID)) {
-		                echo json_encode($response);
-		                die();
-	                }
+                    if ($member->is_in_group($group->ID)) {
+                        echo json_encode($response);
+                        die();
+                    }
 
 
-	                $action = $member->toggle_like_group($group->ID);
+                    $action = $member->toggle_like_group($group->ID);
                     if ($action == 'like') {
                         new Message($group, 'liked');
                     }
@@ -140,45 +139,48 @@ class RpiWallAjaxHandler
 
     }
 
-	public function ajax_tab_logout_content(){
+    public function ajax_tab_logout_content()
+    {
 
-		  wp_redirect(  str_replace('amp;','', wp_logout_url( ) ));
+        wp_redirect(str_replace('amp;', '', wp_logout_url()));
 
-		  echo str_replace('amp;','', wp_logout_url( ) );
-		  die();
+        echo str_replace('amp;', '', wp_logout_url());
+        die();
 
-	}
-
-    public function ajax_mark_all_messages_read(){
-
-		$member = new Member();
-	    $args = [
-		    'post_type' => 'message',
-		    'posts_per_page' => -1,
-		    'meta_query' => [
-			    [
-				    'key' => 'rpi_wall_message_recipient',
-				    'value' => $member->ID,
-				    'compare' => '=',
-				    'type' => 'NUMERIC'
-			    ]
-		    ]
-	    ];
-	    $wp_query = new \WP_Query($args);
-		$messages = $wp_query->get_posts();
-
-	    $readed = [];
-
-		foreach ($messages as $message){
-			$readed[$message->ID] = true;
-		}
-		update_user_meta($member->ID, 'rpi_read_messages', serialize($readed));
-	    update_user_meta($member->ID, 'rpi_wall_unread_messages_count', 0);
-	    $response = ['success' => true];
-		echo json_encode($response);
-
-	    die();
     }
+
+    public function ajax_mark_all_messages_read()
+    {
+
+        $member = new Member();
+        $args = [
+            'post_type' => 'message',
+            'posts_per_page' => -1,
+            'meta_query' => [
+                [
+                    'key' => 'rpi_wall_message_recipient',
+                    'value' => $member->ID,
+                    'compare' => '=',
+                    'type' => 'NUMERIC'
+                ]
+            ]
+        ];
+        $wp_query = new \WP_Query($args);
+        $messages = $wp_query->get_posts();
+
+        $readed = [];
+
+        foreach ($messages as $message) {
+            $readed[$message->ID] = true;
+        }
+        update_user_meta($member->ID, 'rpi_read_messages', serialize($readed));
+        update_user_meta($member->ID, 'rpi_wall_unread_messages_count', 0);
+        $response = ['success' => true];
+        echo json_encode($response);
+
+        die();
+    }
+
     public function ajax_mark_and_display_message()
     {
         $response = ['success' => false];
@@ -191,8 +193,7 @@ class RpiWallAjaxHandler
             } else {
                 $read_messages = array();
             }
-            if (!exists($read_messages, $_POST['message_id']))
-            {
+            if (!exists($read_messages, $_POST['message_id'])) {
                 Message::change_message_counter($member->ID, true);
                 $member->set_message_read($_POST['message_id']);
             }
@@ -210,67 +211,71 @@ class RpiWallAjaxHandler
 
     }
 
-    public function ajax_termin_log_participant_and_redirect(){
+    public function ajax_termin_log_participant_and_redirect()
+    {
 
-	    $response = ['success' => false];
-	    $response['redirect_link'] = get_option("options_online_meeting_link");
+        $response = ['success' => false];
+        $response['redirect_link'] = get_option("options_online_meeting_link");
 
-	    if(isset($_REQUEST['post_id'])){
+        if (isset($_REQUEST['post_id'])) {
 
-			$next_termin = get_post($_REQUEST['post_id']);
-		}else{
-			$args =[
-				'post_type' => 'termin',
-				'meta_key'=>'termin_date',
-				'numberposts'=> 1,
-				'orderby' => 'meta_value',
-				'order' => 'ASC',
-				'meta_query'=>
-					[
-						'key' => 'termin_date',
-						'compare' => '>=',
-						'value' => date('Y-m-d h:i:s', time()-7200),
-					]
-			];
+            $next_termin = get_post($_REQUEST['post_id']);
+        } else {
+            $args = [
+                'post_type' => 'termin',
+                'meta_key' => 'termin_date',
+                'numberposts' => 1,
+                'orderby' => 'meta_value',
+                'order' => 'ASC',
+                'meta_query' =>
+                    [
+                        'key' => 'termin_date',
+                        'compare' => '>=',
+                        'value' => date('Y-m-d h:i:s', time() - 7200),
+                    ]
+            ];
 
-			$termine = get_posts($args) ;
-			$next_termin = reset($termine);
+            $termine = get_posts($args);
+            $next_termin = reset($termine);
 
-		}
+        }
 
-		$termin_id = 0;
+        $termin_id = 0;
 
-	    if(is_a($next_termin,'WP_Post')){
-		    $termin_id = $next_termin->ID;
-		    $member = array();
-		    $guests = array();
+        if (is_a($next_termin, 'WP_Post')) {
+            $termin_id = $next_termin->ID;
+            $member = array();
+            $guests = array();
 
-		    $participants = get_post_meta($termin_id, 'rpi_wall_termin_participant');
-			foreach ($participants as $participant){
-				$member[]=intval($participant);
-			}
-		    $participants = get_post_meta($termin_id, 'rpi_wall_termin_guest');
-		    foreach ($participants as $participant){
-			    $guests[]=$participant;
-		    }
-
-
-			if (is_user_logged_in()) {
-				if ( !in_array(get_current_user_id(), $member) ){
-					add_post_meta( $termin_id, 'rpi_wall_termin_participant', get_current_user_id(), false);
-					//todo: Message::send_messages(get_current_user_id(), $msg);
-				}
-		    }else{
-
-			    $ip = $_SERVER['REMOTE_ADDR'];
-				if ( !in_array($ip, $guests) ){
-					add_post_meta( $termin_id, 'rpi_wall_termin_guest',  $ip, false);
-				}
-
-		    }
+            $participants = get_post_meta($termin_id, 'rpi_wall_termin_participant');
+            foreach ($participants as $participant) {
+                $member[] = intval($participant);
+            }
+            $participants = get_post_meta($termin_id, 'rpi_wall_termin_guest');
+            foreach ($participants as $participant) {
+                $guests[] = $participant;
+            }
 
 
-	    }
+            if (is_user_logged_in()) {
+                if (!in_array(get_current_user_id(), $member)) {
+                    add_post_meta($termin_id, 'rpi_wall_termin_participant', get_current_user_id(), false);
+                    $msg = new \stdClass();
+                    $msg->subject = '[' . $next_termin->post_title . ']' . ' An Termin teilgenommen';
+                    $msg->body = 'Du hast an dem Termin (<a href="' . get_permalink($termin_id) . '">' . $next_termin->post_title . '</a>) teilgenommen.';
+                    Message::send_messages(get_current_user_id(), $msg);
+                }
+            } else {
+
+                $ip = $_SERVER['REMOTE_ADDR'];
+                if (!in_array($ip, $guests)) {
+                    add_post_meta($termin_id, 'rpi_wall_termin_guest', $ip, false);
+                }
+
+            }
+
+
+        }
 
 
         /*
