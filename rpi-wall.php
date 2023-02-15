@@ -13,7 +13,7 @@
  * Plugin Name:       rpi Pinnwand
  * Plugin URI:        https://github.com/rpi-virtuell/rpi-wall/
  * Description:       Wordpress Pinnwand PLG Plugin entwickelt für das Projekt Schule Evangelisch Digital des Comenius-Institutes
- * Version:           1.1.3
+ * Version:           1.1.4
  * Author:            Joachim Happel
  * Author URI:        https://github.com/johappel
  * License:           GPL-2.0+
@@ -335,9 +335,10 @@ class RpiWall
 
         $this->installer = new Wall\RPIWallInstaller();
 
-        add_action('init', function () {
-            if (get_current_user_id() == 2 && is_singular('wall')) {
-                $matrix = new Wall\Matrix();
+        add_action('wp', function () {
+
+            if (get_current_user_id() == 2 && is_singular(['wall'])) {
+	            $matrix = new Wall\Matrix();
                 $matrix->tests(get_the_ID());
             }
         });

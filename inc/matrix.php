@@ -92,46 +92,63 @@ class Matrix {
 
 	function create_Room( Wall\Group $group){
 
-
-
+		//if matrix room in post_meta
 		if(!empty($room_id = $group->get_matrix_room_id())){
-
 			try{
-
-				$feedback = $this->client->api()->joinRoom($room_id);
+				//check if we can join
+				$this->client->api()->joinRoom($room_id);
+				//room was created and is available
 				return $room_id;
 
 			}catch (\Exception $e){
 				if(404 === $e->getCode()){
-
-					## Der Raum wurde offenbar gelöscht
-					## Ersatzslug wählen anlegen
-					$str = $this->randomString();
-
-					$group->slug = str_replace('plg',$str,$group->slug);
+					## The room was apparently deleted
+					## need to create new room
+					## Create replacement slug
+					$room_id  = 404;
+					$group->slug = preg_replace('/\_[a-z0-9]+\_/','_'.$this->randomString().'_',$group->slug);
 
 				}
 			}
 		}
-
-
+		//room_id is not in post_meta may be room is just available
 		$room_alias = '#'.$group->slug.':rpi-virtuell.de';
 
 
+		//check that the room with the slug does not exist
 		try {
-
 			$room_id = $this->client->api()->getRoomId($room_alias);
-
 		}catch (\Exception $e ){
-
-
+			// if not: ok got 404 and can create
 			$room_id = ($e->getCode());
+		}
+
+		//maybe room with (replacement) slug is available
+		if(!is_int($room_id)){
+			//replacement slug seems available
+			//try to join the room
+			try {
+				$this->client->api()->joinRoom($room_id);
+				$group->set_matrix_channel( $room_alias );
+				$group->set_matrix_room_id( $room_id );
+				return $room_id;
+
+			}catch (\Exception $e ){
+
+				if(400 === $e->getCode()) {
+					//we are not allowed to join that room
+					//we need to create new room -> set room_id = 404 (not found)
+					$room_id = 404;
+					//replace the slug
+					$group->slug = preg_replace( '/\_[a-z0-9]+\_/', '_' . $this->randomString() . '_', $group->slug );
+					//define a new group alias
+					$room_alias = '#'.$group->slug.':rpi-virtuell.de';
+				}
+			}
 
 		}
 
-
-
-		if(is_int($room_id) && $room_id === 404) {
+		if(is_int($room_id) && $room_id === 404) { //room not found create new one
 
 			try {
 
@@ -164,7 +181,7 @@ class Matrix {
 
 
 		}else{
-			return new \WP_Error('ROOM_IN_USE', 'Der Raum '. $room_alias . ' existiert bereits');
+			return new \WP_Error('ROOM_IN_USE', 'Der Raum '. $room_alias . ' existiert bereits. Probiers noch mal');
 		}
 
 	}
@@ -242,7 +259,11 @@ class Matrix {
 
 	}
 
-	function tests(int $group_id=0){
+	function tests(int $group_id=0 ){
+
+
+
+
 
 		if( $group_id>0 && get_current_user_id() == 2 && false ){
 
