@@ -241,6 +241,7 @@ class RpiWall
 
         //Toolbar
         add_filter('body_class', ['\rpi\Wall\Toolbar', 'add_toolbar_class_to_body']);
+        add_filter('cmplz_site_needs_cookiewarning', ['\rpi\Wall\Toolbar', 'hide_cookie_warning']);
         add_action('wp_body_open', function () {
             if ((isset($_GET['widgetId']) || isset($_GET['roomId'])) && get_post_type() == "wall") {
                 $group = new Wall\Group(get_the_ID());

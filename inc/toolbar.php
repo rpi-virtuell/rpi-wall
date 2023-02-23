@@ -14,6 +14,18 @@ class Toolbar
 
     }
 
+	static function hide_cookie_warning($cookiewarning_required){
+
+        if (isset($_GET['widgetId'])) {
+
+			return false;
+
+        }
+        return $cookiewarning_required;
+
+
+    }
+
     static function add_toolbar_class_to_body($classes)
     {
         if (isset($_GET['widgetId'])) {
