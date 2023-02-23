@@ -892,6 +892,11 @@ class Shortcodes
                     ]
             ];
 
+            if (isset($atts['term'])) {
+                $args['termin_event'] = $atts['term'];
+
+            }
+
             $termin = get_posts($args);
             $termin = reset($termin);
             if (is_a($termin, 'WP_Post'))
@@ -908,7 +913,8 @@ class Shortcodes
                 <?php
             } else {
                 ?>
-                <a id="<?php echo $post_id ?>" class="termine-join-button button" href="<?php echo get_option("options_online_meeting_link") ?>" target="_blank">
+                <a id="<?php echo $post_id ?>" class="termine-join-button button"
+                   href="<?php echo get_option("options_online_meeting_link") ?>" target="_blank">
                     Zum Treffen
                 </a>
                 <?php
