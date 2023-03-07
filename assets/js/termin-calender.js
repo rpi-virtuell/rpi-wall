@@ -6,7 +6,21 @@ jQuery(document).ready($ => {
         });
     })
 
-    $('.dibes-termin-filled').each((i, btn) => {
+    $('.termin-event').each((i, btn) => {
+        $(btn).click(function (event) {
+            $('.dibes-termin-details').removeClass('dibes-termin-focused');
+            $(btn).find('.dibes-termin-details').addClass('dibes-termin-focused');
+            event.stopPropagation();
+        });
+    })
+    $('.meeting-event').each((i, btn) => {
+        $(btn).click(function (event) {
+            $('.dibes-termin-details').removeClass('dibes-termin-focused');
+            $(btn).find('.dibes-termin-details').addClass('dibes-termin-focused');
+            event.stopPropagation();
+        });
+    })
+    $('.both-events').each((i, btn) => {
         $(btn).click(function (event) {
             $('.dibes-termin-details').removeClass('dibes-termin-focused');
             $(btn).find('.dibes-termin-details').addClass('dibes-termin-focused');

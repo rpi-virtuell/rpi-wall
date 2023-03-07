@@ -102,19 +102,30 @@
     background: var(--ci-tab-background-darker);
 }
 
-.dibes-termin-box .dibes-termin-day{
+.dibes-termin-box .dibes-termin-day {
     color: white;
 }
-.dibes-termin-filled{
+
+.termin-event {
     background: var(--ci-button-color);
 }
 
-.dibes-termin-filled .dibes-termin-day {
+.meeting-event {
+    background: var(--ci-accent-color);
+}
+
+.both-events {
+    background-image: linear-gradient(to bottom left, var(--ci-accent-color), var(--ci-button-color));
+}
+
+.termin-event .dibes-termin-day, .meeting-event .dibes-termin-day, .both-events .dibes-termin-day {
     font-weight: bold;
 }
 
-.dibes-termin-filled:hover, .dibes-termin-filled:hover dibes-termin-filled:not(div, a, img) {
-    background: var(--ci-button-color-hover) !important;
+.termin-event:hover, .termin-event:hover .termin-event:not(div, a, img),
+.meeting-event:hover, .meeting-event:hover .meeting-event:not(div, a, img),
+.both-events:hover, .both-events:hover .both-events:not(div, a, img) {
+
     cursor: pointer;
 }
 
@@ -250,7 +261,7 @@
     box-shadow: var(--ci-box-shadow);
 }
 
-.dibes-termin-details-header{
+.dibes-termin-details-header {
     padding: 15px;
     font-weight: bold;
     background-color: var(--ci-basis);
@@ -263,7 +274,8 @@
     padding: 20px;
     background-position: center;
 }
-.dibes-termin-thumbnail div{
+
+.dibes-termin-thumbnail div {
     margin-bottom: 10px;
 }
 
@@ -299,7 +311,7 @@
 /* Termin Timer */
 
 
-.termin-event-timer{
+.termin-event-timer {
     text-align: center;
     padding: 15px;
     border-radius: 15px;
@@ -339,19 +351,22 @@
 }
 
 
-.days{
+.days {
     display: none;
 
     background-color: var(--ci-basis);
 }
-.hours{
+
+.hours {
     background-color: var(--ci-accent-color);
 
 }
-.minutes{
+
+.minutes {
     background-color: var(--ci-group-founded);
 }
-.seconds{
+
+.seconds {
     background-color: var(--ci-basis);
 
 }
@@ -359,16 +374,18 @@
 .numbers {
     font-size: 4em;
 }
+
 @media only screen and (max-width: 600px) {
 
-    #timer{
+    #timer {
         font-size: .55em;
     }
 
     .days, .hours, .minutes, .seconds {
         width: 75px;
     }
-    .numbers{
+
+    .numbers {
         font-size: 5em;
     }
 }
