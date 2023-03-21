@@ -60,6 +60,33 @@
     width: 100%;
 }
 
+
+/*Legend*/
+.dibes-termin-legend{
+    padding: 5px;
+    border-radius: 3px;
+    margin-top: 15px;
+    box-shadow: 0 4px 24px #0000000a;
+}
+.termin-type{
+    display: flex;
+    font-weight: bold;
+}
+.termin-type-color{
+    width: 15px;
+    height: 15px;
+    margin: auto 5px;
+}
+
+.dibes-termin.termin-type-color
+{
+    background-color: var(--ci-button-color);
+}
+.plg-termin.termin-type-color
+{
+    background-color: var(--ci-accent-color);
+}
+
 /*Main View*/
 
 .dibes-termin-month {
@@ -382,7 +409,7 @@
     }
 
     .days, .hours, .minutes, .seconds {
-        width: 75px;
+        width: fit-content;
     }
 
     .numbers {
@@ -393,7 +420,7 @@
 @media only screen and (max-width: 344px) {
 
     #timer {
-        font-size: .5em;
+        font-size: 0.5em;
     }
 
     .days, .hours, .minutes, .seconds {
