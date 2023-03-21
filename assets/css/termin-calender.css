@@ -390,4 +390,20 @@
     }
 }
 
+@media only screen and (max-width: 344px) {
+
+    #timer {
+        font-size: .5em;
+    }
+
+    .days, .hours, .minutes, .seconds {
+        width: fit-content;
+
+    }
+
+    .numbers {
+        font-size: 3em;
+    }
+}
+
 
