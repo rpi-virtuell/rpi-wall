@@ -1,2 +1,0 @@
-- name: autoupdate-branch
-  uses: brainly/action-autoupdate-branch@2.1.1
