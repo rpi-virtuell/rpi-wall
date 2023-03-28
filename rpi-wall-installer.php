@@ -6,7 +6,7 @@ use core_reportbuilder\local\filters\date;
 use  rpi\Wall;
 use WP_Post;
 
-// TODO: REWORK
+
 class RPIWallInstaller
 {
 
@@ -1894,8 +1894,6 @@ Die Kommentare und Matrixchat sowie die Toolbar sind weiterhin verwendbar.
         $is_main_query = false;
 
         if (empty($_GET['widgetId']) && $query->is_main_query() && ($query->is_post_type_archive('wall') || $query->get('post_type') === 'wall')) {
-
-            //TODO: Check wether given widgetID is valid
 
             if (!is_user_logged_in()) {
                 $query->set('meta_query', array(
