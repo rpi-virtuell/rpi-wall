@@ -22,6 +22,7 @@
  * Domain Path:       /languages
  */
 
+//TODO: some change
 require_once("rpi-wall-installer.php");
 require_once("rpi-wall-ajax-handler.php");
 require_once("rpi-wall-form-handler.php");
