@@ -292,9 +292,6 @@ class RpiWall
 
         add_action('wp', [$this, 'redirect_to_users_member_page']);
 
-        // TODO USED FOR DEBUG NEEDS TO BE DELETED BEFORE LAUNCH
-//		add_action( 'init', [ $this, 'test' ] );
-
         add_action('wp_footer', [$this, 'initialize_message_counter']);
 
         /**
@@ -798,27 +795,6 @@ class RpiWall
         wp_localize_script('rpi-wall-script', 'wall', array('ajaxurl' => admin_url('admin-ajax.php')));
 
 
-    }
-
-    function test()
-    {
-        if (isset($_GET['admin_test'])) {
-            foreach ([3, 4, 5] as $user_id) {
-                $member = new Wall\Member($user_id);
-                $member->like_group(41);
-                $member->like_group(46);
-                $member->like_group(55);
-            }
-            foreach ([5, 6] as $user_id) {
-                $member = new Wall\Member($user_id);
-                $member->like_group(72);
-                $member->like_group(478);
-
-            }
-
-            $member = new Wall\Member(6);
-            $member->like_group(480);
-        }
     }
 
     public function initialize_message_counter()
