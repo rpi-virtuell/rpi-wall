@@ -70,10 +70,10 @@ class RPIWallInstaller
             $role->add_cap('delete_badge');
             $role->add_cap('assign_badge');
 
-            $role->add_cap('manage_schooltype');
-            $role->add_cap('edit_schooltype');
-            $role->add_cap('delete_schooltype');
-            $role->add_cap('assign_schooltype');
+            $role->add_cap('manage_section');
+            $role->add_cap('edit_section');
+            $role->add_cap('delete_section');
+            $role->add_cap('assign_section');
 
             /*
             if($roleslug === 'editor'){
@@ -137,7 +137,7 @@ class RPIWallInstaller
 
             $role->add_cap('assign_badge');
 
-            $role->add_cap('assign_schooltype');
+            $role->add_cap('assign_section');
 
         }
     }
@@ -249,7 +249,7 @@ class RPIWallInstaller
                 'title',
                 "editor",
             ],
-            'taxonomies' => ['wall-tag', "badge", 'schooltype', 'profession'],
+            'taxonomies' => ['wall-tag', "badge", 'section', 'profession'],
             "show_in_graphql" => false,
         ];
 
@@ -547,17 +547,17 @@ class RPIWallInstaller
         register_taxonomy("badge", ["member"], $args);
 
         /**
-         * Taxonomy: schooltype.
+         * Taxonomy: Section.
          */
 
         $labels = [
-            "name" => __("Schulformen", "blocksy"),
-            "singular_name" => __("Schulform", "blocksy"),
+            "name" => __("Bereiche", "blocksy"),
+            "singular_name" => __("Bereich", "blocksy"),
         ];
 
 
         $args = [
-            "label" => __("Schulform", "blocksy"),
+            "label" => __("Bereich", "blocksy"),
             "labels" => $labels,
             "public" => true,
             "publicly_queryable" => true,
@@ -566,24 +566,24 @@ class RPIWallInstaller
             "show_in_menu" => true,
             "show_in_nav_menus" => true,
             "query_var" => true,
-            "rewrite" => ['slug' => 'schooltype', 'with_front' => true, 'hierarchical' => true,],
+            "rewrite" => ['slug' => 'section', 'with_front' => true, 'hierarchical' => true,],
             "show_admin_column" => false,
             "show_in_rest" => true,
             "show_tagcloud" => false,
-            "rest_base" => "schooltype",
+            "rest_base" => "section",
             "rest_controller_class" => "WP_REST_Terms_Controller",
             "rest_namespace" => "wp/v2",
             "show_in_quick_edit" => false,
             "sort" => false,
             "show_in_graphql" => false,
             "capabilities" => array(
-                'manage_terms' => 'manage_schooltype',
-                'edit_terms' => 'edit_schooltype',
-                'delete_terms' => 'delete_schooltype',
-                'assign_terms' => 'assign_schooltype'
+                'manage_terms' => 'manage_section',
+                'edit_terms' => 'edit_section',
+                'delete_terms' => 'delete_section',
+                'assign_terms' => 'assign_section'
             ),
         ];
-        register_taxonomy("schooltype", ["member"], $args);
+        register_taxonomy("section", ["member"], $args);
 
         /**
          * Taxonomy: profession.
