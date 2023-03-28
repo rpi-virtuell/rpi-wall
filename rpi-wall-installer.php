@@ -6,6 +6,7 @@ use core_reportbuilder\local\filters\date;
 use  rpi\Wall;
 use WP_Post;
 
+// TODO: REWORK
 class RPIWallInstaller
 {
 
