@@ -48,6 +48,7 @@ class Shortcodes
 
         add_shortcode('wall_termine', array($this, 'display_termine'));
         add_shortcode('wall_termine_widget', array($this, 'display_termine_widget'));
+        add_shortcode('wall_cron_send_termine_message', array($this, 'cron_send_termine_message'));
 
         add_shortcode('wall_termine_join_button', array($this, 'display_termine_join_button'));
         add_shortcode('wall_termin_event_timer', array($this, 'display_termin_event_timer'));
@@ -929,6 +930,41 @@ class Shortcodes
     public function display_termine_widget($atts)
     {
         //TODO: ADD termine Widget
+    }
+
+    public function cron_send_termine_message($atts){
+          $args = [
+            'post_type' => 'termin',
+            'meta_key' => 'termin_date',
+            'numberposts' => -1,
+            'orderby' => 'meta_value',
+            'order' => 'ASC',
+            'meta_query' =>
+                [
+                    'key' => 'termin_date',
+                    'compare' => '=',
+                    'value' => date('Y-m-d h:i:s'),
+                ]
+        ];
+
+        $termine = get_posts($args);
+        	$msg = new \stdClass();
+            foreach ($termine as $termin)
+                {
+                    $msg->subject = "Heute findet ein Meeting statt: [{$termin->title}]";
+		$msg->body = "Heute findet das Meeting [{$termin->title}]  statt auf der Hauptseite gibt es mehr Informationen";
+		   $args = [
+            'post_type' => 'member',
+            'numberposts' => -1,
+            'order' => 'ASC',
+        ];
+
+        $member = get_posts($args);
+        $member_ids = array_column($member, 'ID');
+
+        Message::send_messages($member_ids, $msg);
+                }
+
     }
 
     public function display_termin_event_timer($atts)
