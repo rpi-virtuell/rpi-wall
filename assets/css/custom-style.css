@@ -1217,3 +1217,13 @@ body.toolbar #wpadminbar {
     font-weight: bold;
     font-size: large;
 }
+
+
+/* Protokoll */
+.single-protokoll h2{
+    border-bottom: 1px solid #ccc;
+    font-size:medium;
+    margin-top:30px;
+    background-color:#f9c227;
+    padding: 5px 20px;
+}

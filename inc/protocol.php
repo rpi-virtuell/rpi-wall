@@ -166,6 +166,8 @@ class protocol {
 			if(time() < strtotime($next_date)){
 				update_post_meta($group_id,'date_of_meeting', $next_date );
 				do_action('new_meeting_date', $next_date, $group_id );
+			}elseif(!$next_date){
+				delete_post_meta($group_id,'date_of_meeting');
 			}
 			do_action('update_group_protocol', $post_id,  $group_id );
 		}
@@ -205,9 +207,11 @@ class protocol {
 	static function display($content){
 
 		$fields = (get_field_objects());
+		//var_dump('<pre>',$fields); die();
 
 
 		if('protokoll' === get_post_type()){
+
 
 			$members = get_field('teilnehmende');
 			$content .= '<h3>'.$fields['teilnehmende']['label'].':</h3> <ul>';
@@ -226,14 +230,15 @@ class protocol {
 			$content .= '<h3>'.$fields['rpi_wall_protocol_agenda']['label'].':</h3>';
 			$content .= ''.$c.'';
 
-			$rows = get_field('reflexion_der_heutigen_arbeit');
+			$content .= '<h2>Reflexion</h2>';
 
-			$content .= '<h3>'.$fields['reflexion_der_heutigen_arbeit']['label'].'</h3>';
-			$content .= '<div style="display: grid; grid-template-columns: 1fr 1fr; grid-column-gap: 20px">';
-			foreach ($fields['reflexion_der_heutigen_arbeit']['sub_fields'] as $field){
-				$content .= '<div><p><strong>'.$field['label'].'</strong></p><p>'.nl2br($rows[$field['name']]).'</p></div>';
-			}
-			$content .= '</div>';
+
+			$content .= '<h3>'.$fields['rpi_wall_protocol_was_hat_gut_geklappt']['label'].'</h3>';
+			$content .= '<div>'.nl2br(get_field('rpi_wall_protocol_was_hat_gut_geklappt')).'</div>';
+
+			$content .= '<h3>'.$fields['rpi_wall_protocol_was_wollen_wir_verbessern']['label'].'</h3>';
+			$content .= '<div>'.nl2br(get_field('rpi_wall_protocol_was_wollen_wir_verbessern')).'</div>';
+
 
 
 			$b = get_field('rpi_wall_protocol_is_schoolwork_sighted');
@@ -246,6 +251,7 @@ class protocol {
 			}
 			$content .= '<h3>'.$label.'</h3>'.nl2br($c);
 
+			$content .= '<h2>Absprachen</h2>';
 
 			$rows = get_field('rpi_wall_protocol_orga');
 			$content .= '<h3>'.$fields['rpi_wall_protocol_orga']['label'].'</h3>';
@@ -253,14 +259,26 @@ class protocol {
 				$content .= '<div><p><strong>'.$field['label'].'</strong></p><p>'.nl2br($rows[$field['name']]).'</p></div>';
 			}
 
+			$next_date = get_field('rpi_wall_protocol_orga_next_meeting_date');
+			if(!$next_date){
+				$next_date = 'Ein nächster Termin wird noch abgesprochen.';
+			}
+
+			$content .= '<h3>'.$fields['rpi_wall_protocol_orga_next_meeting_date']['label'].'</h3>';
+			$content .= '<div>'.$next_date.'</div>';
+
+			$content .= '<h3>'.$fields['rpi_wall_protocol_orga_todo']['label'].'</h3>';
+			$content .= '<div>'.nl2br(get_field('rpi_wall_protocol_orga_todo')).'</div>';
+
 
 			$c = get_field('rpi_wall_protocol_notices');
 			$content .= '<h3>'.$fields['rpi_wall_protocol_notices']['label'].':</h3>';
 			$content .= ''.nl2br($c).'';
 
 			$c = get_field('rpi_wall_protocol_result');
-			$content .= '<h3>'.$fields['rpi_wall_protocol_result']['label'].'</h3>';
+			$content .= '<h2>'.$fields['rpi_wall_protocol_result']['label'].'</h2>';
 			$content .= ''.$c.'';
+
 
 			$b = get_field('rpi_wall_protocol_is_public_result');
 			if($b){
