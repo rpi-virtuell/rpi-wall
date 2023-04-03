@@ -404,17 +404,6 @@ class RpiWall
         return $query_args;
     }
 
-    public function query_tags(&$query)
-    {
-
-
-        if (is_tax('wall-tag') && is_post_type_archive('wall')) {
-            //$query->set('post_type','wall');
-
-        }
-
-    }
-
     public function query_member(WP_Query &$query)
     {
         if (is_tax('wall-tag') && !isset($_GET['wall-tag'])) {
