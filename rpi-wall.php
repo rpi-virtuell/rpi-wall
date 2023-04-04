@@ -290,21 +290,6 @@ class RpiWall
 
         add_action('wp_footer', [$this, 'initialize_message_counter']);
 
-        /**
-         * ToDo add to cronjob
-         */
-        add_action('wp_head', function () {
-            global $post;
-            if ($post->post_type == 'wall') {
-                $this->installer->sync_taxonomies_of_pin_members($post->ID, $post, false);
-            }
-            if ($post->post_type == 'member') {
-                $this->installer->sync_taxonomies_of_members($post->ID, $post, false);
-            }
-
-            echo '<script> var rpi_wall; </script>';
-
-        });
 
 
         //add_action('save_post_wall', [$this, 'on_new_pin'], 10, 3);
