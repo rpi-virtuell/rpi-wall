@@ -1169,7 +1169,8 @@ class Group extends \stdClass
         echo '</div>';
 
     }
-	public function get_serialized($meta_key, $key = false){
+
+    public function get_serialized($meta_key, $key = false){
 
 		$val = get_post_meta($this->ID,$meta_key,true);
 		if($val && is_string($val)){
@@ -1196,6 +1197,53 @@ class Group extends \stdClass
 		$values[$key] = $value;
 		update_post_meta($this->ID,$meta_key,serialize($values));
 	}
+
+	/**
+     * @uses action_hook trashed_post
+     *
+	 * @return void
+	 */
+    static function on_group_delete(int $post_id ){
+
+        $group = new Group($post_id);
+        if(is_a($group, 'rpi\Wall\Group') && is_a( $group->post, 'WP_Post' ) && 'wall' === $group->post->post_type ) {
+	        $user_arr = [];
+
+            //find all users associated with this group
+            $users = $group->get_likers_Ids();
+	        $user_arr = array_merge( $user_arr, $users );
+
+            $users = $group->get_memberIds();
+	        $user_arr = array_merge( $user_arr, $users );
+
+            $users = $group->get_watcher_Ids();
+	        $user_arr = array_merge( $user_arr, $users );
+
+            $user_id = $group->get_founder_id();
+            if ( intval( $user_id ) > 0 ) {
+                $user_arr[] = $user_id;
+            }
+
+            //remove duplicates
+	        $user_arr = array_unique( $user_arr );
+
+            foreach ( $user_arr as $user_id ) {
+
+                //remove from watchlist
+                delete_user_meta( $user_id, 'rpi_wall_watched_group_id', $post_id );
+                //remove from likes
+                delete_user_meta( $user_id, 'rpi_wall_liked_group_id', $post_id );
+                //remove membership
+                delete_user_meta( $user_id, 'rpi_wall_group_id', $post_id );
+
+            }
+
+            //delete all Messages associsated with this group
+            global $wpdb;
+            $wpdb->query( $wpdb->prepare( "DELETE FROM wp_posts WHERE post_type = 'message' AND post_content LIKE %s", '%?p=' . $post_id . '#group%' ) );
+
+        }
+    }
 }
 
 
