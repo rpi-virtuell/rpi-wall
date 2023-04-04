@@ -699,7 +699,7 @@ class Member extends \stdClass
      *
      * @return string hash
      */
-    public function get_join_hash($group_id)
+    public function get_join_hash(int $group_id)
     {
 
 
@@ -721,7 +721,7 @@ class Member extends \stdClass
      *
      * @return string html link
      */
-    public function get_joinlink($group_id, $label = 'Gruppe beitreten')
+    public function get_joinlink(int $group_id, $label = 'Gruppe beitreten')
     {
 
         $hash = $this->get_join_hash($group_id);
@@ -809,4 +809,44 @@ class Member extends \stdClass
 
         }
     }
+	/**
+	 * @uses action_hook delete_user
+	 *
+	 * @return void
+	 */
+	static function on_delete_user(int $user_id ){
+
+		$member = new Member($user_id);
+		if(is_a($member, 'rpi\Wall\Member')){
+
+			$member_id = $member->post->ID;
+
+			$groups = $member->get_group_Ids();
+
+			foreach ($groups as $group_id){
+				$member->leave_group($group_id);
+			}
+
+			$groups = $member->get_liked_group_Ids();
+			foreach ($groups as $group_id){
+				$member->un_like_group($group_id);
+			}
+			$groups = $member->get_watched_group_Ids();
+			foreach ($groups as $group_id){
+				$member->toggle_watch_group($group_id);
+			}
+
+			global $wpdb;
+			$table = $wpdb->prefix .'posts';
+
+			global $wpdb;
+			$wpdb->query($wpdb->prepare("DELETE FROM wp_posts WHERE %s = 'message' AND post_content LIKE %s", [$table,'%?p='.$member_id]));
+
+			wp_delete_post($member_id, true);
+
+		}
+
+
+
+	}
 }
