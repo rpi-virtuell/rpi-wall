@@ -64,6 +64,9 @@ class RpiWall
 
         add_action('pre_get_posts', [$this, 'query_member']);
 
+        add_action('trashed_post', ['rpi\Wall\Group','on_group_delete'],10);
+        add_action('delete_user', ['rpi\Wall\Member','on_delete_user'],10);
+
         /**** beobachte beiträge filtern ****/
         add_filter('facetwp_facet_display_value', function ($label, $params) {
 
@@ -333,8 +336,6 @@ class RpiWall
                 $matrix->tests(get_the_ID());
             }
         });
-
-
     }
 
     /**
