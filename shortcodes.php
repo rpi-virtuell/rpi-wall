@@ -48,7 +48,10 @@ class Shortcodes
 
         add_shortcode('wall_termine', array($this, 'display_termine'));
         add_shortcode('wall_termine_widget', array($this, 'display_termine_widget'));
-        add_shortcode('wall_cron_send_termine_message', array($this, 'cron_send_termine_message'));
+
+        //CRONS
+        add_action('cron_wall_send_termine_message', array($this, 'cron_send_termine_message'));
+        add_action('cron_sync_member_data', array($this,'cron_sync_member_data'));
 
         add_shortcode('wall_termine_join_button', array($this, 'display_termine_join_button'));
         add_shortcode('wall_termin_event_timer', array($this, 'display_termin_event_timer'));
@@ -932,7 +935,9 @@ class Shortcodes
         //TODO: ADD termine Widget
     }
 
-    public function cron_send_termine_message($atts){
+    public function cron_send_termine_message(){
+
+        $today = strtotime('12:00:00');
           $args = [
             'post_type' => 'termin',
             'meta_key' => 'termin_date',
@@ -941,9 +946,12 @@ class Shortcodes
             'order' => 'ASC',
             'meta_query' =>
                 [
-                    'key' => 'termin_date',
-                    'compare' => '=',
-                    'value' => date('Y-m-d h:i:s'),
+
+                         'key' => 'termin_date',
+                    'compare' => 'BETWEEN',
+                    'value' => [date('Y-m-d h:i:s',$today), date('Y-m-d h:i:s',strtotime('+1 day', $today))],
+
+
                 ]
         ];
 
@@ -951,21 +959,38 @@ class Shortcodes
         	$msg = new \stdClass();
             foreach ($termine as $termin)
                 {
-                    $msg->subject = "Heute findet ein Meeting statt: [{$termin->title}]";
-		$msg->body = "Heute findet das Meeting [{$termin->title}]  statt auf der Hauptseite gibt es mehr Informationen";
-		   $args = [
-            'post_type' => 'member',
-            'numberposts' => -1,
-            'order' => 'ASC',
-        ];
+                    $msg->subject = "Heute findet ein Meeting statt: [{$termin->post_title}]";
+                    $msg->body = 'Heute findet das Meeting (<a href="' . get_home_url() . '">' . $termin->post_title . '</a>) statt. Auf der Hauptseite gibt es mehr Informationen.';
+                    $args = [
+                            'post_type' => 'member',
+                            'numberposts' => -1,
+                            'order' => 'ASC',
+                            ];
+                    $member = get_posts($args);
+                    $member_ids = array_column($member, 'post_author');
+                    Message::send_messages($member_ids, $msg);
 
-        $member = get_posts($args);
-        $member_ids = array_column($member, 'ID');
-
-        Message::send_messages($member_ids, $msg);
                 }
 
     }
+
+             function cron_sync_member_data()
+             {
+            global $post;
+            $installer = new RPIWallInstaller();
+
+            if ($post->post_type == 'wall') {
+                $installer->sync_taxonomies_of_pin_members($post->ID, $post, false);
+            }
+            if ($post->post_type == 'member') {
+                $installer->sync_taxonomies_of_members($post->ID, $post, false);
+            }
+
+            echo '<script> var rpi_wall; </script>';
+
+        }
+
+
 
     public function display_termin_event_timer($atts)
     {
