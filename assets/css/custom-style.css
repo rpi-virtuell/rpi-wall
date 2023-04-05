@@ -46,6 +46,7 @@
 .pin-title-icon {
     margin-bottom: unset !important;
 }
+
 .pin-title-icon.pin svg {
     background: var(--ci-tab-background-darker);
     fill: black;
@@ -58,7 +59,8 @@
     height: 40px;
     padding: 7px;
 }
-.entry-card.wall.is_public_pin .pin-title-icon.pin svg{
+
+.entry-card.wall.is_public_pin .pin-title-icon.pin svg {
     background: var(--ci-accent-color);
 }
 
@@ -76,7 +78,7 @@
 
 }
 
-.pin_is_public_message{
+.pin_is_public_message {
     font-size: x-small;
     font-weight: lighter;
 }
@@ -102,7 +104,7 @@ article.entry-card {
     position: relative;
 }
 
-article.entry-card.member h4{
+article.entry-card.member h4 {
     font-size: 20px;
 }
 
@@ -145,6 +147,7 @@ article.entry-card.member h4{
 article .pin-title-icon.group svg, .group-post-wrapper.ready .pin-title-icon.group svg {
     background: var(--ci-tutorial-notification);
 }
+
 article.ready .pin-title-icon.group svg, .group-post-wrapper.ready .pin-title-icon.group svg {
     background: var(--ci-group-ready);
 }
@@ -167,7 +170,7 @@ article.founded .pin-title-icon.group svg, .group-post-wrapper.founded .pin-titl
     margin-top: -8px;
 }
 
-article:not(.is_public_pin) label[for="tab-pin"]{
+article:not(.is_public_pin) label[for="tab-pin"] {
     border-bottom: 10px solid var(--ci-group-closed);
 }
 
@@ -317,15 +320,19 @@ article.closed label[for="tab-group"] {
     grid-gap: 15px;
     grid-template-columns: 50% 50%;
 }
-.member-message-button-bar{
+
+.member-message-button-bar {
     width: 50%;
     position: relative;
 }
-#member-mark-all-read-button{
-position: absolute;
+
+.member-message-button-bar-right {
+    position: absolute;
+    top: 0;
     right: 0;
 }
-.button.message-button-active{
+
+.button.message-button-active {
     background-color: var(--ci-button-color-hover);
 }
 
@@ -342,6 +349,11 @@ position: absolute;
 
 .member-message-detail div {
     margin: 5px;
+}
+
+#member-message-detail-options {
+    text-align: right;
+    display: none;
 }
 
 #member-message-detail-title {
@@ -387,7 +399,7 @@ position: absolute;
 }
 
 @media only screen and (max-width: 600px) {
-    .member-message-button-bar{
+    .member-message-button-bar {
         width: unset;
     }
 
@@ -601,7 +613,8 @@ article.entry-card.type-wall .plg-wrapper {
     max-width: 18px;
     height: 15px;
 }
-.group-post .next-meeting hr{
+
+.group-post .next-meeting hr {
     background-color: #ddd;
 }
 
@@ -973,13 +986,15 @@ article:not(.founded):not(.closed) .like-group-box {
     padding: 10px;
     border-right: var(--ci-tab-background-darker) solid 1px;
 }
-.rpi-wall-filters .facetwp-selections ul{
+
+.rpi-wall-filters .facetwp-selections ul {
     display: block;
     padding: 0;
     margin-left: auto;
     margin-right: auto;
 }
-.ct-container.rpi-wall-filters summary.button.active::after{
+
+.ct-container.rpi-wall-filters summary.button.active::after {
     content: 'gesetzt!';
     margin-left: 10px;
 }
@@ -1033,14 +1048,15 @@ article:not(.founded):not(.closed) .like-group-box {
 .rpi-wall-filter .facetwp-facet input, .rpi-wall-filter .facetwp-facet select {
     background: var(--ci-sub-box-font-color);
 }
-.rpi-wall-filter  .facetwp-type-radio{
+
+.rpi-wall-filter .facetwp-type-radio {
     background: var(--ci-sub-box-font-color);
     padding: 5px 10px 2px;
     border: 1px solid var(--ci-success-color);
     font-size: 15px;
 }
 
-.rpi-wall-filter  .facetwp-type-radio .facetwp-radio {
+.rpi-wall-filter .facetwp-type-radio .facetwp-radio {
     margin-right: 10px;
 
 }
@@ -1102,6 +1118,7 @@ article:not(.founded):not(.closed) .like-group-box {
     font-weight: bold;
     border: 2px solid;
 }
+
 .rpi-wall-paging {
     text-align: center;
     padding-top: 20px;
@@ -1192,7 +1209,7 @@ body.toolbar #wpadminbar {
     color: #999;
 }
 
-#btn-open-modal-edit-buttons,#btn-open-modal-close-plg, #btn-open-faq {
+#btn-open-modal-edit-buttons, #btn-open-modal-close-plg, #btn-open-faq {
     background-color: var(--ci-tutorial-notification);
     box-shadow: none;
     color: black;
@@ -1220,10 +1237,10 @@ body.toolbar #wpadminbar {
 
 
 /* Protokoll */
-.single-protokoll h2{
+.single-protokoll h2 {
     border-bottom: 1px solid #ccc;
-    font-size:medium;
-    margin-top:30px;
-    background-color:#f9c227;
+    font-size: medium;
+    margin-top: 30px;
+    background-color: #f9c227;
     padding: 5px 20px;
 }
