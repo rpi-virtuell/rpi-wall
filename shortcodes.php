@@ -52,6 +52,10 @@ class Shortcodes
         //CRONS
         add_action('cron_wall_send_termine_message', array($this, 'cron_send_termine_message'));
         add_action('cron_sync_member_data', array($this,'cron_sync_member_data'));
+        add_action('cron_update_pin_status', ['rpi\Wall\Group', 'init_cronjob']);
+        add_action('init', ['rpi\Wall\Group', 'init_cronjob']);
+        add_action('cron_update_join_request', ['rpi\Wall\Member', 'init_cronjob'], 5);
+        add_action('init', ['rpi\Wall\Member', 'init_cronjob'], 5);
 
         add_shortcode('wall_termine_join_button', array($this, 'display_termine_join_button'));
         add_shortcode('wall_termin_event_timer', array($this, 'display_termin_event_timer'));
