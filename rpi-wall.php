@@ -288,10 +288,7 @@ class RpiWall
         //incomming
         add_action('init', ['rpi\Wall\Group', 'init_handle_requests']);
 
-        add_action('init', ['rpi\Wall\Group', 'init_cronjob']);
-
         add_action('init', ['rpi\Wall\Member', 'init_handle_request']);
-        add_action('init', ['rpi\Wall\Member', 'init_cronjob'], 5);
 
         add_action('wp', [$this, 'redirect_to_users_member_page']);
 
