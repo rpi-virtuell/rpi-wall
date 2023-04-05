@@ -30,7 +30,7 @@ class Matrix {
 
 		//var_dump($this);
 		try {
-			$this->client = new MatrixCustomClient('https://'.$this->homeserver, $this->token);
+			$this->client = new MatrixClient('https://'.$this->homeserver, $this->token);
 		}catch (\Exception $exception ){
 			echo $exception->getMessage();
 		}
@@ -426,9 +426,3 @@ class MatrixCustomClient extends MatrixClient{
 		}
 	}
 }
-/*
-add_action('init', function (){
-	$matrix = new Matrix();
-	$matrix->tests(13);
-});
-*/

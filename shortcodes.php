@@ -580,12 +580,12 @@ class Shortcodes
         </h4>
             <span class="dibes-termin termin-type">
                 <div class="dibes-termin termin-type-color"></div>
-                <div class="dibes-termin termin-type-name">- Schule Evangelisch Digital Termin</div>
+                <div class="dibes-termin termin-type-name">- Netzwerk Termin</div>
             </span>
             <?php if (is_user_logged_in()){?>
             <span class="plg-termin termin-type">
                 <div class="plg-termin termin-type-color"></div>
-                <div class="plg-termin termin-type-name">- Termin deiner PLG</div>
+                <div class="plg-termin termin-type-name">- AG-Treffen</div>
             </span>
             <?php } ?>
         </div>
