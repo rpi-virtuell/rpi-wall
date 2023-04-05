@@ -71,6 +71,9 @@ class RpiWall
 
         add_action('pre_get_posts', [$this, 'query_member']);
 
+        add_action('trashed_post', ['rpi\Wall\Group','on_group_delete'],10);
+        add_action('delete_user', ['rpi\Wall\Member','on_delete_user'],10);
+
         /**** beobachte beiträge filtern ****/
         add_filter('facetwp_facet_display_value', function ($label, $params) {
 
@@ -285,30 +288,12 @@ class RpiWall
         //incomming
         add_action('init', ['rpi\Wall\Group', 'init_handle_requests']);
 
-        add_action('init', ['rpi\Wall\Group', 'init_cronjob']);
-
         add_action('init', ['rpi\Wall\Member', 'init_handle_request']);
-        add_action('init', ['rpi\Wall\Member', 'init_cronjob'], 5);
 
         add_action('wp', [$this, 'redirect_to_users_member_page']);
 
         add_action('wp_footer', [$this, 'initialize_message_counter']);
 
-        /**
-         * ToDo add to cronjob
-         */
-        add_action('wp_head', function () {
-            global $post;
-            if ($post->post_type == 'wall') {
-                $this->installer->sync_taxonomies_of_pin_members($post->ID, $post, false);
-            }
-            if ($post->post_type == 'member') {
-                $this->installer->sync_taxonomies_of_members($post->ID, $post, false);
-            }
-
-            echo '<script> var rpi_wall; </script>';
-
-        });
 
 
         //add_action('save_post_wall', [$this, 'on_new_pin'], 10, 3);
@@ -340,8 +325,6 @@ class RpiWall
                 $matrix->tests(get_the_ID());
             }
         });
-
-
     }
 
     /**

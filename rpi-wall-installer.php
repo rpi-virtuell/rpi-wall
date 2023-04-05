@@ -16,6 +16,7 @@ class RPIWallInstaller
         add_action('init', array($this, 'register_post_types'));
         add_action('init', array($this, 'register_taxonomies'));
         add_action('init', array($this, 'register_custom_fields'));
+        add_action('wp_head', array($this, 'redirect_wall_cat_to_facet'));
         add_action('init', array($this, 'register_options_pages'));
         add_action('wp_login', array($this, 'sync_user_member_relation'), 10, 2);
         add_filter('author_link', array($this, 'change_author_link_to_user_profile'), 10, 3);
@@ -1907,4 +1908,13 @@ Die Kommentare und Matrixchat sowie die Toolbar sind weiterhin verwendbar.
 
         }
     }
+
+	function redirect_wall_cat_to_facet(){
+
+		if(is_tax('wall-cat')){
+			$queried_object = get_queried_object () ;
+			wp_redirect(home_url().'/wall/?_wall_cats='.$queried_object->slug);
+
+		}
+	}
 }

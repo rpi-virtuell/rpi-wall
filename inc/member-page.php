@@ -95,11 +95,19 @@ class MemberPage
         if (is_singular('member')) {
             $tabs = new \rpi\Wall\Tabs('tabset');
 
+            $default_permission = '';
+            $private = get_post_meta(get_the_ID(), 'hideme', true);
+            if (!empty($private)){
+                $default_permission = 'self';
+                if (get_current_user_id() != $this->member->ID){
+                    echo '<p>Dieses Profil ist Privat</p>';
+                }
+            }
 
-            $tabs->addTab(['label' => 'Über mich', 'name' => 'bio', 'content' => '<div id ="rpi_tab_bio_content"></div>', 'icon' => \rpi\Wall\Shortcodes::$user_icon, 'checked' => true]);
-            $tabs->addTab(['label' => 'Beiträge', 'name' => 'created', 'content' => '<div id ="rpi_tab_created_content"></div>', 'icon' => \rpi\Wall\Shortcodes::$pin_icon]);
-            $tabs->addTab(['label' => 'Kommentare', 'name' => 'comments', 'content' => '<div id ="rpi_tab_comments_content"></div>', 'icon' => \rpi\Wall\Shortcodes::$comment_icon]);
-            $tabs->addTab(['label' => 'Gruppen', 'name' => 'groups', 'content' => '<div id ="rpi_tab_groups_content"></div>', 'icon' => \rpi\Wall\Shortcodes::$group_icon]);
+            $tabs->addTab(['label' => 'Über mich', 'name' => 'bio', 'content' => '<div id ="rpi_tab_bio_content"></div>', 'icon' => \rpi\Wall\Shortcodes::$user_icon, 'permission' => $default_permission, 'checked' => true]);
+            $tabs->addTab(['label' => 'Beiträge', 'name' => 'created', 'content' => '<div id ="rpi_tab_created_content"></div>', 'icon' => \rpi\Wall\Shortcodes::$pin_icon, 'permission' => $default_permission]);
+            $tabs->addTab(['label' => 'Kommentare', 'name' => 'comments', 'content' => '<div id ="rpi_tab_comments_content"></div>', 'icon' => \rpi\Wall\Shortcodes::$comment_icon, 'permission' => $default_permission]);
+            $tabs->addTab(['label' => 'Gruppen', 'name' => 'groups', 'content' => '<div id ="rpi_tab_groups_content"></div>', 'icon' => \rpi\Wall\Shortcodes::$group_icon, 'permission' => $default_permission]);
             $tabs->addTab(['label' => 'Benachrichtigungen', 'name' => 'messages', 'content' => '<div id="rpi_tab_messages_content"></div>', 'icon' => \rpi\Wall\Shortcodes::$mail_icon, 'permission' => 'self']);
             $tabs->addTab(['label' => 'Einstellungen', 'name' => 'profile', 'content' => $this->get_profile(get_the_ID()) . '<div id="rpi_tab_profile_content"></div>', 'icon' => \rpi\Wall\Shortcodes::$gear_icon, 'permission' => 'self']);
             $tabs->addTab(['label' => 'Abmelden', 'name' => 'logout', 'content' => '', 'icon' => \rpi\Wall\Shortcodes::$logout_icon, 'permission' => 'self']);
