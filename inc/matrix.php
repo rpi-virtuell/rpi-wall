@@ -4,22 +4,15 @@ namespace rpi\Wall;
 
 require_once dirname( __DIR__ ) . '/vendor/autoload.php';
 
-use Aryess\PhpMatrixSdk\Cache;
-use Aryess\PhpMatrixSdk\Exceptions\MatrixException;
-use Aryess\PhpMatrixSdk\Exceptions\MatrixHttpLibException;
-use Aryess\PhpMatrixSdk\Exceptions\MatrixRequestException;
-use Aryess\PhpMatrixSdk\MatrixClient;
-use Aryess\PhpMatrixSdk\Room;
-use GuzzleHttp\Client;
-use GuzzleHttp\Exception\ClientException;
-use GuzzleHttp\Exception\GuzzleException;
-use GuzzleHttp\RequestOptions;
+use MatrixPhp;
+use MatrixPhp\MatrixClient;
+
 use rpi\Wall;
 
 
 class Matrix {
 
-	public \Aryess\PhpMatrixSdk\MatrixClient $client;
+	public MatrixPhp\MatrixClient $client;
 	protected $orga_room;
 	protected $domain;
 	protected $homeserver;
@@ -331,7 +324,7 @@ class Matrix {
 
 }
 
-use Aryess\PhpMatrixSdk\MatrixHttpApi;
+use MatrixPhp\MatrixHttpApi;
 
 class MatrixCustomApi extends MatrixHttpApi{
 	public function __construct(string $baseUrl, ?string $token = null, ?string $identity = null,
