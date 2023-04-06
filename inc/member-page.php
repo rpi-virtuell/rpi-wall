@@ -25,9 +25,9 @@ class MemberPage
 
 
         if (is_singular('member')) {
-	        if(!is_user_logged_in()){
-		        wp_redirect(wp_login_url(home_url().$_SERVER['REQUEST_URI']));
-	        }
+            if (!is_user_logged_in()) {
+                wp_redirect(wp_login_url(home_url() . $_SERVER['REQUEST_URI']));
+            }
 
 
             $this->member = new \rpi\Wall\Member(get_post()->post_author);
@@ -62,16 +62,19 @@ class MemberPage
 
             $matrix_id = get_field('matrixid', 'user_' . $this->member->ID);
             if ($matrix_id) {
-                $base_rpi = 'https://'.$this->matrix_home.'/#/user/';
+                $base_rpi = 'https://' . $this->matrix_home . '/#/user/';
                 $base_app = 'https://matrix.to/#/';
                 ?>
                 <details class="user-matrixId" style="margin-left: 100px;margin-top: -10px;">
                     <summary style="cursor:pointer"><strong><?php echo \rpi\Wall\Shortcodes::$element_icon ?> Kontakt
                             via Matrix: <?php echo $matrix_id; ?></strong></summary>
                     <br>
-                    <a class="button button-primary" href="<?php echo KONTO_SERVER ?>?action=mredirect&url=<?php echo $base_rpi.$matrix_id; ?>" target="_blank">im
+                    <a class="button button-primary"
+                       href="<?php echo KONTO_SERVER ?>?action=mredirect&url=<?php echo $base_rpi . $matrix_id; ?>"
+                       target="_blank">im
                         Browser matrix.rpi-virtuell.de</a>
-                    <a class="button button-secondary" href="<?php echo $base_app . $matrix_id; ?>" target="_blank">über die Element App</a>
+                    <a class="button button-secondary" href="<?php echo $base_app . $matrix_id; ?>" target="_blank">über
+                        die Element App</a>
 
                     <br>
                     <br>
@@ -86,37 +89,6 @@ class MemberPage
 
         }
 
-
-    }
-
-    public function display()
-    {
-
-        if (is_singular('member')) {
-            $tabs = new \rpi\Wall\Tabs('tabset');
-
-            $default_permission = '';
-            $private = get_post_meta(get_the_ID(), 'hideme', true);
-            if (!empty($private)){
-                $default_permission = 'self';
-                if (get_current_user_id() != $this->member->ID){
-                    echo '<p>Dieses Profil ist Privat</p>';
-                }
-            }
-
-            $tabs->addTab(['label' => 'Über mich', 'name' => 'bio', 'content' => '<div id ="rpi_tab_bio_content"></div>', 'icon' => \rpi\Wall\Shortcodes::$user_icon, 'permission' => $default_permission, 'checked' => true]);
-            $tabs->addTab(['label' => 'Beiträge', 'name' => 'created', 'content' => '<div id ="rpi_tab_created_content"></div>', 'icon' => \rpi\Wall\Shortcodes::$pin_icon, 'permission' => $default_permission]);
-            $tabs->addTab(['label' => 'Kommentare', 'name' => 'comments', 'content' => '<div id ="rpi_tab_comments_content"></div>', 'icon' => \rpi\Wall\Shortcodes::$comment_icon, 'permission' => $default_permission]);
-            $tabs->addTab(['label' => 'Gruppen', 'name' => 'groups', 'content' => '<div id ="rpi_tab_groups_content"></div>', 'icon' => \rpi\Wall\Shortcodes::$group_icon, 'permission' => $default_permission]);
-            $tabs->addTab(['label' => 'Benachrichtigungen', 'name' => 'messages', 'content' => '<div id="rpi_tab_messages_content"></div>', 'icon' => \rpi\Wall\Shortcodes::$mail_icon, 'permission' => 'self']);
-            $tabs->addTab(['label' => 'Einstellungen', 'name' => 'profile', 'content' => $this->get_profile(get_the_ID()) . '<div id="rpi_tab_profile_content"></div>', 'icon' => \rpi\Wall\Shortcodes::$gear_icon, 'permission' => 'self']);
-            $tabs->addTab(['label' => 'Abmelden', 'name' => 'logout', 'content' => '', 'icon' => \rpi\Wall\Shortcodes::$logout_icon, 'permission' => 'self']);
-
-            echo '<script>var rpi_wall ={user_ID: "' . $this->member->ID . '"};</script>';
-            echo '<script> rpi_wall.allowedtabs = ' . json_encode($tabs->get_allowed_tabs()) . ';</script>';
-
-            $tabs->display();
-        }
 
     }
 
@@ -151,39 +123,6 @@ class MemberPage
 //		$member = new \rpi\Wall\Member($_POST['user_ID']);
 //		echo $this->get_profile($member->post->ID);
         die();
-
-    }
-
-    public function get_profile($post_id)
-    {
-
-
-        $_GET['member_post'] = $post_id;
-        set_query_var('member_post', $post_id);
-
-
-        $settings = '<div class="profile-panel">
-                        <div>
-                            <div class="image-upload">
-                                [basic-user-avatars]
-                            </div>
-                            <div class="tags-selector">
-                                <strong>Darstellung auf der Netzwerkübersicht</strong>
-                                [acfe_form name="member-taxonomy"]
-                            </div>
-                        </div>
-                        <div>
-                            [acfe_form name="user-profile"]
-                            <div><br>&nbsp;<!-- Empty Spacer --><hr><br></div>
-                        </div>
-                            <div><!-- Empty Spacer --></div>
-                        <div>
-                        <strong>Welche Emails sollen zu dir gesendet werden?</strong>
-                            [acfe_form name="user_email_settings"]
-                        </div>
-                    </div>';
-
-        return do_shortcode($settings);
 
     }
 
@@ -320,6 +259,70 @@ class MemberPage
 
     }
 
+    public function display()
+    {
+
+        if (is_singular('member')) {
+            $tabs = new \rpi\Wall\Tabs('tabset');
+
+            $default_permission = '';
+            $private = get_post_meta(get_the_ID(), 'hideme', true);
+            if (!empty($private)) {
+                $default_permission = 'self';
+                if (get_current_user_id() != $this->member->ID) {
+                    echo '<p>Dieses Profil ist Privat</p>';
+                }
+            }
+
+            $tabs->addTab(['label' => 'Über mich', 'name' => 'bio', 'content' => '<div id ="rpi_tab_bio_content"></div>', 'icon' => \rpi\Wall\Shortcodes::$user_icon, 'permission' => $default_permission, 'checked' => true]);
+            $tabs->addTab(['label' => 'Beiträge', 'name' => 'created', 'content' => '<div id ="rpi_tab_created_content"></div>', 'icon' => \rpi\Wall\Shortcodes::$pin_icon, 'permission' => $default_permission]);
+            $tabs->addTab(['label' => 'Kommentare', 'name' => 'comments', 'content' => '<div id ="rpi_tab_comments_content"></div>', 'icon' => \rpi\Wall\Shortcodes::$comment_icon, 'permission' => $default_permission]);
+            $tabs->addTab(['label' => 'Gruppen', 'name' => 'groups', 'content' => '<div id ="rpi_tab_groups_content"></div>', 'icon' => \rpi\Wall\Shortcodes::$group_icon, 'permission' => $default_permission]);
+            $tabs->addTab(['label' => 'Benachrichtigungen', 'name' => 'messages', 'content' => '<div id="rpi_tab_messages_content"></div>', 'icon' => \rpi\Wall\Shortcodes::$mail_icon, 'permission' => 'self']);
+            $tabs->addTab(['label' => 'Einstellungen', 'name' => 'profile', 'content' => $this->get_profile(get_the_ID()) . '<div id="rpi_tab_profile_content"></div>', 'icon' => \rpi\Wall\Shortcodes::$gear_icon, 'permission' => 'self']);
+            $tabs->addTab(['label' => 'Abmelden', 'name' => 'logout', 'content' => '', 'icon' => \rpi\Wall\Shortcodes::$logout_icon, 'permission' => 'self']);
+
+            echo '<script>var rpi_wall ={user_ID: "' . $this->member->ID . '"};</script>';
+            echo '<script> rpi_wall.allowedtabs = ' . json_encode($tabs->get_allowed_tabs()) . ';</script>';
+
+            $tabs->display();
+        }
+
+    }
+
+    public function get_profile($post_id)
+    {
+
+
+        $_GET['member_post'] = $post_id;
+        set_query_var('member_post', $post_id);
+
+
+        $settings = '<div class="profile-panel">
+                        <div>
+                            <div class="image-upload">
+                                [basic-user-avatars]
+                            </div>
+                            <div class="tags-selector">
+                                <strong>Darstellung auf der Netzwerkübersicht</strong>
+                                [acfe_form name="member-taxonomy"]
+                            </div>
+                        </div>
+                        <div>
+                            [acfe_form name="user-profile"]
+                            <div><br>&nbsp;<!-- Empty Spacer --><hr><br></div>
+                        </div>
+                            <div><!-- Empty Spacer --></div>
+                        <div>
+                        <strong>Welche Emails sollen zu dir gesendet werden?</strong>
+                            [acfe_form name="user_email_settings"]
+                        </div>
+                    </div>';
+
+        return do_shortcode($settings);
+
+    }
+
     public function messages()
     {
         $user = new \rpi\Wall\Member();
@@ -345,8 +348,7 @@ class MemberPage
                 ]
             ]
         ];
-        if ($_POST['filter'] == 'unread')
-        {
+        if ($_POST['filter'] == 'unread') {
             $args['post__not_in'] = array_keys($read_messages);
         }
         $wp_query = new \WP_Query($args);
@@ -356,10 +358,16 @@ class MemberPage
 
         ?>
         <div class="member-message-button-bar">
-            <a class="button <?php echo $_POST['filter']!='unread'? 'message-button-active' : '' ?>" href="#messages">Alle</a>
-            <a class="button <?php echo $_POST['filter']=='unread'? 'message-button-active' : '' ?> " href="#messages_unread">Ungelesen</a>
-            <div id="member-mark-all-read-button" class="button"
-                 title="Alle Nachrichten als gelesen markieren"> <?php echo \rpi\Wall\Shortcodes::$mail_read_icon ?></div>
+            <a class="button <?php echo $_POST['filter'] != 'unread' ? 'message-button-active' : '' ?>"
+               href="#messages">Alle</a>
+            <a class="button <?php echo $_POST['filter'] == 'unread' ? 'message-button-active' : '' ?> "
+               href="#messages_unread">Ungelesen</a>
+            <div class="member-message-button-bar-right">
+                <div id="member-delete-all-read-button" class="button"
+                     title="Alle gelesenen Nachrichten löschen"><?php echo \rpi\Wall\Shortcodes::$bulk_delete_icon ?></div>
+                <div id="member-mark-all-read-button" class="button"
+                     title="Alle Nachrichten als gelesen markieren"> <?php echo \rpi\Wall\Shortcodes::$mail_read_icon ?></div>
+            </div>
         </div>
         <?php
         if ($messages) {
@@ -379,11 +387,15 @@ class MemberPage
                                 : <?php echo $post->post_title; ?>
                             </div>
                         </div>
-                            <?php
+                    <?php
                     endforeach;
                     ?>
                 </div>
                 <div class="member-message-detail">
+                    <div id="member-message-detail-options">
+                        <div id="member-message-detail-delete" title="Diese Nachricht löschen"
+                             class="button"><?php echo \rpi\Wall\Shortcodes::$delete_icon ?> </div>
+                    </div>
                     <div id="member-message-detail-title"></div>
                     <div id="member-message-detail-content"></div>
                 </div>

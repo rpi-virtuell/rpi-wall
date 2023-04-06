@@ -23,6 +23,12 @@ class RpiWallAjaxHandler
         add_action('wp_ajax_rpi_mark_and_display_message', [$this, 'ajax_mark_and_display_message']);
         add_action('wp_ajax_nopriv_rpi_mark_and_display_message', [$this, 'ajax_mark_and_display_message']);
 
+        add_action('wp_ajax_rpi_ajax_delete_all_messages_read', [$this, 'ajax_delete_all_messages_read']);
+        add_action('wp_ajax_nopriv_rpi_ajax_delete_all_messages_read', [$this, 'ajax_delete_all_messages_read']);
+
+        add_action('wp_ajax_rpi_delete_message', [$this, 'ajax_delete_message']);
+        add_action('wp_ajax_nopriv_rpi_delete_message', [$this, 'ajax_delete_message']);
+
         add_action('wp_ajax_rpi_ajax_termin_log_participant_and_redirect', [$this, 'ajax_termin_log_participant_and_redirect']);
         add_action('wp_ajax_nopriv_rpi_ajax_termin_log_participant_and_redirect', [$this, 'ajax_termin_log_participant_and_redirect']);
 
@@ -204,6 +210,51 @@ class RpiWallAjaxHandler
                 'title' => $message->post_title,
                 'content' => $message->post_content,
                 'message_count' => $message_count
+            ];
+        }
+        echo json_encode($response);
+        die();
+
+    }
+
+    public function ajax_delete_all_messages_read()
+    {
+        $response = ['success' => false];
+        if (isset($_POST['user_id'])) {
+            $member = new Member();
+            $message = get_post($_POST['message_id']);
+
+
+            if ($read_messages = get_user_meta($member->ID, 'rpi_read_messages', true)) {
+                $read_messages = unserialize($read_messages);
+            } else {
+                $read_messages = array();
+            }
+            if (!empty($read_messages)) {
+                foreach ($read_messages as $key => $read_message) {
+                    delete_post_meta($key, 'rpi_wall_message_recipient', $member->ID);
+                }
+            }
+
+            $response = [
+                'success' => true,
+            ];
+        }
+        echo json_encode($response);
+        die();
+    }
+
+
+    public function ajax_delete_message()
+    {
+        $response = ['success' => false];
+        if (isset($_POST['user_id'], $_POST['message_id'])) {
+            $member = new Member();
+
+            delete_post_meta($_POST['message_id'], 'rpi_wall_message_recipient', $member->ID);
+
+            $response = [
+                'success' => true,
             ];
         }
         echo json_encode($response);
