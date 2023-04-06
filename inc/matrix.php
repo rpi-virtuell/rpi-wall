@@ -6,7 +6,10 @@ require_once dirname( __DIR__ ) . '/vendor/autoload.php';
 
 use MatrixPhp;
 use MatrixPhp\MatrixClient;
+use MatrixPhp\MatrixHttpApi;
+use MatrixPhp\Room;
 
+use mysql_xdevapi\Exception;
 use rpi\Wall;
 
 
@@ -45,13 +48,23 @@ class Matrix {
 		$room->setRoomTopic($topic);
 	}
 
-	function send_msg( Wall\Group $group, string $msg ){
+	public function send_msg( Wall\Group $group, string $msg ){
 		$room_id = $this->getRoomId($group);
 		$room = new Room($this->client,$room_id);
 		$room->sendHtml($msg);
 	}
 
-	function send_msg_obj( Wall\Group $group, \stdClass $msg ){
+	public function send_image (Wall\Group $group, string $url, ?string $name='image.png'){
+		$room_id = $this->getRoomId($group);
+		$room = new Room($this->client,$room_id);
+		$fileinfo = array(
+			"mimetype"=> "image/png",
+            "xyz.amorgan.blurhash"=> "TBR:KR^*~pofx]i_s9j]ax-;RjM{"
+		);
+		$room->sendImage($url,$name, $fileinfo);
+	}
+
+	public function send_msg_obj( Wall\Group $group, \stdClass $msg ){
 		$room_id = $this->getRoomId($group);
 		$room = new Room($this->client,$room_id);
 		$room->sendHtml('<strong>'.$msg->subject.'</strong><br>'.$msg->body);
@@ -202,7 +215,16 @@ class Matrix {
 		//return str_replace([':','@'],['%3A','%40'],$roomId.$this->client->userId().'_'.time());
 	}
 
-	function addWidget($room_id, $name,$url, $type = 'm.custom'){
+	/**
+	 * @param string $room_id
+	 * @param string $name
+	 * @param string $url
+	 * @param string $type
+	 *
+	 * @return bool
+	 * @throws MatrixPhp\Exceptions\MatrixException
+	 */
+	function addWidget(string $room_id, string $name, string $url, string $type = 'm.custom'){
 
 			$room = new Room($this->client,$room_id);
 			$content = array(
@@ -218,47 +240,87 @@ class Matrix {
 	}
 
 	function addRoomToSpace($room_id){
+		$space = get_option('options_matrix_space', '!WQMdgHoIuSFUVKVaBB:rpi-virtuell.de');
 
-			$content = array(
-				'via'  =>  [$this->domain],
-			);
-			$plg_space_room = get_option('options_matrix_plg_space_room', '!WQMdgHoIuSFUVKVaBB:rpi-virtuell.de');
-			return $this->client->api()->sendStateEvent( $room_id,'m.space.child',$content,$plg_space_room,time());
+		$content = array(
+			"canonical" => true,
+			'via'  =>  [$this->domain],
+		);
+
+		$this->client->api()->sendStateEvent( $room_id,'m.space.parent',$content,$space,time());
+		$this->client->api()->sendStateEvent( $space,'m.space.child',$content,$room_id,time());
+		return $room_id;
+
+	}
+
+	/**
+	 * @param Group $group
+	 * @param string $room_id
+	 *
+	 * @return bool
+	 * @throws MatrixPhp\Exceptions\MatrixException
+	 * @throws MatrixPhp\Exceptions\MatrixHttpLibException
+	 * @throws MatrixPhp\Exceptions\MatrixRequestException
+	 */
+	protected function check_toolbar_created(Group $group, string $room_id){
+
+		$has_toolbar = empty(get_post_meta($group->ID,'matrix_room_has_toolbar',1))?false:true;
+		if($group->has_matrix_toolbar()) {
+			return true;
+		}else{
+
+			$messages = $this->client->api()->getRoomState($room_id);
+			$toolbar_exists = false;
+			$deleted = array();
+
+			foreach ($messages as  $message){
+
+				$message = (object) $message;
+
+
+				if(isset($message->unsigned)){
+					$deleted[]= $message->unsigned["replaces_state"];
+				}
+				if($message->content['type'] == 'm.custom' && $message->content['name']=='Toolbar' && !in_array($message->event_id, $deleted)){
+					$toolbar_exists = $group->has_matrix_toolbar(true);
+				}
+			}
+
+			return $toolbar_exists;
+
+		}
 
 
 	}
 
+	/**
+	 * @param Group $group
+	 *
+	 * @return bool|void
+	 * @throws MatrixPhp\Exceptions\MatrixException
+	 * @throws MatrixPhp\Exceptions\MatrixHttpLibException
+	 * @throws MatrixPhp\Exceptions\MatrixRequestException
+	 */
 	function addToolbar(Group $group){
 
 		$room_id = $this->getRoomId($group);
 
-		$messages = $this->client->api()->filterRoomEvents($room_id,['im.vector.modular.widgets']);
-		$toolbar_exists = false;
-		$deleted =[];
+		if(!$this->check_toolbar_created($group,$room_id)) {
 
-		foreach ($messages['chunk'] as  $msg){
-			$message = (object) $msg;
-			if(isset($message->unsigned)){
-				$deleted[]= $message->unsigned["replaces_state"];
+			$ok = $this->addWidget( $room_id, 'Toolbar', home_url(  )."?p=".$group->post->ID ."&roomId=".$this->getRoomId($group) );
+			if($ok){
+				return $group->has_matrix_toolbar(true);
 			}
-			if($message->content['type'] == 'm.custom' && $message->content['name']=='Toolbar' && !in_array($message->event_id, $deleted)){
-				$toolbar_exists = true;
-			}
+			return false;
 		}
-		if(!$toolbar_exists) {
-
-			return $this->addWidget( $room_id, 'Toolbar', home_url(  )."?p=".$group->post->ID ."&roomId=".$this->getRoomId($group) );
-		}
+		return true;
 
 	}
 
 	function tests(int $group_id=0 ){
 
 
-
-
-
-		if( $group_id>0 && get_current_user_id() == 2 && false ){
+		if( $group_id>0 && get_current_user_id() == 2 && false){
 
 
 			$msg_obj =new \stdClass();
@@ -277,24 +339,23 @@ class Matrix {
 			}
 
 
+
+
+			if($this -> addToolbar($group)){
+				//$ret = $this->send_msg_obj($group,$msg_obj);
+				//$this->send_image($group,'mxc://rpi-virtuell.de/FTcrArFukOkGSTJtIjMusbTz', 'showtoolbar.png');
+			}
+
+
 			/*
-			$widget_ID = $this -> addToolbar($group);
-
-
-
-
 			$ret = $this->send_msg_obj($group,$msg_obj);
 
 			$this->set_topic($group,$group->url);
-
-
 
 			$msg = str_replace('%postlink%',get_permalink($group_id).'#group', get_option('options_matrix_bot_welcome_message'));
 			$this->send_msg($group,$msg);
 			$msg = get_option('options_matrix_bot_toolbar_tutorial');
 			$this->send_msg($group,$msg);
-			*/
-			/*
 
 			$user = wp_get_current_user();
 			$to = $user->user_email;
@@ -305,9 +366,7 @@ class Matrix {
 			wp_mail( $to, $subject, $body, $headers );
 			*/
 
-
 			//var_dump($this->get_MatrixRoom_Members($group));
-
 
 		}
 
@@ -324,7 +383,7 @@ class Matrix {
 
 }
 
-use MatrixPhp\MatrixHttpApi;
+#use MatrixPhp\MatrixHttpApi;
 
 class MatrixCustomApi extends MatrixHttpApi{
 	public function __construct(string $baseUrl, ?string $token = null, ?string $identity = null,
