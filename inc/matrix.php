@@ -59,7 +59,7 @@ class Matrix {
 		$room = new Room($this->client,$room_id);
 		$fileinfo = array(
 			"mimetype"=> "image/png",
-            "xyz.amorgan.blurhash"=> "TBR:KR^*~pofx]i_s9j]ax-;RjM{"
+			"xyz.amorgan.blurhash"=> "TBR:KR^*~pofx]i_s9j]ax-;RjM{"
 		);
 		$room->sendImage($url,$name, $fileinfo);
 	}
@@ -167,7 +167,7 @@ class Matrix {
 					$group->set_matrix_room_id( $room->room_id );
 					$group->set_status( 'founded' );
 
-                    $widget_ID = $this->addToolbar($group);
+					$widget_ID = $this->addToolbar($group);
 					$msg = str_replace('%postlink%',get_permalink($group->post->ID).'#group', get_option('options_matrix_bot_welcome_message'));
 					$this->send_msg($group,$msg);
 					$msg = get_option('options_matrix_bot_toolbar_tutorial');
@@ -226,15 +226,15 @@ class Matrix {
 	 */
 	function addWidget(string $room_id, string $name, string $url, string $type = 'm.custom'){
 
-			$room = new Room($this->client,$room_id);
-			$content = array(
-				'type'  =>  $type,
-				'url'   =>  $url,
-				'name'  =>  $name,
-				'data'  =>  array('m'=>'n')
-			);
+		$room = new Room($this->client,$room_id);
+		$content = array(
+			'type'  =>  $type,
+			'url'   =>  $url,
+			'name'  =>  $name,
+			'data'  =>  array('m'=>'n')
+		);
 
-			return $room->sendStateEvent('im.vector.modular.widgets', $content, $this->stateKey($room_id));
+		return $room->sendStateEvent('im.vector.modular.widgets', $content, $this->stateKey($room_id));
 
 
 	}
