@@ -1,0 +1,11 @@
+{
+    "require": {
+        "rpi-virtuell/php-matrix-sdk": "1.0.x-dev"
+    },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/rpi-virtuell/php-matrix-sdk.git"
+        }
+    ]
+}
