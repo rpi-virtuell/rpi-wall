@@ -691,6 +691,21 @@ class Group extends \stdClass
         return $ch;
     }
 
+	/**
+	 * @param bool $set
+	 * @return bool
+	 */
+	public function has_matrix_toolbar(bool $set = false){
+
+		if($set){
+			update_post_meta($this->ID,'matrix_room_has_toolbar',1);
+			$return = true;
+		}else {
+			$return = empty( get_post_meta( $this->ID, 'matrix_room_has_toolbar', true ) ) ? false : true;
+		}
+		return $return;
+
+	}
     protected function get_joined_member_matrixId($member)
     {
         $matrix = new Matrix();
