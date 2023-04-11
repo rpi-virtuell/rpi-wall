@@ -683,7 +683,7 @@ class Group extends \stdClass
         $prefix = get_option('options_matrix_channel_prefix', 'dibes');
         $ch  = $this->get('rpi_wall_group_channel');
         if(!$ch){
-            return $prefix.'_plg_' . $this->ID;
+            return $prefix.'_ag_' . $this->ID;
         }
         if($local_slug){
 	        $ch = substr($ch, 1, strpos($ch, ':')-1);
