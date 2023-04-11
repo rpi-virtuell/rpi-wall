@@ -25,6 +25,7 @@
 require_once("rpi-wall-installer.php");
 require_once("rpi-wall-ajax-handler.php");
 require_once("rpi-wall-form-handler.php");
+require_once("cronjobs.php");
 require_once("shortcodes.php");
 require_once("inc/member.php");
 require_once("inc/group.php");
@@ -816,6 +817,7 @@ new RpiWall();
 new Wall\RpiWallAjaxHandler();
 new MemberPage();
 new Wall\Shortcodes();
+new Wall\Cronjobs();
 new RpiWallFormHandler();
 
 
