@@ -103,6 +103,7 @@ class Matrix {
 			try{
 				//check if we can join
 				$this->client->api()->joinRoom($room_id);
+
 				//room was created and is available
 				return $room_id;
 
@@ -118,7 +119,7 @@ class Matrix {
 			}
 		}
 		//room_id is not in post_meta may be room is just available
-		$room_alias = '#'.$group->slug.':rpi-virtuell.de';
+		$room_alias = '#'.$group->slug.':'.$this->domain;
 
 
 		//check that the room with the slug does not exist

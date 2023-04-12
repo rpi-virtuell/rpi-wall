@@ -681,9 +681,14 @@ class Group extends \stdClass
     {
 
         $prefix = get_option('options_matrix_channel_prefix', 'dibes');
+        $group_slug = get_option('options_matrix_group_slug', 'plg');
         $ch  = $this->get('rpi_wall_group_channel');
         if(!$ch){
-            return $prefix.'_ag_' . $this->ID;
+            $ch = '#'.$prefix.'_'.$group_slug.'_' . $this->ID.':'.get_option('options_matrix_server_base','rpi-virtuell.de');
+            if($this->get_matrix_room_id()){
+	            $this->set_matrix_channel($ch);
+            }
+            return $prefix.'_'.$group_slug.'_' . $this->ID;
         }
         if($local_slug){
 	        $ch = substr($ch, 1, strpos($ch, ':')-1);
