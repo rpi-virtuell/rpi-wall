@@ -391,9 +391,21 @@ class RpiWall
     public function query_member(WP_Query &$query)
     {
         if (is_tax('wall-tag') && !isset($_GET['wall-tag'])) {
+
             $term = get_queried_object();
 
-            wp_redirect(home_url() . '/member?wall-tag=' . $term->name);
+            $type = 'wall';
+
+            $from_url = $_SERVER['HTTP_REFERER'];
+            $uri = parse_url( $from_url);
+
+	        $match = preg_match('#/(wall|member)?/#',$uri['path'], $matches);
+
+            if($match){
+                $type = $matches[1];
+            }
+
+            wp_redirect(home_url() . '/'.$type.'/?wall-tag=' . $term->slug);
         }
 
         if (!is_admin() && $query->is_main_query() && is_post_type_archive('member')) {
