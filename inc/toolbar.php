@@ -120,7 +120,7 @@ class Toolbar
 
                             foreach ($protocols as $protocol) {
                                 ?> <a href="<?php echo $protocol->guid ?>" target="_blank"
-                                      rel="noopener noreferrer"><?php echo date('d.m.Y', strtotime($protocol->post_date)) ?> </a> <?php
+                                      rel="noopener noreferrer">Protokoll <?php echo date('d.m.Y', strtotime($protocol->post_date)) ?> </a> <?php
                             }
                             ?>
                         </div>

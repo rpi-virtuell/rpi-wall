@@ -1240,7 +1240,7 @@ Die Kommentare und Matrixchat sowie die Toolbar sind weiterhin verwendbar.
                                         'label' => 'Pinnwand Header Einleitung',
                                         'name' => 'rpi_wall_main_header',
                                         'type' => 'textarea',
-                                        'instructions' => '',
+                                        'instructions' => 'options_rpi_label_general_textfields_group_rpi_wall_main_header',
                                         'required' => 0,
                                         'conditional_logic' => 0,
                                         'wrapper' => array(
@@ -1261,7 +1261,7 @@ Die Kommentare und Matrixchat sowie die Toolbar sind weiterhin verwendbar.
                                         'label' => 'Netzwerk (Member) Header Einleitung',
                                         'name' => 'rpi_member_main_header',
                                         'type' => 'textarea',
-                                        'instructions' => '',
+                                        'instructions' => 'options_rpi_label_general_textfields_group_rpi_member_main_header',
                                         'required' => 0,
                                         'conditional_logic' => 0,
                                         'wrapper' => array(
@@ -1347,7 +1347,7 @@ Die Kommentare und Matrixchat sowie die Toolbar sind weiterhin verwendbar.
                                         'label' => 'RPI Gruppen Erstellung möglich Header',
                                         'name' => 'rpi_wall_ready_header',
                                         'type' => 'text',
-                                        'instructions' => 'options_rpi_wall_ready_header',
+                                        'instructions' => 'options_rpi_label_group_rpi_wall_ready_header',
                                         'required' => 0,
                                         'conditional_logic' => 0,
                                         'wrapper' => array(
@@ -1368,7 +1368,7 @@ Die Kommentare und Matrixchat sowie die Toolbar sind weiterhin verwendbar.
                                         'label' => 'RPI Gruppen Erstellung möglich Notice',
                                         'name' => 'rpi_wall_ready_notice',
                                         'type' => 'text',
-                                        'instructions' => 'options_rpi_wall_ready_notice',
+                                        'instructions' => 'options_rpi_label_group_rpi_wall_ready_notice',
                                         'required' => 0,
                                         'conditional_logic' => 0,
                                         'wrapper' => array(
@@ -1389,7 +1389,7 @@ Die Kommentare und Matrixchat sowie die Toolbar sind weiterhin verwendbar.
                                         'label' => 'Gründungsphase Header',
                                         'name' => 'rpi_wall_pending_header',
                                         'type' => 'text',
-                                        'instructions' => 'options_rpi_wall_pending_header',
+                                        'instructions' => 'options_rpi_label_group_rpi_wall_pending_header',
                                         'required' => 0,
                                         'conditional_logic' => 0,
                                         'wrapper' => array(
@@ -1410,7 +1410,7 @@ Die Kommentare und Matrixchat sowie die Toolbar sind weiterhin verwendbar.
                                         'label' => 'Gründungsphase notice',
                                         'name' => 'rpi_wall_pending_notice',
                                         'type' => 'text',
-                                        'instructions' => 'options_rpi_wall_pending_notice',
+                                        'instructions' => 'options_rpi_label_group_rpi_wall_pending_notice',
                                         'required' => 0,
                                         'conditional_logic' => 0,
                                         'wrapper' => array(
@@ -1431,7 +1431,7 @@ Die Kommentare und Matrixchat sowie die Toolbar sind weiterhin verwendbar.
                                         'label' => 'Gründungsphase Gründer notice',
                                         'name' => 'rpi_wall_founder_notice',
                                         'type' => 'text',
-                                        'instructions' => 'options_rpi_wall_founder_notice',
+                                        'instructions' => 'options_rpi_label_group_rpi_wall_founder_notice',
                                         'required' => 0,
                                         'conditional_logic' => 0,
                                         'wrapper' => array(
@@ -1451,9 +1451,9 @@ Die Kommentare und Matrixchat sowie die Toolbar sind weiterhin verwendbar.
                                     array(
                                         'key' => 'field_rpi_wall_founded_header',
                                         'label' => 'Gruppe gegründet Header',
-                                        'name' => 'rpi_wall_ready_notice',
+                                        'name' => 'rpi_wall_founded_header',
                                         'type' => 'text',
-                                        'instructions' => 'options_rpi_wall_founded_header',
+                                        'instructions' => 'options_rpi_label_group_rpi_wall_founded_header',
                                         'required' => 0,
                                         'conditional_logic' => 0,
                                         'wrapper' => array(
@@ -1474,7 +1474,7 @@ Die Kommentare und Matrixchat sowie die Toolbar sind weiterhin verwendbar.
                                         'label' => 'Gruppe gegründet Notice',
                                         'name' => 'rpi_wall_founded_notice',
                                         'type' => 'text',
-                                        'instructions' => 'options_rpi_wall_founded_notice',
+                                        'instructions' => 'options_rpi_label_group_rpi_wall_founded_notice',
                                         'required' => 0,
                                         'conditional_logic' => 0,
                                         'wrapper' => array(
@@ -1495,7 +1495,7 @@ Die Kommentare und Matrixchat sowie die Toolbar sind weiterhin verwendbar.
                                         'label' => 'Gruppe geschlossen Header',
                                         'name' => 'rpi_wall_closed_header',
                                         'type' => 'text',
-                                        'instructions' => 'options_rpi_wall_closed_header',
+                                        'instructions' => 'options_rpi_label_group_rpi_wall_closed_header',
                                         'required' => 0,
                                         'conditional_logic' => 0,
                                         'wrapper' => array(
@@ -1516,7 +1516,7 @@ Die Kommentare und Matrixchat sowie die Toolbar sind weiterhin verwendbar.
                                         'label' => 'Gruppe geschlossen Notice',
                                         'name' => 'rpi_wall_closed_notice',
                                         'type' => 'text',
-                                        'instructions' => 'options_rpi_wall_closed_notice',
+                                        'instructions' => 'options_rpi_label_group_rpi_wall_closed_notice',
                                         'required' => 0,
                                         'conditional_logic' => 0,
                                         'wrapper' => array(
@@ -1537,7 +1537,7 @@ Die Kommentare und Matrixchat sowie die Toolbar sind weiterhin verwendbar.
                                         'label' => 'Keine Gruppe gegründet Header',
                                         'name' => 'rpi_wall_not_founded_header',
                                         'type' => 'text',
-                                        'instructions' => 'options_rpi_wall_not_founded_header',
+                                        'instructions' => 'options_rpi_label_group_rpi_wall_not_founded_header',
                                         'required' => 0,
                                         'conditional_logic' => 0,
                                         'wrapper' => array(
@@ -1558,7 +1558,7 @@ Die Kommentare und Matrixchat sowie die Toolbar sind weiterhin verwendbar.
                                         'label' => 'Keine Gruppe gegründet Notice',
                                         'name' => 'rpi_wall_not_founded_notice',
                                         'type' => 'text',
-                                        'instructions' => 'options_rpi_wall_not_founded_notice',
+                                        'instructions' => 'options_rpi_label_group_rpi_wall_not_founded_notice',
                                         'required' => 0,
                                         'conditional_logic' => 0,
                                         'wrapper' => array(
