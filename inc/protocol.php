@@ -20,6 +20,7 @@ class protocol {
 			add_action('acfe/form/submit/post/form=edit-protocol', [ $this, 'on_acf_update_protocol'], 10, 5);
 
 			add_filter('the_content', [ $this, 'display'],);
+			add_filter('the_title', [ $this, 'display_title'],10,2);
 	}
 
 	/**
@@ -204,6 +205,14 @@ class protocol {
 		}
 	}
 
+	static function display_title($title, $post_id){
+		if(is_singular('protokoll') && 'protokoll' === get_post_type($post_id)){
+
+			return ''.get_field("constitution_gruppenname",get_field('rpi_wall_protocol_groupid')).': Protokoll vom '.get_the_date('d.m.Y');
+
+		}
+		return $title;
+	}
 	static function display($content){
 
 		$fields = (get_field_objects());
@@ -212,6 +221,7 @@ class protocol {
 
 		if('protokoll' === get_post_type()){
 
+			$content .= '<div class="protokoll-container">';
 
 			$members = get_field('teilnehmende');
 			$content .= '<h3>'.$fields['teilnehmende']['label'].':</h3> <ul>';
@@ -220,6 +230,12 @@ class protocol {
 				$content .= '<li>'.$member->get_link().'</li>';
 			}
 			$content .= '</ul>';
+
+			$content .= '</div>';
+
+			$content .= '<h2>Teilziel</h2>';
+
+			$content .= '<div class="protokoll-container">';
 
 			$c = get_field('rpi_wall_protocol_meeting_goal');
 			$content .= '<h3>'.$fields['rpi_wall_protocol_meeting_goal']['label'].':</h3>';
@@ -230,7 +246,13 @@ class protocol {
 			$content .= '<h3>'.$fields['rpi_wall_protocol_agenda']['label'].':</h3>';
 			$content .= ''.$c.'';
 
+
+			$content .= '</div>';
+
 			$content .= '<h2>Reflexion</h2>';
+
+			$content .= '<div class="protokoll-container">';
+
 
 
 			$content .= '<h3>'.$fields['rpi_wall_protocol_was_hat_gut_geklappt']['label'].'</h3>';
@@ -247,11 +269,22 @@ class protocol {
 				$c = '<p>'.get_field('rpi_wall_protocol_schoolwork_notices').'</p>';
 			}else{
 				$c = '';
-				$label = $fields['rpi_wall_protocol_is_schoolwork_sighted']['message']. '? Nein';
-			}
-			$content .= '<h3>'.$label.'</h3>'.nl2br($c);
+				if(isset($fields['rpi_wall_protocol_is_schoolwork_sighted']['message'])){
+					$label = $fields['rpi_wall_protocol_is_schoolwork_sighted']['message']. '? Nein';
+				}else{
+					$label = $c;
+				}
 
+			}
+			if($label){
+				$content .= '<h3>'.$label.'</h3>'.nl2br($c);
+			}
+
+
+			$content .= '</div>';
 			$content .= '<h2>Absprachen</h2>';
+			$content .= '<div class="protokoll-container">';
+
 
 			$rows = get_field('rpi_wall_protocol_orga');
 			$content .= '<h3>'.$fields['rpi_wall_protocol_orga']['label'].'</h3>';
@@ -271,21 +304,27 @@ class protocol {
 			$content .= '<div>'.nl2br(get_field('rpi_wall_protocol_orga_todo')).'</div>';
 
 
+
 			$c = get_field('rpi_wall_protocol_notices');
 			$content .= '<h3>'.$fields['rpi_wall_protocol_notices']['label'].':</h3>';
 			$content .= ''.nl2br($c).'';
 
+			$content .= '</div>';
+
 			$c = get_field('rpi_wall_protocol_result');
 			$content .= '<h2>'.$fields['rpi_wall_protocol_result']['label'].'</h2>';
+			$content .= '<div class="protokoll-container">';
 			$content .= ''.$c.'';
+			$content .= '</div>';
 
 
 			$b = get_field('rpi_wall_protocol_is_public_result');
 			if($b){
 				$label = $fields['rpi_wall_protocol_is_public_result']['message']. ' Ja';
-				$c = 'Veröffentlicht unter: <a href="'.get_permalink(get_field('rpi_wall_protocol_groupid')).'">'.get_permalink(get_field('rpi_wall_protocol_groupid')).'</a>';
+				$c = 'Veröffentlicht unter: <a href="'.get_permalink(get_field('rpi_wall_protocol_groupid')).'#group">'.get_field("constitution_gruppenname", get_field('rpi_wall_protocol_groupid')).'</a>';
 				$content .= '<p>'.$label.': '.$c. '</p>';
 			}
+
 
 			$content .= '<hr>';
 
