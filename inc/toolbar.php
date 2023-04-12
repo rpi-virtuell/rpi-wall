@@ -14,11 +14,12 @@ class Toolbar
 
     }
 
-	static function hide_cookie_warning($cookiewarning_required){
+    static function hide_cookie_warning($cookiewarning_required)
+    {
 
         if (isset($_GET['widgetId'])) {
 
-			return false;
+            return false;
 
         }
         return $cookiewarning_required;
@@ -37,101 +38,99 @@ class Toolbar
 
     static function display_toolbar(Group $group, bool $widget)
     {
-            $next_meeting = get_post_meta($group->ID, 'date_of_meeting', true);
-            ?>
-            <div class="group-toolbar">
-                <div class="toolbar-header">
+        $next_meeting = get_post_meta($group->ID, 'date_of_meeting', true);
+        ?>
+        <div class="group-toolbar">
+            <div class="toolbar-header">
 
-                    <?php if ($widget) { ?>
-                        <h4><a href="<?php echo get_permalink() ?>" target="_blank"
-                               rel="noopener noreferrer"><?php echo $group->title ?></a></h4>
-                    <?php } ?>
-                    <?php if (!empty($next_meeting) && $group->get_status() != 'closed') { ?>
-                        Nächster Termin: <?php echo date('d.n.Y', strtotime($next_meeting)) ?>
-                        um <?php echo date('H:i', strtotime($next_meeting)) ?> Uhr
+                <?php if ($widget) { ?>
+                    <h4><a href="<?php echo get_permalink() ?>" target="_blank"
+                           rel="noopener noreferrer"><?php echo !empty(get_field("constitution_gruppenname")) ? get_field("constitution_gruppenname") : $group->title ?></a>
+                    </h4>
+                <?php } ?>
+                <?php if (!empty($next_meeting) && $group->get_status() != 'closed') { ?>
+                    Nächster Termin: <?php echo date('d.n.Y', strtotime($next_meeting)) ?>
+                    um <?php echo date('H:i', strtotime($next_meeting)) ?> Uhr
 
-                    <?php } ?>
-                </div>
+                <?php } ?>
+            </div>
 
-                <div class="toolbar-content">
+            <div class="toolbar-content">
 
+                <?php
+                Toolbar::print_status_message($group);
+                ?>
+                <div class="group-toolbar-grip">
                     <?php
-                    Toolbar::print_status_message($group);
-                    ?>
-                    <div class="group-toolbar-grip">
-                        <?php
-                       Toolbar::print_status_buttons($group);
-                        //TODO: terminfindung button via set_toolbar_buttons hinzufügen
-                        if (!isset($buttons))
-                        {
-                            $buttons = $group->get_toolbar_buttons();
-                        }
-                        foreach ($buttons as $button) {
-                            if (!empty($button['rpi_wall_group_toolbar_button_url']) || !empty($button['rpi_wall_group_toolbar_button_label']))
-                            {
-                                ?>
-                                <div class="ct-container">
-                                    <a class="button toolbar-button"
-                                       href="<?php echo $button['rpi_wall_group_toolbar_button_url'] ?>" target="_blank"
-                                       rel="noopener noreferrer">
-                                        <?php echo $button['rpi_wall_group_toolbar_button_label'] ?>
-                                    </a>
-                                </div>
-                                <?php
-                            }
-                        }
-                        ?>
-
-                    </div>
-                    <div class="toolbar-settings">
-                        <div class="toolbar-setting-buttons">
-                            <div title="Weitere Buttons hinzufügen">
-                                <?php RpiWall::modal('edit-buttons', '<span class="dashicons dashicons-plus"></span>', do_shortcode(' [acfe_form name="rpi_wall_group_toolbar_button_form"] ')); ?>
-                            </div>
-                            <a id="btn-open-faq" title="FAQ" href="<?php echo home_url('/faqs') ?>"><span>?</span></a>
-                            <?php if ($group->get_status() != 'closed') { ?>
-                                <div title="PLG Schließen">
-                                    <?php RpiWall::modal('close-plg', '<span class="dashicons dashicons-exit"></span>', do_shortcode(' [acfe_form name="review"]')); ?>
-                                </div>
-                            <?php } ?>
-                        </div>
-                    </div>
-                    <div class="toolbar-details">
-                        <?php $group_goal = get_post_meta($group->ID, "constitution_zielformulierung", true);
-                        if (!empty($group_goal)) {
+                    Toolbar::print_status_buttons($group);
+                    //TODO: terminfindung button via set_toolbar_buttons hinzufügen
+                    if (!isset($buttons)) {
+                        $buttons = $group->get_toolbar_buttons();
+                    }
+                    foreach ($buttons as $button) {
+                        if (!empty($button['rpi_wall_group_toolbar_button_url']) || !empty($button['rpi_wall_group_toolbar_button_label'])) {
                             ?>
-                            <div class="toolbar-group-goal">
-                                <h3>
-                                    Ziel:
-                                </h3>
-                                <?php echo $group_goal ?>
-                            </div>
-                        <?php } ?>
-                        <?php
-                        $protocols = protocol::get_protocols($group->ID);
-                        if (sizeof($protocols) > 0) {
-                            ?>
-
-                            <div class="toolbar-protocols">
-                                <h3>
-                                    Arbeitstreffen:
-                                </h3>
-                                <?php
-
-                                foreach ($protocols as $protocol) {
-                                    ?> <a href="<?php echo $protocol->guid ?>" target="_blank"
-                                          rel="noopener noreferrer"><?php echo date('d.m.Y', strtotime($protocol->post_date)) ?> </a> <?php
-                                }
-                                ?>
+                            <div class="ct-container">
+                                <a class="button toolbar-button"
+                                   href="<?php echo $button['rpi_wall_group_toolbar_button_url'] ?>" target="_blank"
+                                   rel="noopener noreferrer">
+                                    <?php echo $button['rpi_wall_group_toolbar_button_label'] ?>
+                                </a>
                             </div>
                             <?php
-                        } ?>
+                        }
+                    }
+                    ?>
+
+                </div>
+                <div class="toolbar-settings">
+                    <div class="toolbar-setting-buttons">
+                        <div title="Weitere Buttons hinzufügen">
+                            <?php RpiWall::modal('edit-buttons', '<span class="dashicons dashicons-plus"></span>', do_shortcode(' [acfe_form name="rpi_wall_group_toolbar_button_form"] ')); ?>
+                        </div>
+                        <a id="btn-open-faq" title="FAQ" href="<?php echo home_url('/faqs') ?>"><span>?</span></a>
+                        <?php if ($group->get_status() != 'closed') { ?>
+                            <div title="PLG Schließen">
+                                <?php RpiWall::modal('close-plg', '<span class="dashicons dashicons-exit"></span>', do_shortcode(' [acfe_form name="review"]')); ?>
+                            </div>
+                        <?php } ?>
                     </div>
                 </div>
+                <div class="toolbar-details">
+                    <?php $group_goal = get_post_meta($group->ID, "constitution_zielformulierung", true);
+                    if (!empty($group_goal)) {
+                        ?>
+                        <div class="toolbar-group-goal">
+                            <h3>
+                                Ziel:
+                            </h3>
+                            <?php echo $group_goal ?>
+                        </div>
+                    <?php } ?>
+                    <?php
+                    $protocols = protocol::get_protocols($group->ID);
+                    if (sizeof($protocols) > 0) {
+                        ?>
+
+                        <div class="toolbar-protocols">
+                            <h3>
+                                Arbeitstreffen:
+                            </h3>
+                            <?php
+
+                            foreach ($protocols as $protocol) {
+                                ?> <a href="<?php echo $protocol->guid ?>" target="_blank"
+                                      rel="noopener noreferrer"><?php echo date('d.m.Y', strtotime($protocol->post_date)) ?> </a> <?php
+                            }
+                            ?>
+                        </div>
+                        <?php
+                    } ?>
+                </div>
             </div>
-            <?php
-        if ($widget)
-        {
+        </div>
+        <?php
+        if ($widget) {
             echo ob_get_clean();
             echo '</body></html>';
             wp_footer();
@@ -141,7 +140,7 @@ class Toolbar
 
     }
 
-    static function print_status_message( Group $group)
+    static function print_status_message(Group $group)
     {
         $status = $group->get_toolbar_status();
         switch ($status) {
@@ -178,7 +177,8 @@ class Toolbar
 
     }
 
-    static function print_status_buttons(Group $group){
+    static function print_status_buttons(Group $group)
+    {
         $status = $group->get_toolbar_status();
         switch ($status) {
             case 'constituted':
@@ -192,9 +192,8 @@ class Toolbar
                 break;
             default:
                 RpiWall::modal('planningDate', 'Planungstermin setzen ', do_shortcode('[acfe_form name="constitution_date"]'));
-                if (!$group->get_toolbar_buttons())
-                {
-                    $buttons = array(array('rpi_wall_group_toolbar_button_label' => 'Terminfindung','rpi_wall_group_toolbar_button_url' => 'https://nuudel.digitalcourage.de/'));
+                if (!$group->get_toolbar_buttons()) {
+                    $buttons = array(array('rpi_wall_group_toolbar_button_label' => 'Terminfindung', 'rpi_wall_group_toolbar_button_url' => 'https://nuudel.digitalcourage.de/'));
                 }
                 break;
         }
