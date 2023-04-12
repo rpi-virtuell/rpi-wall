@@ -97,12 +97,12 @@ class MemberPage
         $tags = '<div class="member-tags">
             <div class="cats"> 
                 <!--[my_tags content="badge"]-->
-                [my_tags content="schooltype"]
+                [my_tags content="section"]
                 [my_tags content="profession"]
             </div>
             <div class="tags">
-            [my_tags content="wall-tag"]
-            [my_tags content="wall-cat"]
+                [my_tags content="wall-tag"]
+                [my_tags content="wall-cat"]
             </div>
          </div>';
         $user = get_userdata($_POST['user_ID']);
