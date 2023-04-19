@@ -102,7 +102,9 @@ class Cronjobs
                     //allerdings kann es seign dass die Zuordnung rpi_wall_message_recipient von message und user gelöscht wurde.
                     //deshalb besser der post meta checken welche zuordnungen es überhaupt gibt
 
-                    $assigned_messages = $wpdb->get_results("select post_id from {$wpdb->postmeta} where meta_key = 'rpi_wall_message_recipient' and meta_value = {$user->ID}");
+                    $assigned_messages = $wpdb->get_results("select post_id from {$wpdb->postmeta} where
+                              post_id in ($in_ids) and 
+                              meta_key = 'rpi_wall_message_recipient' and meta_value = {$user->ID}");
 
                     $read_messages_ids = array();
                     $assigned_messages_ids = array();
