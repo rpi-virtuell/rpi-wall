@@ -110,6 +110,7 @@ class Cronjobs
 
 					$this->log('assigned_messages', count($assigned_messages));
 
+
                     $read_messages_ids = array();
                     $assigned_messages_ids = array();
 
