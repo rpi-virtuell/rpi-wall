@@ -46,6 +46,8 @@ class RPIWallInstaller
         $roles = ['administrator', 'editor'];
         foreach ($roles as $roleslug) {
             $role = get_role($roleslug);
+            $role->add_cap('write_redaktion_message');
+
             $role->add_cap('edit_walls');
             $role->add_cap('edit_wall');
             $role->add_cap('edit_others_walls');

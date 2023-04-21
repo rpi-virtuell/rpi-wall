@@ -1,6 +1,7 @@
 <?php
 
 use rpi\Wall;
+use rpi\Wall\Message;
 
 class RpiWallFormHandler
 {
@@ -28,6 +29,22 @@ class RpiWallFormHandler
             $matrix = new Wall\Matrix();
             $matrix->send_msg(new Wall\Group($post_id), get_option('options_matrix_bot_review'));
         }, 10, 2);
+
+
+        add_filter('acfe/form/prepare/rpi-redaktion-message', function ($prepare, $form, $post_id, $action) {
+            if (!current_user_can('write_redaktion_message')) {
+                $prepare = false;
+            } else {
+                $all_users = get_users(array('fields'=> 'ID'));
+
+                $msg = new \stdClass();
+                $msg->subject = get_field('betreff');
+                $msg->body = get_field('nachricht');
+                Message::send_messages($all_users, $msg);
+            }
+
+            return $prepare;
+        }, 10, 4);
 
     }
 }
