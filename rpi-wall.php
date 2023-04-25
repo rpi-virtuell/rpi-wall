@@ -72,8 +72,8 @@ class RpiWall
 
         add_action('pre_get_posts', [$this, 'query_member']);
 
-        add_action('trashed_post', ['rpi\Wall\Group','on_group_delete'],10);
-        add_action('delete_user', ['rpi\Wall\Member','on_delete_user'],10);
+        add_action('trashed_post', ['rpi\Wall\Group', 'on_group_delete'], 10);
+        add_action('delete_user', ['rpi\Wall\Member', 'on_delete_user'], 10);
 
         /**** beobachte beiträge filtern ****/
         add_filter('facetwp_facet_display_value', function ($label, $params) {
@@ -212,7 +212,12 @@ class RpiWall
             if (is_post_type_archive('member')):
                 ?>
                 <div class="ct-container rpi-wall-filters">
-                    <?php echo do_shortcode('[rpi_member_filter]'); ?>
+                    <?php
+                    if (user_can(get_current_user_id(), 'write_redaktion_message')) {
+                        RpiWall::modal('form', 'Nachricht an Alle', do_shortcode('[acfe_form name="redaktions-message"]'));
+                    }
+                    echo do_shortcode('[rpi_member_filter]');
+                    ?>
                 </div>
             <?php
             endif;
@@ -296,7 +301,6 @@ class RpiWall
         add_action('wp_footer', [$this, 'initialize_message_counter']);
 
 
-
         //add_action('save_post_wall', [$this, 'on_new_pin'], 10, 3);
 
         add_action('acfe/form/submit/form=create-pin', [$this, 'on_new_pin'], 10, 2);
@@ -322,7 +326,7 @@ class RpiWall
         add_action('wp', function () {
 
             if (get_current_user_id() == 2 && is_singular(['wall'])) {
-	            $matrix = new Wall\Matrix();
+                $matrix = new Wall\Matrix();
                 $matrix->tests(get_the_ID());
             }
         });
@@ -404,15 +408,15 @@ class RpiWall
             $type = 'wall';
 
             $from_url = $_SERVER['HTTP_REFERER'];
-            $uri = parse_url( $from_url);
+            $uri = parse_url($from_url);
 
-	        $match = preg_match('#/(wall|member)?/#',$uri['path'], $matches);
+            $match = preg_match('#/(wall|member)?/#', $uri['path'], $matches);
 
-            if($match){
+            if ($match) {
                 $type = $matches[1];
             }
 
-            wp_redirect(home_url() . '/'.$type.'/?wall-tag=' . $term->slug);
+            wp_redirect(home_url() . '/' . $type . '/?wall-tag=' . $term->slug);
         }
 
         if (!is_admin() && $query->is_main_query() && is_post_type_archive('member')) {
@@ -473,7 +477,7 @@ class RpiWall
         $group = new Wall\Group(get_the_ID());
         ?>
         <header class="entry-header">
-            <h1 class="page-title"> <?php echo !empty(get_field("constitution_gruppenname")) ? get_field("constitution_gruppenname") : $group->post->post_title?> </h1>
+            <h1 class="page-title"> <?php echo !empty(get_field("constitution_gruppenname")) ? get_field("constitution_gruppenname") : $group->post->post_title ?> </h1>
         </header>
         <?php
         $group->display();
@@ -486,7 +490,7 @@ class RpiWall
                 <br>
                 <a class="button button-primary" href="<?php echo $group->get_matrix_link() ?>" target="_blank">im
                     Browser matrix.rpi-virtuell.de</a>
-                <a class="button button-secondary" href="<?php  echo $group->get_matrix_link('client')?>"
+                <a class="button button-secondary" href="<?php echo $group->get_matrix_link('client') ?>"
                    target="_blank">über
                     die Element App</a>
                 <br>
@@ -568,7 +572,7 @@ class RpiWall
             $msg->subject = '[DiBeS]Neues Mitglied ' . $member->name;
             $msg->body = 'Bitte prüfen: ' . $member->get_link();
 
-            Wall\Message::send_messages($orga = [2, 3], $msg);
+            Wall\Message::send_messages($orga = [2, 3], $msg, 'rpi_user_message_joined');
         }
 
     }

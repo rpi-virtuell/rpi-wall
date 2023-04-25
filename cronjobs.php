@@ -70,7 +70,7 @@ class Cronjobs
             ];
             $member = get_posts($args);
             $member_ids = array_column($member, 'post_author');
-            Message::send_messages($member_ids, $msg);
+            Message::send_messages($member_ids, $msg,'rpi_user_moderation_message');
 
         }
 
