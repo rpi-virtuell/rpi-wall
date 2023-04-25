@@ -314,7 +314,7 @@ class RpiWallAjaxHandler
                     $msg = new \stdClass();
                     $msg->subject = '[' . $next_termin->post_title . ']' . ' An Termin teilgenommen';
                     $msg->body = 'Du hast an dem Termin (<a href="' . get_permalink($termin_id) . '">' . $next_termin->post_title . '</a>) teilgenommen.';
-                    Message::send_messages(get_current_user_id(), $msg);
+                    Message::send_messages(get_current_user_id(), $msg, 'rpi_user_termin_participation');
                 }
             } else {
 

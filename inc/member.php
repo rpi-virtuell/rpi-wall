@@ -319,11 +319,11 @@ class Member extends \stdClass
 		$msg->subject = "[{$group->title}] Beitrittsanfrage abgewiesen";
 		$msg->body = "Leider wurde deine Beitrittsanfrage für die {$group->title} abgewiesen. Die Gruppe hat ihre Arbeit bereits aufgenommen. 
 		Du kannnst aber einen neuen Pinnwandeintrag zun gleichen Thema erzeugen und damit die Voraussetzung für eine weitere Lerngemeinschaft schaffen.";
-		Message::send_messages([$this->ID],$msg);
+		Message::send_messages([$this->ID],$msg,'rpi_user_message_requested');
 	    $msg->subject = "[{$group->title}] Beitrittsanfrage abgewiesen";
 		$actor = new Member(get_current_user_id());
 	    $msg->body = "{$actor->get_link()} hat die Beitrittsanfrage von {$this->get_link()} für die {$group->title} abgewiesen.";
-	    Message::send_messages($group->get_memberIds(),$msg);
+	    Message::send_messages($group->get_memberIds(),$msg,'rpi_user_message_requested');
         do_action('rpi_wall_member_group_reject', $this->ID, $groupId);
     }
 
@@ -357,7 +357,7 @@ class Member extends \stdClass
             $msg->body = "Hallo zusammen,\n\nIch bin <a href='{$this->get_member_profile_permalink()}'>{$this->name}</a> und würde gerne der Arbeitsgruppe beitreten." .
                 "Wenn etwas dagegen spricht, bitte meine Anfrage auf dem Pinnwandeintrag " . $plg->link . " ablehnen. Eine Ablehnung ist noch $contdown möglich";
 
-            Message::send_messages($user_ids, $msg);
+            Message::send_messages($user_ids, $msg,'rpi_user_message_requested');
 
             do_action('rpi_wall_member_request_group', $this->ID, $groupId, $plg->get_memberIds(), $hash, $msg);
         }

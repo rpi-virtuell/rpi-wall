@@ -40,7 +40,7 @@ class RpiWallFormHandler
                 $msg = new \stdClass();
                 $msg->subject = get_field('betreff');
                 $msg->body = get_field('nachricht');
-                Message::send_messages($all_users, $msg);
+                Message::send_messages($all_users, $msg , 'rpi_user_moderation_message');
             }
 
             return $prepare;
