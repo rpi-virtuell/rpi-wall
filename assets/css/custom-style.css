@@ -42,6 +42,15 @@
     margin-top: var(--content-vertical-spacing);
     padding: 15px;
 }
+.rpi-wall-filters {
+    margin-top: var(--content-vertical-spacing);
+    position: relative;
+}
+.rpi-wall-filters .rpi-wall-buttons a{
+    position: absolute;
+    right: 0;
+}
+
 
 .pin-title-icon {
     margin-bottom: unset !important;

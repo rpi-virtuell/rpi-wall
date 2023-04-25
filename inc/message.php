@@ -6,13 +6,6 @@ namespace rpi\Wall;
 class Message
 {
 
-    protected $group;
-    protected $template;
-    protected $subject;
-    protected $body;
-    protected Member $member;
-    protected $actor;
-
     static $templates = [
 
 
@@ -52,7 +45,7 @@ class Message
         'closed' =>
             [
                 'subject' => '[%grouptitle%] - Verbindliche Phase abgeschlossen',
-                'body' =>'%actorname% (%actorlink%) hat die verbindliche Arbeitphase des Pinnwandeintrags %postlink% beendet.'
+                'body' => '%actorname% (%actorlink%) hat die verbindliche Arbeitphase des Pinnwandeintrags %postlink% beendet.'
             ],
 
         'create' =>
@@ -62,26 +55,26 @@ class Message
 
             ],
         'creator' =>
-	        [
-		        'subject' => '[Pinnwandeintrag]: %posttitle%',
-		        'body' => 'Hallo %actorlink%!<br><br>Vielen Dank für deinen Beitrag an der Pinnwand: %postlink%.<br>'.
-		                  'Wie geht es nun weiter? Mitglieder des Netzwerkes können deinen Beitrag lesen und kommentieren. '.
-		                  'Wenn du dir darüberhinaus im Kontext deines Beitrages auch eine professionelle Lerngemeinschaft (PLG) wünscht, '.
-		                  'öffne den Tab "Gruppe" und klicke auf "interessiert". Sobald sich eine Mindestzahl an Interessierten gefunden haben, '.
-		                  'bekommst du eine Nachricht, und du kannst die PLG gründen. Wenn alle Interessierten beigetreten sind, bekommst du Zugang zu einem'.
-		                  'geschützten digitalen Raum, in dem speziell für deine PLG Unterstützungsinstrumente und auf Wunsch auch Begleitung bereit stehen.<br><br>Viel Erfolg!'
+            [
+                'subject' => '[Pinnwandeintrag]: %posttitle%',
+                'body' => 'Hallo %actorlink%!<br><br>Vielen Dank für deinen Beitrag an der Pinnwand: %postlink%.<br>' .
+                    'Wie geht es nun weiter? Mitglieder des Netzwerkes können deinen Beitrag lesen und kommentieren. ' .
+                    'Wenn du dir darüberhinaus im Kontext deines Beitrages auch eine professionelle Lerngemeinschaft (PLG) wünscht, ' .
+                    'öffne den Tab "Gruppe" und klicke auf "interessiert". Sobald sich eine Mindestzahl an Interessierten gefunden haben, ' .
+                    'bekommst du eine Nachricht, und du kannst die PLG gründen. Wenn alle Interessierten beigetreten sind, bekommst du Zugang zu einem' .
+                    'geschützten digitalen Raum, in dem speziell für deine PLG Unterstützungsinstrumente und auf Wunsch auch Begleitung bereit stehen.<br><br>Viel Erfolg!'
 
-	        ],
+            ],
         'founder' =>
-	        [
-		        'subject' => '[Prof. Lerngemeinschaft]: %posttitle%',
-		        'body' => 'Hallo %actorlink%!<br><br>Als Gründer:in kannst du '.
-		                  'die Beitrittsphase vorzeitig beenden, sobald die Mindestzahl an Teilnehmenden erreicht ist. '.
-		                  'Interessierte können auch danach noch solange beitreten, bis sich die Gruppe auf einen Termin ' .
-		                  'für das erste Treffen geeinigt und diesen eingetragen hat.'.
-		                  '<br><br>Viel Erfolg!'
+            [
+                'subject' => '[Prof. Lerngemeinschaft]: %posttitle%',
+                'body' => 'Hallo %actorlink%!<br><br>Als Gründer:in kannst du ' .
+                    'die Beitrittsphase vorzeitig beenden, sobald die Mindestzahl an Teilnehmenden erreicht ist. ' .
+                    'Interessierte können auch danach noch solange beitreten, bis sich die Gruppe auf einen Termin ' .
+                    'für das erste Treffen geeinigt und diesen eingetragen hat.' .
+                    '<br><br>Viel Erfolg!'
 
-	        ],
+            ],
         'liked' =>
             [
                 'subject' => '[%grouptitle%] Interesse bekundet',
@@ -120,23 +113,29 @@ class Message
 
 
     ];
-    protected $events = ['create','retreat','creator', 'ready', 'closed','liked', 'joined', 'pending', 'founded', 'requested', 'comment', 'reset', 'founder'];
+    protected $group;
+    protected $template;
+    protected $subject;
+    protected $body;
+    protected Member $member;
+    protected $actor;
+    protected $events = ['create', 'retreat', 'creator', 'ready', 'closed', 'liked', 'joined', 'pending', 'founded', 'requested', 'comment', 'reset', 'founder'];
 
     /**
      * @param Group|Int $group
      * @param string $event ['ready','create','retreat','pending','founded','closed','liked','minimum_likers_met','comment','reset','founder']
      * @param array $to :   ['orga','watch','group'] welche Zielgruppe soll benachrichtigt werden
-     * @param int|string  $actor_id handelnder User z.B. Kommentarschreiber
+     * @param int|string $actor_id handelnder User z.B. Kommentarschreiber
      */
 
     public function __construct($group, $event = 'pending', array $user_ids = null, $actor = 0, $search_replace = array('search' => [], 'replace' => []))
     {
-		if(!$group instanceof Group){
-			$group = new Group($group);
-			if(!$group instanceof Group){
-				return false;
-			}
-		}
+        if (!$group instanceof Group) {
+            $group = new Group($group);
+            if (!$group instanceof Group) {
+                return false;
+            }
+        }
 
         $this->group = $group;
 
@@ -168,7 +167,6 @@ class Message
         }
 
 
-
         if (in_array($event, $this->events) && $msg = $this->prepare_message($event, $replace_data)) {
             if ($msg !== false) {
                 $this->create($msg, $user_ids);
@@ -176,57 +174,10 @@ class Message
 
                 $user_ids = $this->get_watchers_with_mail_permission($event, $user_ids);
 
-	            $this->send($msg, $user_ids);
+                $this->send($msg, $user_ids);
 
             }
         }
-    }
-
-    public function get_watchers_with_mail_permission($event, $watchers)
-    {
-
-        $args = [
-            'post_type' => 'member',
-            'posts_per_page' => -1,
-            'author__in' => (array) $watchers,
-            'meta_query' => array(
-                array(
-                    'key' => 'rpi_user_message_' . $event,
-                    'value' => 1,
-                    'compare' => '='
-                )
-            )
-
-        ];
-	    $member_ids = array();
-		$members = get_posts($args);
-		foreach ($members as $member){
-			$member_ids[]=$member->post_author;
-		}
-		return $member_ids;
-    }
-
-
-    /**
-     * @param string $slug : $this->$events
-     * @param string $part 'subject'|'body'
-     *
-     * @return false|mixed|void
-     */
-    public function get_template(string $slug, string $part)
-    {
-
-        return get_option('option_rpi_message_' . $slug . '_template_' . $part, Message::$templates[$slug][$part]);
-    }
-
-
-    /**
-     * ToDo set in Optin page
-     * @return int[]
-     */
-    static public function get_orga_ids()
-    {
-        return get_option('options_rpi_wall_orga_team_ids', [2, 3]);
     }
 
     /**
@@ -279,6 +230,18 @@ class Message
     }
 
     /**
+     * @param string $slug : $this->$events
+     * @param string $part 'subject'|'body'
+     *
+     * @return false|mixed|void
+     */
+    public function get_template(string $slug, string $part)
+    {
+
+        return get_option('option_rpi_message_' . $slug . '_template_' . $part, Message::$templates[$slug][$part]);
+    }
+
+    /**
      * create a Message CPT
      *          title:      subject,
      *          content:    body,
@@ -306,61 +269,77 @@ class Message
         }
     }
 
+    /**
+     * @param array $recipient_ids |WP_User->IDs
+     *
+     * @return void
+     */
+    protected function increase_message_counters($recipient_ids)
+    {
 
-	/**
-	 * @param array $recipient_ids |WP_User->IDs
-	 *
-	 * @return void
-	 */
-    protected function increase_message_counters($recipient_ids){
+        foreach ($recipient_ids as $recipient_id) {
 
-		foreach ($recipient_ids as $recipient_id){
-
-			self::change_message_counter($recipient_id);
-		}
+            self::change_message_counter($recipient_id);
+        }
 
     }
 
-	/**
-	 * @param int $recipient_id |WP_User->ID
-	 * @param bool $decrease
-	 *
-	 * @return void
-	 */
-	static function change_message_counter($recipient_id, $decrease = false){
-		if(get_userdata($recipient_id)){
-			$counter  = get_user_meta($recipient_id, 'rpi_wall_unread_messages_count',true);
-			if($decrease){
-				if($counter>0){
-					$counter --;
-				}
-			}else{
-				$counter ++;
-			}
-			update_user_meta($recipient_id, 'rpi_wall_unread_messages_count', $counter);
-		}
-	}
+    /**
+     * @param int $recipient_id |WP_User->ID
+     * @param bool $decrease
+     *
+     * @return void
+     */
+    static function change_message_counter($recipient_id, $decrease = false)
+    {
+        if (get_userdata($recipient_id)) {
+            $counter = get_user_meta($recipient_id, 'rpi_wall_unread_messages_count', true);
+            if ($decrease) {
+                if ($counter > 0) {
+                    $counter--;
+                }
+            } else {
+                $counter++;
+            }
+            update_user_meta($recipient_id, 'rpi_wall_unread_messages_count', $counter);
+        }
+    }
 
-	/**
-	 * @param int $user_id
-	 *
-	 * @return mixed
-	 */
-	static function get_unread_messages_count($user_id){
-		return get_user_meta($user_id,'rpi_wall_unread_messages_count', true);
-	}
-
-
-	/**
-	 * @param \stdClass $msg
-	 * @param array $recipient_ids
-	 *
-	 * @return void
-	 */
-	public function send($msg, $recipient_ids)
+    public function get_watchers_with_mail_permission($event, $watchers)
     {
 
-	    $headers = array('Content-Type: text/html; charset=UTF-8');
+        $args = [
+            'post_type' => 'member',
+            'posts_per_page' => -1,
+            'author__in' => (array)$watchers,
+            'meta_query' => array(
+                array(
+                    'key' => 'rpi_user_message_' . $event,
+                    'value' => 1,
+                    'compare' => '='
+                )
+            )
+
+        ];
+        $member_ids = array();
+        $members = get_posts($args);
+        foreach ($members as $member) {
+            $member_ids[] = $member->post_author;
+        }
+        return $member_ids;
+    }
+
+    /**
+     * @param \stdClass $msg
+     * @param array $recipient_ids
+     * @param string $email_permission The slug name of the email permission necessary to send the message via email
+     *
+     * @return void
+     */
+    public function send(\stdClass $msg, array $recipient_ids, string $email_permission = '')
+    {
+
+        $headers = array('Content-Type: text/html; charset=UTF-8');
 
         if (is_array($recipient_ids) && count($recipient_ids) > 0) {
 
@@ -368,35 +347,69 @@ class Message
 
             foreach ($recipient_ids as $user_id) {
                 $user = get_userdata($user_id);
-                $to[] = $user->user_email;
+                $member = new Member($user_id);
+                if (empty($email_permission) || Message::has_member_given_email_permission($user_id, $email_permission)) {
+                    $to[] = $user->user_email;
+                }
+            }
+            $headers[] = 'From: ' . get_option('options_network_name', 'Dibes Netzwerk') . ' <' . get_option('options_moderation_email', 'technik@rpi-virtuell.de') . '>' . "\r\n";
+            foreach ($to as $bcc) {
+                $headers[] = 'Bcc: ' . $bcc;
             }
 
-            $headers[] = 'From: Dibes Netzwerk <technik@rpi-virtuell.de>' . "\r\n";
-			foreach ($to as $bcc){
-				$headers[] = 'Bcc: ' . $bcc ;
-			}
-
-			wp_mail('', $msg->subject, $msg->body, $headers);
+            wp_mail('', $msg->subject, $msg->body, $headers);
 
 
             $room_id = false;
-            if ($room_id){
-				$matrix = new Matrix();
-	            $matrix->send_msg_obj($msg, $room_id);
+            if ($room_id) {
+                $matrix = new Matrix();
+                $matrix->send_msg_obj($msg, $room_id);
             }
 
         } elseif (is_string($recipient_ids)) {
             //user einzeln anschreiben
             $user = get_userdata($recipient_ids);
-            wp_mail($user->user_email, $msg->subject, $msg->body, $headers);
+            $member = new Member($user->ID);
+            if (empty($email_permission) || Message::has_member_given_email_permission($member->ID, $email_permission)) {
+                wp_mail($user->user_email, $msg->subject, $msg->body, $headers);
+            }
+
         }
 
 
     }
 
-    static function get($post_id)
+    /**
+     * @param $member
+     * @param $email_permission
+     * @return bool
+     */
+    static function has_member_given_email_permission($member, $email_permission): bool
     {
+        if ($email_permission === '' || get_post_meta($member->ID, $email_permission, true) == 1) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
+    /**
+     * ToDo set in Optin page
+     * @return int[]
+     */
+    static public function get_orga_ids()
+    {
+        return get_option('options_rpi_wall_orga_team_ids', [2, 3]);
+    }
+
+    /**
+     * @param int $user_id
+     *
+     * @return mixed
+     */
+    static function get_unread_messages_count($user_id)
+    {
+        return get_user_meta($user_id, 'rpi_wall_unread_messages_count', true);
     }
 
     /**
@@ -405,8 +418,9 @@ class Message
      *
      * @return void
      */
-    static function send_messages($member, \stdClass $msg)
+    static function send_messages($member, \stdClass $msg, $email_permission = '')
     {
+        $headers = array('Content-Type: text/html; charset=UTF-8');
 
         $message_id = wp_insert_post(array(
             'post_title' => $msg->subject,
@@ -416,17 +430,36 @@ class Message
             'post_content' => $msg->body
         ));
         if (is_array($member)) {
+            $to = [];
+
+            foreach ($member as $user_id) {
+                $user = get_userdata($user_id);
+                $member = new Member($user_id);
+                if (empty($email_permission) || Message::has_member_given_email_permission($user_id, $email_permission)) {
+                    $to[] = $user->user_email;
+                }
+            }
+            $headers[] = 'From: ' . get_option('options_network_name', 'Dibes Netzwerk') . ' <' . get_option('options_moderation_email', 'technik@rpi-virtuell.de') . '>' . "\r\n";
+            foreach ($to as $bcc) {
+                $headers[] = 'Bcc: ' . $bcc;
+            }
+
+            wp_mail('', $msg->subject, $msg->body, $headers);
+
             foreach ($member as $user_id) {
                 add_post_meta($message_id, "rpi_wall_message_recipient", $user_id);
+                if (empty($email_permission) || Message::has_member_given_email_permission($user_id, $email_permission)) {
+                    add_post_meta($message_id, "rpi_wall_message_recipient", $user_id);
+                }
             }
         } else {
+            $user = get_userdata($member);
             add_post_meta($message_id, "rpi_wall_message_recipient", $member);
+            wp_mail($user->user_email, $msg->subject, $msg->body, $headers);
         }
-
 
         //Matrix\Helper::send($msg->subject, $msg->body, $msg->room_id);
     }
-
 
 
 }

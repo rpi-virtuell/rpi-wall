@@ -756,6 +756,28 @@ class RPIWallInstaller
                         ),
 
                         array(
+                            'key' => 'field_rpi_network_name',
+                            'label' => 'Netzwerk Name',
+                            'name' => 'network_name',
+                            'type' => 'text',
+                            'instructions' => '',
+                            'required' => 0,
+                            'conditional_logic' => 0,
+                            'wrapper' => array(
+                                'width' => '',
+                                'class' => '',
+                                'id' => '',
+                            ),
+                            'frontend_admin_display_mode' => 'edit',
+                            'readonly' => 0,
+                            'default_value' => '',
+                            'placeholder' => '',
+                            'prepend' => '',
+                            'append' => '',
+                            'maxlength' => '',
+                        ),
+
+                        array(
                             'key' => 'field_rpi_moderation_email',
                             'label' => 'Email der Moderation',
                             'name' => 'moderation_email',
