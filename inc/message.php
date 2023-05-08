@@ -352,7 +352,7 @@ class Message
                     $to[] = $user->user_email;
                 }
             }
-            $headers[] = 'From: ' . get_option('options_network_name', 'Dibes Netzwerk') . ' <' . get_option('options_moderation_email', 'technik@rpi-virtuell.de') . '>' . "\r\n";
+            $headers[] = 'From: ' . get_option('options_network_name', bloginfo('name')) . ' <' . get_option('options_moderation_email', 'technik@rpi-virtuell.de') . '>' . "\r\n";
             foreach ($to as $bcc) {
                 $headers[] = 'Bcc: ' . $bcc;
             }
@@ -439,7 +439,7 @@ class Message
                     $to[] = $user->user_email;
                 }
             }
-            $headers[] = 'From: ' . get_option('options_network_name', 'Dibes Netzwerk') . ' <' . get_option('options_moderation_email', 'technik@rpi-virtuell.de') . '>' . "\r\n";
+            $headers[] = 'From: ' . get_option('options_network_name', bloginfo('name')) . ' <' . get_option('options_moderation_email', 'technik@rpi-virtuell.de') . '>' . "\r\n";
             foreach ($to as $bcc) {
                 $headers[] = 'Bcc: ' . $bcc;
             }
