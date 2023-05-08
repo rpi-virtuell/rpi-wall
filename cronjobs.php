@@ -147,7 +147,7 @@ class Cronjobs
     }
 	function log(){
 
-		if(WP_DEBUG){
+		if(true || WP_DEBUG){
 			ob_start();
 			echo date('ymd H:i:s');
 			echo ' : ';
