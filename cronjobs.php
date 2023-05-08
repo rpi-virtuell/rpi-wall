@@ -89,6 +89,8 @@ class Cronjobs
 
                 if (!empty($read_messages)) {
 
+	                $this->log('User', $user->user_login);
+
                     $ids = implode(',', array_keys(unserialize($read_messages)));
 
                     //check ob die message noch in der tabelle vrohanden ist
@@ -106,6 +108,9 @@ class Cronjobs
                               post_id in ($in_ids) and 
                               meta_key = 'rpi_wall_message_recipient' and meta_value = {$user->ID}");
 
+					$this->log('assigned_messages', count($assigned_messages));
+
+
                     $read_messages_ids = array();
                     $assigned_messages_ids = array();
 
@@ -116,11 +121,14 @@ class Cronjobs
                             $read_messages_ids[] = $message->post_id;
                         }
                     }
+					$this->log(array_diff($assigned_messages_ids,$read_messages_ids ));
 
                     //Zusammenfassung
                     $count_assigned_messages = count($assigned_messages_ids);
                     $count_read_messages = count($read_messages_ids);
                     $counted_unread = $count_assigned_messages - $count_read_messages;
+
+	                $this->log('Zusammenfassung', $count_assigned_messages,$count_read_messages,$counted_unread );
 
                     update_user_meta($user->ID, 'rpi_wall_unread_messages_count', $counted_unread);
 
@@ -137,4 +145,31 @@ class Cronjobs
         }
 
     }
+	function log(){
+
+		if(true || WP_DEBUG){
+			ob_start();
+			echo date('ymd H:i:s');
+			echo ' : ';
+			$args = func_get_args();
+
+			foreach ($args as $arg) {
+
+				if(is_object($arg) || is_array($arg)){
+					echo json_encode($arg);
+
+				}else{
+					echo $arg;
+					echo ' : ';
+				}
+
+
+			}
+			echo "\n";
+			$c = ob_get_clean();
+			file_put_contents(dirname(__FILE__).'/cronjobs.log', $c, FILE_APPEND);
+		}
+
+
+	}
 }
