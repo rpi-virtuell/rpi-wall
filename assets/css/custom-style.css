@@ -1261,3 +1261,7 @@ body.toolbar #wpadminbar {
     border-left: 2px solid #f9c227;
     padding-left: 50px;
 }
+
+.sed-page-title .site-title-container{
+   width: max-content;
+}
