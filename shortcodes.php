@@ -1014,11 +1014,12 @@ class Shortcodes
         if (isset($post_id)) {
             ob_start();
             if (has_term('netzwerktreffen', 'termin_event', $post_id) && !is_user_logged_in()) {
+                 $url = do_shortcode('[openid_connect_generic_auth_url]');
                 ?>
-                <div class="button"
-                     onclick="<?php echo "jQuery('.ct-header-account[href*=account-modal]')[0].click();" ?>">Anmelden,
+                <a class="button"
+                     href="<?php echo $url;?>">Anmelden,
                     um am Treffen teilzunehmen
-                </div>
+                </a>
                 <?php
             } else {
                 ?>
