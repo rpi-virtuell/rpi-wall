@@ -14,7 +14,6 @@ class Cronjobs
         //Externe Crons
         add_action('cron_update_pin_status', ['rpi\Wall\Group', 'init_cronjob']);
         add_action('init', ['rpi\Wall\Group', 'init_cronjob']);
-
         add_action('cron_update_join_request', ['rpi\Wall\Member', 'init_cronjob'], 5);
         add_action('init', ['rpi\Wall\Member', 'init_cronjob'], 5);
 
@@ -78,72 +77,65 @@ class Cronjobs
 
     function cron_sync_read_messages()
     {
-        $users = get_users();
+	    $users = get_users();
 
-        global $wpdb;
-        foreach ($users as $user) {
-            if (is_a($user, 'WP_User')) {
+	    global $wpdb;
 
-                //echo('<hr>User:' .$user->ID.', '. $user->user_login);
-                $read_messages = get_user_meta($user->ID, 'rpi_read_messages', true);
+		// Array für IDs der gelesenen Nachrichten initialisieren
+	    $read_messages_ids = array();
 
-                if (!empty($read_messages)) {
+	    foreach ($users as $user) {
+		    if (is_a($user, 'WP_User') && $user->ID === 2) {
 
-	                $this->log('User', $user->user_login);
+			    $user_id = $user->ID;
 
-                    $ids = implode(',', array_keys(unserialize($read_messages)));
+			    // Nachrichten zuordnen, die dem Benutzer zugeordnet sind
+			    $query = $wpdb->prepare(
+				    "SELECT post_id
+		                FROM {$wpdb->postmeta}
+		                WHERE post_id IN (SELECT ID from $wpdb->posts WHERE post_status = 'publish' and post_type='message')
+		                AND meta_key = 'rpi_wall_message_recipient'
+		                AND meta_value = %d",
+				    $user_id
+			    );
+			    $this->log('User', $user->user_login);
+			    // $this->log('$query', $query);
 
-                    //check ob die message noch in der tabelle vrohanden ist
-                    $results = $wpdb->get_results("select ID from {$wpdb->posts} where ID in($ids) and post_status = 'publish' and post_type='message'");
-                    $checked_read_message_ids = array();
-                    foreach ($results as $result) {
-                        $checked_read_message_ids[] = $result->ID;
-                    }
-                    $in_ids = implode(',', $checked_read_message_ids);
+			    $assigned_messages = $wpdb->get_col($query);
+			    // $this->log('assigned_messages', count($assigned_messages));
 
-                    //allerdings kann es seign dass die Zuordnung rpi_wall_message_recipient von message und user gelöscht wurde.
-                    //deshalb besser der post meta checken welche zuordnungen es überhaupt gibt
+			    $read_messages = get_user_meta($user_id, 'rpi_read_messages', true);
+			    // $this->log('read_messages',$read_messages);
 
-                    $assigned_messages = $wpdb->get_results("select post_id from {$wpdb->postmeta} where
-                              post_id in ($in_ids) and 
-                              meta_key = 'rpi_wall_message_recipient' and meta_value = {$user->ID}");
+			    if (!empty($read_messages)) {
 
-					$this->log('assigned_messages', count($assigned_messages));
+				    $read_message_ids = array_keys(unserialize($read_messages));
+				    // $this->log('read_message_ids',$read_message_ids);
+				    $read_message_ids = array_intersect($read_message_ids, $assigned_messages);
+				    //$this->log('read_message_ids_intersect',$read_message_ids);
+				    $update_read_messages = array_fill_keys($read_message_ids, true);
+				    //$this->log('update_read_messages',$read_message_ids, $update_read_messages);
 
 
-                    $read_messages_ids = array();
-                    $assigned_messages_ids = array();
+				    // $this->log('$read_messages', $read_messages, $read_message_ids);
+					// $this->log(array_diff($assigned_messages, $read_messages_ids));
 
-                    foreach ($assigned_messages as $message) {
-                        $assigned_messages_ids[] = $message->post_id;
-                        if (in_array($message->post_id, $checked_read_message_ids)) {
-                            //user hat diese Message gelesen
-                            $read_messages_ids[] = $message->post_id;
-                        }
-                    }
-					$this->log(array_diff($assigned_messages_ids,$read_messages_ids ));
+				    // Zusammenfassung
+				    $count_assigned_messages = count($assigned_messages);
+				    $count_read_messages = count($read_message_ids);
+				    $counted_unread = $count_assigned_messages - $count_read_messages;
 
-                    //Zusammenfassung
-                    $count_assigned_messages = count($assigned_messages_ids);
-                    $count_read_messages = count($read_messages_ids);
-                    $counted_unread = $count_assigned_messages - $count_read_messages;
+				    $this->log('Zusammenfassung', $count_assigned_messages, $count_read_messages, $counted_unread);
 
-	                $this->log('Zusammenfassung', $count_assigned_messages,$count_read_messages,$counted_unread );
+				    update_user_meta($user_id, 'rpi_wall_unread_messages_count', $counted_unread);
 
-                    update_user_meta($user->ID, 'rpi_wall_unread_messages_count', $counted_unread);
+				    // Gelesene Nachrichten aktualisieren
+				    $update_rpi_read_messages = serialize($update_read_messages);
 
-                    $update_read_messages = array();
-                    foreach ($read_messages_ids as $id) {
-                        $update_read_messages[$id] = true;
-                    }
-                    $update_rpi_read_messages = serialize($update_read_messages);
-
-                    update_user_meta($user->ID, 'rpi_read_messages', $update_rpi_read_messages);
-                }
-
-            }
-        }
-
+				    update_user_meta($user_id, 'rpi_read_messages', $update_rpi_read_messages);
+			    }
+		    }
+	    }
     }
 	function log(){
 
