@@ -162,7 +162,7 @@ jQuery(document).ready($ => {
                 add_watch_button_click_event();
             }
         )
-
+        /*
         if (action === 'rpi_tab_logout_content') {
 
             setTimeout(() => {
@@ -170,6 +170,7 @@ jQuery(document).ready($ => {
             }, 1000);
             return;
         }
+        */
     }
 
     function rpi_wall_print_content(response, hash) {
@@ -178,6 +179,7 @@ jQuery(document).ready($ => {
             return;
         }
 
+
         var action = "rpi_tab_" + hash + "_content";
         $('#' + hash).html(response);
         if (action === 'rpi_tab_messages_content') {
@@ -185,6 +187,9 @@ jQuery(document).ready($ => {
             add_member_message_button_event();
         }
 
+        if (action === 'rpi_tab_logout_content') {
+            location.href=response;
+        }
 
         $('a.page-numbers').each(function (i, elem) {
             const href = $(elem).attr('href');
