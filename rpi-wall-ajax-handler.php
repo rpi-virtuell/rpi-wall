@@ -148,9 +148,9 @@ class RpiWallAjaxHandler
     public function ajax_tab_logout_content()
     {
 
-        wp_redirect(str_replace('amp;', '', wp_logout_url()));
+        //wp_redirect(str_replace('amp;', '', wp_logout_url()));
 
-        echo str_replace('amp;', '', wp_logout_url());
+        echo str_replace('amp;', '', wp_logout_url(home_url()));
         die();
 
     }
