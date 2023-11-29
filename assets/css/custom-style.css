@@ -1,30 +1,30 @@
 /*Farben*/
 
 :root {
-    --ci-basis: var(--paletteColor1);
+    --ci-basis: var(--theme-palette-color-1);
     --ci-sub-box-background-color: #0203047a;
     --ci-sub-box-font-color: white;
-    --ci-alert-color: var(--paletteColor7);
-    --ci-notification-color: var(--paletteColor6);
-    --ci-success-color: var(--paletteColor4);
+    --ci-alert-color: var(--theme-palette-color-7);
+    --ci-notification-color: var(--theme-palette-color-6);
+    --ci-success-color: var(--theme-palette-color-4);
 
     /* Group Status Colors */
 
     --ci-group-closed: var(--ci-tab-background-darker);
-    --ci-group-pending: var(--paletteColor7);
-    --ci-group-ready: var(--paletteColor6);
-    --ci-group-founded: var(--paletteColor4);
+    --ci-group-pending: var(--theme-palette-color-7);
+    --ci-group-ready: var(--theme-palette-color-6);
+    --ci-group-founded: var(--theme-palette-color-4);
 
 
     --ci-box-shadow: 2px 2px 7px #444;
-    --ci-tutorial-notification: var(--paletteColor5);
-    --ci-tab-background: var(--paletteColor5);
+    --ci-tutorial-notification: var(--theme-palette-color-5);
+    --ci-tab-background: var(--theme-palette-color-5);
     --ci-tab-background-darker: #a7abab;
 
-    --ci-accent-color: var(--paletteColor2);
+    --ci-accent-color: var(--theme-palette-color-2);
 
-    --ci-button-color: var(--paletteColor7);
-    --ci-button-color-hover: var(--paletteColor4);
+    --ci-button-color: var(--theme-palette-color-7);
+    --ci-button-color-hover: var(--theme-palette-color-4);
 
 }
 
