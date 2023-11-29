@@ -588,6 +588,7 @@ article.entry-card.type-wall .plg-wrapper {
 .ct-container.rpi-wall-buttons a {
     display: block;
     position: absolute;
+    z-index: 10;
     right: 0;
 }
 
