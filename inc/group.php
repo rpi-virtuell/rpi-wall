@@ -787,7 +787,7 @@ class Group extends \stdClass
     public function get_blocksy_login_button($label)
     {
 
-        return '<a href="account-modal" data-id="account" data-state="out" class="ct-header-account button">' . __('Log In') . ', dann<br>' . $label . '</a>';
+        return '<a href="account-modal" data-id="account" data-state="out" class="ct-account-item button">' . __('Log In') . ', dann<br>' . $label . '</a>';
     }
 
     public function get_startlink($label = 'Gruppe gründen'): string
@@ -808,7 +808,7 @@ class Group extends \stdClass
     public function get_current_users_joinlink($label = 'Gruppe beitreten')
     {
         if (!is_user_logged_in()) {
-            return '<a href="account-modal" data-id="account" data-state="out" class="ct-header-account button">Anmelden</a>';
+            return '<a href="account-modal" data-id="account" data-state="out" class="ct-account-item button">Anmelden</a>';
         }
 
         $member = new Member();
@@ -1039,7 +1039,7 @@ class Group extends \stdClass
         }else{
             ?>
             <div>
-                <a href="account-modal" style="display: inline-block; text-decoration: underline;" data-id="account" data-state="out" class="ct-header-account">Melde dich an</a>, um die Mitglieder dieser Gruppe zu sehen.
+                <a href="account-modal" style="display: inline-block; text-decoration: underline;" data-id="account" data-state="out" class="ct-account-item">Melde dich an</a>, um die Mitglieder dieser Gruppe zu sehen.
             </div>
             <?php
         }
