@@ -142,7 +142,7 @@ class RpiWall
                 if (is_user_logged_in()) {
                     RpiWall::modal('form', 'Neuer Eintrag', do_shortcode('[acfe_form name="create-pin"]'));
                 } else {
-                    RpiWall::modal('form', 'Neuer Eintrag', '<p> Um einen Pin erstellen zu können, musst du dich erst anmelden!</p> <a href="account-modal" data-id="account" data-state="out" class="ct-header-account button">Anmelden</a> ');
+                    RpiWall::modal('form', 'Neuer Eintrag', '<p> Um einen Pin erstellen zu können, musst du dich erst anmelden!</p> <a href="#account-modal" aria-label="login" aria-expanded="false" data-id="account" data-state="out" class="ct-account-item button">Anmelden</a> ');
                 }
 
             } else {
