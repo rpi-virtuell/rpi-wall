@@ -330,7 +330,41 @@ class RpiWall
                 $matrix->tests(get_the_ID());
             }
         });
+
+	    add_filter( 'lostpassword_url',  'wdm_lostpassword_url', 10, 0 );
+	    function wdm_lostpassword_url() {
+		    return site_url(KONTO_SERVER.'/wp-login.php?action=lostpassword');
+	    }
+
+        //password redirection
+        add_filter( 'init', [$this,'redirect_to_konto_pw_page']);
+        add_action('wp_footer',[$this, 'replace_blocky_password_reset'],9999);
     }
+
+	/**
+     * passowrd lost redirect
+	 * @return void
+	 */
+	public function redirect_to_konto_pw_page()
+	{
+		if (key_exists('redirect', $_GET) && $_GET['redirect'] === 'konto-pwfrgt') {
+			if (!defined('KONTO_SERVER')) {
+				define('KONTO_SERVER', 'konto.rpi-virtuell.de');
+			}
+			wp_redirect(KONTO_SERVER . '/wp-login.php?action=lostpassword');
+			die();
+		}
+	}
+	public function replace_blocky_password_reset()
+	{
+		if (key_exists('redirect', $_GET) && $_GET['redirect'] === 'konto-pwfrgt') {
+			if (!defined('KONTO_SERVER')) {
+				define('KONTO_SERVER', 'konto.rpi-virtuell.de');
+			}
+			wp_redirect(KONTO_SERVER . '/wp-login.php?action=lostpassword');
+			die();
+		}
+	}
 
     /**
      * öffnet den Inhalt in einem Overlay Popup
