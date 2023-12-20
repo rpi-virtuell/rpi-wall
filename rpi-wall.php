@@ -350,13 +350,15 @@ class RpiWall
 	}
 	public function replace_blocky_password_reset()
 	{
-		if (key_exists('redirect', $_GET) && $_GET['redirect'] === 'konto-pwfrgt') {
-			if (!defined('KONTO_SERVER')) {
-				define('KONTO_SERVER', 'konto.rpi-virtuell.de');
-			}
-			wp_redirect(KONTO_SERVER . '/wp-login.php?action=lostpassword');
-			die();
-		}
+		?>
+        <script>
+            jQuery('#loginform').ready(function ($) {
+                let old_forgot_pw_elem =$('.ct-forgot-password');
+                old_forgot_pw_elem.remove();
+                $('.login-remember.col-2').append('<a class="" href="?redirect=konto-pwfrgt">Passwort vergessen?</a>');
+            });
+        </script>
+		<?php
 	}
 
     /**
