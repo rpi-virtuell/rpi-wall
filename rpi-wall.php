@@ -12,7 +12,7 @@
  * @wordpress-plugin
  * Plugin Name:       rpi Pinnwand
  * Plugin URI:        https://github.com/rpi-virtuell/rpi-wall/
- * Description:       Wordpress Pinnwand PLG Plugin entwickelt für das Projekt Schule Evangelisch Digital des Comenius-Institutes
+ * Description:       Wordpress Pinnwand PLG Plugin entwickelt für das Projekt Forum Differenzsensibel des Comenius-Institutes
  * Version:           2.0.0
  * Author:            Joachim Happel
  * Author URI:        https://github.com/johappel
