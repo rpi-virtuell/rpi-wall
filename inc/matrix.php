@@ -241,7 +241,10 @@ class Matrix {
 	}
 
 	function addRoomToSpace($room_id){
-		$space = get_option('options_matrix_space', '!WQMdgHoIuSFUVKVaBB:rpi-virtuell.de');
+		$space = get_option('options_matrix_space');
+		if(empty($space)){
+			return false;
+		}
 
 		$content = array(
 			"canonical" => true,
