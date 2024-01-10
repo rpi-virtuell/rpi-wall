@@ -60,9 +60,18 @@ class RpiWall
     protected $max_stars_per_comment = 5;
     protected $group_member_min = 3;
     protected $installer;
+    private $plugin_version;
 
     public function __construct()
     {
+
+        if (!function_exists('get_plugin_data')) {
+            require_once(ABSPATH . 'wp-admin/includes/plugin.php');
+        }
+        $plugin_data = get_plugin_data(__FILE__);
+
+        $this->plugin_version = $plugin_data['Version'] . '.' . time();
+
         //session_start();
 
         add_action('wp_enqueue_scripts', [$this, 'custom_style_and_scripts']);
@@ -331,42 +340,16 @@ class RpiWall
             }
         });
 
-	    add_filter( 'lostpassword_url',  'wdm_lostpassword_url', 10, 0 );
-	    function wdm_lostpassword_url() {
-		    return site_url(KONTO_SERVER.'/wp-login.php?action=lostpassword');
-	    }
+        add_filter('lostpassword_url', 'wdm_lostpassword_url', 10, 0);
+        function wdm_lostpassword_url(): ?string
+        {
+            return site_url(KONTO_SERVER . '/wp-login.php?action=lostpassword');
+        }
 
         //password redirection
-        add_filter( 'init', [$this,'redirect_to_konto_pw_page']);
-        add_action('wp_footer',[$this, 'replace_blocky_password_reset'],9999);
+        add_filter('init', [$this, 'redirect_to_konto_pw_page']);
+        add_action('wp_footer', [$this, 'replace_blocky_password_reset'], 9999);
     }
-
-	/**
-     * passowrd lost redirect
-	 * @return void
-	 */
-	public function redirect_to_konto_pw_page()
-	{
-		if (key_exists('redirect', $_GET) && $_GET['redirect'] === 'konto-pwfrgt') {
-			if (!defined('KONTO_SERVER')) {
-				define('KONTO_SERVER', 'konto.rpi-virtuell.de');
-			}
-			wp_redirect(KONTO_SERVER . '/wp-login.php?action=lostpassword');
-			die();
-		}
-	}
-	public function replace_blocky_password_reset()
-	{
-		?>
-        <script>
-            jQuery('#loginform').ready(function ($) {
-                let old_forgot_pw_elem =$('.ct-forgot-password');
-                old_forgot_pw_elem.remove();
-                $('.login-remember.col-2').append('<a class="" href="?redirect=konto-pwfrgt">Passwort vergessen?</a>');
-            });
-        </script>
-		<?php
-	}
 
     /**
      * öffnet den Inhalt in einem Overlay Popup
@@ -397,6 +380,34 @@ class RpiWall
 
         <?php
 
+    }
+
+    /**
+     * passowrd lost redirect
+     * @return void
+     */
+    public function redirect_to_konto_pw_page()
+    {
+        if (key_exists('redirect', $_GET) && $_GET['redirect'] === 'konto-pwfrgt') {
+            if (!defined('KONTO_SERVER')) {
+                define('KONTO_SERVER', 'konto.rpi-virtuell.de');
+            }
+            wp_redirect(KONTO_SERVER . '/wp-login.php?action=lostpassword');
+            die();
+        }
+    }
+
+    public function replace_blocky_password_reset()
+    {
+        ?>
+        <script>
+            jQuery('#loginform').ready(function ($) {
+                let old_forgot_pw_elem = $('.ct-forgot-password');
+                old_forgot_pw_elem.remove();
+                $('.login-remember.col-2').append('<a class="" href="?redirect=konto-pwfrgt">Passwort vergessen?</a>');
+            });
+        </script>
+        <?php
     }
 
     public function add_ob_to_capture_pin_content()
@@ -808,15 +819,16 @@ class RpiWall
 
     public function custom_style_and_scripts()
     {
-        wp_enqueue_style('tabs', plugin_dir_url(__FILE__) . 'assets/css/tabs.css');
+        wp_enqueue_style('tabs', plugin_dir_url(__FILE__) . 'assets/css/tabs.css', [], $this->plugin_version);
 
-        wp_enqueue_style('rpi-wall-style', plugin_dir_url(__FILE__) . 'assets/css/custom-style.css');
-        wp_enqueue_style('rpi-wall-style-modal-norm', plugin_dir_url(__FILE__) . 'assets/css/normalize.min.css');
-        wp_enqueue_style('rpi-wall-style-modal-anim', plugin_dir_url(__FILE__) . 'assets/css/animate.min.css');
-        wp_enqueue_style('rpi-wall-style-termin-calender', plugin_dir_url(__FILE__) . 'assets/css/termin-calender.css');
-        wp_enqueue_script('rpi-wall-script-termin-calender', plugin_dir_url(__FILE__) . 'assets/js/termin-calender.js', array('jquery'));
-        wp_enqueue_script('rpi-wall-style-modal', plugin_dir_url(__FILE__) . 'assets/js/animatedModal.js', array('jquery'));
-        wp_enqueue_script('rpi-wall-script', plugin_dir_url(__FILE__) . 'assets/js/custom-scripts.js', array('jquery'), false, true);
+        wp_enqueue_style('rpi-wall-style', plugin_dir_url(__FILE__) . 'assets/css/custom-style.css', [], $this->plugin_version);
+        wp_enqueue_style('rpi-wall-style-modal-norm', plugin_dir_url(__FILE__) . 'assets/css/normalize.min.css', [], $this->plugin_version);
+        wp_enqueue_style('rpi-wall-style-modal-anim', plugin_dir_url(__FILE__) . 'assets/css/animate.min.css', [], $this->plugin_version);
+        wp_enqueue_style('rpi-wall-style-termin-calender', plugin_dir_url(__FILE__) . 'assets/css/termin-calender.css', [], $this->plugin_version);
+
+        wp_enqueue_script('rpi-wall-script-termin-calender', plugin_dir_url(__FILE__) . 'assets/js/termin-calender.js', array('jquery'), $this->plugin_version);
+        wp_enqueue_script('rpi-wall-style-modal', plugin_dir_url(__FILE__) . 'assets/js/animatedModal.js', array('jquery'), $this->plugin_version);
+        wp_enqueue_script('rpi-wall-script', plugin_dir_url(__FILE__) . 'assets/js/custom-scripts.js', array('jquery'), $this->plugin_version, true);
         wp_localize_script('rpi-wall-script', 'wall', array('ajaxurl' => admin_url('admin-ajax.php')));
 
 
