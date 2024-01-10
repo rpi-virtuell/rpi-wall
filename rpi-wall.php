@@ -70,7 +70,7 @@ class RpiWall
         }
         $plugin_data = get_plugin_data(__FILE__);
 
-        $this->plugin_version = $plugin_data['Version'] . '.' . time();
+        $this->plugin_version = $plugin_data['Version'];
 
         //session_start();
 
@@ -819,16 +819,43 @@ class RpiWall
 
     public function custom_style_and_scripts()
     {
-        wp_enqueue_style('tabs', plugin_dir_url(__FILE__) . 'assets/css/tabs.css', [], $this->plugin_version);
 
-        wp_enqueue_style('rpi-wall-style', plugin_dir_url(__FILE__) . 'assets/css/custom-style.css', [], $this->plugin_version);
-        wp_enqueue_style('rpi-wall-style-modal-norm', plugin_dir_url(__FILE__) . 'assets/css/normalize.min.css', [], $this->plugin_version);
-        wp_enqueue_style('rpi-wall-style-modal-anim', plugin_dir_url(__FILE__) . 'assets/css/animate.min.css', [], $this->plugin_version);
-        wp_enqueue_style('rpi-wall-style-termin-calender', plugin_dir_url(__FILE__) . 'assets/css/termin-calender.css', [], $this->plugin_version);
+        // ADD styles and scripts to enqueue here
+        $enqueues = [
+            'styles' => [
+                'tabs' => 'assets/css/tabs.css',
+                'rpi-wall-style' => 'assets/css/custom-style.css',
+                'rpi-wall-style-modal-norm' => 'assets/css/normalize.min.css',
+                'rpi-wall-style-modal-anim' => 'assets/css/animate.min.css',
+                'rpi-wall-style-termin-calender' => 'assets/css/termin-calender.css'
+            ],
+            'scripts' => [
+                'rpi-wall-script-termin-calender' => 'assets/js/termin-calender.js',
+                'rpi-wall-style-modal' => 'assets/js/animatedModal.js',
+                'rpi-wall-script' => 'assets/js/custom-scripts.js'
+            ]
+        ];
 
-        wp_enqueue_script('rpi-wall-script-termin-calender', plugin_dir_url(__FILE__) . 'assets/js/termin-calender.js', array('jquery'), $this->plugin_version);
-        wp_enqueue_script('rpi-wall-style-modal', plugin_dir_url(__FILE__) . 'assets/js/animatedModal.js', array('jquery'), $this->plugin_version);
-        wp_enqueue_script('rpi-wall-script', plugin_dir_url(__FILE__) . 'assets/js/custom-scripts.js', array('jquery'), $this->plugin_version, true);
+        foreach ($enqueues['styles'] as $style_handle => $style_path)
+        {
+            wp_enqueue_style($style_handle, plugin_dir_url(__FILE__) .$style_path , [], $this->plugin_version . '.' . filemtime(__DIR__ . $style_path)) ;
+        }
+        foreach ($enqueues['scripts'] as $script_handle => $script_path)
+        {
+            wp_enqueue_script($script_handle, plugin_dir_url(__FILE__) . $script_path, array('jquery'), $this->plugin_version . '.' . filemtime(__DIR__ . $script_path));
+
+        }
+//        wp_enqueue_style('tabs', plugin_dir_url(__FILE__) . 'assets/css/tabs.css', [], $this->plugin_version . '.' . filemtime(__DIR__ . 'assets/css/custom-style.css'));
+
+//        wp_enqueue_style('rpi-wall-style', plugin_dir_url(__FILE__) . 'assets/css/custom-style.css', [], $this->plugin_version . '.' . filemtime(__DIR__ . 'assets/css/custom-style.css'));
+//        wp_enqueue_style('rpi-wall-style-modal-norm', plugin_dir_url(__FILE__) . 'assets/css/normalize.min.css', [], $this->plugin_version . '.' . filemtime(__DIR__ . 'assets/css/normalize.min.css'));
+//        wp_enqueue_style('rpi-wall-style-modal-anim', plugin_dir_url(__FILE__) . 'assets/css/animate.min.css', [], $this->plugin_version . '.' . filemtime(__DIR__ . 'assets/css/animate.min.css'));
+//        wp_enqueue_style('rpi-wall-style-termin-calender', plugin_dir_url(__FILE__) . 'assets/css/termin-calender.css', [], $this->plugin_version . '.' . filemtime(__DIR__ . 'assets/css/termin-calender.css'));
+//
+//
+//        wp_enqueue_script('rpi-wall-script-termin-calender', plugin_dir_url(__FILE__) . 'assets/js/termin-calender.js', array('jquery'), $this->plugin_version . '.' . filemtime(__DIR__ . 'assets/css/termin-calender.js'));
+//        wp_enqueue_script('rpi-wall-style-modal', plugin_dir_url(__FILE__) . 'assets/js/animatedModal.js', array('jquery'), $this->plugin_version . '.' . filemtime(__DIR__ . 'assets/css/animatedModal.js'));
+//        wp_enqueue_script('rpi-wall-script', plugin_dir_url(__FILE__) . 'assets/js/custom-scripts.js', array('jquery'), $this->plugin_version . '.' . filemtime(__DIR__ . 'assets/css/custom-scripts.js'), true);
         wp_localize_script('rpi-wall-script', 'wall', array('ajaxurl' => admin_url('admin-ajax.php')));
 
 
