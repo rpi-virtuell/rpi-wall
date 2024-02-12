@@ -42,11 +42,13 @@
     margin-top: var(--content-vertical-spacing);
     padding: 15px;
 }
+
 .rpi-wall-filters {
     margin-top: var(--content-vertical-spacing);
     position: relative;
 }
-.rpi-wall-filters .rpi-wall-buttons a{
+
+.rpi-wall-filters .rpi-wall-buttons a {
     position: absolute;
     right: 0;
 }
@@ -1254,15 +1256,20 @@ body.toolbar #wpadminbar {
     background-color: #f9c227;
     padding: 5px 20px;
 }
+
 .single-protokoll h3 {
     font-size: 20px;
 }
-.protokoll-container{
+
+.protokoll-container {
     margin: 0 50px 50px 30px !important;
     border-left: 2px solid #f9c227;
     padding-left: 50px;
 }
 
+figure {
+    margin: unset !important;
+}
 .sed-page-title .site-title-container{
    width: max-content;
 }
