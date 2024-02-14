@@ -252,6 +252,7 @@ class RPIWallInstaller
             "supports" => [
                 'title',
                 "editor",
+	            "comments"
             ],
             'taxonomies' => ['wall-tag', "badge", 'section', 'profession'],
             "show_in_graphql" => false,
