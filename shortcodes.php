@@ -715,9 +715,13 @@ class Shortcodes
                         <div class="dibes-termin-thumbnail"
                              style="background-image: url('<?php echo get_the_post_thumbnail_url($postId) ?>')">
                             <div class="dibes-termin-post-details">
-                                <h5>
+                            <h5>
+                            <?php   echo wp_get_post_terms($postId, 'termin_event')[0]->name; ?>
+                            </h5>
+                                <h4>
                                     <?php echo $terminPost->post_title; ?>
-                                </h5>
+                                </h4>
+
                                 <p>
                                     <?php echo $terminPost->post_excerpt; ?>
                                 </p>

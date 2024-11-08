@@ -341,7 +341,7 @@ class RPIWallInstaller
             "can_export" => false,
             "rewrite" => ["slug" => "termin", "with_front" => true],
             "query_var" => true,
-            "supports" => ["title", "editor"],
+            "supports" => ["title", "editor","thumbnail"],
             "menu_icon" => "dashicons-calendar-alt",
             "taxonomies" => ["termin_event"],
             "show_in_graphql" => false,
