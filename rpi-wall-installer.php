@@ -5,7 +5,7 @@ namespace rpi\Wall;
 use core_reportbuilder\local\filters\date;
 use  rpi\Wall;
 use WP_Post;
-require_once __DIR__ . '/vendor/autoload.php';
+include_once __DIR__ . '/vendor/autoload.php';
 
 class RPIWallInstaller
 {
