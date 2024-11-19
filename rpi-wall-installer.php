@@ -5,13 +5,15 @@ namespace rpi\Wall;
 use core_reportbuilder\local\filters\date;
 use  rpi\Wall;
 use WP_Post;
-
+require_once __DIR__ . '/vendor/autoload.php';
 
 class RPIWallInstaller
 {
 
     public function __construct()
     {
+        register_activation_hook(__FILE__, array($this, 'install_composer_on_plugin_activation'));
+
         add_action('init', array($this, 'add_custom_capabilities'));
         add_action('init', array($this, 'register_post_types'));
         add_action('init', array($this, 'register_taxonomies'));
@@ -29,6 +31,27 @@ class RPIWallInstaller
         add_filter('notify_post_author', array($this, 'prefix_filter_sent_comment_notification'), 10, 2);
 
         add_action('pre_get_posts', array($this, 'alter_wall_query'));
+
+        ## Run composer
+
+
+    }
+
+    function install_composer_on_plugin_activation()
+    {
+        if (!class_exists('Composer\Autoload\ClassLoader')) {
+            $this->rpi_wall_run_composer();
+        }
+    }
+
+    function rpi_wall_run_composer() {
+        $plugin_dir = plugin_dir_path(__FILE__);
+        chdir($plugin_dir);
+
+        $output = shell_exec('composer install --no-dev');
+        error_log('Composer output: ' . $output);
+
+        chdir(ABSPATH);
     }
 
     /**
