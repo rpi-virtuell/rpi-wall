@@ -65,6 +65,8 @@ class RpiWall
 
         $this->plugin_version = $plugin_data['Version'];
 
+        $this->installer = new Wall\RPIWallInstaller();
+
         //session_start();
 
         add_action('wp_enqueue_scripts', [$this, 'custom_style_and_scripts']);
@@ -323,7 +325,6 @@ class RpiWall
 
         }, 10, 1);
 
-        $this->installer = new Wall\RPIWallInstaller();
 
         add_action('wp', function () {
 
