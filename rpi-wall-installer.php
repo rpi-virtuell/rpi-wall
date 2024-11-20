@@ -12,7 +12,6 @@ class RPIWallInstaller
 
     public function __construct()
     {
-        register_activation_hook(__FILE__, array($this, 'install_composer_on_plugin_activation'));
 
         add_action('init', array($this, 'add_custom_capabilities'));
         add_action('init', array($this, 'register_post_types'));
@@ -37,22 +36,6 @@ class RPIWallInstaller
 
     }
 
-    function install_composer_on_plugin_activation()
-    {
-        if (!class_exists('Composer\Autoload\ClassLoader')) {
-            $this->rpi_wall_run_composer();
-        }
-    }
-
-    function rpi_wall_run_composer() {
-        $plugin_dir = plugin_dir_path(__FILE__);
-        chdir($plugin_dir);
-
-        $output = shell_exec('composer install --no-dev');
-        error_log('Composer output: ' . $output);
-
-        chdir(ABSPATH);
-    }
 
     /**
      * @param bool $maybe_notify

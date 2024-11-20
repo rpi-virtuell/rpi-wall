@@ -58,6 +58,17 @@ class RpiWall
     public function __construct()
     {
 
+        function my_plugin_activate() {
+            if (!class_exists('Composer\Autoload\ClassLoader')) {
+                require_once plugin_dir_path(__FILE__) . 'vendor/autoload.php';
+            }
+
+            // Run Composer install
+//            $composer = plugin_dir_path(__FILE__) . 'composer.phar';
+            $output = shell_exec("composer install --no-dev");
+        }
+        register_activation_hook(__FILE__, 'my_plugin_activate');
+
         if (!function_exists('get_plugin_data')) {
             require_once(ABSPATH . 'wp-admin/includes/plugin.php');
         }
