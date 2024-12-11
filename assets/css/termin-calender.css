@@ -62,28 +62,29 @@
 
 
 /*Legend*/
-.dibes-termin-legend{
+.dibes-termin-legend {
     padding: 5px;
     border-radius: 3px;
     margin-top: 15px;
     box-shadow: 0 4px 24px #0000000a;
 }
-.termin-type{
+
+.termin-type {
     display: flex;
     font-weight: bold;
 }
-.termin-type-color{
+
+.termin-type-color {
     width: 15px;
     height: 15px;
     margin: auto 5px;
 }
 
-.dibes-termin.termin-type-color
-{
+.dibes-termin.termin-type-color {
     background-color: var(--ci-button-color);
 }
-.plg-termin.termin-type-color
-{
+
+.plg-termin.termin-type-color {
     background-color: var(--ci-accent-color);
 }
 
@@ -300,6 +301,11 @@
     background-repeat: no-repeat;
     padding: 20px;
     background-position: center;
+}
+
+.dibes-termin-post-details {
+    background: rgba(255, 255, 255, 0.7);
+    padding: 15px;
 }
 
 .dibes-termin-thumbnail div {

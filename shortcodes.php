@@ -715,9 +715,7 @@ class Shortcodes
                         <div class="dibes-termin-thumbnail"
                              style="background-image: url('<?php echo get_the_post_thumbnail_url($postId) ?>')">
                             <div class="dibes-termin-post-details">
-                            <h5>
-                            <?php   echo wp_get_post_terms($postId, 'termin_event')[0]->name; ?>
-                            </h5>
+
                                 <h4>
                                     <?php echo $terminPost->post_title; ?>
                                 </h4>
@@ -739,19 +737,25 @@ class Shortcodes
                                     }
                                     $post_term = wp_get_post_terms($postId, 'termin_event');
                                     $post_term = reset($post_term);
+                                       if (is_a($post_term, 'WP_Term')) {
+
                                     ?>
+
                                     <a class="wp-block-group dibes-meeting-button"
                                        href="
                                                                  <?php
-                                       if (is_a($post_term, 'WP_Term')) {
                                            echo $term_pages[$post_term->term_id];
-                                       } else {
-                                           echo get_permalink($postId);
-                                       }
                                        ?>" target="_blank">
-                                        👉 Mehr zur Veranstaltung 👈
+                                        👉 Mehr zu <?php echo $post_term->name ?> 👈
                                     </a>
-                                    <?php
+                                    <br>
+                                    <br>
+                                    <a class="wp-block-group dibes-meeting-button" href="<?php echo get_permalink($postId); ?>">
+                                    🔎 Mehr zu dieser Veranstaltung 🔍
+                                    </a>
+                              <?php
+                                       }
+
                                 } ?>
                             </div>
                         </div>
