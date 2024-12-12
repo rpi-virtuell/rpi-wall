@@ -4,7 +4,12 @@ namespace rpi\Wall;
 
 
 use core_reportbuilder\local\filters\date;
+use DateInterval;
+use DatePeriod;
+use DateTime;
+use DateTimeZone;
 use mod_bigbluebuttonbn\local\helpers\reset;
+use WP_Query;
 
 class Shortcodes
 {
@@ -323,7 +328,7 @@ class Shortcodes
                 ]
             ]
         ];
-        $wp_query = new \WP_Query($args);
+        $wp_query = new WP_Query($args);
         $messages = $wp_query->get_posts();
 
         ob_start();
@@ -590,10 +595,10 @@ class Shortcodes
 
             $lastPost = end($posts);
 
-            $datesTillLastPost = new \DatePeriod(
-                new \DateTime(date("Y-m-d", strtotime($startDate))),
-                new \DateInterval('P1D'),
-                new \DateTime(get_post_meta($lastPost->ID, 'termin_date', true))
+            $datesTillLastPost = new DatePeriod(
+                new DateTime(date("Y-m-d", strtotime($startDate))),
+                new DateInterval('P1D'),
+                new DateTime(get_post_meta($lastPost->ID, 'termin_date', true))
             );
             $newWeek = true;
             $newMonth = true;
@@ -748,14 +753,16 @@ class Shortcodes
                                        ?>" target="_blank">
                                         👉 Mehr zu <?php echo $post_term->name ?> 👈
                                     </a>
-                                    <br>
+
+                              <?php
+                                       }
+                                       ?>
+                                       <br>
                                     <br>
                                     <a class="wp-block-group dibes-meeting-button" href="<?php echo get_permalink($postId); ?>">
                                     🔎 Mehr zu dieser Veranstaltung 🔍
                                     </a>
-                              <?php
-                                       }
-
+                                    <?php
                                 } ?>
                             </div>
                         </div>
@@ -946,10 +953,10 @@ class Shortcodes
         $termine = get_posts($args);
         $next_termin = reset($termine);
         if (is_a($next_termin, 'WP_Post')) {
-            $date = new \DateTime(null, new \DateTimeZone('Europe/Berlin'));
-            $termin_date = new \DateTime(get_post_meta($next_termin->ID, 'termin_date', true), new \DateTimeZone('Europe/Berlin'));
-            $current_time = new \DateTime('now', new \DateTimeZone('Europe/Berlin'));
-            $termin_enddate = new \DateTime(date('Y-m-d') . ' ' . get_post_meta($next_termin->ID, 'termin_enddate', true), new \DateTimeZone('Europe/Berlin'));
+            $date = new DateTime(null, new DateTimeZone('Europe/Berlin'));
+            $termin_date = new DateTime(get_post_meta($next_termin->ID, 'termin_date', true), new DateTimeZone('Europe/Berlin'));
+            $current_time = new DateTime('now', new DateTimeZone('Europe/Berlin'));
+            $termin_enddate = new DateTime(date('Y-m-d') . ' ' . get_post_meta($next_termin->ID, 'termin_enddate', true), new DateTimeZone('Europe/Berlin'));
 
             if ($termin_date->format('Y-m-d') === $current_time->format('Y-m-d') && $current_time < $termin_enddate) {
                 ob_start();
