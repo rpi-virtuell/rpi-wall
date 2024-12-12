@@ -1270,3 +1270,6 @@ body.toolbar #wpadminbar {
 figure {
     margin: unset !important;
 }
+.sed-page-title .site-title-container{
+   width: max-content;
+}

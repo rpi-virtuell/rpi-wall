@@ -1,12 +1,5 @@
 <?php
 /**
- * The plugin bootstrap file
- *
- * This file is read by WordPress to generate the plugin information in the plugin
- * admin area. This file also includes all of the dependencies used by the plugin,
- * registers the activation and deactivation functions, and defines a function
- * that starts the plugin.
- *
  * @package           Rpi_Wall
  *
  * @wordpress-plugin
@@ -65,12 +58,25 @@ class RpiWall
     public function __construct()
     {
 
+        function my_plugin_activate() {
+            if (!class_exists('Composer\Autoload\ClassLoader')) {
+                require_once plugin_dir_path(__FILE__) . 'vendor/autoload.php';
+            }
+
+            // Run Composer install
+//            $composer = plugin_dir_path(__FILE__) . 'composer.phar';
+            $output = shell_exec("composer install --no-dev");
+        }
+        register_activation_hook(__FILE__, 'my_plugin_activate');
+
         if (!function_exists('get_plugin_data')) {
             require_once(ABSPATH . 'wp-admin/includes/plugin.php');
         }
         $plugin_data = get_plugin_data(__FILE__);
 
         $this->plugin_version = $plugin_data['Version'];
+
+        $this->installer = new Wall\RPIWallInstaller();
 
         //session_start();
 
@@ -330,7 +336,6 @@ class RpiWall
 
         }, 10, 1);
 
-        $this->installer = new Wall\RPIWallInstaller();
 
         add_action('wp', function () {
 

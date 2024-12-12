@@ -5,13 +5,14 @@ namespace rpi\Wall;
 use core_reportbuilder\local\filters\date;
 use  rpi\Wall;
 use WP_Post;
-
+include_once __DIR__ . '/vendor/autoload.php';
 
 class RPIWallInstaller
 {
 
     public function __construct()
     {
+
         add_action('init', array($this, 'add_custom_capabilities'));
         add_action('init', array($this, 'register_post_types'));
         add_action('init', array($this, 'register_taxonomies'));
@@ -29,7 +30,12 @@ class RPIWallInstaller
         add_filter('notify_post_author', array($this, 'prefix_filter_sent_comment_notification'), 10, 2);
 
         add_action('pre_get_posts', array($this, 'alter_wall_query'));
+
+        ## Run composer
+
+
     }
+
 
     /**
      * @param bool $maybe_notify
@@ -341,7 +347,7 @@ class RPIWallInstaller
             "can_export" => false,
             "rewrite" => ["slug" => "termin", "with_front" => true],
             "query_var" => true,
-            "supports" => ["title", "editor"],
+            "supports" => ["title", "editor","thumbnail"],
             "menu_icon" => "dashicons-calendar-alt",
             "taxonomies" => ["termin_event"],
             "show_in_graphql" => false,
